@@ -11,7 +11,7 @@ from pydantic import BaseModel, Field
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from models.feedback import FeedbackChannel, FeedbackStatus
-from utils.database import get_db_session
+from utils.database import get_db
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
@@ -60,7 +60,7 @@ class TrendAnalysis(BaseModel):
 @router.get("/dashboard", response_model=DashboardMetrics)
 async def get_dashboard_metrics(
     time_range: AnalyticsTimeRange = Depends(),
-    db: AsyncSession = Depends(get_db_session)
+    db: AsyncSession = Depends(get_db)
 ):
     """Get comprehensive dashboard metrics"""
     try:
@@ -195,7 +195,7 @@ async def get_dashboard_metrics(
 async def get_sentiment_metrics(
     time_range: AnalyticsTimeRange = Depends(),
     channel: Optional[FeedbackChannel] = None,
-    db: AsyncSession = Depends(get_db_session)
+    db: AsyncSession = Depends(get_db)
 ):
     """Get detailed sentiment analysis metrics"""
     try:
@@ -262,7 +262,7 @@ async def get_sentiment_metrics(
 async def get_trend_analysis(
     time_range: AnalyticsTimeRange = Depends(),
     granularity: str = "daily",
-    db: AsyncSession = Depends(get_db_session)
+    db: AsyncSession = Depends(get_db)
 ):
     """Get trend analysis over time"""
     try:
@@ -321,7 +321,7 @@ async def get_trend_analysis(
 async def export_analytics(
     time_range: AnalyticsTimeRange = Depends(),
     format: str = "json",
-    db: AsyncSession = Depends(get_db_session)
+    db: AsyncSession = Depends(get_db)
 ):
     """Export analytics data in various formats"""
     try:

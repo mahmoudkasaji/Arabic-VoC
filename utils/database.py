@@ -73,6 +73,7 @@ async def init_db():
         logger.error(f"Error initializing database: {str(e)}")
         raise
 
+@asynccontextmanager
 async def get_db_session():
     """Get database session with proper cleanup"""
     async with AsyncSessionLocal() as session:
@@ -181,7 +182,7 @@ async def get_db():
         finally:
             await session.close()
 
-# Alternative dependency using context manager
-def get_db_session():
+# Alternative dependency using context manager  
+def get_db_session_dep():
     """Alternative database session dependency"""
     return get_db()

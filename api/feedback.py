@@ -11,7 +11,7 @@ from pydantic import BaseModel, Field, validator
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from models.feedback import Feedback, FeedbackChannel, FeedbackStatus
-from utils.database import get_db_session
+from utils.database import get_db
 from utils.arabic_processor import process_arabic_text, extract_sentiment
 from utils.openai_client import analyze_arabic_feedback
 
@@ -120,7 +120,7 @@ async def process_feedback_background(feedback_id: int, db: AsyncSession):
 async def submit_feedback(
     feedback: FeedbackCreate,
     background_tasks: BackgroundTasks,
-    db: AsyncSession = Depends(get_db_session)
+    db: AsyncSession = Depends(get_db)
 ):
     """Submit new feedback for processing"""
     try:
@@ -155,7 +155,7 @@ async def submit_feedback(
 @router.get("/list", response_model=List[FeedbackResponse])
 async def list_feedback(
     filters: FeedbackFilter = Depends(),
-    db: AsyncSession = Depends(get_db_session)
+    db: AsyncSession = Depends(get_db)
 ):
     """List feedback with optional filtering"""
     try:
@@ -206,7 +206,7 @@ async def list_feedback(
 @router.get("/{feedback_id}", response_model=FeedbackResponse)
 async def get_feedback(
     feedback_id: int,
-    db: AsyncSession = Depends(get_db_session)
+    db: AsyncSession = Depends(get_db)
 ):
     """Get specific feedback by ID"""
     try:
@@ -230,7 +230,7 @@ async def get_feedback(
 @router.delete("/{feedback_id}")
 async def delete_feedback(
     feedback_id: int,
-    db: AsyncSession = Depends(get_db_session)
+    db: AsyncSession = Depends(get_db)
 ):
     """Delete specific feedback"""
     try:
