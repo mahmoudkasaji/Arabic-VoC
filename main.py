@@ -118,11 +118,39 @@ async def feedback_page(request: Request):
     """Feedback submission page"""
     return templates.TemplateResponse(
         "feedback.html",
-        {
-            "request": request,
-            "lang": "ar",
-            "dir": "rtl"
-        }
+        {"request": request, "title": "إرسال تعليق"}
+    )
+
+@app.get("/dashboard/realtime")
+async def realtime_dashboard(request: Request):
+    """Real-time analytics dashboard page"""
+    return templates.TemplateResponse(
+        "dashboard_realtime.html",
+        {"request": request, "title": "لوحة التحليلات المباشرة"}
+    )
+
+@app.get("/surveys")
+async def surveys_page(request: Request):
+    """Surveys page"""
+    return templates.TemplateResponse(
+        "surveys.html", 
+        {"request": request, "title": "الاستطلاعات"}
+    )
+
+@app.get("/login")
+async def login_page(request: Request):
+    """Login page"""
+    return templates.TemplateResponse(
+        "login.html",
+        {"request": request, "title": "تسجيل الدخول"}
+    )
+
+@app.get("/register")
+async def register_page(request: Request):
+    """Registration page"""
+    return templates.TemplateResponse(
+        "register.html",
+        {"request": request, "title": "إنشاء حساب"}
     )
 
 @app.get("/analytics")
