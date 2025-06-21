@@ -147,32 +147,34 @@
                     <!-- Login Header -->
                     <div class="login-header">
                         <i class="fas fa-user-circle"></i>
-                        <h2 class="arabic-title">تسجيل الدخول</h2>
-                        <p class="text-muted">ادخل إلى حسابك في منصة صوت العميل العربية</p>
+                        <h2 class="arabic-title" data-i18n="auth.login_title">تسجيل الدخول</h2>
+                        <p class="text-muted" data-i18n="auth.login_subtitle">ادخل إلى حسابك في منصة صوت العميل العربية</p>
                     </div>
 
                     <!-- Login Form -->
                     <form id="loginForm">
                         <div class="mb-3">
-                            <label for="username" class="form-label">اسم المستخدم أو البريد الإلكتروني:</label>
+                            <label for="username" class="form-label" data-i18n="auth.username_label">اسم المستخدم أو البريد الإلكتروني:</label>
                             <input 
                                 type="text" 
                                 class="form-control" 
                                 id="username" 
                                 name="username_or_email"
+                                data-i18n-placeholder="auth.username_placeholder"
                                 placeholder="أدخل اسم المستخدم أو البريد الإلكتروني"
                                 required
                             >
                         </div>
 
                         <div class="mb-3">
-                            <label for="password" class="form-label">كلمة المرور:</label>
+                            <label for="password" class="form-label" data-i18n="auth.password_label">كلمة المرور:</label>
                             <div class="position-relative">
                                 <input 
                                     type="password" 
                                     class="form-control" 
                                     id="password" 
                                     name="password"
+                                    data-i18n-placeholder="auth.password_placeholder"
                                     placeholder="أدخل كلمة المرور"
                                     required
                                 >

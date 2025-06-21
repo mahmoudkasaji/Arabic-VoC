@@ -250,7 +250,7 @@
 
                         <!-- Rating -->
                         <div class="mb-4">
-                            <label class="form-label">تقييمك العام:</label>
+                            <label class="form-label" data-i18n="feedback.rating_label">تقييمك العام:</label>
                             <div class="rating-stars" dir="ltr">
                                 <input type="radio" id="star5" name="rating" value="5">
                                 <label for="star5">★</label>
@@ -267,22 +267,23 @@
 
                         <!-- Feedback Content -->
                         <div class="mb-4">
-                            <label for="content" class="form-label">تعليقك أو ملاحظاتك:</label>
+                            <label for="content" class="form-label" data-i18n="feedback.content_label">تعليقك أو ملاحظاتك:</label>
                             <textarea 
                                 class="form-control" 
                                 id="content" 
                                 name="content" 
                                 rows="5" 
+                                data-i18n-placeholder="feedback.content_placeholder"
                                 placeholder="شاركنا تجربتك ورأيك بالتفصيل..."
                                 required
                             ></textarea>
-                            <div class="form-text">يمكنك الكتابة بأي لهجة عربية - سنفهمها جميعاً</div>
+                            <div class="form-text" data-i18n="feedback.dialect_help">يمكنك الكتابة بأي لهجة عربية - سنفهمها جميعاً</div>
                         </div>
 
                         <!-- Customer Information -->
                         <div class="row mb-4">
                             <div class="col-md-6">
-                                <label for="customerName" class="form-label">الاسم (اختياري):</label>
+                                <label for="customerName" class="form-label" data-i18n="feedback.name_label">الاسم (اختياري):</label>
                                 <input 
                                     type="text" 
                                     class="form-control" 
