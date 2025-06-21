@@ -156,9 +156,15 @@
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
         <div class="container">
+            <!-- Language Toggle Button -->
+            <button id="langToggle" class="btn btn-primary me-3" onclick="toggleLanguage()">
+                <i class="fas fa-globe me-1"></i>
+                <span id="langText">English</span>
+            </button>
+            
             <a class="navbar-brand arabic-title" href="/">
                 <i class="fas fa-comments text-primary"></i>
-                منصة صوت العميل العربية
+                <span data-i18n="home.title">منصة صوت العميل العربية</span>
             </a>
             
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -183,10 +189,10 @@
                 
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link" href="/login">تسجيل الدخول</a>
+                        <a class="nav-link" href="/login"><span data-i18n="nav.login">تسجيل الدخول</span></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/register">إنشاء حساب</a>
+                        <a class="nav-link" href="/register"><span data-i18n="nav.register">إنشاء حساب</span></a>
                     </li>
                 </ul>
             </div>
@@ -352,7 +358,46 @@
     
     <!-- Custom JavaScript -->
     <script>
-        // i18n system loads automatically from static/js/i18n.js
+        // Simple language toggle function
+        function toggleLanguage() {
+            const currentLang = document.documentElement.lang || 'ar';
+            const newLang = currentLang === 'ar' ? 'en' : 'ar';
+            
+            // Update document attributes
+            document.documentElement.lang = newLang;
+            document.documentElement.dir = newLang === 'ar' ? 'rtl' : 'ltr';
+            
+            // Update toggle button text
+            const langText = document.getElementById('langText');
+            if (langText) {
+                langText.textContent = newLang === 'ar' ? 'English' : 'العربية';
+            }
+            
+            // Toggle elements with data-i18n attributes
+            document.querySelectorAll('[data-i18n]').forEach(element => {
+                const key = element.getAttribute('data-i18n');
+                
+                // Simple translation mapping
+                const translations = {
+                    'feedback.title': newLang === 'ar' ? 'شاركنا رأيك' : 'Share Your Opinion',
+                    'feedback.subtitle': newLang === 'ar' ? 'نقدر آراءكم ومقترحاتكم لتطوير خدماتنا' : 'We value your feedback and suggestions to improve our services',
+                    'nav.home': newLang === 'ar' ? 'الرئيسية' : 'Home',
+                    'nav.analytics': newLang === 'ar' ? 'لوحة التحليلات' : 'Analytics',
+                    'nav.feedback': newLang === 'ar' ? 'إرسال تعليق' : 'Submit Feedback',
+                    'nav.surveys': newLang === 'ar' ? 'الاستطلاعات' : 'Surveys',
+                    'nav.login': newLang === 'ar' ? 'تسجيل الدخول' : 'Login',
+                    'nav.register': newLang === 'ar' ? 'إنشاء حساب' : 'Register',
+                    'home.title': newLang === 'ar' ? 'منصة صوت العميل العربية' : 'Arabic Voice of Customer Platform'
+                };
+                
+                if (translations[key]) {
+                    element.textContent = translations[key];
+                }
+            });
+            
+            // Store preference
+            localStorage.setItem('preferred-language', newLang);
+        }
 
         // Channel selection
         document.querySelectorAll('.channel-option').forEach(option => {
