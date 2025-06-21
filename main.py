@@ -179,8 +179,61 @@ def create_wsgi_app():
             start_response(status, headers)
             return [b'{"status": "healthy", "message": "Arabic VoC Platform is running"}']
         
-        # Main Arabic dashboard
-        if environ['REQUEST_METHOD'] == 'GET' and environ['PATH_INFO'] == '/':
+        # Serve the comprehensive Arabic UI pages
+        path = environ['PATH_INFO']
+        method = environ['REQUEST_METHOD']
+        
+        if method == 'GET':
+            if path == '/':
+                # Serve main homepage with full navigation
+                status = '200 OK'
+                headers = [('Content-Type', 'text/html; charset=utf-8')]
+                start_response(status, headers)
+                with open('templates/index.html', 'r', encoding='utf-8') as f:
+                    return [f.read().encode('utf-8')]
+            
+            elif path == '/feedback':
+                # Serve feedback page
+                status = '200 OK'
+                headers = [('Content-Type', 'text/html; charset=utf-8')]
+                start_response(status, headers)
+                with open('templates/feedback.html', 'r', encoding='utf-8') as f:
+                    return [f.read().encode('utf-8')]
+            
+            elif path == '/dashboard/realtime':
+                # Serve realtime dashboard
+                status = '200 OK'
+                headers = [('Content-Type', 'text/html; charset=utf-8')]
+                start_response(status, headers)
+                with open('templates/dashboard_realtime.html', 'r', encoding='utf-8') as f:
+                    return [f.read().encode('utf-8')]
+            
+            elif path == '/surveys':
+                # Serve surveys page
+                status = '200 OK'
+                headers = [('Content-Type', 'text/html; charset=utf-8')]
+                start_response(status, headers)
+                with open('templates/surveys.html', 'r', encoding='utf-8') as f:
+                    return [f.read().encode('utf-8')]
+            
+            elif path == '/login':
+                # Serve login page
+                status = '200 OK'
+                headers = [('Content-Type', 'text/html; charset=utf-8')]
+                start_response(status, headers)
+                with open('templates/login.html', 'r', encoding='utf-8') as f:
+                    return [f.read().encode('utf-8')]
+            
+            elif path == '/register':
+                # Serve register page
+                status = '200 OK'
+                headers = [('Content-Type', 'text/html; charset=utf-8')]
+                start_response(status, headers)
+                with open('templates/register.html', 'r', encoding='utf-8') as f:
+                    return [f.read().encode('utf-8')]
+        
+        # Fallback for basic status page
+        if method == 'GET' and path == '/':
             status = '200 OK'
             headers = [('Content-Type', 'text/html; charset=utf-8')]
             start_response(status, headers)
@@ -246,15 +299,14 @@ def create_wsgi_app():
     
     return wsgi_app
 
-# Keep the FastAPI app as the main application
-# Export it properly for both ASGI and WSGI compatibility
+# Keep the FastAPI app for ASGI mode
 fastapi_app = app
 
-# For ASGI servers (uvicorn) - use the FastAPI app directly
-application = app
+# For current Gunicorn deployment, use WSGI wrapper as main app
+application = create_wsgi_app()
 
-# For WSGI servers (gunicorn) - create adapter
-wsgi_app = create_wsgi_app()
+# Override app to use WSGI wrapper for compatibility
+app = application
 
 if __name__ == "__main__":
     import uvicorn
