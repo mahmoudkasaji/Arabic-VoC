@@ -246,20 +246,23 @@ def create_wsgi_app():
     
     return wsgi_app
 
-# Export the WSGI application for Gunicorn
-application = create_wsgi_app()
-
-# Replace the FastAPI app with WSGI wrapper for Gunicorn compatibility
-# Keep original FastAPI app as fastapi_app for reference
+# Keep the FastAPI app as the main application
+# Export it properly for both ASGI and WSGI compatibility
 fastapi_app = app
-app = application
+
+# For ASGI servers (uvicorn) - use the FastAPI app directly
+application = app
+
+# For WSGI servers (gunicorn) - create adapter
+wsgi_app = create_wsgi_app()
 
 if __name__ == "__main__":
     import uvicorn
+    # Run the FastAPI app directly with uvicorn for full functionality
     uvicorn.run(
-        "main:app",
+        "main:fastapi_app",
         host="0.0.0.0",
         port=5000,
         reload=True,
-        log_level="debug"
+        log_level="info"
     )
