@@ -37,7 +37,7 @@ class ArabicFeedbackAnalyzer:
             - reasoning: تفسير قصير للتحليل
             """
             
-            response = await openai_client.chat.completions.acreate(
+            response = openai_client.chat.completions.create(
                 model=self.model,
                 messages=[
                     {
@@ -90,7 +90,7 @@ class ArabicFeedbackAnalyzer:
             - customer_type: نوع العميل المحتمل (جديد، حالي، سابق، غير محدد)
             """
             
-            response = await openai_client.chat.completions.acreate(
+            response = openai_client.chat.completions.create(
                 model=self.model,
                 messages=[
                     {
@@ -143,7 +143,7 @@ class ArabicFeedbackAnalyzer:
             - لا يتجاوز 100 كلمة
             """
             
-            response = await openai_client.chat.completions.acreate(
+            response = openai_client.chat.completions.create(
                 model=self.model,
                 messages=[
                     {

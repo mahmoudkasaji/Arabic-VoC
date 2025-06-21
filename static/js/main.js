@@ -278,7 +278,7 @@ const FeedbackManager = {
                     customer_email: formData.get('customer_email') || null,
                     customer_phone: formData.get('customer_phone') || null,
                     rating: formData.get('rating') ? parseInt(formData.get('rating')) : null,
-                    metadata: {}
+                    channel_metadata: {}
                 };
 
                 const result = await API.submitFeedback(feedbackData);

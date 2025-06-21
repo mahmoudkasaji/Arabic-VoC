@@ -46,7 +46,7 @@ class DashboardMetrics(BaseModel):
     average_sentiment: float
     sentiment_distribution: Dict[str, int]
     channel_metrics: List[ChannelMetrics]
-    trending_topics: List[Dict[str, any]]
+    trending_topics: List[Dict[str, Any]]
     recent_feedback_count: int
 
 class TrendAnalysis(BaseModel):

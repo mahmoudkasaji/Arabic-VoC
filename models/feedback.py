@@ -64,7 +64,7 @@ class Feedback(Base):
     ai_action_items = Column(JSON, nullable=True, comment="AI-suggested action items")
     
     # Additional metadata
-    metadata = Column(JSON, nullable=True, comment="Additional channel-specific metadata")
+    channel_metadata = Column(JSON, nullable=True, comment="Additional channel-specific metadata")
     
     # Timestamps
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False, index=True)

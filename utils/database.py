@@ -185,4 +185,4 @@ async def get_db():
 # Alternative dependency using context manager
 def get_db_session():
     """Alternative database session dependency"""
-    return get_db_session()
+    return get_db()

@@ -25,7 +25,7 @@ class FeedbackCreate(BaseModel):
     customer_email: Optional[str] = Field(None, description="Customer email if provided")
     customer_phone: Optional[str] = Field(None, description="Customer phone if provided")
     rating: Optional[int] = Field(None, ge=1, le=5, description="Customer rating 1-5")
-    metadata: Optional[dict] = Field(default_factory=dict, description="Additional metadata")
+    channel_metadata: Optional[dict] = Field(default_factory=dict, description="Additional metadata")
 
     @validator('content')
     def validate_arabic_content(cls, v):
@@ -131,7 +131,7 @@ async def submit_feedback(
             customer_email=feedback.customer_email,
             customer_phone=feedback.customer_phone,
             rating=feedback.rating,
-            metadata=feedback.metadata,
+            channel_metadata=feedback.channel_metadata,
             status=FeedbackStatus.PENDING,
             created_at=datetime.utcnow()
         )
