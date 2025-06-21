@@ -15,6 +15,7 @@ from asgiref.wsgi import WsgiToAsgi
 from utils.database import init_db
 from api.feedback import router as feedback_router
 from api.analytics import router as analytics_router
+from api.auth import router as auth_router
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
