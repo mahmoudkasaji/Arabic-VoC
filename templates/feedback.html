@@ -90,7 +90,11 @@
                     
                     // Visual confirmation - flash the element
                     element.style.backgroundColor = '#ffff00';
-                    setTimeout(() => { element.style.backgroundColor = ''; }, 200);
+                    element.style.transition = 'background-color 0.2s ease';
+                    setTimeout(() => { 
+                        element.style.backgroundColor = ''; 
+                        setTimeout(() => { element.style.transition = ''; }, 300);
+                    }, 200);
                 }
             });
             
