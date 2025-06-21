@@ -16,6 +16,8 @@ from utils.database import init_db
 from api.feedback import router as feedback_router
 from api.analytics import router as analytics_router
 from api.auth import router as auth_router
+from api.surveys import router as surveys_router
+from api.feedback_collection import router as feedback_collection_router
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
@@ -81,8 +83,9 @@ templates = Jinja2Templates(directory="templates")
 
 # Include API routers
 app.include_router(auth_router)
-app.include_router(feedback_router, prefix="/api/feedback", tags=["feedback"])
-app.include_router(analytics_router, prefix="/api/analytics", tags=["analytics"])
+app.include_router(surveys_router)
+app.include_router(feedback_collection_router)
+app.include_router(analytics_router)
 
 @app.get("/")
 async def root(request: Request):
