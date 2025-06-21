@@ -1,0 +1,1258 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="تحليلات ومقاييس تعليقات العملاء - منصة صوت العميل">
+    <meta name="keywords" content="تحليلات, مقاييس, إحصائيات, تعليقات العملاء">
+    <title>التحليلات والإحصائيات - منصة صوت العميل</title>
+    
+    <!-- Arabic Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Chart.js for Data Visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.min.js"></script>
+    
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/main.css') }}">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%232c5aa0'><path d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z'/></svg>">
+</head>
+<body>
+    <!-- Alert Container for Notifications -->
+    <div id="alert-container"></div>
+    
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <nav class="nav">
+                <a href="/" class="nav-brand">
+                    <i class="fas fa-comments"></i>
+                    منصة صوت العميل
+                </a>
+                
+                <ul class="nav-links">
+                    <li><a href="/" class="nav-link"><i class="fas fa-home"></i> الرئيسية</a></li>
+                    <li><a href="/feedback" class="nav-link"><i class="fas fa-plus-circle"></i> إضافة تعليق</a></li>
+                    <li><a href="/analytics" class="nav-link active"><i class="fas fa-chart-bar"></i> التحليلات</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Page Header -->
+        <section class="page-header">
+            <div class="container">
+                <div class="page-header-content">
+                    <h1><i class="fas fa-chart-bar"></i> التحليلات والإحصائيات</h1>
+                    <p>تحليل شامل لتعليقات العملاء ومؤشرات الأداء الرئيسية</p>
+                </div>
+                
+                <!-- Time Range Filters -->
+                <div class="filters-section">
+                    <div class="filter-group">
+                        <label for="time-range" class="filter-label">
+                            <i class="fas fa-calendar-alt"></i>
+                            الفترة الزمنية:
+                        </label>
+                        <select id="time-range" class="filter-select">
+                            <option value="7">آخر 7 أيام</option>
+                            <option value="30" selected>آخر 30 يوم</option>
+                            <option value="90">آخر 3 أشهر</option>
+                            <option value="365">آخر سنة</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label for="channel-filter" class="filter-label">
+                            <i class="fas fa-filter"></i>
+                            القناة:
+                        </label>
+                        <select id="channel-filter" class="filter-select">
+                            <option value="">جميع القنوات</option>
+                            <option value="website">الموقع الإلكتروني</option>
+                            <option value="mobile_app">التطبيق المحمول</option>
+                            <option value="email">البريد الإلكتروني</option>
+                            <option value="phone">الهاتف</option>
+                            <option value="whatsapp">واتساب</option>
+                            <option value="social_media">وسائل التواصل</option>
+                        </select>
+                    </div>
+                    
+                    <button id="refresh-data" class="btn btn-primary">
+                        <i class="fas fa-sync-alt"></i>
+                        تحديث البيانات
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Key Metrics Dashboard -->
+        <section class="metrics-dashboard">
+            <div class="container">
+                <h2 class="section-title">
+                    <i class="fas fa-tachometer-alt"></i>
+                    المؤشرات الرئيسية
+                </h2>
+                
+                <div class="dashboard-grid" id="dashboard">
+                    <div class="card metric-card">
+                        <div class="card-body">
+                            <div class="metric-icon">
+                                <i class="fas fa-comments" style="color: var(--primary-color);"></i>
+                            </div>
+                            <span class="metric-value" id="total-feedback">0</span>
+                            <div class="metric-label">إجمالي التعليقات</div>
+                            <div class="metric-change" id="feedback-change">
+                                <i class="fas fa-arrow-up"></i>
+                                <span>+0% من الفترة السابقة</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card metric-card">
+                        <div class="card-body">
+                            <div class="metric-icon">
+                                <i class="fas fa-check-circle" style="color: var(--success-color);"></i>
+                            </div>
+                            <span class="metric-value" id="processed-feedback">0</span>
+                            <div class="metric-label">تعليقات معالجة</div>
+                            <div class="metric-progress">
+                                <div class="progress">
+                                    <div class="progress-bar" id="processing-progress" style="width: 0%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card metric-card">
+                        <div class="card-body">
+                            <div class="metric-icon">
+                                <i class="fas fa-heart" style="color: var(--danger-color);"></i>
+                            </div>
+                            <span class="metric-value" id="avg-sentiment">0.00</span>
+                            <div class="metric-label">متوسط المشاعر</div>
+                            <div class="sentiment-indicator" id="sentiment-status">
+                                <span class="sentiment-neutral">محايد</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card metric-card">
+                        <div class="card-body">
+                            <div class="metric-icon">
+                                <i class="fas fa-clock" style="color: var(--warning-color);"></i>
+                            </div>
+                            <span class="metric-value" id="recent-feedback-count">0</span>
+                            <div class="metric-label">آخر 24 ساعة</div>
+                            <div class="metric-trend" id="recent-trend">
+                                <i class="fas fa-minus"></i>
+                                <span>لا تغيير</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Charts Section -->
+        <section class="charts-section">
+            <div class="container">
+                <div class="row">
+                    <!-- Sentiment Analysis Chart -->
+                    <div class="col-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>
+                                    <i class="fas fa-chart-pie"></i>
+                                    توزيع المشاعر
+                                </h3>
+                                <div class="chart-actions">
+                                    <button class="btn btn-outline btn-sm" onclick="exportChart('sentiment-chart')">
+                                        <i class="fas fa-download"></i>
+                                        تصدير
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="chart-container">
+                                    <canvas id="sentiment-chart" width="400" height="200"></canvas>
+                                </div>
+                                <div class="chart-legend" id="sentiment-legend">
+                                    <!-- Legend will be populated by JavaScript -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Channel Distribution Chart -->
+                    <div class="col-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>
+                                    <i class="fas fa-chart-bar"></i>
+                                    توزيع القنوات
+                                </h3>
+                                <div class="chart-actions">
+                                    <button class="btn btn-outline btn-sm" onclick="exportChart('channel-chart')">
+                                        <i class="fas fa-download"></i>
+                                        تصدير
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="chart-container">
+                                    <canvas id="channel-chart" width="400" height="200"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Trend Analysis Chart -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>
+                                    <i class="fas fa-chart-line"></i>
+                                    اتجاه التعليقات عبر الزمن
+                                </h3>
+                                <div class="chart-controls">
+                                    <div class="control-group">
+                                        <label for="trend-period">فترة التجميع:</label>
+                                        <select id="trend-period" class="form-control">
+                                            <option value="daily" selected>يومي</option>
+                                            <option value="weekly">أسبوعي</option>
+                                            <option value="monthly">شهري</option>
+                                        </select>
+                                    </div>
+                                    <button class="btn btn-outline btn-sm" onclick="exportChart('trend-chart')">
+                                        <i class="fas fa-download"></i>
+                                        تصدير
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="chart-container trend-chart-container">
+                                    <canvas id="trend-chart" width="800" height="300"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Detailed Analytics -->
+        <section class="detailed-analytics">
+            <div class="container">
+                <div class="row">
+                    <!-- Top Topics -->
+                    <div class="col-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>
+                                    <i class="fas fa-tags"></i>
+                                    المواضيع الأكثر تكراراً
+                                </h3>
+                            </div>
+                            <div class="card-body">
+                                <div id="top-topics" class="topics-list">
+                                    <div class="loading-state">
+                                        <div class="loading"></div>
+                                        <p>جارٍ تحميل المواضيع...</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Channel Performance -->
+                    <div class="col-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>
+                                    <i class="fas fa-signal"></i>
+                                    أداء القنوات
+                                </h3>
+                            </div>
+                            <div class="card-body">
+                                <div id="channel-performance" class="performance-list">
+                                    <div class="loading-state">
+                                        <div class="loading"></div>
+                                        <p>جارٍ تحميل بيانات الأداء...</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Recent Feedback Analysis -->
+        <section class="recent-analysis">
+            <div class="container">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>
+                            <i class="fas fa-list-alt"></i>
+                            أحدث التعليقات المعالجة
+                        </h3>
+                        <div class="header-actions">
+                            <div class="view-controls">
+                                <button id="list-view" class="btn btn-outline btn-sm active">
+                                    <i class="fas fa-list"></i>
+                                    قائمة
+                                </button>
+                                <button id="card-view" class="btn btn-outline btn-sm">
+                                    <i class="fas fa-th"></i>
+                                    بطاقات
+                                </button>
+                            </div>
+                            <button class="btn btn-primary btn-sm" onclick="loadMoreFeedback()">
+                                <i class="fas fa-plus"></i>
+                                عرض المزيد
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div id="feedback-list" class="feedback-analysis-list">
+                            <div class="loading-state">
+                                <div class="loading"></div>
+                                <p>جارٍ تحميل التعليقات المعالجة...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Export Section -->
+        <section class="export-section">
+            <div class="container">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>
+                            <i class="fas fa-file-export"></i>
+                            تصدير البيانات
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="export-options">
+                            <div class="export-option">
+                                <div class="export-info">
+                                    <h4>تقرير شامل</h4>
+                                    <p>تصدير جميع البيانات والتحليلات للفترة المحددة</p>
+                                </div>
+                                <button class="btn btn-primary" onclick="exportFullReport()">
+                                    <i class="fas fa-file-pdf"></i>
+                                    تصدير PDF
+                                </button>
+                            </div>
+                            
+                            <div class="export-option">
+                                <div class="export-info">
+                                    <h4>البيانات الخام</h4>
+                                    <p>تصدير التعليقات والبيانات الأساسية بصيغة JSON</p>
+                                </div>
+                                <button class="btn btn-outline" onclick="exportRawData()">
+                                    <i class="fas fa-file-code"></i>
+                                    تصدير JSON
+                                </button>
+                            </div>
+                            
+                            <div class="export-option">
+                                <div class="export-info">
+                                    <h4>الإحصائيات</h4>
+                                    <p>تصدير الرسوم البيانية والإحصائيات بصيغة صور</p>
+                                </div>
+                                <button class="btn btn-outline" onclick="exportCharts()">
+                                    <i class="fas fa-images"></i>
+                                    تصدير الرسوم
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>منصة صوت العميل</h4>
+                    <p>تحليلات متقدمة لفهم أفضل لاحتياجات عملائكم</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>روابط سريعة</h4>
+                    <ul class="footer-links">
+                        <li><a href="/">الرئيسية</a></li>
+                        <li><a href="/feedback">إضافة تعليق</a></li>
+                        <li><a href="/analytics">التحليلات</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>تحديث البيانات</h4>
+                    <p>آخر تحديث: <span id="last-update">جارٍ التحميل...</span></p>
+                    <p><i class="fas fa-sync-alt"></i> تحديث تلقائي كل 30 ثانية</p>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2024 منصة صوت العميل. جميع الحقوق محفوظة.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Main JavaScript -->
+    <script src="{{ url_for('static', path='/js/main.js') }}"></script>
+
+    <!-- Analytics-specific styles -->
+    <style>
+        .page-header {
+            background: linear-gradient(135deg, rgba(44, 90, 160, 0.1), rgba(212, 165, 116, 0.1));
+            padding: 2rem 0 1rem;
+        }
+        
+        .page-header-content {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .page-header h1 {
+            color: var(--primary-color);
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .filters-section {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            background: white;
+            padding: 1.5rem;
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .filter-label {
+            font-weight: 600;
+            color: var(--text-primary);
+            white-space: nowrap;
+        }
+        
+        .filter-select {
+            min-width: 150px;
+            padding: 0.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            font-family: var(--font-family-arabic);
+        }
+        
+        .metrics-dashboard {
+            padding: 3rem 0;
+        }
+        
+        .metric-change, .metric-progress, .sentiment-indicator, .metric-trend {
+            margin-top: 0.5rem;
+            font-size: 0.875rem;
+        }
+        
+        .metric-change.positive {
+            color: var(--success-color);
+        }
+        
+        .metric-change.negative {
+            color: var(--danger-color);
+        }
+        
+        .charts-section {
+            padding: 3rem 0;
+            background: var(--bg-secondary);
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin-bottom: 1rem;
+        }
+        
+        .trend-chart-container {
+            height: 400px;
+        }
+        
+        .chart-actions, .chart-controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .chart-controls .control-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .chart-legend {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+        }
+        
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+        }
+        
+        .detailed-analytics {
+            padding: 3rem 0;
+        }
+        
+        .topics-list, .performance-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .topic-item, .performance-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            transition: var(--transition-fast);
+        }
+        
+        .topic-item:hover, .performance-item:hover {
+            background: var(--bg-primary);
+        }
+        
+        .topic-info h4, .performance-info h4 {
+            margin-bottom: 0.25rem;
+            color: var(--text-primary);
+        }
+        
+        .topic-info p, .performance-info p {
+            margin: 0;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+        
+        .topic-count, .performance-score {
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        .recent-analysis {
+            padding: 3rem 0;
+            background: var(--bg-secondary);
+        }
+        
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .view-controls {
+            display: flex;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            overflow: hidden;
+        }
+        
+        .view-controls button {
+            border: none;
+            border-radius: 0;
+        }
+        
+        .view-controls button.active {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .feedback-analysis-list {
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        
+        .feedback-analysis-item {
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            background: white;
+        }
+        
+        .feedback-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .feedback-meta {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+        
+        .feedback-content {
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: var(--bg-primary);
+            border-radius: var(--border-radius-md);
+            border-right: 4px solid var(--primary-color);
+        }
+        
+        .ai-analysis {
+            background: rgba(44, 90, 160, 0.05);
+            padding: 1rem;
+            border-radius: var(--border-radius-md);
+            border: 1px solid rgba(44, 90, 160, 0.1);
+        }
+        
+        .ai-analysis h5 {
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+        }
+        
+        .export-section {
+            padding: 3rem 0;
+        }
+        
+        .export-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .export-option {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-lg);
+            background: white;
+        }
+        
+        .export-info h4 {
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+        
+        .export-info p {
+            margin: 0;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+        
+        .nav-link.active {
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: var(--border-radius-md);
+        }
+        
+        @media (max-width: 768px) {
+            .filters-section {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .filter-group {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .filter-select {
+                min-width: 200px;
+            }
+            
+            .chart-container {
+                height: 250px;
+            }
+            
+            .header-actions {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.5rem;
+            }
+            
+            .feedback-meta {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .export-option {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+        }
+    </style>
+
+    <!-- Analytics JavaScript -->
+    <script>
+        // Chart instances
+        let sentimentChart, channelChart, trendChart;
+        
+        // Current filters
+        let currentFilters = {
+            timeRange: 30,
+            channel: null
+        };
+        
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Initialize charts
+            initializeCharts();
+            
+            // Load initial data
+            await loadAnalyticsData();
+            
+            // Setup event listeners
+            setupEventListeners();
+            
+            // Setup auto-refresh
+            setInterval(loadAnalyticsData, 30000); // Refresh every 30 seconds
+        });
+        
+        function initializeCharts() {
+            // Sentiment Distribution Chart
+            const sentimentCtx = document.getElementById('sentiment-chart').getContext('2d');
+            sentimentChart = new Chart(sentimentCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['إيجابي', 'محايد', 'سلبي'],
+                    datasets: [{
+                        data: [0, 0, 0],
+                        backgroundColor: [
+                            CONFIG.CHART_COLORS.positive,
+                            CONFIG.CHART_COLORS.neutral,
+                            CONFIG.CHART_COLORS.negative
+                        ],
+                        borderWidth: 2,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            rtl: true,
+                            textDirection: 'rtl'
+                        }
+                    }
+                }
+            });
+            
+            // Channel Distribution Chart
+            const channelCtx = document.getElementById('channel-chart').getContext('2d');
+            channelChart = new Chart(channelCtx, {
+                type: 'bar',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'عدد التعليقات',
+                        data: [],
+                        backgroundColor: CONFIG.CHART_COLORS.primary,
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Trend Analysis Chart
+            const trendCtx = document.getElementById('trend-chart').getContext('2d');
+            trendChart = new Chart(trendCtx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'عدد التعليقات',
+                        data: [],
+                        borderColor: CONFIG.CHART_COLORS.primary,
+                        backgroundColor: CONFIG.CHART_COLORS.primary + '20',
+                        tension: 0.4,
+                        fill: true
+                    }, {
+                        label: 'متوسط المشاعر',
+                        data: [],
+                        borderColor: CONFIG.CHART_COLORS.secondary,
+                        backgroundColor: CONFIG.CHART_COLORS.secondary + '20',
+                        tension: 0.4,
+                        yAxisID: 'y1'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false,
+                    },
+                    scales: {
+                        x: {
+                            display: true,
+                            title: {
+                                display: true,
+                                text: 'التاريخ'
+                            }
+                        },
+                        y: {
+                            type: 'linear',
+                            display: true,
+                            position: 'right',
+                            title: {
+                                display: true,
+                                text: 'عدد التعليقات'
+                            }
+                        },
+                        y1: {
+                            type: 'linear',
+                            display: true,
+                            position: 'left',
+                            title: {
+                                display: true,
+                                text: 'متوسط المشاعر'
+                            },
+                            min: -1,
+                            max: 1,
+                            grid: {
+                                drawOnChartArea: false,
+                            },
+                        }
+                    }
+                }
+            });
+        }
+        
+        function setupEventListeners() {
+            // Time range filter
+            document.getElementById('time-range').addEventListener('change', (e) => {
+                currentFilters.timeRange = parseInt(e.target.value);
+                loadAnalyticsData();
+            });
+            
+            // Channel filter
+            document.getElementById('channel-filter').addEventListener('change', (e) => {
+                currentFilters.channel = e.target.value || null;
+                loadAnalyticsData();
+            });
+            
+            // Refresh button
+            document.getElementById('refresh-data').addEventListener('click', () => {
+                loadAnalyticsData();
+                UI.showAlert('تم تحديث البيانات', 'success', 2000);
+            });
+            
+            // Trend period
+            document.getElementById('trend-period').addEventListener('change', (e) => {
+                loadTrendData(e.target.value);
+            });
+            
+            // View controls
+            document.getElementById('list-view').addEventListener('click', () => {
+                setViewMode('list');
+            });
+            
+            document.getElementById('card-view').addEventListener('click', () => {
+                setViewMode('card');
+            });
+        }
+        
+        async function loadAnalyticsData() {
+            try {
+                // Calculate date range
+                const endDate = new Date();
+                const startDate = new Date();
+                startDate.setDate(startDate.getDate() - currentFilters.timeRange);
+                
+                const timeRange = {
+                    start_date: startDate.toISOString(),
+                    end_date: endDate.toISOString()
+                };
+                
+                // Load dashboard metrics
+                const metrics = await API.getDashboardMetrics(timeRange);
+                updateDashboardMetrics(metrics);
+                
+                // Load sentiment metrics
+                const sentimentMetrics = await API.getSentimentMetrics({
+                    ...timeRange,
+                    channel: currentFilters.channel
+                });
+                updateSentimentChart(sentimentMetrics);
+                
+                // Load trend data
+                await loadTrendData('daily');
+                
+                // Load topics and performance data
+                updateTopTopics(metrics.trending_topics);
+                updateChannelPerformance(metrics.channel_metrics);
+                
+                // Load recent feedback
+                await loadRecentFeedback();
+                
+                // Update last update time
+                document.getElementById('last-update').textContent = 
+                    ArabicUtils.formatDate(new Date());
+                
+            } catch (error) {
+                console.error('Error loading analytics data:', error);
+                UI.showAlert('خطأ في تحميل البيانات التحليلية', 'danger');
+            }
+        }
+        
+        function updateDashboardMetrics(metrics) {
+            // Update metric values
+            UI.updateCounter('total-feedback', metrics.total_feedback);
+            UI.updateCounter('processed-feedback', metrics.processed_feedback);
+            UI.updateCounter('pending-feedback', metrics.pending_feedback);
+            UI.updateCounter('recent-feedback-count', metrics.recent_feedback_count);
+            
+            // Update average sentiment
+            const avgSentiment = metrics.average_sentiment || 0;
+            document.getElementById('avg-sentiment').textContent = avgSentiment.toFixed(2);
+            
+            // Update sentiment status
+            const sentimentStatus = document.getElementById('sentiment-status');
+            const sentimentClass = ArabicUtils.getSentimentClass(avgSentiment);
+            const sentimentText = ArabicUtils.getSentimentText(avgSentiment);
+            sentimentStatus.innerHTML = `<span class="${sentimentClass}">${sentimentText}</span>`;
+            
+            // Update processing progress
+            const processingProgress = metrics.total_feedback > 0 
+                ? (metrics.processed_feedback / metrics.total_feedback) * 100 
+                : 0;
+            document.getElementById('processing-progress').style.width = `${processingProgress}%`;
+            
+            // Update channel chart
+            updateChannelChart(metrics.channel_metrics);
+        }
+        
+        function updateSentimentChart(sentimentMetrics) {
+            const data = [
+                sentimentMetrics.positive_count,
+                sentimentMetrics.neutral_count,
+                sentimentMetrics.negative_count
+            ];
+            
+            sentimentChart.data.datasets[0].data = data;
+            sentimentChart.update();
+            
+            // Update legend
+            const legend = document.getElementById('sentiment-legend');
+            legend.innerHTML = `
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: ${CONFIG.CHART_COLORS.positive}"></div>
+                    <span>إيجابي (${ArabicUtils.formatNumber(sentimentMetrics.positive_count)})</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: ${CONFIG.CHART_COLORS.neutral}"></div>
+                    <span>محايد (${ArabicUtils.formatNumber(sentimentMetrics.neutral_count)})</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: ${CONFIG.CHART_COLORS.negative}"></div>
+                    <span>سلبي (${ArabicUtils.formatNumber(sentimentMetrics.negative_count)})</span>
+                </div>
+            `;
+        }
+        
+        function updateChannelChart(channelMetrics) {
+            const labels = channelMetrics.map(ch => UI.getChannelName(ch.channel));
+            const data = channelMetrics.map(ch => ch.feedback_count);
+            
+            channelChart.data.labels = labels;
+            channelChart.data.datasets[0].data = data;
+            channelChart.update();
+        }
+        
+        async function loadTrendData(granularity) {
+            try {
+                const endDate = new Date();
+                const startDate = new Date();
+                startDate.setDate(startDate.getDate() - currentFilters.timeRange);
+                
+                const trendData = await API.request('/analytics/trends', {
+                    method: 'GET'
+                });
+                
+                // Process trend data for chart
+                const labels = trendData.map(item => 
+                    ArabicUtils.formatDate(item.date).split(' ')[0]
+                );
+                const feedbackCounts = trendData.map(item => item.feedback_count);
+                const sentimentAverages = trendData.map(item => item.average_sentiment);
+                
+                trendChart.data.labels = labels;
+                trendChart.data.datasets[0].data = feedbackCounts;
+                trendChart.data.datasets[1].data = sentimentAverages;
+                trendChart.update();
+                
+            } catch (error) {
+                console.error('Error loading trend data:', error);
+            }
+        }
+        
+        function updateTopTopics(topics) {
+            const container = document.getElementById('top-topics');
+            
+            if (!topics || topics.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center" style="padding: 2rem;">
+                        <i class="fas fa-tags" style="font-size: 2rem; color: var(--text-muted);"></i>
+                        <p class="text-muted">لا توجد مواضيع متاحة</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = topics.map(topic => `
+                <div class="topic-item">
+                    <div class="topic-info">
+                        <h4>${topic.topic}</h4>
+                        <p>تكرر ${ArabicUtils.formatNumber(topic.frequency)} مرة</p>
+                    </div>
+                    <div class="topic-count">${ArabicUtils.formatNumber(topic.frequency)}</div>
+                </div>
+            `).join('');
+        }
+        
+        function updateChannelPerformance(channelMetrics) {
+            const container = document.getElementById('channel-performance');
+            
+            if (!channelMetrics || channelMetrics.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center" style="padding: 2rem;">
+                        <i class="fas fa-signal" style="font-size: 2rem; color: var(--text-muted);"></i>
+                        <p class="text-muted">لا توجد بيانات أداء متاحة</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = channelMetrics.map(channel => {
+                const sentimentClass = ArabicUtils.getSentimentClass(channel.average_sentiment);
+                const sentimentText = ArabicUtils.getSentimentText(channel.average_sentiment);
+                
+                return `
+                    <div class="performance-item">
+                        <div class="performance-info">
+                            <h4>${UI.getChannelName(channel.channel)}</h4>
+                            <p>${ArabicUtils.formatNumber(channel.feedback_count)} تعليق - مشاعر ${sentimentText}</p>
+                        </div>
+                        <div class="performance-score ${sentimentClass}">
+                            ${channel.average_sentiment.toFixed(2)}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        async function loadRecentFeedback() {
+            try {
+                const recentFeedback = await API.getFeedbackList({ 
+                    limit: 10,
+                    status: 'PROCESSED'
+                });
+                
+                const container = document.getElementById('feedback-list');
+                
+                if (recentFeedback.length === 0) {
+                    container.innerHTML = `
+                        <div class="text-center" style="padding: 2rem;">
+                            <i class="fas fa-inbox" style="font-size: 2rem; color: var(--text-muted);"></i>
+                            <p class="text-muted">لا توجد تعليقات معالجة</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                container.innerHTML = recentFeedback.map(feedback => `
+                    <div class="feedback-analysis-item">
+                        <div class="feedback-header">
+                            <div class="feedback-meta">
+                                <div class="meta-item">
+                                    <i class="fas fa-calendar"></i>
+                                    <span>${ArabicUtils.formatDate(feedback.created_at)}</span>
+                                </div>
+                                <div class="meta-item">
+                                    <i class="fas fa-route"></i>
+                                    <span>${UI.getChannelName(feedback.channel)}</span>
+                                </div>
+                                <div class="meta-item">
+                                    <span class="sentiment-indicator ${ArabicUtils.getSentimentClass(feedback.sentiment_score)}">
+                                        <i class="fas fa-heart"></i>
+                                        ${ArabicUtils.getSentimentText(feedback.sentiment_score)}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="feedback-content">
+                            ${feedback.content}
+                        </div>
+                        
+                        ${feedback.ai_summary ? `
+                            <div class="ai-analysis">
+                                <h5><i class="fas fa-robot"></i> التحليل التلقائي</h5>
+                                <p>${feedback.ai_summary}</p>
+                            </div>
+                        ` : ''}
+                    </div>
+                `).join('');
+                
+            } catch (error) {
+                console.error('Error loading recent feedback:', error);
+            }
+        }
+        
+        function setViewMode(mode) {
+            document.getElementById('list-view').classList.toggle('active', mode === 'list');
+            document.getElementById('card-view').classList.toggle('active', mode === 'card');
+            
+            const container = document.getElementById('feedback-list');
+            container.className = mode === 'list' ? 'feedback-analysis-list' : 'feedback-analysis-grid';
+        }
+        
+        async function loadMoreFeedback() {
+            const currentItems = document.querySelectorAll('.feedback-analysis-item').length;
+            
+            try {
+                const moreFeedback = await API.getFeedbackList({ 
+                    limit: 5,
+                    offset: currentItems,
+                    status: 'PROCESSED'
+                });
+                
+                if (moreFeedback.length === 0) {
+                    UI.showAlert('لا توجد تعليقات إضافية', 'info', 3000);
+                    return;
+                }
+                
+                const container = document.getElementById('feedback-list');
+                const additionalItems = moreFeedback.map(feedback => `
+                    <div class="feedback-analysis-item fade-in">
+                        <!-- Same template as loadRecentFeedback -->
+                    </div>
+                `).join('');
+                
+                container.insertAdjacentHTML('beforeend', additionalItems);
+                
+            } catch (error) {
+                UI.showAlert('خطأ في تحميل التعليقات الإضافية', 'danger');
+            }
+        }
+        
+        // Export functions
+        async function exportChart(chartId) {
+            const canvas = document.getElementById(chartId);
+            const url = canvas.toDataURL('image/png');
+            
+            const link = document.createElement('a');
+            link.download = `${chartId}-${Date.now()}.png`;
+            link.href = url;
+            link.click();
+            
+            UI.showAlert('تم تصدير الرسم البياني', 'success', 2000);
+        }
+        
+        async function exportFullReport() {
+            try {
+                UI.showAlert('جارٍ إنشاء التقرير...', 'info');
+                
+                const data = await API.request('/analytics/export', {
+                    method: 'GET'
+                });
+                
+                // Create downloadable file
+                const blob = new Blob([JSON.stringify(data, null, 2)], {
+                    type: 'application/json'
+                });
+                
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.download = `voc-report-${Date.now()}.json`;
+                link.href = url;
+                link.click();
+                
+                URL.revokeObjectURL(url);
+                UI.showAlert('تم تصدير التقرير الشامل', 'success');
+                
+            } catch (error) {
+                UI.showAlert('خطأ في تصدير التقرير', 'danger');
+            }
+        }
+        
+        async function exportRawData() {
+            await exportFullReport(); // Same functionality for now
+        }
+        
+        async function exportCharts() {
+            exportChart('sentiment-chart');
+            exportChart('channel-chart');
+            exportChart('trend-chart');
+            
+            UI.showAlert('تم تصدير جميع الرسوم البيانية', 'success');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,112 @@
+# Arabic Voice of Customer Platform
+
+## Overview
+
+An Arabic-first multi-channel feedback processing platform built with FastAPI and SQLAlchemy. The system collects customer feedback from various channels (email, phone, website, social media, etc.), processes Arabic text using AI-powered analysis, and provides real-time analytics and insights.
+
+## System Architecture
+
+### Backend Architecture
+- **Framework**: FastAPI with async support
+- **Database**: PostgreSQL with asyncpg driver
+- **ORM**: SQLAlchemy with async sessions
+- **Language Processing**: Custom Arabic text processor with reshaping and normalization
+- **AI Integration**: OpenAI GPT-4o for sentiment analysis and text processing
+- **Caching**: Redis for real-time analytics and session management
+
+### Frontend Architecture
+- **Templates**: Jinja2 with RTL (Right-to-Left) support
+- **Styling**: Custom CSS with Arabic design system
+- **JavaScript**: Vanilla JS with Arabic locale support
+- **Charts**: Chart.js for data visualization
+- **Fonts**: Arabic fonts (Amiri, Cairo) with Font Awesome icons
+
+### Database Design
+- **Feedback Model**: Stores original and processed Arabic text with metadata
+- **Analytics Model**: Pre-computed aggregations for performance optimization
+- **Channels**: Support for 10+ feedback channels (email, WhatsApp, social media, etc.)
+- **Status Tracking**: Processing pipeline from pending to processed
+
+## Key Components
+
+### Arabic Text Processing (`utils/arabic_processor.py`)
+- Arabic text normalization and reshaping
+- RTL text handling with bidirectional algorithm
+- Diacritics preservation for AI processing
+- Pattern matching for Arabic character detection
+
+### OpenAI Integration (`utils/openai_client.py`)
+- GPT-4o model for Arabic sentiment analysis
+- Emotion detection and confidence scoring
+- Multi-dimensional analysis (sentiment, intensity, reasoning)
+- Arabic-specific prompting for cultural context
+
+### Database Layer (`utils/database.py`)
+- Async PostgreSQL connection management
+- Connection pooling with proper configuration
+- Automatic table creation and indexing
+- Performance-optimized queries for Arabic text
+
+### API Endpoints
+- **Feedback API** (`api/feedback.py`): Multi-channel feedback collection with validation
+- **Analytics API** (`api/analytics.py`): Real-time metrics and dashboard data
+
+### Models
+- **Feedback Model**: Core feedback storage with Arabic support
+- **Analytics Model**: Aggregated metrics for performance optimization
+
+## Data Flow
+
+1. **Feedback Collection**: Multi-channel input (web forms, API, integrations)
+2. **Text Processing**: Arabic normalization, reshaping, and validation
+3. **AI Analysis**: OpenAI sentiment analysis and emotion detection
+4. **Storage**: Async database operations with proper indexing
+5. **Analytics**: Real-time aggregation and pre-computed metrics
+6. **Visualization**: RTL dashboard with Arabic-specific formatting
+
+## External Dependencies
+
+### Core Dependencies
+- **FastAPI**: Web framework with automatic API documentation
+- **SQLAlchemy**: Async ORM for database operations
+- **asyncpg**: High-performance PostgreSQL driver
+- **OpenAI**: GPT-4o integration for Arabic text analysis
+
+### Arabic Processing
+- **arabic-reshaper**: Proper Arabic character shaping
+- **python-bidi**: Bidirectional text algorithm for RTL support
+- **aiofiles**: Async file operations
+
+### Frontend
+- **Jinja2**: Template rendering with RTL support
+- **Chart.js**: Data visualization
+- **Font Awesome**: Icon library
+- **Google Fonts**: Arabic typography (Amiri, Cairo)
+
+## Deployment Strategy
+
+### Replit Configuration
+- **Runtime**: Python 3.11 with Nix packages
+- **Database**: Replit PostgreSQL integration
+- **Deployment**: Autoscale with Gunicorn
+- **Environment**: Environment variables for API keys and configuration
+
+### Production Setup
+- **WSGI Server**: Gunicorn with async workers
+- **Database**: PostgreSQL with connection pooling
+- **Caching**: Redis for real-time analytics
+- **Monitoring**: Built-in logging with debug configuration
+
+### Environment Variables
+- `DATABASE_URL`: PostgreSQL connection string
+- `OPENAI_API_KEY`: OpenAI API authentication
+- `REDIS_URL`: Redis cache connection
+- `SECRET_KEY`: Application security key
+- `ARABIC_LOCALE`: Locale configuration for Arabic text
+
+## Changelog
+- June 21, 2025. Initial setup
+
+## User Preferences
+
+Preferred communication style: Simple, everyday language.
