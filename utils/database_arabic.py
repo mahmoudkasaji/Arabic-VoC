@@ -17,7 +17,11 @@ class ArabicDatabaseManager:
     """Manager for Arabic-optimized PostgreSQL operations"""
     
     def __init__(self, database_url: str):
-        self.database_url = database_url
+        # Convert psycopg2 URL to asyncpg for async support
+        if database_url and "postgresql://" in database_url:
+            self.database_url = database_url.replace("postgresql://", "postgresql+asyncpg://")
+        else:
+            self.database_url = database_url
         self.engine = None
         self.session_factory = None
     
@@ -83,7 +87,7 @@ class ArabicDatabaseManager:
                     CREATE OR REPLACE FUNCTION arabic_to_tsvector(input_text text)
                     RETURNS tsvector AS $$
                     BEGIN
-                        RETURN to_tsvector('arabic_config', normalize_arabic_text(input_text));
+                        RETURN arabic_search_vector(input_text);
                     END;
                     $$ LANGUAGE plpgsql IMMUTABLE;
                 """))

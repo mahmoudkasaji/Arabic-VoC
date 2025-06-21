@@ -26,6 +26,15 @@ async def lifespan(app: FastAPI):
     """Initialize database on startup"""
     logger.info("Initializing database...")
     await init_db()
+    
+    # Initialize Arabic database features
+    try:
+        from utils.database_arabic import init_arabic_database
+        await init_arabic_database()
+        logger.info("Arabic database features initialized")
+    except Exception as e:
+        logger.warning(f"Arabic database initialization failed: {e}")
+    
     logger.info("Database initialized successfully")
     yield
 
