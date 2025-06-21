@@ -12,6 +12,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from models_unified import Feedback, FeedbackChannel, FeedbackStatus
 from utils.database import get_db
+from utils.security import validate_feedback_input, rate_limiter, log_security_event
+from utils.performance import optimize_arabic_processing
 from utils.arabic_processor import process_arabic_text, extract_sentiment
 from utils.openai_client import analyze_arabic_feedback
 

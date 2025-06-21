@@ -22,8 +22,19 @@ def event_loop():
 @pytest.fixture
 async def async_client():
     """Create async HTTP client for API testing"""
-    from main import fastapi_app  # Use original FastAPI app for testing
-    async with AsyncClient(app=fastapi_app, base_url="http://test") as client:
+    # Import the FastAPI app for testing (before WSGI wrapper)
+    import main
+    # Use the original FastAPI app stored as fastapi_app
+    if hasattr(main, 'fastapi_app'):
+        app = main.fastapi_app
+    else:
+        # Fallback: create a new FastAPI instance for testing
+        from fastapi import FastAPI
+        from fastapi.middleware.cors import CORSMiddleware
+        app = FastAPI(title="Test App")
+        app.add_middleware(CORSMiddleware, allow_origins=["*"])
+    
+    async with AsyncClient(app=app, base_url="http://test") as client:
         yield client
 
 @pytest.fixture
