@@ -33,3 +33,8 @@ with app.app_context():
     import models  # noqa: F401
     db.create_all()
     logging.info("Database tables created")
+# Simple entry point for the Flask app
+from main import app
+
+if __name__ == "__main__":
+    app.run(host='0.0.0.0', port=5000, debug=True)
