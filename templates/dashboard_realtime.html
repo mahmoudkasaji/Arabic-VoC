@@ -721,6 +721,12 @@
 
         // Initialize dashboard when DOM is loaded
         document.addEventListener('DOMContentLoaded', () => {
+            // Initialize i18n system
+            if (typeof LanguageManager !== 'undefined') {
+                window.langManager = new LanguageManager();
+                window.langManager.initializeLanguage();
+            }
+            
             window.dashboard = new ArabicDashboard();
         });
 

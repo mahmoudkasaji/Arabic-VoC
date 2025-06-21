@@ -306,6 +306,12 @@
 
         // Auto-fill demo credentials
         document.addEventListener('DOMContentLoaded', function() {
+            // Initialize i18n system
+            if (typeof LanguageManager !== 'undefined') {
+                window.langManager = new LanguageManager();
+                window.langManager.initializeLanguage();
+            }
+            
             // Optional: Auto-fill demo credentials for testing
             // document.getElementById('username').value = 'demo@arabic-voc.com';
             // document.getElementById('password').value = 'demo123';
