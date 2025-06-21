@@ -10,7 +10,7 @@ from fastapi import APIRouter, HTTPException, Depends, BackgroundTasks
 from pydantic import BaseModel, Field, validator
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from models.feedback import Feedback, FeedbackChannel, FeedbackStatus
+from models_unified import Feedback, FeedbackChannel, FeedbackStatus
 from utils.database import get_db
 from utils.arabic_processor import process_arabic_text, extract_sentiment
 from utils.openai_client import analyze_arabic_feedback
