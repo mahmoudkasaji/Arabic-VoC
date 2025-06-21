@@ -157,12 +157,8 @@ async def register_page(request: Request):
 async def analytics_page(request: Request):
     """Analytics dashboard page"""
     return templates.TemplateResponse(
-        "analytics.html",
-        {
-            "request": request,
-            "lang": "ar",
-            "dir": "rtl"
-        }
+        "analytics.html", 
+        {"request": request, "title": "لوحة التحليلات"}
     )
 
 @app.get("/health")
