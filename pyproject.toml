@@ -5,15 +5,12 @@ description = "Add your description here"
 requires-python = ">=3.11"
 dependencies = [
     "aiofiles>=24.1.0",
-    "anthropic>=0.54.0",
     "arabic-reshaper>=3.0.0",
     "asgiref>=3.8.1",
     "asyncpg>=0.30.0",
     "bcrypt>=4.3.0",
-    "beautifulsoup4>=4.13.4",
     "email-validator>=2.2.0",
     "fastapi>=0.115.13",
-    "flask-dance>=7.1.0",
     "flask>=3.1.1",
     "flask-sqlalchemy>=3.1.1",
     "gunicorn[gthread,uvicorn]>=23.0.0",
@@ -30,10 +27,6 @@ dependencies = [
     "pytest-cov>=6.2.1",
     "python-bidi>=0.6.6",
     "python-multipart>=0.0.20",
-    "selenium>=4.33.0",
     "sqlalchemy>=2.0.41",
     "uvicorn[standard]>=0.34.3",
-    "flask-login>=0.6.3",
-    "oauthlib>=3.3.1",
-    "werkzeug>=3.1.3",
 ]

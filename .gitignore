@@ -1,12 +1,8 @@
-# Byte-compiled / optimized / DLL files
+# Python
 __pycache__/
 *.py[cod]
 *$py.class
-
-# C extensions
 *.so
-
-# Distribution / packaging
 .Python
 build/
 develop-eggs/
@@ -20,167 +16,45 @@ parts/
 sdist/
 var/
 wheels/
-pip-wheel-metadata/
-share/python-wheels/
 *.egg-info/
 .installed.cfg
 *.egg
-MANIFEST
 
-# PyInstaller
-*.manifest
-*.spec
-
-# Installer logs
-pip-log.txt
-pip-delete-this-directory.txt
-
-# Unit test / coverage reports
-htmlcov/
-.tox/
-.nox/
-.coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-*.py,cover
-.hypothesis/
-.pytest_cache/
-
-# Translations
-*.mo
-*.pot
-
-# Django stuff:
-*.log
-local_settings.py
-db.sqlite3
-db.sqlite3-journal
-
-# Flask stuff:
-instance/
-.webassets-cache
-
-# Scrapy stuff:
-.scrapy
-
-# Sphinx documentation
-docs/_build/
-
-# PyBuilder
-target/
-
-# Jupyter Notebook
-.ipynb_checkpoints
-
-# IPython
-profile_default/
-ipython_config.py
-
-# pyenv
-.python-version
-
-# pipenv
-Pipfile.lock
-
-# PEP 582
-__pypackages__/
-
-# Celery stuff
-celerybeat-schedule
-celerybeat.pid
-
-# SageMath parsed files
-*.sage.py
-
-# Environments
-.env
-.venv
-env/
+# Virtual environments
 venv/
+env/
 ENV/
-env.bak/
-venv.bak/
-
-# Spyder project settings
-.spyderproject
-.spyproject
-
-# Rope project settings
-.ropeproject
-
-# mkdocs documentation
-/site
-
-# mypy
-.mypy_cache/
-.dmypy.json
-dmypy.json
-
-# Pyre type checker
-.pyre/
-
-# Project specific
-*.db
-*.sqlite
-test.db
-arabic_voc.db
-
-# Logs
-logs/
-*.log
 
 # IDE
 .vscode/
 .idea/
 *.swp
 *.swo
-*~
 
-# macOS
-.DS_Store
-
-# Windows
-Thumbs.db
-ehthumbs.db
-Desktop.ini
-
-# Temporary files
-temp/
-tmp/
-*.tmp
-
-# Security
+# Environment variables
+.env
 .env.local
-.env.*.local
-secrets.yaml
-config/secrets/
+.env.production
 
-# Database dumps
-*.sql
-*.dump
+# Database
+*.db
+*.sqlite3
 
-# Cache
-.cache/
+# Logs
+*.log
+logs/
+
+# Testing
 .pytest_cache/
-.mypy_cache/
+.coverage
+htmlcov/
+.tox/
 
-# Reports
-*.json
-*_report_*.json
-bandit-report.json
-test_report_*.json
-comprehensive_test_report_*.json
-refined_qa_assessment_*.json
-final_qa_report_*.json
+# OS
+.DS_Store
+Thumbs.db
 
-# Replit specific
-.replit
-.upm/
-.pythonlibs/
-.cache/
-
-# UV lock file (keep pyproject.toml but exclude lock)
-uv.lock
+# Project specific
+test.db
+coverage.xml
+*.orig

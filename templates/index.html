@@ -3,20 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة صوت العميل العربية</title>
-
+    <title>منصة صوت العميل العربية - الصفحة الرئيسية</title>
+    
     <!-- Bootstrap RTL CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
-
+    
     <!-- Arabic Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
-
+    
     <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-
-    <!-- Internationalization System -->
-    <script src="/static/js/i18n.js"></script>
-
+    
     <style>
         :root {
             --primary-color: #2E8B57;
@@ -28,11 +25,10 @@
 
         body {
             font-family: 'Cairo', sans-serif;
-            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            background-color: var(--bg-color);
             color: var(--text-color);
             direction: rtl;
             text-align: right;
-            min-height: 100vh;
         }
 
         .arabic-title {
@@ -40,239 +36,411 @@
             font-weight: 700;
         }
 
-        .navbar {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
-        }
-
-        .navbar-brand {
-            font-weight: 700;
-            color: var(--primary-color) !important;
-        }
-
         .hero-section {
-            background: white;
-            border-radius: 20px;
-            padding: 3rem;
-            margin: 2rem 0;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            padding: 4rem 0;
+            margin-bottom: 3rem;
         }
 
         .feature-card {
             background: white;
             border-radius: 15px;
             padding: 2rem;
-            margin: 1rem 0;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            transition: transform 0.3s ease;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
         }
 
         .feature-card:hover {
             transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
         }
 
-        .btn-auth {
+        .feature-icon {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .btn-primary-custom {
             background: var(--primary-color);
             border: none;
             padding: 0.75rem 2rem;
             border-radius: 25px;
-            color: white;
             font-weight: 600;
             transition: all 0.3s ease;
         }
 
-        .btn-auth:hover {
+        .btn-primary-custom:hover {
             background: #236B47;
-            color: white;
             transform: translateY(-2px);
         }
 
-        .user-info {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            padding: 1rem;
-            margin: 1rem 0;
-        }
-
-        .lang-toggle {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            z-index: 1000;
+        .stats-section {
             background: white;
-            border: 2px solid var(--primary-color);
-            color: var(--primary-color);
-            border-radius: 20px;
-            padding: 0.5rem 1rem;
-            font-weight: 600;
+            padding: 3rem 0;
+            margin: 3rem 0;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
 
-        .lang-toggle:hover {
-            background: var(--primary-color);
+        .stat-item {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            display: block;
+        }
+
+        .stat-label {
+            color: #6c757d;
+            font-size: 1.1rem;
+        }
+
+        .navbar-brand {
+            font-family: 'Amiri', serif;
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+
+        .footer {
+            background: var(--text-color);
             color: white;
+            padding: 3rem 0 1rem 0;
+            margin-top: 4rem;
+        }
+
+        @media (max-width: 768px) {
+            .hero-section {
+                padding: 2rem 0;
+            }
+            
+            .feature-card {
+                margin-bottom: 1rem;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- Language Toggle -->
-    <button class="btn lang-toggle" onclick="toggleLanguage()">
-        <span id="langText">English</span>
-    </button>
-
     <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg">
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
         <div class="container">
             <a class="navbar-brand arabic-title" href="/">
-                <i class="fas fa-comments me-2"></i>
-                <span data-i18n="platform.title">منصة صوت العميل العربية</span>
+                <i class="fas fa-comments text-primary"></i>
+                منصة صوت العميل العربية
             </a>
-            <div class="navbar-nav ms-auto">
-                {% if user %}
-                    <span class="nav-link">مرحباً {{ user.first_name or 'مستخدم' }}</span>
-                    <a href="{{ url_for('dashboard') }}" class="nav-link" data-i18n="nav.dashboard">لوحة التحكم</a>
-                    <a href="{{ url_for('analytics') }}" class="nav-link" data-i18n="nav.analytics">التحليلات</a>
-                    <a href="{{ url_for('surveys') }}" class="nav-link" data-i18n="nav.surveys">الاستطلاعات</a>
-                    <a href="{{ url_for('replit_auth.logout') }}" class="btn btn-outline-danger">
-                        <i class="fas fa-sign-out-alt me-1"></i>
-                        تسجيل الخروج
-                    </a>
-                {% else %}
-                    <a href="{{ url_for('feedback_page') }}" class="nav-link" data-i18n="nav.feedback">إرسال تعليق</a>
-                    <a href="{{ url_for('replit_auth.login') }}" class="btn btn-auth">
-                        <i class="fas fa-sign-in-alt me-1"></i>
-                        <span data-i18n="nav.login">تسجيل الدخول</span>
-                    </a>
-                {% endif %}
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/">الرئيسية</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/dashboard/realtime">لوحة التحليلات</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/feedback">إرسال تعليق</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/surveys">الاستطلاعات</a>
+                    </li>
+                </ul>
+                
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/login">تسجيل الدخول</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/register">إنشاء حساب</a>
+                    </li>
+                </ul>
             </div>
         </div>
     </nav>
 
-    <!-- Main Content -->
-    <div class="container">
-        {% if user %}
-            <!-- Authenticated User Dashboard -->
-            <div class="hero-section">
-                <div class="row">
-                    <div class="col-md-8">
-                        <h1 class="arabic-title display-4 mb-4">
-                            مرحباً {{ user.first_name or 'مستخدم' }}!
-                        </h1>
-                        <p class="lead">
-                            مرحباً بك في منصة صوت العميل العربية المتقدمة
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <h1 class="arabic-title display-4 mb-4">
+                        منصة صوت العميل العربية
+                    </h1>
+                    <p class="lead mb-4">
+                        منصة متقدمة لتحليل آراء العملاء باللغة العربية مع دعم اللهجات المختلفة والذكاء الثقافي.
+                        احصل على رؤى عميقة من تعليقات عملائك في الوقت الفعلي.
+                    </p>
+                    <div class="d-flex gap-3 flex-wrap">
+                        <a href="/dashboard/realtime" class="btn btn-primary-custom btn-lg">
+                            <i class="fas fa-chart-line me-2"></i>
+                            اعرض لوحة التحليلات
+                        </a>
+                        <a href="/feedback" class="btn btn-outline-light btn-lg">
+                            <i class="fas fa-comment-dots me-2"></i>
+                            أرسل تعليقك
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-4 text-center">
+                    <i class="fas fa-chart-bar" style="font-size: 8rem; opacity: 0.3;"></i>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="container">
+        <div class="row">
+            <div class="col-12 text-center mb-5">
+                <h2 class="arabic-title display-6 mb-3">المميزات الرئيسية</h2>
+                <p class="lead text-muted">منصة شاملة مصممة خصيصاً للسوق العربي</p>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-lg-4 col-md-6">
+                <div class="feature-card" onclick="window.location.href='/dashboard/realtime'">
+                    <div class="text-center">
+                        <i class="fas fa-chart-line feature-icon"></i>
+                        <h4 class="arabic-title mb-3">تحليلات في الوقت الفعلي</h4>
+                        <p class="text-muted">
+                            اطلع على تحليل المشاعر والاتجاهات لحظة بلحظة مع لوحة تحكم تفاعلية
+                            تدعم التحديثات المباشرة أقل من ثانية واحدة.
                         </p>
-                        <div class="user-info">
-                            <h5>معلومات الحساب:</h5>
-                            <p><i class="fas fa-envelope me-2"></i> {{ user.email }}</p>
-                            <p><i class="fas fa-user me-2"></i> {{ user.first_name }} {{ user.last_name }}</p>
-                        </div>
-                    </div>
-                    <div class="col-md-4 text-center">
-                        {% if user.profile_image_url %}
-                            <img src="{{ user.profile_image_url }}" alt="Profile" class="rounded-circle" width="150">
-                        {% else %}
-                            <i class="fas fa-user-circle fa-10x text-primary"></i>
-                        {% endif %}
                     </div>
                 </div>
             </div>
+            
+            <div class="col-lg-4 col-md-6">
+                <div class="feature-card" onclick="window.location.href='/feedback'">
+                    <div class="text-center">
+                        <i class="fas fa-comments feature-icon"></i>
+                        <h4 class="arabic-title mb-3">دعم اللهجات العربية</h4>
+                        <p class="text-muted">
+                            معالجة متقدمة للهجات الخليجية والمصرية والشامية والمغربية
+                            مع فهم السياق الثقافي والتعبيرات المحلية.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6">
+                <div class="feature-card" onclick="window.location.href='/surveys'">
+                    <div class="text-center">
+                        <i class="fas fa-poll feature-icon"></i>
+                        <h4 class="arabic-title mb-3">استطلاعات ذكية</h4>
+                        <p class="text-muted">
+                            إنشاء وإدارة استطلاعات الرأي باللغة العربية مع تحليل تلقائي
+                            للنتائج وتقارير مفصلة بتنسيق RTL.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6">
+                <div class="feature-card">
+                    <div class="text-center">
+                        <i class="fas fa-brain feature-icon"></i>
+                        <h4 class="arabic-title mb-3">ذكاء اصطناعي متقدم</h4>
+                        <p class="text-muted">
+                            تحليل المشاعر والمواضيع باستخدام GPT-4o مع فهم عميق
+                            للثقافة العربية والسياق الاجتماعي.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6">
+                <div class="feature-card">
+                    <div class="text-center">
+                        <i class="fas fa-mobile-alt feature-icon"></i>
+                        <h4 class="arabic-title mb-3">قنوات متعددة</h4>
+                        <p class="text-muted">
+                            جمع التعليقات من الموقع والتطبيق والواتساب والبريد الإلكتروني
+                            ووسائل التواصل الاجتماعي في مكان واحد.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6">
+                <div class="feature-card">
+                    <div class="text-center">
+                        <i class="fas fa-file-pdf feature-icon"></i>
+                        <h4 class="arabic-title mb-3">تقارير احترافية</h4>
+                        <p class="text-muted">
+                            إنتاج تقارير PDF باللغة العربية مع تنسيق RTL صحيح
+                            وخطوط عربية احترافية ورسوم بيانية.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-            <!-- Quick Actions -->
+    <!-- Stats Section -->
+    <section class="container">
+        <div class="stats-section">
             <div class="row">
-                <div class="col-md-4">
-                    <div class="feature-card text-center">
-                        <i class="fas fa-chart-line fa-3x text-primary mb-3"></i>
-                        <h4>لوحة التحليلات</h4>
-                        <p>عرض تحليلات شاملة لآراء العملاء</p>
-                        <a href="{{ url_for('analytics') }}" class="btn btn-auth">عرض التحليلات</a>
+                <div class="col-12 text-center mb-4">
+                    <h3 class="arabic-title">الأداء والإحصائيات</h3>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-3 col-md-6">
+                    <div class="stat-item">
+                        <span class="stat-number">88,000+</span>
+                        <span class="stat-label">تحليل في الثانية</span>
                     </div>
                 </div>
-                <div class="col-md-4">
-                    <div class="feature-card text-center">
-                        <i class="fas fa-tachometer-alt fa-3x text-success mb-3"></i>
-                        <h4>التحليلات المباشرة</h4>
-                        <p>متابعة البيانات في الوقت الفعلي</p>
-                        <a href="{{ url_for('dashboard') }}" class="btn btn-auth">لوحة التحكم</a>
+                <div class="col-lg-3 col-md-6">
+                    <div class="stat-item">
+                        <span class="stat-number">&lt;1s</span>
+                        <span class="stat-label">زمن تحميل اللوحة</span>
                     </div>
                 </div>
-                <div class="col-md-4">
-                    <div class="feature-card text-center">
-                        <i class="fas fa-poll fa-3x text-info mb-3"></i>
-                        <h4>الاستطلاعات</h4>
-                        <p>إنشاء وإدارة الاستطلاعات</p>
-                        <a href="{{ url_for('surveys') }}" class="btn btn-auth">الاستطلاعات</a>
+                <div class="col-lg-3 col-md-6">
+                    <div class="stat-item">
+                        <span class="stat-number">4</span>
+                        <span class="stat-label">لهجات عربية مدعومة</span>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="stat-item">
+                        <span class="stat-number">10+</span>
+                        <span class="stat-label">قناة تجميع البيانات</span>
                     </div>
                 </div>
             </div>
-        {% else %}
-            <!-- Landing Page for Non-authenticated Users -->
-            <div class="hero-section text-center">
-                <h1 class="arabic-title display-4 mb-4">
-                    <span data-i18n="platform.welcome">مرحباً بك في منصة صوت العميل العربية</span>
-                </h1>
+        </div>
+    </section>
+
+    <!-- Call to Action -->
+    <section class="container text-center mb-5">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <h3 class="arabic-title mb-4">ابدأ رحلتك مع تحليل صوت العميل العربي</h3>
                 <p class="lead mb-4">
-                    <span data-i18n="platform.description">منصة متطورة لجمع وتحليل آراء العملاء باللغة العربية مع ذكاء اصطناعي متقدم</span>
+                    انضم إلى المؤسسات الرائدة في المنطقة واحصل على رؤى قيمة
+                    من آراء عملائك باللغة العربية
                 </p>
-                <div class="row justify-content-center">
-                    <div class="col-md-8">
-                        <a href="{{ url_for('replit_auth.login') }}" class="btn btn-auth btn-lg me-3">
-                            <i class="fas fa-rocket me-2"></i>
-                            <span data-i18n="cta.start">ابدأ الآن</span>
-                        </a>
-                        <a href="{{ url_for('feedback_page') }}" class="btn btn-outline-primary btn-lg">
-                            <i class="fas fa-comment me-2"></i>
-                            <span data-i18n="cta.feedback">شارك رأيك</span>
-                        </a>
-                    </div>
+                <div class="d-flex gap-3 justify-content-center flex-wrap">
+                    <a href="/register" class="btn btn-primary-custom btn-lg">
+                        <i class="fas fa-user-plus me-2"></i>
+                        إنشاء حساب مجاني
+                    </a>
+                    <a href="/dashboard/realtime" class="btn btn-outline-primary btn-lg">
+                        <i class="fas fa-eye me-2"></i>
+                        استكشف المنصة
+                    </a>
                 </div>
             </div>
+        </div>
+    </section>
 
-            <!-- Features -->
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
             <div class="row">
-                <div class="col-md-4">
-                    <div class="feature-card text-center">
-                        <i class="fas fa-brain fa-3x text-primary mb-3"></i>
-                        <h4 data-i18n="features.ai.title">ذكاء اصطناعي متقدم</h4>
-                        <p data-i18n="features.ai.description">تحليل ذكي للمشاعر والآراء باللغة العربية مع فهم اللهجات المختلفة</p>
-                    </div>
+                <div class="col-lg-4 mb-4">
+                    <h5 class="arabic-title">منصة صوت العميل العربية</h5>
+                    <p class="text-light">
+                        منصة متقدمة لتحليل آراء العملاء باللغة العربية
+                        مع دعم الذكاء الاصطناعي والتحليلات في الوقت الفعلي.
+                    </p>
                 </div>
-                <div class="col-md-4">
-                    <div class="feature-card text-center">
-                        <i class="fas fa-chart-line fa-3x text-success mb-3"></i>
-                        <h4 data-i18n="features.analytics.title">تحليلات فورية</h4>
-                        <p data-i18n="features.analytics.description">لوحة تحكم متقدمة مع تحليلات فورية ورؤى عميقة حول آراء العملاء</p>
-                    </div>
+                <div class="col-lg-2 mb-4">
+                    <h6>الروابط السريعة</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="/" class="text-light text-decoration-none">الرئيسية</a></li>
+                        <li><a href="/dashboard/realtime" class="text-light text-decoration-none">لوحة التحليلات</a></li>
+                        <li><a href="/feedback" class="text-light text-decoration-none">إرسال تعليق</a></li>
+                        <li><a href="/surveys" class="text-light text-decoration-none">الاستطلاعات</a></li>
+                    </ul>
                 </div>
-                <div class="col-md-4">
-                    <div class="feature-card text-center">
-                        <i class="fas fa-globe fa-3x text-info mb-3"></i>
-                        <h4 data-i18n="features.multichannel.title">متعدد القنوات</h4>
-                        <p data-i18n="features.multichannel.description">جمع الآراء من قنوات متعددة: الموقع، التطبيق، واتساب، والمزيد</p>
-                    </div>
+                <div class="col-lg-3 mb-4">
+                    <h6>المميزات</h6>
+                    <ul class="list-unstyled">
+                        <li class="text-light">تحليل المشاعر</li>
+                        <li class="text-light">دعم اللهجات</li>
+                        <li class="text-light">تقارير احترافية</li>
+                        <li class="text-light">تحديثات فورية</li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 mb-4">
+                    <h6>الدعم التقني</h6>
+                    <ul class="list-unstyled">
+                        <li class="text-light">support@arabic-voc.com</li>
+                        <li class="text-light">دليل المستخدم</li>
+                        <li class="text-light">الأسئلة الشائعة</li>
+                        <li class="text-light">تدريب المستخدمين</li>
+                    </ul>
                 </div>
             </div>
-        {% endif %}
-    </div>
+            <hr class="text-light">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <p class="text-light mb-0">
+                        © 2025 منصة صوت العميل العربية. جميع الحقوق محفوظة.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
+    
     <!-- Custom JavaScript -->
     <script>
-        // Initialize language system
-        document.addEventListener('DOMContentLoaded', function() {
-            if (typeof LanguageManager !== 'undefined') {
-                window.langManager = new LanguageManager();
-                window.langManager.init();
-            }
+        // Add smooth scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
         });
 
-        // Language toggle function
-        function toggleLanguage() {
-            if (window.langManager) {
-                window.langManager.toggleLanguage();
-            }
+        // Add loading animation for feature cards
+        document.querySelectorAll('.feature-card').forEach(card => {
+            card.addEventListener('click', function() {
+                if (this.onclick) {
+                    this.style.opacity = '0.7';
+                    setTimeout(() => {
+                        this.style.opacity = '1';
+                    }, 300);
+                }
+            });
+        });
+
+        // Real-time stats animation (demo)
+        function animateStats() {
+            const statNumbers = document.querySelectorAll('.stat-number');
+            statNumbers.forEach(stat => {
+                if (stat.textContent.includes('88,000+')) {
+                    // Animate the processing rate
+                    let current = 88000;
+                    const increment = Math.floor(Math.random() * 100);
+                    current += increment;
+                    stat.textContent = current.toLocaleString('ar-SA') + '+';
+                }
+            });
         }
+
+        // Update stats every 5 seconds for demo
+        setInterval(animateStats, 5000);
     </script>
 </body>
 </html>

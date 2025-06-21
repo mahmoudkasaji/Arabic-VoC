@@ -1,15 +1,15 @@
-modules = ["python-3.11", "postgresql-16", "python3"]
+modules = ["python-3.11", "postgresql-16"]
 
 [nix]
 channel = "stable-24_05"
-packages = ["cargo", "geckodriver", "libiconv", "libxcrypt", "openssl", "postgresql", "rustc"]
+packages = ["cargo", "libiconv", "libxcrypt", "openssl", "postgresql", "rustc"]
 
 [deployment]
 deploymentTarget = "autoscale"
 run = ["gunicorn", "--bind", "0.0.0.0:5000", "main:app"]
 
 [workflows]
-runButton = "Arabic VoC Preview"
+runButton = "Project"
 
 [[workflows.workflow]]
 name = "Project"
@@ -28,33 +28,6 @@ author = "agent"
 task = "shell.exec"
 args = "gunicorn --bind 0.0.0.0:5000 --reuse-port --reload main:app"
 waitForPort = 5000
-
-[[workflows.workflow]]
-name = "Start Flask App"
-author = 39062319
-mode = "sequential"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "python main.py"
-
-[[workflows.workflow]]
-name = "Arabic VoC Server"
-author = 39062319
-mode = "sequential"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "python main.py"
-
-[[workflows.workflow]]
-name = "Arabic VoC Preview"
-author = 39062319
-mode = "sequential"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "python main.py"
 
 [[ports]]
 localPort = 5000

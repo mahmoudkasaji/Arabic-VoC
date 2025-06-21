@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title data-i18n="surveys.page_title">الاستطلاعات - <span data-i18n="home.title">منصة صوت العميل العربية</span></title>
+    <title>الاستطلاعات - منصة صوت العميل العربية</title>
     
     <!-- Bootstrap RTL CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
@@ -13,9 +13,6 @@
     
     <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    
-    <!-- Internationalization System -->
-    <script src="/static/js/i18n.js"></script>
     
     <style>
         :root {
@@ -103,7 +100,7 @@
         <div class="container">
             <a class="navbar-brand arabic-title" href="/">
                 <i class="fas fa-comments text-primary"></i>
-                <span data-i18n="home.title">منصة صوت العميل العربية</span>
+                منصة صوت العميل العربية
             </a>
             
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -144,9 +141,9 @@
             <div class="col-12">
                 <!-- Page Header -->
                 <div class="text-center mb-5">
-                    <h1 class="arabic-title display-5 mb-3" data-i18n="surveys.title">الاستطلاعات</h1>
+                    <h1 class="arabic-title display-5 mb-3">الاستطلاعات</h1>
                     <p class="lead text-muted">
-                        <span data-i18n="surveys.subtitle">استطلاعات ذكية لجمع آراء العملاء باللغة العربية</span>
+                        استطلاعات ذكية لجمع آراء العملاء باللغة العربية
                     </p>
                 </div>
 
@@ -319,14 +316,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
     <script>
-        // Initialize i18n system
-        document.addEventListener('DOMContentLoaded', function() {
-            if (typeof LanguageManager !== 'undefined') {
-                window.langManager = new LanguageManager();
-                window.langManager.init();
-            }
-        });
-
         // Add interactivity to survey cards
         document.querySelectorAll('.survey-card').forEach(card => {
             card.addEventListener('click', function(e) {
@@ -342,13 +331,6 @@
                 }, 200);
             });
         });
-
-        // Language toggle function
-        function toggleLanguage() {
-            if (window.langManager) {
-                window.langManager.toggleLanguage();
-            }
-        }
     </script>
 </body>
 </html>
