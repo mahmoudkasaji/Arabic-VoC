@@ -2,7 +2,7 @@
 from sqlalchemy import Column, Integer, String, Text, Boolean, DateTime, ForeignKey, JSON
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
-from app import Base
+from main import Base
 
 class User(Base):
     """User model for Replit Auth integration"""

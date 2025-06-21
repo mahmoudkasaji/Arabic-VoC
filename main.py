@@ -1,3 +1,4 @@
+
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 import os
@@ -6,7 +7,7 @@ import logging
 from sqlalchemy.orm import DeclarativeBase
 
 # Configure logging
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 
 class Base(DeclarativeBase):
     pass
@@ -27,14 +28,17 @@ app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
 # Initialize database
 db = SQLAlchemy(app, model_class=Base)
 
-# Import and register routes
-from routes import *
-
-# Create tables
-with app.app_context():
-    import models
-    db.create_all()
-    logging.info("Database tables created")
-
 if __name__ == "__main__":
+    # Import models and routes here to avoid circular imports
+    from models import User, OAuth, Feedback
+    from routes import setup_routes
+    
+    # Setup routes
+    setup_routes(app)
+    
+    # Create tables
+    with app.app_context():
+        db.create_all()
+        logging.info("Database tables created")
+    
     app.run(host='0.0.0.0', port=5000, debug=True)
