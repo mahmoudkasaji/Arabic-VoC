@@ -1,12 +1,11 @@
 """
-Analytics and aggregation models for feedback data
+Legacy analytics models - use database_models.py instead
 """
 
-import enum
-from datetime import datetime
-from sqlalchemy import Column, Integer, String, DateTime, Float, JSON, Enum, ForeignKey
-from sqlalchemy.orm import relationship
-from utils.database import Base
+# Re-export from unified models
+from database_models import (
+    Base, AggregationPeriod, FeedbackAggregation
+)
 
 class AggregationPeriod(str, enum.Enum):
     """Time periods for data aggregation"""

@@ -8,9 +8,6 @@ from contextlib import asynccontextmanager
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sessionmaker
 from sqlalchemy import text
 
-from models.feedback import Base as FeedbackBase
-from models.analytics import Base as AnalyticsBase
-
 logger = logging.getLogger(__name__)
 
 # Database configuration

@@ -10,7 +10,7 @@ from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel, Field
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from models.feedback import FeedbackChannel, FeedbackStatus
+from database_models import FeedbackChannel, FeedbackStatus
 from utils.database import get_db
 
 logger = logging.getLogger(__name__)
