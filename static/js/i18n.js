@@ -351,6 +351,13 @@ class LanguageManager {
     }
 }
 
+// Global toggle function
+function toggleLanguage() {
+    if (window.languageManager) {
+        window.languageManager.toggleLanguage();
+    }
+}
+
 // Initialize language manager when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
     window.languageManager = new LanguageManager();

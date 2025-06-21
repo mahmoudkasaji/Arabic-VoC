@@ -352,11 +352,7 @@
     
     <!-- Custom JavaScript -->
     <script>
-        // Initialize i18n system
-        if (typeof LanguageManager !== 'undefined') {
-            window.langManager = new LanguageManager();
-            window.langManager.init();
-        }
+        // i18n system loads automatically from static/js/i18n.js
 
         // Channel selection
         document.querySelectorAll('.channel-option').forEach(option => {
@@ -456,12 +452,7 @@
             this.style.height = this.scrollHeight + 'px';
         });
 
-        // Language toggle function
-        function toggleLanguage() {
-            if (window.langManager) {
-                window.langManager.toggleLanguage();
-            }
-        }
+        // toggleLanguage function available globally from i18n.js
     </script>
 </body>
 </html>
