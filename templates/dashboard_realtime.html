@@ -723,6 +723,13 @@
         document.addEventListener('DOMContentLoaded', () => {
             window.dashboard = new ArabicDashboard();
         });
+
+        // Language toggle function
+        function toggleLanguage() {
+            if (window.langManager) {
+                window.langManager.toggleLanguage();
+            }
+        }
     </script>
 </body>
 </html>

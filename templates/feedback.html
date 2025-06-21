@@ -352,6 +352,12 @@
     
     <!-- Custom JavaScript -->
     <script>
+        // Initialize i18n system
+        if (typeof LanguageManager !== 'undefined') {
+            window.langManager = new LanguageManager();
+            window.langManager.initializeLanguage();
+        }
+
         // Channel selection
         document.querySelectorAll('.channel-option').forEach(option => {
             option.addEventListener('click', function() {
@@ -449,6 +455,13 @@
             this.style.height = 'auto';
             this.style.height = this.scrollHeight + 'px';
         });
+
+        // Language toggle function
+        function toggleLanguage() {
+            if (window.langManager) {
+                window.langManager.toggleLanguage();
+            }
+        }
     </script>
 </body>
 </html>
