@@ -291,6 +291,37 @@
             font-size: 1.5rem;
         }
     </style>
+    <script>
+        function toggleLanguage() {
+            const currentLang = document.documentElement.lang || 'ar';
+            const newLang = currentLang === 'ar' ? 'en' : 'ar';
+            
+            // Update page language and direction
+            document.documentElement.lang = newLang;
+            document.documentElement.dir = newLang === 'ar' ? 'rtl' : 'ltr';
+            
+            // Update language toggle button
+            const langText = document.getElementById('langText');
+            if (langText) {
+                langText.textContent = newLang === 'ar' ? 'English' : 'العربية';
+            }
+            
+            // Store preference
+            localStorage.setItem('preferred-language', newLang);
+            
+            // Reload page to apply language changes
+            window.location.reload();
+        }
+        
+        // Initialize language on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedLang = localStorage.getItem('preferred-language') || 'ar';
+            if (savedLang !== document.documentElement.lang) {
+                document.documentElement.lang = savedLang;
+                document.documentElement.dir = savedLang === 'ar' ? 'rtl' : 'ltr';
+            }
+        });
+    </script>
 </head>
 <body>
     <!-- Navigation -->
