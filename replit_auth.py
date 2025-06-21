@@ -16,18 +16,8 @@ from oauthlib.oauth2.rfc6749.errors import InvalidGrantError
 from sqlalchemy.exc import NoResultFound
 from werkzeug.local import LocalProxy
 
-from app import app, db
-import sys
-import os
-sys.path.append(os.path.dirname(__file__))
-import sys
-import os
-sys.path.append(os.path.dirname(__file__))
-
-# Import from root models.py file
-import models as root_models
-OAuth = root_models.OAuth
-User = root_models.User
+from main import app, db
+from models import OAuth, User
 
 login_manager = LoginManager(app)
 
