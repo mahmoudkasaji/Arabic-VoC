@@ -82,9 +82,14 @@
                     document.body.offsetHeight; // force reflow
                     element.style.display = '';
                     
-                    // Set new content
+                    // Set new content with font override
                     element.textContent = translations[currentLang][elementId];
                     element.innerHTML = translations[currentLang][elementId];
+                    
+                    // Force font re-rendering
+                    element.style.fontFamily = currentLang === 'ar' ? "'Cairo', sans-serif" : "'Arial', sans-serif";
+                    element.style.textRendering = 'optimizeLegibility';
+                    element.style.webkitFontSmoothing = 'antialiased';
                     
                     console.log('Updated', elementId, ':', translations[currentLang][elementId]);
                     
@@ -106,6 +111,7 @@
                 content.placeholder = currentLang === 'ar' ? 
                     'شاركنا تجربتك ورأيك بالتفصيل...' : 
                     'Share your experience and opinion in detail...';
+                content.style.fontFamily = currentLang === 'ar' ? "'Cairo', sans-serif" : "'Arial', sans-serif";
                 content.style.backgroundColor = '#ffff00';
                 setTimeout(() => { content.style.backgroundColor = ''; }, 200);
             }
@@ -114,6 +120,7 @@
                 customerName.placeholder = currentLang === 'ar' ? 
                     'أدخل اسمك' : 
                     'Enter your name';
+                customerName.style.fontFamily = currentLang === 'ar' ? "'Cairo', sans-serif" : "'Arial', sans-serif";
                 customerName.style.backgroundColor = '#ffff00';
                 setTimeout(() => { customerName.style.backgroundColor = ''; }, 200);
             }
@@ -158,6 +165,10 @@
         /* Force immediate text updates */
         [id*="-text"], [id*="Text"] {
             transition: none !important;
+            font-family: inherit !important;
+            text-rendering: optimizeLegibility !important;
+            -webkit-font-smoothing: antialiased !important;
+            font-synthesis: none !important;
         }
 
         .arabic-title {
@@ -177,6 +188,9 @@
             font-weight: 600;
             color: var(--text-color);
             margin-bottom: 0.5rem;
+            font-family: inherit !important;
+            text-rendering: optimizeLegibility;
+            -webkit-font-smoothing: antialiased;
         }
 
         .form-control {
