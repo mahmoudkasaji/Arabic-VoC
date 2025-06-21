@@ -1,37 +1,61 @@
-from datetime import datetime
 
-from app import db
-from flask_dance.consumer.storage.sqla import OAuthConsumerMixin
-from flask_login import UserMixin
-from sqlalchemy import UniqueConstraint
+from sqlalchemy import Column, Integer, String, Text, Boolean, DateTime, ForeignKey, JSON
+from sqlalchemy.orm import relationship
+from sqlalchemy.sql import func
+from app import Base
 
+class User(Base):
+    """User model for Replit Auth integration"""
+    __tablename__ = "users"
+    
+    id = Column(String(100), primary_key=True)  # Replit user ID
+    email = Column(String(255), nullable=True)
+    first_name = Column(String(100), nullable=True)
+    last_name = Column(String(100), nullable=True)
+    profile_image_url = Column(String(500), nullable=True)
+    
+    # Audit fields
+    created_at = Column(DateTime, default=func.now(), nullable=False)
+    updated_at = Column(DateTime, default=func.now(), onupdate=func.now())
+    last_login = Column(DateTime, nullable=True)
+    
+    def __repr__(self):
+        return f"<User(id='{self.id}', email='{self.email}')>"
+    
+    def is_authenticated(self):
+        return True
+    
+    def is_active(self):
+        return True
+    
+    def is_anonymous(self):
+        return False
+    
+    def get_id(self):
+        return self.id
 
-# (IMPORTANT) This table is mandatory for Replit Auth, don't drop it.
-class User(UserMixin, db.Model):
-    __tablename__ = 'users'
-    id = db.Column(db.String, primary_key=True)
-    email = db.Column(db.String, unique=True, nullable=True)
-    first_name = db.Column(db.String, nullable=True)
-    last_name = db.Column(db.String, nullable=True)
-    profile_image_url = db.Column(db.String, nullable=True)
+class OAuth(Base):
+    """OAuth token storage for Replit Auth"""
+    __tablename__ = "oauth_tokens"
+    
+    id = Column(Integer, primary_key=True)
+    user_id = Column(String(100), ForeignKey("users.id"), nullable=False)
+    browser_session_key = Column(String(255), nullable=False)
+    provider = Column(String(50), nullable=False)
+    token = Column(JSON, nullable=False)
+    created_at = Column(DateTime, default=func.now(), nullable=False)
+    
+    user = relationship("User")
 
-    created_at = db.Column(db.DateTime, default=datetime.now)
-    updated_at = db.Column(db.DateTime,
-                           default=datetime.now,
-                           onupdate=datetime.now)
-
-# (IMPORTANT) This table is mandatory for Replit Auth, don't drop it.
-class OAuth(OAuthConsumerMixin, db.Model):
-    user_id = db.Column(db.String, db.ForeignKey(User.id))
-    browser_session_key = db.Column(db.String, nullable=False)
-    user = db.relationship(User)
-
-    __table_args__ = (UniqueConstraint(
-        'user_id',
-        'browser_session_key',
-        'provider',
-        name='uq_user_browser_session_key_provider',
-    ),)
-
-# Keep existing feedback models
-from models_unified import Feedback, FeedbackAggregation, FeedbackChannel, FeedbackStatus, AggregationPeriod
+class Feedback(Base):
+    """Feedback model for storing user feedback"""
+    __tablename__ = "feedback"
+    
+    id = Column(Integer, primary_key=True)
+    content = Column(Text, nullable=False)
+    rating = Column(Integer, nullable=True)
+    name = Column(String(200), nullable=True)
+    user_id = Column(String(100), ForeignKey("users.id"), nullable=True)
+    created_at = Column(DateTime, default=func.now(), nullable=False)
+    
+    user = relationship("User")
