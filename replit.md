@@ -105,7 +105,10 @@ An Arabic-first multi-channel feedback processing platform built with FastAPI an
 - `ARABIC_LOCALE`: Locale configuration for Arabic text
 
 ## Changelog
-- June 21, 2025. Initial setup
+- June 21, 2025: Initial Arabic Voice of Customer platform setup
+- June 21, 2025: Resolved ASGI/WSGI compatibility issues with FastAPI and Gunicorn
+- June 21, 2025: Unified database models to prevent SQLAlchemy conflicts
+- June 21, 2025: Created comprehensive Arabic text processing and OpenAI integration
 
 ## User Preferences
 
