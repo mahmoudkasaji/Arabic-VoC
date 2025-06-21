@@ -170,6 +170,8 @@ An Arabic-first multi-channel feedback processing platform built with FastAPI an
 - Data-i18n attributes implemented across key pages
 - Translation keys available for all major sections (nav, home, features, feedback, dashboard, surveys, auth)
 - Proper HTML structure with RTL/LTR support
+- Static file serving configured for i18n.js accessibility
+- Form elements and navigation properly implementing bilingual support
 
 ## User Preferences
 

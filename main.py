@@ -179,12 +179,37 @@ def create_wsgi_app():
             start_response(status, headers)
             return [b'{"status": "healthy", "message": "Arabic VoC Platform is running"}']
         
-        # Serve the comprehensive Arabic UI pages
+        # Serve static files
         path = environ['PATH_INFO']
         method = environ['REQUEST_METHOD']
         
         if method == 'GET':
-            if path == '/':
+            # Serve static JavaScript files
+            if path.startswith('/static/'):
+                try:
+                    file_path = path[1:]  # Remove leading slash
+                    with open(file_path, 'r', encoding='utf-8') as f:
+                        content = f.read()
+                    
+                    # Determine content type
+                    if path.endswith('.js'):
+                        content_type = 'application/javascript'
+                    elif path.endswith('.css'):
+                        content_type = 'text/css'
+                    else:
+                        content_type = 'text/plain'
+                    
+                    status = '200 OK'
+                    headers = [('Content-Type', f'{content_type}; charset=utf-8')]
+                    start_response(status, headers)
+                    return [content.encode('utf-8')]
+                except FileNotFoundError:
+                    status = '404 Not Found'
+                    headers = [('Content-Type', 'text/plain')]
+                    start_response(status, headers)
+                    return [b'File not found']
+            
+            elif path == '/':
                 # Serve main homepage with full navigation
                 status = '200 OK'
                 headers = [('Content-Type', 'text/html; charset=utf-8')]

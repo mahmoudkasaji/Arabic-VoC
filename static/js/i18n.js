@@ -20,7 +20,7 @@ class LanguageManager {
                 // Homepage
                 home: {
                     title: 'منصة صوت العميل العربية',
-                    subtitle: 'منصة متقدمة لتحليل آراء العملاء باللغة العربية مع دعم اللهجات المختلفة والذكاء الثقافي',
+                    subtitle: 'منصة متقدمة لتحليل آراء العملاء باللغة العربية مع دعم اللهجات المختلفة والذكاء الثقافي. احصل على رؤى عميقة من تعليقات عملائك في الوقت الفعلي.',
                     cta_feedback: 'شارك رأيك الآن',
                     cta_analytics: 'اعرض لوحة التحليلات',
                     features_title: 'المميزات الرئيسية',
@@ -111,7 +111,7 @@ class LanguageManager {
                 // Homepage
                 home: {
                     title: 'Arabic Voice of Customer Platform',
-                    subtitle: 'Advanced platform for Arabic customer feedback analysis with dialect support and cultural intelligence',
+                    subtitle: 'Advanced platform for Arabic customer feedback analysis with dialect support and cultural intelligence. Get deep insights from your customer feedback in real-time.',
                     cta_feedback: 'Share Your Feedback',
                     cta_analytics: 'View Analytics Dashboard',
                     features_title: 'Key Features',
