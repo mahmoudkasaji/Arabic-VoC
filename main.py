@@ -173,9 +173,9 @@ if __name__ == "__main__":
     import uvicorn
     # Run the FastAPI app directly with uvicorn for full functionality
     uvicorn.run(
-        "main:fastapi_app",
+        "main:app",
         host="0.0.0.0",
         port=5000,
-        reload=True,
+        reload=False,
         log_level="info"
     )
