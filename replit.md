@@ -178,6 +178,8 @@ An Arabic-first multi-channel feedback processing platform built with FastAPI an
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
+Development workflow: Automate and templatize repetitive tasks to avoid manual rework on MVP updates.
+Language implementation: Systematic approach with standardized ID-based translation system.
 
 ## World-Class QA Implementation Results
 

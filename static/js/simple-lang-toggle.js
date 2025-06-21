@@ -87,6 +87,7 @@ function toggleLanguage() {
 // Update all text elements
 function updateAllTexts() {
     const langData = translations[currentLang];
+    console.log('Updating texts for language:', currentLang);
     
     // Update elements by ID
     const idMappings = {
@@ -114,6 +115,9 @@ function updateAllTexts() {
         const translationKey = idMappings[elementId];
         if (element && langData[translationKey]) {
             element.textContent = langData[translationKey];
+            console.log(`Updated ${elementId}: ${langData[translationKey]}`);
+        } else {
+            console.warn(`Element not found or translation missing: ${elementId} -> ${translationKey}`);
         }
     });
     
@@ -128,6 +132,9 @@ function updateAllTexts() {
         const translationKey = placeholderMappings[elementId];
         if (element && langData[translationKey]) {
             element.placeholder = langData[translationKey];
+            console.log(`Updated placeholder ${elementId}: ${langData[translationKey]}`);
+        } else {
+            console.warn(`Placeholder element not found: ${elementId} -> ${translationKey}`);
         }
     });
     
