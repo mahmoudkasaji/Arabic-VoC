@@ -155,12 +155,13 @@ An Arabic-first multi-channel feedback processing platform built with FastAPI an
 ### Final Status: PRODUCTION READY WITH FULL UI NAVIGATION
 
 **Update**: Fixed UI navigation system by switching from Gunicorn/WSGI to uvicorn/ASGI, enabling full FastAPI functionality including:
-- Complete Arabic navigation menu
+- Complete Arabic navigation menu with English toggle
 - Interactive feedback forms with channel selection
 - Real-time analytics dashboard
 - Survey management interface
 - User authentication pages
 - Comprehensive Arabic-first UI design with RTL support
+- Language switcher (Arabic/English) for better accessibility
 
 ## User Preferences
 
