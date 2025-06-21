@@ -14,8 +14,96 @@
     <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     
-    <!-- Simple Language Toggle System -->
-    <script src="/static/js/simple-lang-toggle.js"></script>
+    <!-- Direct Language Toggle Implementation -->
+    <script>
+        let currentLang = localStorage.getItem('language') || 'ar';
+        
+        const translations = {
+            ar: {
+                'platform-title-text': 'منصة صوت العميل العربية',
+                'feedback-title-text': 'شاركنا رأيك',
+                'feedback-subtitle-text': 'نقدر آرائكم وملاحظاتكم لتحسين خدماتنا وتجربتكم معنا',
+                'nav-home-text': 'الرئيسية',
+                'nav-analytics-text': 'لوحة التحليلات',
+                'nav-feedback-text': 'إرسال تعليق',
+                'nav-surveys-text': 'الاستطلاعات',
+                'nav-login-text': 'تسجيل الدخول',
+                'nav-register-text': 'إنشاء حساب',
+                'rating-label-text': 'تقييمك العام:',
+                'content-label-text': 'تعليقك أو ملاحظاتك:',
+                'name-label-text': 'الاسم (اختياري):',
+                'submit-btn-text': 'إرسال التعليق',
+                'success-title-text': 'شكراً لك!',
+                'success-message-text': 'تم إرسال تعليقك بنجاح وسيتم تحليله قريباً',
+                'dialect-help-text': 'يمكنك الكتابة بأي لهجة عربية - سنفهمها جميعاً',
+                'langText': 'English'
+            },
+            en: {
+                'platform-title-text': 'Arabic Voice of Customer Platform',
+                'feedback-title-text': 'Share Your Opinion',
+                'feedback-subtitle-text': 'We value your feedback and suggestions to improve our services and your experience',
+                'nav-home-text': 'Home',
+                'nav-analytics-text': 'Analytics Dashboard',
+                'nav-feedback-text': 'Submit Feedback',
+                'nav-surveys-text': 'Surveys',
+                'nav-login-text': 'Login',
+                'nav-register-text': 'Register',
+                'rating-label-text': 'Your Overall Rating:',
+                'content-label-text': 'Your Comments or Feedback:',
+                'name-label-text': 'Name (Optional):',
+                'submit-btn-text': 'Submit Feedback',
+                'success-title-text': 'Thank You!',
+                'success-message-text': 'Your feedback has been successfully submitted and will be analyzed soon',
+                'dialect-help-text': 'You can write in any Arabic dialect - we understand them all',
+                'langText': 'العربية'
+            }
+        };
+        
+        function toggleLanguage() {
+            currentLang = currentLang === 'ar' ? 'en' : 'ar';
+            console.log('Switching to:', currentLang);
+            
+            // Update document attributes
+            document.documentElement.lang = currentLang;
+            document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
+            document.body.style.direction = currentLang === 'ar' ? 'rtl' : 'ltr';
+            document.body.style.textAlign = currentLang === 'ar' ? 'right' : 'left';
+            
+            // Update all text elements
+            Object.keys(translations[currentLang]).forEach(elementId => {
+                const element = document.getElementById(elementId);
+                if (element) {
+                    element.textContent = translations[currentLang][elementId];
+                    console.log('Updated', elementId, ':', translations[currentLang][elementId]);
+                }
+            });
+            
+            // Update placeholders
+            const content = document.getElementById('content');
+            const customerName = document.getElementById('customerName');
+            
+            if (content) {
+                content.placeholder = currentLang === 'ar' ? 
+                    'شاركنا تجربتك ورأيك بالتفصيل...' : 
+                    'Share your experience and opinion in detail...';
+            }
+            
+            if (customerName) {
+                customerName.placeholder = currentLang === 'ar' ? 
+                    'أدخل اسمك' : 
+                    'Enter your name';
+            }
+            
+            localStorage.setItem('language', currentLang);
+        }
+        
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            if (currentLang === 'en') {
+                toggleLanguage(); // If stored preference is English, apply it
+            }
+        });
+    </script>
     
     <style>
         :root {
