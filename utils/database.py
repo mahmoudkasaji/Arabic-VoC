@@ -37,10 +37,12 @@ AsyncSessionLocal = async_sessionmaker(
 async def init_db():
     """Initialize database tables"""
     try:
+        # Import unified models
+        from models_unified import Base
+        
         async with engine.begin() as conn:
             # Create all tables
-            await conn.run_sync(FeedbackBase.metadata.create_all)
-            await conn.run_sync(AnalyticsBase.metadata.create_all)
+            await conn.run_sync(Base.metadata.create_all)
             
             # Create indexes for better performance
             await conn.execute(text("""
