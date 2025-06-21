@@ -174,16 +174,16 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="/">الرئيسية</a>
+                        <a class="nav-link" href="/"><span data-i18n="nav.home">الرئيسية</span></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/dashboard/realtime">لوحة التحليلات</a>
+                        <a class="nav-link" href="/dashboard/realtime"><span data-i18n="nav.analytics">لوحة التحليلات</span></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" href="/feedback">إرسال تعليق</a>
+                        <a class="nav-link active" href="/feedback"><span data-i18n="nav.feedback">إرسال تعليق</span></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/surveys">الاستطلاعات</a>
+                        <a class="nav-link" href="/surveys"><span data-i18n="nav.surveys">الاستطلاعات</span></a>
                     </li>
                 </ul>
                 
@@ -373,6 +373,18 @@
                 langText.textContent = newLang === 'ar' ? 'English' : 'العربية';
             }
             
+            // Update placeholders
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(element => {
+                const key = element.getAttribute('data-i18n-placeholder');
+                const placeholderTranslations = {
+                    'feedback.content_placeholder': newLang === 'ar' ? 'شاركنا تجربتك ورأيك بالتفصيل...' : 'Share your experience and opinion in detail...',
+                    'feedback.name_placeholder': newLang === 'ar' ? 'أدخل اسمك' : 'Enter your name'
+                };
+                if (placeholderTranslations[key]) {
+                    element.placeholder = placeholderTranslations[key];
+                }
+            });
+            
             // Toggle elements with data-i18n attributes
             document.querySelectorAll('[data-i18n]').forEach(element => {
                 const key = element.getAttribute('data-i18n');
@@ -387,7 +399,14 @@
                     'nav.surveys': newLang === 'ar' ? 'الاستطلاعات' : 'Surveys',
                     'nav.login': newLang === 'ar' ? 'تسجيل الدخول' : 'Login',
                     'nav.register': newLang === 'ar' ? 'إنشاء حساب' : 'Register',
-                    'home.title': newLang === 'ar' ? 'منصة صوت العميل العربية' : 'Arabic Voice of Customer Platform'
+                    'home.title': newLang === 'ar' ? 'منصة صوت العميل العربية' : 'Arabic Voice of Customer Platform',
+                    'feedback.rating_label': newLang === 'ar' ? 'تقييمك العام:' : 'Your Overall Rating:',
+                    'feedback.content_label': newLang === 'ar' ? 'تعليقك أو ملاحظاتك:' : 'Your Comments or Feedback:',
+                    'feedback.name_label': newLang === 'ar' ? 'الاسم (اختياري):' : 'Name (Optional):',
+                    'feedback.submit': newLang === 'ar' ? 'إرسال التعليق' : 'Submit Feedback',
+                    'feedback.success_title': newLang === 'ar' ? 'شكراً لك!' : 'Thank You!',
+                    'feedback.success_message': newLang === 'ar' ? 'تم إرسال تعليقك بنجاح وسيتم تحليله قريباً.' : 'Your feedback has been successfully submitted and will be analyzed soon.',
+                    'feedback.dialect_help': newLang === 'ar' ? 'يمكنك الكتابة بأي لهجة عربية - سنفهمها جميعاً' : 'You can write in any Arabic dialect - we understand them all'
                 };
                 
                 if (translations[key]) {
