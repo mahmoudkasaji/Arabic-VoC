@@ -3,629 +3,447 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="إضافة تعليق جديد - منصة صوت العميل">
-    <meta name="keywords" content="تعليق العميل, خدمة العملاء, ملاحظات">
-    <title>إضافة تعليق - منصة صوت العميل</title>
+    <title>إرسال تعليق - منصة صوت العميل العربية</title>
+    
+    <!-- Bootstrap RTL CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
     
     <!-- Arabic Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
     
-    <!-- Font Awesome for Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     
-    <!-- Main CSS -->
-    <link rel="stylesheet" href="{{ url_for('static', path='/css/main.css') }}">
-    
-    <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%232c5aa0'><path d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z'/></svg>">
-</head>
-<body>
-    <!-- Alert Container for Notifications -->
-    <div id="alert-container"></div>
-    
-    <!-- Header -->
-    <header class="header">
-        <div class="container">
-            <nav class="nav">
-                <a href="/" class="nav-brand">
-                    <i class="fas fa-comments"></i>
-                    منصة صوت العميل
-                </a>
-                
-                <ul class="nav-links">
-                    <li><a href="/" class="nav-link"><i class="fas fa-home"></i> الرئيسية</a></li>
-                    <li><a href="/feedback" class="nav-link active"><i class="fas fa-plus-circle"></i> إضافة تعليق</a></li>
-                    <li><a href="/analytics" class="nav-link"><i class="fas fa-chart-bar"></i> التحليلات</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
-
-    <!-- Main Content -->
-    <main class="main-content">
-        <!-- Page Header -->
-        <section class="page-header">
-            <div class="container">
-                <div class="page-header-content">
-                    <h1><i class="fas fa-plus-circle"></i> إضافة تعليق جديد</h1>
-                    <p>شاركنا رأيك وملاحظاتك لمساعدتنا على تحسين خدماتنا</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- Feedback Form Section -->
-        <section class="feedback-form-section">
-            <div class="container">
-                <div class="row">
-                    <!-- Main Form -->
-                    <div class="col-8">
-                        <div class="card">
-                            <div class="card-header">
-                                <h2><i class="fas fa-edit"></i> نموذج التعليق</h2>
-                                <p class="text-muted">جميع الحقول المطلوبة مميزة بعلامة *</p>
-                            </div>
-                            
-                            <div class="card-body">
-                                <form id="feedback-form" novalidate>
-                                    <!-- Feedback Content -->
-                                    <div class="form-group">
-                                        <label for="content" class="form-label">
-                                            <i class="fas fa-comment-alt"></i>
-                                            محتوى التعليق *
-                                        </label>
-                                        <textarea 
-                                            id="content" 
-                                            name="content" 
-                                            class="form-control" 
-                                            rows="6" 
-                                            placeholder="اكتب تعليقك أو ملاحظاتك هنا... يمكنك الكتابة باللغة العربية أو أي لغة أخرى"
-                                            required
-                                            maxlength="5000"
-                                        ></textarea>
-                                        <div class="form-help">
-                                            <i class="fas fa-info-circle"></i>
-                                            اكتب تعليقك بوضوح. سيتم تحليله تلقائياً باستخدام الذكاء الاصطناعي.
-                                        </div>
-                                    </div>
-
-                                    <!-- Feedback Channel -->
-                                    <div class="form-group">
-                                        <label for="channel" class="form-label">
-                                            <i class="fas fa-route"></i>
-                                            قناة التعليق *
-                                        </label>
-                                        <select id="channel" name="channel" class="form-control" required>
-                                            <option value="">اختر القناة...</option>
-                                            <option value="website">الموقع الإلكتروني</option>
-                                            <option value="mobile_app">التطبيق المحمول</option>
-                                            <option value="email">البريد الإلكتروني</option>
-                                            <option value="phone">الهاتف</option>
-                                            <option value="whatsapp">واتساب</option>
-                                            <option value="social_media">وسائل التواصل الاجتماعي</option>
-                                            <option value="sms">رسائل نصية</option>
-                                            <option value="in_person">شخصياً</option>
-                                            <option value="survey">استبيان</option>
-                                            <option value="chatbot">روبوت المحادثة</option>
-                                        </select>
-                                    </div>
-
-                                    <!-- Rating -->
-                                    <div class="form-group">
-                                        <label for="rating" class="form-label">
-                                            <i class="fas fa-star"></i>
-                                            التقييم (اختياري)
-                                        </label>
-                                        <div class="rating-input">
-                                            <select id="rating" name="rating" class="form-control">
-                                                <option value="">اختر التقييم...</option>
-                                                <option value="5">ممتاز - 5 نجوم ⭐⭐⭐⭐⭐</option>
-                                                <option value="4">جيد جداً - 4 نجوم ⭐⭐⭐⭐</option>
-                                                <option value="3">متوسط - 3 نجوم ⭐⭐⭐</option>
-                                                <option value="2">ضعيف - نجمتان ⭐⭐</option>
-                                                <option value="1">سيء جداً - نجمة واحدة ⭐</option>
-                                            </select>
-                                        </div>
-                                    </div>
-
-                                    <!-- Customer Information -->
-                                    <div class="customer-info-section">
-                                        <h3>
-                                            <i class="fas fa-user"></i>
-                                            معلومات العميل (اختياري)
-                                        </h3>
-                                        <div class="row">
-                                            <div class="col-6">
-                                                <div class="form-group">
-                                                    <label for="customer_email" class="form-label">
-                                                        <i class="fas fa-envelope"></i>
-                                                        البريد الإلكتروني
-                                                    </label>
-                                                    <input 
-                                                        type="email" 
-                                                        id="customer_email" 
-                                                        name="customer_email" 
-                                                        class="form-control"
-                                                        placeholder="example@email.com"
-                                                        dir="ltr"
-                                                        style="text-align: left;"
-                                                    >
-                                                </div>
-                                            </div>
-                                            <div class="col-6">
-                                                <div class="form-group">
-                                                    <label for="customer_phone" class="form-label">
-                                                        <i class="fas fa-phone"></i>
-                                                        رقم الهاتف
-                                                    </label>
-                                                    <input 
-                                                        type="tel" 
-                                                        id="customer_phone" 
-                                                        name="customer_phone" 
-                                                        class="form-control"
-                                                        placeholder="+966xxxxxxxxx"
-                                                        dir="ltr"
-                                                        style="text-align: left;"
-                                                    >
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <!-- Submit Button -->
-                                    <div class="form-actions">
-                                        <button type="submit" class="btn btn-primary btn-lg">
-                                            <i class="fas fa-paper-plane"></i>
-                                            إرسال التعليق
-                                        </button>
-                                        
-                                        <button type="reset" class="btn btn-outline">
-                                            <i class="fas fa-undo"></i>
-                                            إعادة تعيين
-                                        </button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Sidebar -->
-                    <div class="col-4">
-                        <!-- Guidelines Card -->
-                        <div class="card">
-                            <div class="card-header">
-                                <h3><i class="fas fa-lightbulb"></i> إرشادات مهمة</h3>
-                            </div>
-                            <div class="card-body">
-                                <ul class="guidelines-list">
-                                    <li>
-                                        <i class="fas fa-check text-success"></i>
-                                        اكتب تعليقك بوضوح ودقة
-                                    </li>
-                                    <li>
-                                        <i class="fas fa-check text-success"></i>
-                                        استخدم اللغة المناسبة والمهذبة
-                                    </li>
-                                    <li>
-                                        <i class="fas fa-check text-success"></i>
-                                        كن محدداً في وصف تجربتك
-                                    </li>
-                                    <li>
-                                        <i class="fas fa-check text-success"></i>
-                                        اذكر التفاصيل التي تساعد على التحسين
-                                    </li>
-                                    <li>
-                                        <i class="fas fa-check text-success"></i>
-                                        جميع التعليقات ستعامل بسرية تامة
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-
-                        <!-- Processing Info Card -->
-                        <div class="card">
-                            <div class="card-header">
-                                <h3><i class="fas fa-cogs"></i> كيف تتم المعالجة؟</h3>
-                            </div>
-                            <div class="card-body">
-                                <div class="process-steps">
-                                    <div class="process-step">
-                                        <div class="step-number">1</div>
-                                        <div class="step-content">
-                                            <h4>الاستلام</h4>
-                                            <p>استلام تعليقك فوراً وحفظه بأمان</p>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="process-step">
-                                        <div class="step-number">2</div>
-                                        <div class="step-content">
-                                            <h4>التحليل</h4>
-                                            <p>تحليل المشاعر والموضوع باستخدام الذكاء الاصطناعي</p>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="process-step">
-                                        <div class="step-number">3</div>
-                                        <div class="step-content">
-                                            <h4>التصنيف</h4>
-                                            <p>تصنيف التعليق وتحديد الأولوية</p>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="process-step">
-                                        <div class="step-number">4</div>
-                                        <div class="step-content">
-                                            <h4>التقرير</h4>
-                                            <p>إضافة النتائج للتحليلات العامة</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Contact Card -->
-                        <div class="card">
-                            <div class="card-header">
-                                <h3><i class="fas fa-question-circle"></i> تحتاج مساعدة؟</h3>
-                            </div>
-                            <div class="card-body">
-                                <p>إذا كنت تواجه مشكلة في إرسال التعليق أو لديك استفسارات:</p>
-                                <div class="contact-options">
-                                    <a href="mailto:support@voc-platform.com" class="contact-option">
-                                        <i class="fas fa-envelope"></i>
-                                        راسلنا عبر البريد الإلكتروني
-                                    </a>
-                                    <a href="tel:+966123456789" class="contact-option">
-                                        <i class="fas fa-phone"></i>
-                                        اتصل بنا هاتفياً
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Recent Feedback Section -->
-        <section class="recent-feedback-section">
-            <div class="container">
-                <h2 class="section-title">
-                    <i class="fas fa-clock"></i>
-                    أحدث التعليقات المرسلة
-                </h2>
-                
-                <div class="card">
-                    <div class="card-body">
-                        <div id="feedback-list">
-                            <!-- Recent feedback will be loaded here -->
-                            <div class="loading-state">
-                                <div class="loading"></div>
-                                <p>جارٍ تحميل أحدث التعليقات...</p>
-                            </div>
-                        </div>
-                        
-                        <div class="feedback-actions">
-                            <a href="/analytics" class="btn btn-outline">
-                                <i class="fas fa-chart-bar"></i>
-                                عرض جميع التحليلات
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h4>منصة صوت العميل</h4>
-                    <p>نقدر تعليقاتكم ونعمل على تحسين خدماتنا باستمرار</p>
-                </div>
-                
-                <div class="footer-section">
-                    <h4>روابط سريعة</h4>
-                    <ul class="footer-links">
-                        <li><a href="/">الرئيسية</a></li>
-                        <li><a href="/feedback">إضافة تعليق</a></li>
-                        <li><a href="/analytics">التحليلات</a></li>
-                    </ul>
-                </div>
-                
-                <div class="footer-section">
-                    <h4>الخصوصية والأمان</h4>
-                    <p>جميع التعليقات محمية وتعامل بسرية تامة</p>
-                    <p><i class="fas fa-shield-alt"></i> بيانات مشفرة ومحمية</p>
-                </div>
-            </div>
-            
-            <div class="footer-bottom">
-                <p>&copy; 2024 منصة صوت العميل. جميع الحقوق محفوظة.</p>
-            </div>
-        </div>
-    </footer>
-
-    <!-- Main JavaScript -->
-    <script src="{{ url_for('static', path='/js/main.js') }}"></script>
-
-    <!-- Page-specific styles -->
     <style>
-        .page-header {
-            background: linear-gradient(135deg, rgba(44, 90, 160, 0.1), rgba(212, 165, 116, 0.1));
-            padding: 2rem 0;
+        :root {
+            --primary-color: #2E8B57;
+            --secondary-color: #F4A460;
+            --accent-color: #4169E1;
+            --text-color: #2c3e50;
+            --bg-color: #f8f9fa;
         }
-        
-        .page-header-content {
-            text-align: center;
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            direction: rtl;
+            text-align: right;
         }
-        
-        .page-header h1 {
-            color: var(--primary-color);
-            font-size: 2.5rem;
+
+        .arabic-title {
+            font-family: 'Amiri', serif;
+            font-weight: 700;
+        }
+
+        .feedback-form {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: var(--text-color);
             margin-bottom: 0.5rem;
         }
-        
-        .page-header p {
-            color: var(--text-secondary);
-            font-size: 1.1rem;
+
+        .form-control {
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+            padding: 0.75rem 1rem;
+            transition: all 0.3s ease;
         }
-        
-        .feedback-form-section {
-            padding: 3rem 0;
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(46, 139, 87, 0.25);
         }
-        
-        .customer-info-section {
-            border-top: 1px solid var(--border-color);
-            padding-top: 2rem;
-            margin-top: 2rem;
-        }
-        
-        .customer-info-section h3 {
-            color: var(--primary-color);
-            margin-bottom: 1.5rem;
-            font-size: 1.3rem;
-        }
-        
-        .form-help {
-            margin-top: 0.5rem;
-            font-size: 0.875rem;
-            color: var(--text-muted);
-        }
-        
-        .form-actions {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            margin-top: 2rem;
-            flex-wrap: wrap;
-        }
-        
-        .guidelines-list {
-            list-style: none;
-            padding: 0;
-        }
-        
-        .guidelines-list li {
-            display: flex;
-            align-items: flex-start;
-            gap: 0.5rem;
-            margin-bottom: 1rem;
-            padding: 0.5rem;
-            background: rgba(40, 167, 69, 0.05);
-            border-radius: var(--border-radius-md);
-        }
-        
-        .process-steps {
-            position: relative;
-        }
-        
-        .process-step {
-            display: flex;
-            align-items: flex-start;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-            position: relative;
-        }
-        
-        .process-step:not(:last-child)::after {
-            content: '';
-            position: absolute;
-            left: 15px;
-            top: 35px;
-            width: 2px;
-            height: 20px;
-            background: var(--border-color);
-        }
-        
-        .step-number {
-            width: 30px;
-            height: 30px;
+
+        .btn-primary-custom {
             background: var(--primary-color);
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 0.875rem;
-            flex-shrink: 0;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
         }
-        
-        .step-content h4 {
-            margin-bottom: 0.25rem;
-            color: var(--text-primary);
-            font-size: 1rem;
+
+        .btn-primary-custom:hover {
+            background: #236B47;
+            transform: translateY(-2px);
         }
-        
-        .step-content p {
-            margin: 0;
-            color: var(--text-secondary);
-            font-size: 0.875rem;
+
+        .rating-stars {
+            direction: ltr;
+            display: inline-block;
         }
-        
-        .contact-options {
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
+
+        .rating-stars input {
+            display: none;
         }
-        
-        .contact-option {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            color: var(--primary-color);
-            text-decoration: none;
-            padding: 0.5rem;
-            border-radius: var(--border-radius-md);
-            transition: var(--transition-normal);
-        }
-        
-        .contact-option:hover {
-            background: rgba(44, 90, 160, 0.1);
-            transform: translateX(-5px);
-        }
-        
-        .recent-feedback-section {
-            padding: 3rem 0;
-            background: var(--bg-secondary);
-        }
-        
-        .section-title {
-            text-align: center;
-            color: var(--primary-color);
-            margin-bottom: 2rem;
+
+        .rating-stars label {
             font-size: 2rem;
+            color: #ddd;
+            cursor: pointer;
+            transition: color 0.3s ease;
         }
-        
-        .feedback-actions {
+
+        .rating-stars input:checked ~ label,
+        .rating-stars label:hover,
+        .rating-stars label:hover ~ label {
+            color: #ffc107;
+        }
+
+        .channel-select {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .channel-option {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 1rem;
             text-align: center;
-            margin-top: 2rem;
-            padding-top: 1rem;
-            border-top: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
-        
-        .character-counter {
-            text-align: left;
-            font-size: 0.875rem;
-            color: var(--text-muted);
-            margin-top: 0.5rem;
+
+        .channel-option:hover {
+            border-color: var(--primary-color);
+            background: rgba(46, 139, 87, 0.1);
         }
-        
-        .nav-link.active {
-            background-color: rgba(255, 255, 255, 0.2);
-            border-radius: var(--border-radius-md);
+
+        .channel-option.selected {
+            border-color: var(--primary-color);
+            background: rgba(46, 139, 87, 0.1);
+            color: var(--primary-color);
         }
-        
-        @media (max-width: 768px) {
-            .page-header h1 {
-                font-size: 2rem;
-            }
-            
-            .form-actions {
-                flex-direction: column;
-            }
-            
-            .contact-options {
-                align-items: stretch;
-            }
+
+        .channel-option i {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            display: block;
         }
-        
-        /* Form validation styles */
-        .form-control:invalid {
-            border-color: var(--danger-color);
-        }
-        
-        .form-control:valid {
-            border-color: var(--success-color);
-        }
-        
-        .error-message {
-            color: var(--danger-color);
-            font-size: 0.875rem;
-            margin-top: 0.25rem;
-        }
-        
+
         .success-message {
-            color: var(--success-color);
-            font-size: 0.875rem;
-            margin-top: 0.25rem;
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 2rem;
+            display: none;
+        }
+
+        .navbar-brand {
+            font-family: 'Amiri', serif;
+            font-weight: 700;
+            font-size: 1.5rem;
         }
     </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+        <div class="container">
+            <a class="navbar-brand arabic-title" href="/">
+                <i class="fas fa-comments text-primary"></i>
+                منصة صوت العميل العربية
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">الرئيسية</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/dashboard/realtime">لوحة التحليلات</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/feedback">إرسال تعليق</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/surveys">الاستطلاعات</a>
+                    </li>
+                </ul>
+                
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/login">تسجيل الدخول</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/register">إنشاء حساب</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
 
-    <!-- Form validation and enhancement script -->
+    <!-- Main Content -->
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                
+                <!-- Success Message -->
+                <div id="successMessage" class="success-message">
+                    <i class="fas fa-check-circle fa-3x mb-3"></i>
+                    <h3 class="arabic-title">شكراً لك!</h3>
+                    <p class="lead mb-0">تم إرسال تعليقك بنجاح وسيتم تحليله قريباً</p>
+                </div>
+
+                <!-- Page Header -->
+                <div class="text-center mb-4">
+                    <h1 class="arabic-title display-5 mb-3">شاركنا رأيك</h1>
+                    <p class="lead text-muted">
+                        نقدر آرائكم وملاحظاتكم لتحسين خدماتنا وتجربتكم معنا
+                    </p>
+                </div>
+
+                <!-- Feedback Form -->
+                <div class="feedback-form">
+                    <form id="feedbackForm">
+                        <!-- Channel Selection -->
+                        <div class="mb-4">
+                            <label class="form-label">اختر القناة التي تريد التعليق عليها:</label>
+                            <div class="channel-select">
+                                <div class="channel-option" data-channel="website">
+                                    <i class="fas fa-globe"></i>
+                                    <div>الموقع الإلكتروني</div>
+                                </div>
+                                <div class="channel-option" data-channel="mobile_app">
+                                    <i class="fas fa-mobile-alt"></i>
+                                    <div>التطبيق المحمول</div>
+                                </div>
+                                <div class="channel-option" data-channel="whatsapp">
+                                    <i class="fab fa-whatsapp"></i>
+                                    <div>واتساب</div>
+                                </div>
+                                <div class="channel-option" data-channel="email">
+                                    <i class="fas fa-envelope"></i>
+                                    <div>البريد الإلكتروني</div>
+                                </div>
+                                <div class="channel-option" data-channel="phone">
+                                    <i class="fas fa-phone"></i>
+                                    <div>الهاتف</div>
+                                </div>
+                                <div class="channel-option" data-channel="social_media">
+                                    <i class="fas fa-share-alt"></i>
+                                    <div>وسائل التواصل</div>
+                                </div>
+                            </div>
+                            <input type="hidden" id="selectedChannel" name="channel" required>
+                        </div>
+
+                        <!-- Rating -->
+                        <div class="mb-4">
+                            <label class="form-label">تقييمك العام:</label>
+                            <div class="rating-stars" dir="ltr">
+                                <input type="radio" id="star5" name="rating" value="5">
+                                <label for="star5">★</label>
+                                <input type="radio" id="star4" name="rating" value="4">
+                                <label for="star4">★</label>
+                                <input type="radio" id="star3" name="rating" value="3">
+                                <label for="star3">★</label>
+                                <input type="radio" id="star2" name="rating" value="2">
+                                <label for="star2">★</label>
+                                <input type="radio" id="star1" name="rating" value="1">
+                                <label for="star1">★</label>
+                            </div>
+                        </div>
+
+                        <!-- Feedback Content -->
+                        <div class="mb-4">
+                            <label for="content" class="form-label">تعليقك أو ملاحظاتك:</label>
+                            <textarea 
+                                class="form-control" 
+                                id="content" 
+                                name="content" 
+                                rows="5" 
+                                placeholder="شاركنا تجربتك ورأيك بالتفصيل..."
+                                required
+                            ></textarea>
+                            <div class="form-text">يمكنك الكتابة بأي لهجة عربية - سنفهمها جميعاً</div>
+                        </div>
+
+                        <!-- Customer Information -->
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <label for="customerName" class="form-label">الاسم (اختياري):</label>
+                                <input 
+                                    type="text" 
+                                    class="form-control" 
+                                    id="customerName" 
+                                    name="customer_name_ar"
+                                    placeholder="أدخل اسمك"
+                                >
+                            </div>
+                            <div class="col-md-6">
+                                <label for="customerEmail" class="form-label">البريد الإلكتروني (اختياري):</label>
+                                <input 
+                                    type="email" 
+                                    class="form-control" 
+                                    id="customerEmail" 
+                                    name="customer_email"
+                                    placeholder="example@email.com"
+                                >
+                            </div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary-custom btn-lg">
+                                <i class="fas fa-paper-plane me-2"></i>
+                                إرسال التعليق
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Recent Feedback Examples -->
+                <div class="feedback-form">
+                    <h4 class="arabic-title mb-3">أمثلة على التعليقات الأخيرة</h4>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <div class="p-3 bg-light rounded">
+                                <div class="d-flex align-items-center mb-2">
+                                    <div class="rating-stars" dir="ltr" style="font-size: 1rem;">
+                                        <span style="color: #ffc107;">★★★★★</span>
+                                    </div>
+                                    <small class="text-muted me-2">الموقع الإلكتروني</small>
+                                </div>
+                                <p class="mb-0 small">"الخدمة ممتازة والموقع سهل الاستخدام"</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="p-3 bg-light rounded">
+                                <div class="d-flex align-items-center mb-2">
+                                    <div class="rating-stars" dir="ltr" style="font-size: 1rem;">
+                                        <span style="color: #ffc107;">★★★★</span><span style="color: #ddd;">★</span>
+                                    </div>
+                                    <small class="text-muted me-2">التطبيق المحمول</small>
+                                </div>
+                                <p class="mb-0 small">"التطبيق كويس بس محتاج تحسينات في السرعة"</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JavaScript -->
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const form = document.getElementById('feedback-form');
-            const contentField = document.getElementById('content');
-            const channelField = document.getElementById('channel');
-            
-            // Enhanced form validation
-            form.addEventListener('submit', (e) => {
-                let isValid = true;
+        // Channel selection
+        document.querySelectorAll('.channel-option').forEach(option => {
+            option.addEventListener('click', function() {
+                // Remove selected class from all options
+                document.querySelectorAll('.channel-option').forEach(opt => {
+                    opt.classList.remove('selected');
+                });
                 
-                // Clear previous error messages
-                document.querySelectorAll('.error-message').forEach(msg => msg.remove());
+                // Add selected class to clicked option
+                this.classList.add('selected');
                 
-                // Validate content
-                if (!contentField.value.trim()) {
-                    showFieldError(contentField, 'محتوى التعليق مطلوب');
-                    isValid = false;
-                } else if (contentField.value.trim().length < 10) {
-                    showFieldError(contentField, 'يجب أن يكون التعليق 10 أحرف على الأقل');
-                    isValid = false;
-                }
-                
-                // Validate channel
-                if (!channelField.value) {
-                    showFieldError(channelField, 'يرجى اختيار قناة التعليق');
-                    isValid = false;
-                }
-                
-                if (!isValid) {
-                    e.preventDefault();
-                    UI.showAlert('يرجى تصحيح الأخطاء في النموذج', 'danger');
-                }
+                // Set hidden input value
+                document.getElementById('selectedChannel').value = this.dataset.channel;
             });
-            
-            // Real-time validation feedback
-            contentField.addEventListener('blur', () => {
-                validateField(contentField, 'محتوى التعليق مطلوب', 10);
-            });
-            
-            channelField.addEventListener('change', () => {
-                validateField(channelField, 'يرجى اختيار قناة التعليق');
-            });
-            
-            // Load recent feedback
-            FeedbackManager.loadFeedbackList({ limit: 5 });
         });
-        
-        function showFieldError(field, message) {
-            const errorDiv = document.createElement('div');
-            errorDiv.className = 'error-message';
-            errorDiv.innerHTML = `<i class="fas fa-exclamation-triangle"></i> ${message}`;
-            field.parentNode.appendChild(errorDiv);
-            field.classList.add('is-invalid');
-        }
-        
-        function validateField(field, errorMessage, minLength = 1) {
-            // Remove existing error
-            const existingError = field.parentNode.querySelector('.error-message');
-            if (existingError) existingError.remove();
-            field.classList.remove('is-invalid', 'is-valid');
+
+        // Form submission
+        document.getElementById('feedbackForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
             
-            const value = field.value.trim();
-            if (!value || value.length < minLength) {
-                showFieldError(field, errorMessage);
-                return false;
-            } else {
-                field.classList.add('is-valid');
-                return true;
+            // Validate channel selection
+            if (!document.getElementById('selectedChannel').value) {
+                alert('يرجى اختيار القناة أولاً');
+                return;
             }
-        }
+            
+            // Get form data
+            const formData = new FormData(this);
+            const data = {
+                content: formData.get('content'),
+                channel: formData.get('channel'),
+                rating: parseInt(formData.get('rating')) || null,
+                customer_name_ar: formData.get('customer_name_ar') || null,
+                customer_email: formData.get('customer_email') || null
+            };
+            
+            // Disable submit button
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>جاري الإرسال...';
+            submitBtn.disabled = true;
+            
+            try {
+                // Submit feedback
+                const response = await fetch('/api/feedback/submit', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                if (response.ok) {
+                    // Show success message
+                    document.getElementById('successMessage').style.display = 'block';
+                    document.querySelector('.feedback-form').style.display = 'none';
+                    
+                    // Scroll to success message
+                    document.getElementById('successMessage').scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                    
+                } else {
+                    throw new Error('Failed to submit feedback');
+                }
+                
+            } catch (error) {
+                alert('حدث خطأ أثناء إرسال التعليق. يرجى المحاولة مرة أخرى.');
+                console.error('Error:', error);
+            } finally {
+                // Re-enable submit button
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
+        });
+
+        // Rating stars interaction
+        document.querySelectorAll('.rating-stars input').forEach(input => {
+            input.addEventListener('change', function() {
+                const value = this.value;
+                const labels = document.querySelectorAll('.rating-stars label');
+                
+                labels.forEach((label, index) => {
+                    if (index >= 5 - value) {
+                        label.style.color = '#ffc107';
+                    } else {
+                        label.style.color = '#ddd';
+                    }
+                });
+            });
+        });
+
+        // Auto-expand textarea
+        document.getElementById('content').addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = this.scrollHeight + 'px';
+        });
     </script>
 </body>
 </html>

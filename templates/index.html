@@ -3,483 +3,444 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="منصة صوت العميل - جمع وتحليل تعليقات العملاء باللغة العربية">
-    <meta name="keywords" content="صوت العميل, تحليل التعليقات, خدمة العملاء, الذكاء الاصطناعي">
-    <title>منصة صوت العميل - الصفحة الرئيسية</title>
+    <title>منصة صوت العميل العربية - الصفحة الرئيسية</title>
+    
+    <!-- Bootstrap RTL CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
     
     <!-- Arabic Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
     
-    <!-- Font Awesome for Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     
-    <!-- Main CSS -->
-    <link rel="stylesheet" href="{{ url_for('static', path='/css/main.css') }}">
-    
-    <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%232c5aa0'><path d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z'/></svg>">
-</head>
-<body>
-    <!-- Alert Container for Notifications -->
-    <div id="alert-container"></div>
-    
-    <!-- Header -->
-    <header class="header">
-        <div class="container">
-            <nav class="nav">
-                <a href="/" class="nav-brand">
-                    <i class="fas fa-comments"></i>
-                    منصة صوت العميل
-                </a>
-                
-                <ul class="nav-links">
-                    <li><a href="/" class="nav-link"><i class="fas fa-home"></i> الرئيسية</a></li>
-                    <li><a href="/feedback" class="nav-link"><i class="fas fa-plus-circle"></i> إضافة تعليق</a></li>
-                    <li><a href="/analytics" class="nav-link"><i class="fas fa-chart-bar"></i> التحليلات</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
-
-    <!-- Main Content -->
-    <main class="main-content">
-        <!-- Hero Section -->
-        <section class="hero">
-            <div class="container">
-                <div class="row">
-                    <div class="col-8">
-                        <div class="hero-content fade-in">
-                            <h1>مرحباً بك في منصة صوت العميل</h1>
-                            <p class="hero-description">
-                                منصة متطورة لجمع وتحليل تعليقات العملاء باللغة العربية باستخدام الذكاء الاصطناعي.
-                                نساعدك على فهم احتياجات عملائك وتحسين خدماتك بناءً على تحليل دقيق لآرائهم.
-                            </p>
-                            <div class="hero-actions">
-                                <a href="/feedback" class="btn btn-primary">
-                                    <i class="fas fa-plus"></i>
-                                    إضافة تعليق جديد
-                                </a>
-                                <a href="/analytics" class="btn btn-outline">
-                                    <i class="fas fa-chart-line"></i>
-                                    عرض التحليلات
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-4">
-                        <div class="hero-visual">
-                            <svg width="300" height="250" viewBox="0 0 300 250" xmlns="http://www.w3.org/2000/svg">
-                                <!-- Customer Feedback Illustration -->
-                                <defs>
-                                    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                                        <stop offset="0%" style="stop-color:#2c5aa0;stop-opacity:0.1" />
-                                        <stop offset="100%" style="stop-color:#d4a574;stop-opacity:0.1" />
-                                    </linearGradient>
-                                </defs>
-                                
-                                <!-- Background -->
-                                <rect width="300" height="250" fill="url(#bgGradient)" rx="15"/>
-                                
-                                <!-- Speech Bubbles -->
-                                <circle cx="80" cy="60" r="25" fill="#2c5aa0" opacity="0.8"/>
-                                <text x="80" y="67" text-anchor="middle" fill="white" font-size="20">😊</text>
-                                
-                                <circle cx="150" cy="40" r="20" fill="#28a745" opacity="0.8"/>
-                                <text x="150" y="47" text-anchor="middle" fill="white" font-size="16">👍</text>
-                                
-                                <circle cx="220" cy="70" r="22" fill="#d4a574" opacity="0.8"/>
-                                <text x="220" y="77" text-anchor="middle" fill="white" font-size="18">💡</text>
-                                
-                                <!-- Analytics Chart -->
-                                <rect x="50" y="120" width="200" height="100" fill="#f8f9fa" stroke="#dee2e6" stroke-width="2" rx="8"/>
-                                
-                                <!-- Chart Bars -->
-                                <rect x="70" y="140" width="20" height="60" fill="#28a745"/>
-                                <rect x="100" y="160" width="20" height="40" fill="#ffc107"/>
-                                <rect x="130" y="150" width="20" height="50" fill="#2c5aa0"/>
-                                <rect x="160" y="130" width="20" height="70" fill="#28a745"/>
-                                <rect x="190" y="170" width="20" height="30" fill="#dc3545"/>
-                                <rect x="220" y="145" width="20" height="55" fill="#2c5aa0"/>
-                                
-                                <!-- Chart Labels -->
-                                <text x="150" y="230" text-anchor="middle" fill="#6c757d" font-size="12">تحليل المشاعر</text>
-                            </svg>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Features Section -->
-        <section class="features">
-            <div class="container">
-                <h2 class="section-title">مميزات المنصة</h2>
-                
-                <div class="dashboard-grid">
-                    <div class="card feature-card">
-                        <div class="card-body">
-                            <div class="feature-icon">
-                                <i class="fas fa-brain"></i>
-                            </div>
-                            <h3>تحليل ذكي للمشاعر</h3>
-                            <p>تحليل تلقائي لمشاعر العملاء باللغة العربية باستخدام أحدث تقنيات الذكاء الاصطناعي</p>
-                        </div>
-                    </div>
-                    
-                    <div class="card feature-card">
-                        <div class="card-body">
-                            <div class="feature-icon">
-                                <i class="fas fa-language"></i>
-                            </div>
-                            <h3>دعم كامل للعربية</h3>
-                            <p>معالجة متقدمة للنصوص العربية مع دعم الكتابة من اليمين لليسار وجميع اللهجات</p>
-                        </div>
-                    </div>
-                    
-                    <div class="card feature-card">
-                        <div class="card-body">
-                            <div class="feature-icon">
-                                <i class="fas fa-chart-pie"></i>
-                            </div>
-                            <h3>تحليلات فورية</h3>
-                            <p>لوحة تحكم تفاعلية تعرض إحصائيات مفصلة وتحليلات فورية لجميع التعليقات</p>
-                        </div>
-                    </div>
-                    
-                    <div class="card feature-card">
-                        <div class="card-body">
-                            <div class="feature-icon">
-                                <i class="fas fa-users"></i>
-                            </div>
-                            <h3>قنوات متعددة</h3>
-                            <p>جمع التعليقات من مختلف القنوات: البريد الإلكتروني، واتساب، الموقع، والمزيد</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Quick Stats Section -->
-        <section class="quick-stats">
-            <div class="container">
-                <h2 class="section-title">إحصائيات سريعة</h2>
-                
-                <div class="dashboard-grid" id="dashboard">
-                    <div class="card metric-card">
-                        <div class="card-body">
-                            <div class="metric-icon">
-                                <i class="fas fa-comments" style="color: var(--primary-color);"></i>
-                            </div>
-                            <span class="metric-value" id="total-feedback">0</span>
-                            <div class="metric-label">إجمالي التعليقات</div>
-                        </div>
-                    </div>
-                    
-                    <div class="card metric-card">
-                        <div class="card-body">
-                            <div class="metric-icon">
-                                <i class="fas fa-check-circle" style="color: var(--success-color);"></i>
-                            </div>
-                            <span class="metric-value" id="processed-feedback">0</span>
-                            <div class="metric-label">تعليقات معالجة</div>
-                        </div>
-                    </div>
-                    
-                    <div class="card metric-card">
-                        <div class="card-body">
-                            <div class="metric-icon">
-                                <i class="fas fa-clock" style="color: var(--warning-color);"></i>
-                            </div>
-                            <span class="metric-value" id="pending-feedback">0</span>
-                            <div class="metric-label">في الانتظار</div>
-                        </div>
-                    </div>
-                    
-                    <div class="card metric-card">
-                        <div class="card-body">
-                            <div class="metric-icon">
-                                <i class="fas fa-heart" style="color: var(--danger-color);"></i>
-                            </div>
-                            <span class="metric-value" id="avg-sentiment">0.00</span>
-                            <div class="metric-label">متوسط المشاعر</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Recent Feedback Section -->
-        <section class="recent-feedback">
-            <div class="container">
-                <div class="section-header">
-                    <h2 class="section-title">أحدث التعليقات</h2>
-                    <a href="/analytics" class="btn btn-outline">
-                        <i class="fas fa-external-link-alt"></i>
-                        عرض جميع التحليلات
-                    </a>
-                </div>
-                
-                <div class="card">
-                    <div class="card-body">
-                        <div id="feedback-list-preview">
-                            <!-- Feedback items will be loaded here via JavaScript -->
-                            <div class="loading-state">
-                                <div class="loading"></div>
-                                <p>جارٍ تحميل أحدث التعليقات...</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Call to Action Section -->
-        <section class="cta-section">
-            <div class="container">
-                <div class="cta-content">
-                    <h2>ابدأ في جمع تعليقات عملائك الآن</h2>
-                    <p>استفد من قوة الذكاء الاصطناعي لفهم احتياجات عملائك وتحسين خدماتك</p>
-                    <div class="cta-actions">
-                        <a href="/feedback" class="btn btn-primary btn-lg">
-                            <i class="fas fa-rocket"></i>
-                            ابدأ الآن
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h4>منصة صوت العميل</h4>
-                    <p>حلول متطورة لتحليل تعليقات العملاء باللغة العربية</p>
-                </div>
-                
-                <div class="footer-section">
-                    <h4>روابط سريعة</h4>
-                    <ul class="footer-links">
-                        <li><a href="/">الرئيسية</a></li>
-                        <li><a href="/feedback">إضافة تعليق</a></li>
-                        <li><a href="/analytics">التحليلات</a></li>
-                    </ul>
-                </div>
-                
-                <div class="footer-section">
-                    <h4>تواصل معنا</h4>
-                    <p>للدعم الفني والاستفسارات</p>
-                    <p><i class="fas fa-envelope"></i> support@voc-platform.com</p>
-                </div>
-            </div>
-            
-            <div class="footer-bottom">
-                <p>&copy; 2024 منصة صوت العميل. جميع الحقوق محفوظة.</p>
-            </div>
-        </div>
-    </footer>
-
-    <!-- Main JavaScript -->
-    <script src="{{ url_for('static', path='/js/main.js') }}"></script>
-    
-    <!-- Custom styles for index page -->
     <style>
-        .hero {
-            background: linear-gradient(135deg, rgba(44, 90, 160, 0.1), rgba(212, 165, 116, 0.1));
+        :root {
+            --primary-color: #2E8B57;
+            --secondary-color: #F4A460;
+            --accent-color: #4169E1;
+            --text-color: #2c3e50;
+            --bg-color: #f8f9fa;
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            direction: rtl;
+            text-align: right;
+        }
+
+        .arabic-title {
+            font-family: 'Amiri', serif;
+            font-weight: 700;
+        }
+
+        .hero-section {
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
             padding: 4rem 0;
+            margin-bottom: 3rem;
         }
-        
-        .hero-content h1 {
-            font-size: 3rem;
-            color: var(--primary-color);
-            margin-bottom: 1.5rem;
-        }
-        
-        .hero-description {
-            font-size: 1.2rem;
-            color: var(--text-secondary);
-            margin-bottom: 2rem;
-            line-height: 1.8;
-        }
-        
-        .hero-actions {
-            display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
-        }
-        
-        .hero-visual {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        
-        .features {
-            padding: 4rem 0;
-            background: var(--bg-secondary);
-        }
-        
+
         .feature-card {
-            text-align: center;
-            transition: var(--transition-normal);
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
         }
-        
+
         .feature-card:hover {
-            transform: translateY(-8px);
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
         }
-        
+
         .feature-icon {
             font-size: 3rem;
             color: var(--primary-color);
             margin-bottom: 1rem;
         }
-        
-        .feature-card h3 {
+
+        .btn-primary-custom {
+            background: var(--primary-color);
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary-custom:hover {
+            background: #236B47;
+            transform: translateY(-2px);
+        }
+
+        .stats-section {
+            background: white;
+            padding: 3rem 0;
+            margin: 3rem 0;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .stat-item {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 700;
             color: var(--primary-color);
-            margin-bottom: 1rem;
+            display: block;
         }
-        
-        .quick-stats {
-            padding: 4rem 0;
+
+        .stat-label {
+            color: #6c757d;
+            font-size: 1.1rem;
         }
-        
-        .metric-icon {
-            font-size: 2rem;
-            margin-bottom: 1rem;
+
+        .navbar-brand {
+            font-family: 'Amiri', serif;
+            font-weight: 700;
+            font-size: 1.5rem;
         }
-        
-        .recent-feedback {
-            padding: 4rem 0;
-            background: var(--bg-secondary);
-        }
-        
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-        
-        .section-title {
-            text-align: center;
-            color: var(--primary-color);
-            margin-bottom: 2rem;
-            font-size: 2.5rem;
-        }
-        
-        .loading-state {
-            text-align: center;
-            padding: 2rem;
-            color: var(--text-muted);
-        }
-        
-        .cta-section {
-            background: linear-gradient(135deg, var(--primary-color), #1e3a5f);
-            color: white;
-            padding: 4rem 0;
-            text-align: center;
-        }
-        
-        .cta-content h2 {
-            color: white;
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-        }
-        
-        .cta-content p {
-            font-size: 1.2rem;
-            margin-bottom: 2rem;
-            opacity: 0.9;
-        }
-        
+
         .footer {
-            background: var(--text-primary);
+            background: var(--text-color);
             color: white;
-            padding: 3rem 0 1rem;
+            padding: 3rem 0 1rem 0;
+            margin-top: 4rem;
         }
-        
-        .footer-content {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-            margin-bottom: 2rem;
-        }
-        
-        .footer-section h4 {
-            color: var(--secondary-color);
-            margin-bottom: 1rem;
-        }
-        
-        .footer-links {
-            list-style: none;
-        }
-        
-        .footer-links a {
-            color: white;
-            text-decoration: none;
-            transition: var(--transition-fast);
-        }
-        
-        .footer-links a:hover {
-            color: var(--secondary-color);
-        }
-        
-        .footer-bottom {
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            padding-top: 1rem;
-            text-align: center;
-        }
-        
+
         @media (max-width: 768px) {
-            .hero-content h1 {
-                font-size: 2rem;
+            .hero-section {
+                padding: 2rem 0;
             }
             
-            .hero-actions {
-                justify-content: center;
-            }
-            
-            .section-header {
-                flex-direction: column;
-                text-align: center;
+            .feature-card {
+                margin-bottom: 1rem;
             }
         }
     </style>
-    
-    <!-- Load initial dashboard data -->
-    <script>
-        document.addEventListener('DOMContentLoaded', async () => {
-            // Load recent feedback preview (limited to 3 items)
-            try {
-                const recentFeedback = await API.getFeedbackList({ limit: 3 });
-                const previewContainer = document.getElementById('feedback-list-preview');
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+        <div class="container">
+            <a class="navbar-brand arabic-title" href="/">
+                <i class="fas fa-comments text-primary"></i>
+                منصة صوت العميل العربية
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/">الرئيسية</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/dashboard/realtime">لوحة التحليلات</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/feedback">إرسال تعليق</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/surveys">الاستطلاعات</a>
+                    </li>
+                </ul>
                 
-                if (recentFeedback.length > 0) {
-                    previewContainer.innerHTML = recentFeedback
-                        .map(feedback => UI.createFeedbackItem(feedback))
-                        .join('');
-                } else {
-                    previewContainer.innerHTML = `
-                        <div class="text-center" style="padding: 2rem;">
-                            <i class="fas fa-comments" style="font-size: 3rem; color: var(--text-muted); margin-bottom: 1rem;"></i>
-                            <p class="text-muted">لا توجد تعليقات بعد</p>
-                            <a href="/feedback" class="btn btn-primary">إضافة أول تعليق</a>
-                        </div>
-                    `;
-                }
-            } catch (error) {
-                document.getElementById('feedback-list-preview').innerHTML = `
-                    <div class="alert alert-info">
-                        <i class="fas fa-info-circle"></i>
-                        ابدأ بإضافة تعليقات العملاء لرؤية التحليلات والإحصائيات
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/login">تسجيل الدخول</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/register">إنشاء حساب</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <h1 class="arabic-title display-4 mb-4">
+                        منصة صوت العميل العربية
+                    </h1>
+                    <p class="lead mb-4">
+                        منصة متقدمة لتحليل آراء العملاء باللغة العربية مع دعم اللهجات المختلفة والذكاء الثقافي.
+                        احصل على رؤى عميقة من تعليقات عملائك في الوقت الفعلي.
+                    </p>
+                    <div class="d-flex gap-3 flex-wrap">
+                        <a href="/dashboard/realtime" class="btn btn-primary-custom btn-lg">
+                            <i class="fas fa-chart-line me-2"></i>
+                            اعرض لوحة التحليلات
+                        </a>
+                        <a href="/feedback" class="btn btn-outline-light btn-lg">
+                            <i class="fas fa-comment-dots me-2"></i>
+                            أرسل تعليقك
+                        </a>
                     </div>
-                `;
-            }
+                </div>
+                <div class="col-lg-4 text-center">
+                    <i class="fas fa-chart-bar" style="font-size: 8rem; opacity: 0.3;"></i>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="container">
+        <div class="row">
+            <div class="col-12 text-center mb-5">
+                <h2 class="arabic-title display-6 mb-3">المميزات الرئيسية</h2>
+                <p class="lead text-muted">منصة شاملة مصممة خصيصاً للسوق العربي</p>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-lg-4 col-md-6">
+                <div class="feature-card" onclick="window.location.href='/dashboard/realtime'">
+                    <div class="text-center">
+                        <i class="fas fa-chart-line feature-icon"></i>
+                        <h4 class="arabic-title mb-3">تحليلات في الوقت الفعلي</h4>
+                        <p class="text-muted">
+                            اطلع على تحليل المشاعر والاتجاهات لحظة بلحظة مع لوحة تحكم تفاعلية
+                            تدعم التحديثات المباشرة أقل من ثانية واحدة.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6">
+                <div class="feature-card" onclick="window.location.href='/feedback'">
+                    <div class="text-center">
+                        <i class="fas fa-comments feature-icon"></i>
+                        <h4 class="arabic-title mb-3">دعم اللهجات العربية</h4>
+                        <p class="text-muted">
+                            معالجة متقدمة للهجات الخليجية والمصرية والشامية والمغربية
+                            مع فهم السياق الثقافي والتعبيرات المحلية.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6">
+                <div class="feature-card" onclick="window.location.href='/surveys'">
+                    <div class="text-center">
+                        <i class="fas fa-poll feature-icon"></i>
+                        <h4 class="arabic-title mb-3">استطلاعات ذكية</h4>
+                        <p class="text-muted">
+                            إنشاء وإدارة استطلاعات الرأي باللغة العربية مع تحليل تلقائي
+                            للنتائج وتقارير مفصلة بتنسيق RTL.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6">
+                <div class="feature-card">
+                    <div class="text-center">
+                        <i class="fas fa-brain feature-icon"></i>
+                        <h4 class="arabic-title mb-3">ذكاء اصطناعي متقدم</h4>
+                        <p class="text-muted">
+                            تحليل المشاعر والمواضيع باستخدام GPT-4o مع فهم عميق
+                            للثقافة العربية والسياق الاجتماعي.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6">
+                <div class="feature-card">
+                    <div class="text-center">
+                        <i class="fas fa-mobile-alt feature-icon"></i>
+                        <h4 class="arabic-title mb-3">قنوات متعددة</h4>
+                        <p class="text-muted">
+                            جمع التعليقات من الموقع والتطبيق والواتساب والبريد الإلكتروني
+                            ووسائل التواصل الاجتماعي في مكان واحد.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6">
+                <div class="feature-card">
+                    <div class="text-center">
+                        <i class="fas fa-file-pdf feature-icon"></i>
+                        <h4 class="arabic-title mb-3">تقارير احترافية</h4>
+                        <p class="text-muted">
+                            إنتاج تقارير PDF باللغة العربية مع تنسيق RTL صحيح
+                            وخطوط عربية احترافية ورسوم بيانية.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="container">
+        <div class="stats-section">
+            <div class="row">
+                <div class="col-12 text-center mb-4">
+                    <h3 class="arabic-title">الأداء والإحصائيات</h3>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-3 col-md-6">
+                    <div class="stat-item">
+                        <span class="stat-number">88,000+</span>
+                        <span class="stat-label">تحليل في الثانية</span>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="stat-item">
+                        <span class="stat-number">&lt;1s</span>
+                        <span class="stat-label">زمن تحميل اللوحة</span>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="stat-item">
+                        <span class="stat-number">4</span>
+                        <span class="stat-label">لهجات عربية مدعومة</span>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="stat-item">
+                        <span class="stat-number">10+</span>
+                        <span class="stat-label">قناة تجميع البيانات</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action -->
+    <section class="container text-center mb-5">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <h3 class="arabic-title mb-4">ابدأ رحلتك مع تحليل صوت العميل العربي</h3>
+                <p class="lead mb-4">
+                    انضم إلى المؤسسات الرائدة في المنطقة واحصل على رؤى قيمة
+                    من آراء عملائك باللغة العربية
+                </p>
+                <div class="d-flex gap-3 justify-content-center flex-wrap">
+                    <a href="/register" class="btn btn-primary-custom btn-lg">
+                        <i class="fas fa-user-plus me-2"></i>
+                        إنشاء حساب مجاني
+                    </a>
+                    <a href="/dashboard/realtime" class="btn btn-outline-primary btn-lg">
+                        <i class="fas fa-eye me-2"></i>
+                        استكشف المنصة
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-4">
+                    <h5 class="arabic-title">منصة صوت العميل العربية</h5>
+                    <p class="text-light">
+                        منصة متقدمة لتحليل آراء العملاء باللغة العربية
+                        مع دعم الذكاء الاصطناعي والتحليلات في الوقت الفعلي.
+                    </p>
+                </div>
+                <div class="col-lg-2 mb-4">
+                    <h6>الروابط السريعة</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="/" class="text-light text-decoration-none">الرئيسية</a></li>
+                        <li><a href="/dashboard/realtime" class="text-light text-decoration-none">لوحة التحليلات</a></li>
+                        <li><a href="/feedback" class="text-light text-decoration-none">إرسال تعليق</a></li>
+                        <li><a href="/surveys" class="text-light text-decoration-none">الاستطلاعات</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 mb-4">
+                    <h6>المميزات</h6>
+                    <ul class="list-unstyled">
+                        <li class="text-light">تحليل المشاعر</li>
+                        <li class="text-light">دعم اللهجات</li>
+                        <li class="text-light">تقارير احترافية</li>
+                        <li class="text-light">تحديثات فورية</li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 mb-4">
+                    <h6>الدعم التقني</h6>
+                    <ul class="list-unstyled">
+                        <li class="text-light">support@arabic-voc.com</li>
+                        <li class="text-light">دليل المستخدم</li>
+                        <li class="text-light">الأسئلة الشائعة</li>
+                        <li class="text-light">تدريب المستخدمين</li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="text-light">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <p class="text-light mb-0">
+                        © 2025 منصة صوت العميل العربية. جميع الحقوق محفوظة.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JavaScript -->
+    <script>
+        // Add smooth scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
         });
+
+        // Add loading animation for feature cards
+        document.querySelectorAll('.feature-card').forEach(card => {
+            card.addEventListener('click', function() {
+                if (this.onclick) {
+                    this.style.opacity = '0.7';
+                    setTimeout(() => {
+                        this.style.opacity = '1';
+                    }, 300);
+                }
+            });
+        });
+
+        // Real-time stats animation (demo)
+        function animateStats() {
+            const statNumbers = document.querySelectorAll('.stat-number');
+            statNumbers.forEach(stat => {
+                if (stat.textContent.includes('88,000+')) {
+                    // Animate the processing rate
+                    let current = 88000;
+                    const increment = Math.floor(Math.random() * 100);
+                    current += increment;
+                    stat.textContent = current.toLocaleString('ar-SA') + '+';
+                }
+            });
+        }
+
+        // Update stats every 5 seconds for demo
+        setInterval(animateStats, 5000);
     </script>
 </body>
 </html>

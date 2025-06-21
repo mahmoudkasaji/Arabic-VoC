@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الاستطلاعات - منصة صوت العميل العربية</title>
+    
+    <!-- Bootstrap RTL CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+    
+    <!-- Arabic Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-color: #2E8B57;
+            --secondary-color: #F4A460;
+            --accent-color: #4169E1;
+            --text-color: #2c3e50;
+            --bg-color: #f8f9fa;
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            direction: rtl;
+            text-align: right;
+        }
+
+        .arabic-title {
+            font-family: 'Amiri', serif;
+            font-weight: 700;
+        }
+
+        .survey-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+
+        .survey-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .btn-primary-custom {
+            background: var(--primary-color);
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary-custom:hover {
+            background: #236B47;
+            transform: translateY(-2px);
+        }
+
+        .navbar-brand {
+            font-family: 'Amiri', serif;
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+
+        .survey-stats {
+            display: flex;
+            gap: 2rem;
+            margin: 1rem 0;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            display: block;
+        }
+
+        .stat-label {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+        <div class="container">
+            <a class="navbar-brand arabic-title" href="/">
+                <i class="fas fa-comments text-primary"></i>
+                منصة صوت العميل العربية
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">الرئيسية</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/dashboard/realtime">لوحة التحليلات</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/feedback">إرسال تعليق</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/surveys">الاستطلاعات</a>
+                    </li>
+                </ul>
+                
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/login">تسجيل الدخول</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/register">إنشاء حساب</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-12">
+                <!-- Page Header -->
+                <div class="text-center mb-5">
+                    <h1 class="arabic-title display-5 mb-3">الاستطلاعات</h1>
+                    <p class="lead text-muted">
+                        استطلاعات ذكية لجمع آراء العملاء باللغة العربية
+                    </p>
+                </div>
+
+                <!-- Sample Surveys -->
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="survey-card">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <div>
+                                    <h4 class="arabic-title">استطلاع رضا العملاء</h4>
+                                    <p class="text-muted mb-0">تقييم مستوى الرضا العام عن خدماتنا</p>
+                                </div>
+                                <span class="badge bg-success">نشط</span>
+                            </div>
+                            
+                            <div class="survey-stats">
+                                <div class="stat-item">
+                                    <span class="stat-number">1,234</span>
+                                    <span class="stat-label">المشاركات</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-number">4.7</span>
+                                    <span class="stat-label">متوسط التقييم</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-number">78%</span>
+                                    <span class="stat-label">نسبة الإكمال</span>
+                                </div>
+                            </div>
+                            
+                            <div class="d-flex gap-2 mt-3">
+                                <button class="btn btn-primary-custom btn-sm">
+                                    <i class="fas fa-eye me-1"></i>
+                                    عرض النتائج
+                                </button>
+                                <button class="btn btn-outline-primary btn-sm">
+                                    <i class="fas fa-edit me-1"></i>
+                                    تعديل
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6">
+                        <div class="survey-card">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <div>
+                                    <h4 class="arabic-title">تقييم المنتجات الجديدة</h4>
+                                    <p class="text-muted mb-0">آراء العملاء حول المنتجات المطلقة حديثاً</p>
+                                </div>
+                                <span class="badge bg-warning">قيد الإعداد</span>
+                            </div>
+                            
+                            <div class="survey-stats">
+                                <div class="stat-item">
+                                    <span class="stat-number">567</span>
+                                    <span class="stat-label">المشاركات</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-number">4.2</span>
+                                    <span class="stat-label">متوسط التقييم</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-number">65%</span>
+                                    <span class="stat-label">نسبة الإكمال</span>
+                                </div>
+                            </div>
+                            
+                            <div class="d-flex gap-2 mt-3">
+                                <button class="btn btn-primary-custom btn-sm">
+                                    <i class="fas fa-eye me-1"></i>
+                                    عرض النتائج
+                                </button>
+                                <button class="btn btn-outline-primary btn-sm">
+                                    <i class="fas fa-edit me-1"></i>
+                                    تعديل
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6">
+                        <div class="survey-card">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <div>
+                                    <h4 class="arabic-title">تجربة التطبيق المحمول</h4>
+                                    <p class="text-muted mb-0">تقييم سهولة الاستخدام وأداء التطبيق</p>
+                                </div>
+                                <span class="badge bg-success">نشط</span>
+                            </div>
+                            
+                            <div class="survey-stats">
+                                <div class="stat-item">
+                                    <span class="stat-number">892</span>
+                                    <span class="stat-label">المشاركات</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-number">4.5</span>
+                                    <span class="stat-label">متوسط التقييم</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-number">82%</span>
+                                    <span class="stat-label">نسبة الإكمال</span>
+                                </div>
+                            </div>
+                            
+                            <div class="d-flex gap-2 mt-3">
+                                <button class="btn btn-primary-custom btn-sm">
+                                    <i class="fas fa-eye me-1"></i>
+                                    عرض النتائج
+                                </button>
+                                <button class="btn btn-outline-primary btn-sm">
+                                    <i class="fas fa-edit me-1"></i>
+                                    تعديل
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6">
+                        <div class="survey-card">
+                            <div class="text-center">
+                                <i class="fas fa-plus-circle" style="font-size: 3rem; color: var(--primary-color); margin-bottom: 1rem;"></i>
+                                <h4 class="arabic-title">إنشاء استطلاع جديد</h4>
+                                <p class="text-muted">أنشئ استطلاع جديد لجمع آراء العملاء</p>
+                                <button class="btn btn-primary-custom">
+                                    <i class="fas fa-plus me-2"></i>
+                                    إنشاء استطلاع
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Survey Features -->
+                <div class="row mt-5">
+                    <div class="col-12">
+                        <h3 class="arabic-title text-center mb-4">مميزات الاستطلاعات</h3>
+                    </div>
+                    
+                    <div class="col-lg-4 mb-4">
+                        <div class="text-center">
+                            <i class="fas fa-language" style="font-size: 3rem; color: var(--primary-color); margin-bottom: 1rem;"></i>
+                            <h5 class="arabic-title">دعم كامل للعربية</h5>
+                            <p class="text-muted">إنشاء استطلاعات باللغة العربية مع دعم جميع اللهجات المحلية</p>
+                        </div>
+                    </div>
+                    
+                    <div class="col-lg-4 mb-4">
+                        <div class="text-center">
+                            <i class="fas fa-chart-bar" style="font-size: 3rem; color: var(--primary-color); margin-bottom: 1rem;"></i>
+                            <h5 class="arabic-title">تحليل فوري</h5>
+                            <p class="text-muted">تحليل النتائج في الوقت الفعلي مع رؤى ذكية باللغة العربية</p>
+                        </div>
+                    </div>
+                    
+                    <div class="col-lg-4 mb-4">
+                        <div class="text-center">
+                            <i class="fas fa-file-export" style="font-size: 3rem; color: var(--primary-color); margin-bottom: 1rem;"></i>
+                            <h5 class="arabic-title">تقارير احترافية</h5>
+                            <p class="text-muted">تصدير التقارير بصيغة PDF مع تنسيق RTL صحيح</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Add interactivity to survey cards
+        document.querySelectorAll('.survey-card').forEach(card => {
+            card.addEventListener('click', function(e) {
+                // Don't trigger if clicking on buttons
+                if (e.target.tagName === 'BUTTON' || e.target.closest('button')) {
+                    return;
+                }
+                
+                // Add visual feedback
+                this.style.transform = 'translateY(-2px)';
+                setTimeout(() => {
+                    this.style.transform = '';
+                }, 200);
+            });
+        });
+    </script>
+</body>
+</html>
