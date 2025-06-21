@@ -17,28 +17,15 @@ DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://user:pass@localhost:5432/
 if DATABASE_URL.startswith("postgresql://"):
     DATABASE_URL = DATABASE_URL.replace("postgresql://", "postgresql+asyncpg://", 1)
 
-# Clean SSL parameters that asyncpg doesn't support
-if "sslmode=" in DATABASE_URL:
-    # Remove sslmode parameter and replace with asyncpg-compatible ssl parameter
-    import urllib.parse
-    parsed = urllib.parse.urlparse(DATABASE_URL)
-    query_params = urllib.parse.parse_qs(parsed.query)
-    
-    # Remove sslmode and add ssl if needed
-    if 'sslmode' in query_params:
-        sslmode = query_params['sslmode'][0]
-        del query_params['sslmode']
-        
-        # Convert sslmode to ssl for asyncpg
-        if sslmode in ['require', 'prefer']:
-            query_params['ssl'] = ['true']
-    
-    # Rebuild URL
-    new_query = urllib.parse.urlencode(query_params, doseq=True)
-    DATABASE_URL = urllib.parse.urlunparse((
-        parsed.scheme, parsed.netloc, parsed.path,
-        parsed.params, new_query, parsed.fragment
-    ))
+# Simple approach: Remove all SSL-related parameters that asyncpg doesn't support
+import re
+DATABASE_URL = re.sub(r'[?&]sslmode=[^&]*', '', DATABASE_URL)
+DATABASE_URL = re.sub(r'[?&]sslcert=[^&]*', '', DATABASE_URL)
+DATABASE_URL = re.sub(r'[?&]sslkey=[^&]*', '', DATABASE_URL)
+DATABASE_URL = re.sub(r'[?&]sslrootcert=[^&]*', '', DATABASE_URL)
+
+# Clean up any trailing ? or & characters
+DATABASE_URL = re.sub(r'[?&]$', '', DATABASE_URL)
 
 # Create async engine with proper configuration
 engine = create_async_engine(
