@@ -13,6 +13,7 @@ dependencies = [
     "beautifulsoup4>=4.13.4",
     "email-validator>=2.2.0",
     "fastapi>=0.115.13",
+    "flask-dance>=7.1.0",
     "flask>=3.1.1",
     "flask-sqlalchemy>=3.1.1",
     "gunicorn[gthread,uvicorn]>=23.0.0",
@@ -32,4 +33,6 @@ dependencies = [
     "selenium>=4.33.0",
     "sqlalchemy>=2.0.41",
     "uvicorn[standard]>=0.34.3",
+    "flask-login>=0.6.3",
+    "oauthlib>=3.3.1",
 ]
