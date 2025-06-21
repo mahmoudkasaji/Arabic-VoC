@@ -158,7 +158,7 @@ class ArabicTextProcessor:
 # Global processor instance
 arabic_processor = ArabicTextProcessor()
 
-async def process_arabic_text(text: str) -> str:
+def process_arabic_text(text: str) -> str:
     """Process Arabic text for analysis and display"""
     try:
         # Normalize the text
@@ -175,7 +175,7 @@ async def process_arabic_text(text: str) -> str:
         logger.error(f"Error processing Arabic text: {str(e)}")
         return text
 
-async def extract_sentiment(text: str) -> Dict[str, Any]:
+def extract_sentiment(text: str) -> Dict[str, Any]:
     """Extract sentiment indicators from Arabic text"""
     try:
         # Get emotion word counts

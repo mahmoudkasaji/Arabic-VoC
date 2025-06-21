@@ -21,7 +21,7 @@ class ArabicFeedbackAnalyzer:
     def __init__(self):
         self.model = "gpt-4o"  # the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
         
-    async def analyze_sentiment(self, text: str) -> Dict[str, Any]:
+    def analyze_sentiment(self, text: str) -> Dict[str, Any]:
         """Analyze sentiment of Arabic feedback text"""
         try:
             prompt = f"""
@@ -73,7 +73,7 @@ class ArabicFeedbackAnalyzer:
                 "reasoning": "خطأ في التحليل"
             }
     
-    async def categorize_feedback(self, text: str) -> Dict[str, Any]:
+    def categorize_feedback(self, text: str) -> Dict[str, Any]:
         """Categorize Arabic feedback into business categories"""
         try:
             prompt = f"""
@@ -128,7 +128,7 @@ class ArabicFeedbackAnalyzer:
                 "customer_type": "غير محدد"
             }
     
-    async def generate_summary(self, text: str) -> str:
+    def generate_summary(self, text: str) -> str:
         """Generate Arabic summary of feedback"""
         try:
             prompt = f"""
@@ -165,7 +165,7 @@ class ArabicFeedbackAnalyzer:
             logger.error(f"Error generating Arabic summary: {str(e)}")
             return "لا يمكن إنشاء ملخص في الوقت الحالي"
     
-    async def suggest_actions(self, text: str, categories: Dict[str, Any]) -> List[str]:
+    def suggest_actions(self, text: str, categories: Dict[str, Any]) -> List[str]:
         """Suggest action items based on feedback analysis"""
         try:
             urgency = categories.get("urgency_level", "منخفض")
@@ -189,7 +189,7 @@ class ArabicFeedbackAnalyzer:
             أرجع النتيجة بصيغة: {"actions": ["إجراء 1", "إجراء 2", ...]}
             """
             
-            response = await openai_client.chat.completions.acreate(
+            response = openai_client.chat.completions.create(
                 model=self.model,
                 messages=[
                     {
@@ -215,24 +215,24 @@ class ArabicFeedbackAnalyzer:
 # Global analyzer instance
 arabic_analyzer = ArabicFeedbackAnalyzer()
 
-async def analyze_arabic_feedback(text: str) -> Dict[str, Any]:
+def analyze_arabic_feedback(text: str) -> Dict[str, Any]:
     """Complete analysis of Arabic feedback text"""
     try:
         logger.info(f"Starting comprehensive analysis of Arabic feedback")
         
         # Run sentiment analysis
-        sentiment_data = await arabic_analyzer.analyze_sentiment(text)
+        sentiment_data = arabic_analyzer.analyze_sentiment(text)
         
         # Run categorization
-        category_data = await arabic_analyzer.categorize_feedback(text)
+        category_data = arabic_analyzer.categorize_feedback(text)
         
         # Generate summary
-        summary = await arabic_analyzer.generate_summary(text)
+        summary = arabic_analyzer.generate_summary(text)
         
         # Suggest actions if needed
         actions = []
         if category_data.get("requires_action", False):
-            actions = await arabic_analyzer.suggest_actions(text, category_data)
+            actions = arabic_analyzer.suggest_actions(text, category_data)
         
         # Combine all analysis results
         analysis_result = {
@@ -272,13 +272,13 @@ async def analyze_arabic_feedback(text: str) -> Dict[str, Any]:
             "error": str(e)
         }
 
-async def batch_analyze_feedback(feedback_list: List[str]) -> List[Dict[str, Any]]:
+def batch_analyze_feedback(feedback_list: List[str]) -> List[Dict[str, Any]]:
     """Analyze multiple feedback texts in batch"""
     results = []
     
     for text in feedback_list:
         try:
-            analysis = await analyze_arabic_feedback(text)
+            analysis = analyze_arabic_feedback(text)
             results.append(analysis)
         except Exception as e:
             logger.error(f"Error in batch analysis: {str(e)}")

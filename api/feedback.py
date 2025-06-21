@@ -78,13 +78,13 @@ async def process_feedback_background(feedback_id: int, db: AsyncSession):
             return
 
         # Process Arabic text
-        processed_text = await process_arabic_text(feedback_data.content)
+        processed_text = process_arabic_text(feedback_data.content)
         
         # Extract sentiment
-        sentiment_data = await extract_sentiment(processed_text)
+        sentiment_data = extract_sentiment(processed_text)
         
         # Get AI analysis
-        ai_analysis = await analyze_arabic_feedback(processed_text)
+        ai_analysis = analyze_arabic_feedback(processed_text)
         
         # Update feedback with processed data
         await db.execute(

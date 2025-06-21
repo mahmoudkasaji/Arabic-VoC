@@ -73,7 +73,6 @@ async def init_db():
         logger.error(f"Error initializing database: {str(e)}")
         raise
 
-@asynccontextmanager
 async def get_db_session():
     """Get database session with proper cleanup"""
     async with AsyncSessionLocal() as session:
