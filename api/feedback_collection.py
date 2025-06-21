@@ -7,7 +7,7 @@ import logging
 import asyncio
 from datetime import datetime
 from typing import List, Optional, Dict, Any
-from fastapi import APIRouter, Depends, HTTPException, status, Request, BackgroundTasks
+from fastapi import APIRouter, Depends, HTTPException, status, Request, BackgroundTasks, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, and_, or_, func
 from pydantic import BaseModel, Field, validator
@@ -35,7 +35,7 @@ class FeedbackSubmission(BaseModel):
     rating: Optional[int] = Field(None, ge=1, le=5)
     category: Optional[str] = Field(None, max_length=100)
     subcategory: Optional[str] = Field(None, max_length=100)
-    priority: Optional[str] = Field("normal", regex="^(low|normal|high|urgent)$")
+    priority: Optional[str] = Field("normal", pattern="^(low|normal|high|urgent)$")
     location: Optional[str] = Field(None, max_length=200)
     location_ar: Optional[str] = Field(None, max_length=200)
     channel_metadata: Optional[Dict[str, Any]] = Field(default_factory=dict)
@@ -53,7 +53,7 @@ class SurveyResponseSubmission(BaseModel):
     respondent_name: Optional[str] = Field(None, max_length=200)
     respondent_name_ar: Optional[str] = Field(None, max_length=200)
     answers: Dict[str, Any] = Field(..., description="Question answers")
-    language_used: str = Field("ar", regex="^(ar|en)$")
+    language_used: str = Field("ar", pattern="^(ar|en)$")
     started_at: Optional[datetime] = Field(None)
     
     @validator('answers')
@@ -564,7 +564,7 @@ async def get_feedback_analytics(
 async def search_feedback(
     q: str = Query(..., min_length=2, description="Search query"),
     channel: Optional[FeedbackChannel] = None,
-    sentiment: Optional[str] = Query(None, regex="^(positive|negative|neutral)$"),
+    sentiment: Optional[str] = Query(None, pattern="^(positive|negative|neutral)$"),
     limit: int = Query(50, ge=1, le=100),
     offset: int = Query(0, ge=0),
     db: AsyncSession = Depends(get_arabic_db_session)

@@ -56,7 +56,7 @@ class SurveyCreate(BaseModel):
     multiple_responses: bool = Field(False)
     
     # Language settings
-    primary_language: str = Field("ar", regex="^(ar|en)$")
+    primary_language: str = Field("ar", pattern="^(ar|en)$")
     supported_languages: List[str] = Field(["ar", "en"])
     rtl_enabled: bool = Field(True)
     
