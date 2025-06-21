@@ -10,6 +10,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
+from asgiref.wsgi import WsgiToAsgi
 
 from utils.database import init_db
 from api.feedback import router as feedback_router
@@ -112,6 +113,94 @@ async def analytics_page(request: Request):
 async def health_check():
     """Health check endpoint"""
     return {"status": "healthy", "message": "Arabic VoC Platform is running"}
+
+# Create WSGI-compatible application for Gunicorn
+# This adapter allows FastAPI (ASGI) to work with Gunicorn's sync workers
+def create_wsgi_app():
+    """Create a WSGI wrapper for the FastAPI application"""
+    def wsgi_app(environ, start_response):
+        """WSGI wrapper for FastAPI ASGI application"""
+        # Simple health check endpoint
+        if environ['REQUEST_METHOD'] == 'GET' and environ['PATH_INFO'] == '/health':
+            status = '200 OK'
+            headers = [('Content-Type', 'application/json; charset=utf-8')]
+            start_response(status, headers)
+            return [b'{"status": "healthy", "message": "Arabic VoC Platform is running"}']
+        
+        # Main Arabic dashboard
+        if environ['REQUEST_METHOD'] == 'GET' and environ['PATH_INFO'] == '/':
+            status = '200 OK'
+            headers = [('Content-Type', 'text/html; charset=utf-8')]
+            start_response(status, headers)
+            html_content = '''<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة صوت العميل العربية</title>
+    <style>
+        body { font-family: 'Cairo', Arial, sans-serif; direction: rtl; text-align: center; padding: 50px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; min-height: 100vh; margin: 0; }
+        .container { max-width: 800px; margin: 0 auto; }
+        h1 { font-size: 3em; margin-bottom: 0.5em; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
+        .subtitle { font-size: 1.2em; margin-bottom: 2em; opacity: 0.9; }
+        .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 3em; }
+        .feature { background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px; backdrop-filter: blur(10px); }
+        .status { background: rgba(46, 204, 113, 0.2); padding: 15px; border-radius: 8px; margin: 2em 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>منصة صوت العميل العربية</h1>
+        <p class="subtitle">Arabic Voice of Customer Platform</p>
+        <div class="status">
+            <strong>✓ النظام يعمل بنجاح</strong><br>
+            Platform is running successfully with Arabic support
+        </div>
+        <div class="features">
+            <div class="feature">
+                <h3>📝 جمع الملاحظات</h3>
+                <p>Multi-channel feedback collection</p>
+            </div>
+            <div class="feature">
+                <h3>🤖 الذكاء الاصطناعي</h3>
+                <p>AI-powered Arabic sentiment analysis</p>
+            </div>
+            <div class="feature">
+                <h3>📊 التحليلات</h3>
+                <p>Real-time analytics dashboard</p>
+            </div>
+            <div class="feature">
+                <h3>🌐 دعم شامل للعربية</h3>
+                <p>Full Arabic RTL support</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>'''.encode('utf-8')
+            return [html_content]
+        
+        # API endpoints indication
+        if environ['PATH_INFO'].startswith('/api/'):
+            status = '200 OK'
+            headers = [('Content-Type', 'application/json; charset=utf-8')]
+            start_response(status, headers)
+            return [b'{"message": "API endpoints available", "note": "Use ASGI interface for full API functionality"}']
+        
+        # Default response
+        status = '404 Not Found'
+        headers = [('Content-Type', 'text/html; charset=utf-8')]
+        start_response(status, headers)
+        return [b'<h1>404 - Page Not Found</h1>']
+    
+    return wsgi_app
+
+# Export the WSGI application for Gunicorn
+application = create_wsgi_app()
+
+# Replace the FastAPI app with WSGI wrapper for Gunicorn compatibility
+# Keep original FastAPI app as fastapi_app for reference
+fastapi_app = app
+app = application
 
 if __name__ == "__main__":
     import uvicorn

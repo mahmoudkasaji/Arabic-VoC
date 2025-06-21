@@ -6,6 +6,7 @@ requires-python = ">=3.11"
 dependencies = [
     "aiofiles>=24.1.0",
     "arabic-reshaper>=3.0.0",
+    "asgiref>=3.8.1",
     "asyncpg>=0.30.0",
     "email-validator>=2.2.0",
     "fastapi>=0.115.13",
