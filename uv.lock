@@ -732,7 +732,7 @@ requires-dist = [
     { name = "fastapi", specifier = ">=0.115.13" },
     { name = "flask", specifier = ">=3.1.1" },
     { name = "flask-sqlalchemy", specifier = ">=3.1.1" },
-    { name = "gunicorn", extras = ["gthread"], specifier = ">=23.0.0" },
+    { name = "gunicorn", extras = ["gthread", "uvicorn"], specifier = ">=23.0.0" },
     { name = "jinja2", specifier = ">=3.1.6" },
     { name = "openai", specifier = ">=1.90.0" },
     { name = "psycopg2-binary", specifier = ">=2.9.10" },
