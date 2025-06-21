@@ -58,10 +58,33 @@ class LanguageManager {
                 // Dashboard
                 dashboard: {
                     title: 'لوحة التحليلات المباشرة',
-                    sentiment_title: 'تحليل المشاعر',
-                    trends_title: 'الاتجاهات',
-                    channels_title: 'القنوات',
+                    subtitle: 'تحليل آراء العملاء في الوقت الفعلي مع رؤى ثقافية متقدمة',
+                    sentiment_title: 'تحليل المشاعر المباشر',
+                    trends_title: 'الاتجاهات الزمنية',
+                    channels_title: 'أداء القنوات',
                     metrics_title: 'المقاييس الرئيسية'
+                },
+                // Surveys
+                surveys: {
+                    title: 'إدارة الاستطلاعات',
+                    subtitle: 'أنشئ وأدر استطلاعات مخصصة لجمع آراء العملاء',
+                    available_surveys: 'الاستطلاعات المتاحة',
+                    create_new: 'إنشاء استطلاع جديد'
+                },
+                // Authentication
+                auth: {
+                    login_title: 'تسجيل الدخول',
+                    register_title: 'إنشاء حساب جديد',
+                    email_label: 'البريد الإلكتروني',
+                    email_placeholder: 'أدخل بريدك الإلكتروني',
+                    password_label: 'كلمة المرور',
+                    password_placeholder: 'أدخل كلمة المرور',
+                    login_button: 'تسجيل الدخول',
+                    register_button: 'إنشاء حساب',
+                    no_account: 'ليس لديك حساب؟',
+                    create_account: 'إنشاء حساب جديد',
+                    have_account: 'لديك حساب بالفعل؟',
+                    login_here: 'سجل دخولك هنا'
                 },
                 // Common
                 common: {
@@ -126,10 +149,33 @@ class LanguageManager {
                 // Dashboard
                 dashboard: {
                     title: 'Real-time Analytics Dashboard',
-                    sentiment_title: 'Sentiment Analysis',
-                    trends_title: 'Trends',
-                    channels_title: 'Channels',
+                    subtitle: 'Real-time customer feedback analysis with advanced cultural insights',
+                    sentiment_title: 'Real-time Sentiment Analysis',
+                    trends_title: 'Time Trends',
+                    channels_title: 'Channel Performance',
                     metrics_title: 'Key Metrics'
+                },
+                // Surveys
+                surveys: {
+                    title: 'Survey Management',
+                    subtitle: 'Create and manage custom surveys to collect customer feedback',
+                    available_surveys: 'Available Surveys',
+                    create_new: 'Create New Survey'
+                },
+                // Authentication
+                auth: {
+                    login_title: 'Login',
+                    register_title: 'Create New Account',
+                    email_label: 'Email',
+                    email_placeholder: 'Enter your email',
+                    password_label: 'Password',
+                    password_placeholder: 'Enter your password',
+                    login_button: 'Login',
+                    register_button: 'Create Account',
+                    no_account: "Don't have an account?",
+                    create_account: 'Create new account',
+                    have_account: 'Already have an account?',
+                    login_here: 'Login here'
                 },
                 // Common
                 common: {
