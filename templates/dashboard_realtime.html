@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحليلات المباشرة - منصة صوت العميل العربية</title>
+    
+    <!-- RTL Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+    
+    <!-- Arabic Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+    
+    <!-- Arabic-specific CSS -->
+    <style>
+        :root {
+            --primary-color: #2E8B57;
+            --secondary-color: #F4A460;
+            --accent-color: #4169E1;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --info-color: #17a2b8;
+            --text-color: #2c3e50;
+            --bg-color: #f8f9fa;
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            direction: rtl;
+            text-align: right;
+        }
+
+        .arabic-title {
+            font-family: 'Amiri', serif;
+            font-weight: 700;
+        }
+
+        .dashboard-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+        }
+
+        .metric-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-label {
+            color: #6c757d;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+        }
+
+        .sentiment-gauge {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin: 0 auto;
+        }
+
+        .dialect-chip {
+            display: inline-block;
+            background: var(--info-color);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin: 0.25rem;
+        }
+
+        .channel-performance {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem;
+            margin: 0.5rem 0;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-right: 4px solid var(--primary-color);
+        }
+
+        .trending-up {
+            color: var(--success-color);
+        }
+
+        .trending-down {
+            color: var(--danger-color);
+        }
+
+        .real-time-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            background: var(--success-color);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+            margin-left: 0.5rem;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        .chart-container {
+            position: relative;
+            height: 400px;
+            margin: 1rem 0;
+        }
+
+        .cultural-insight {
+            background: linear-gradient(45deg, #fff3cd, #ffeaa7);
+            border: 1px solid #ffeaa7;
+            border-radius: 10px;
+            padding: 1rem;
+            margin: 0.5rem 0;
+        }
+
+        .regional-map {
+            background: var(--bg-color);
+            border-radius: 10px;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .status-connected {
+            color: var(--success-color);
+        }
+
+        .status-disconnected {
+            color: var(--danger-color);
+        }
+
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .alert-arabic {
+            direction: rtl;
+            text-align: right;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .metric-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .chart-container {
+                height: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1 class="arabic-title display-4 mb-2">لوحة التحليلات المباشرة</h1>
+                    <p class="lead">منصة صوت العميل العربية - تحليل مباشر ومتقدم</p>
+                </div>
+                <div class="col-md-4 text-end">
+                    <div class="text-white">
+                        <small>حالة الاتصال:</small>
+                        <span id="connectionStatus" class="status-disconnected">غير متصل</span>
+                        <span class="real-time-indicator" id="liveIndicator" style="display: none;"></span>
+                    </div>
+                    <div class="text-white mt-2">
+                        <small>آخر تحديث:</small>
+                        <span id="lastUpdate">--</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid">
+        <!-- Key Metrics Grid -->
+        <div class="metric-grid">
+            <div class="metric-card">
+                <div class="metric-value text-primary" id="totalFeedbackToday">0</div>
+                <div class="metric-label">إجمالي التعليقات اليوم</div>
+            </div>
+            
+            <div class="metric-card">
+                <div class="metric-value" id="liveSentimentScore">0.0</div>
+                <div class="metric-label">نتيجة المشاعر المباشرة</div>
+            </div>
+            
+            <div class="metric-card">
+                <div class="metric-value text-success" id="positivePercentage">0%</div>
+                <div class="metric-label">نسبة المشاعر الإيجابية</div>
+            </div>
+            
+            <div class="metric-card">
+                <div class="metric-value text-info" id="activeChannels">0</div>
+                <div class="metric-label">القنوات النشطة</div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Sentiment Trends Chart -->
+            <div class="col-lg-8">
+                <div class="metric-card">
+                    <h3 class="arabic-title mb-3">اتجاهات المشاعر بالوقت الفعلي</h3>
+                    <div class="chart-container">
+                        <canvas id="sentimentTrendsChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sentiment Gauge -->
+            <div class="col-lg-4">
+                <div class="metric-card text-center">
+                    <h4 class="arabic-title mb-3">مقياس المشاعر</h4>
+                    <div class="sentiment-gauge">
+                        <canvas id="sentimentGauge" width="200" height="200"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Dialect Breakdown -->
+            <div class="col-lg-6">
+                <div class="metric-card">
+                    <h3 class="arabic-title mb-3">توزيع اللهجات العربية</h3>
+                    <div id="dialectBreakdown">
+                        <!-- Dialect chips will be populated here -->
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="dialectChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Channel Performance -->
+            <div class="col-lg-6">
+                <div class="metric-card">
+                    <h3 class="arabic-title mb-3">أداء القنوات</h3>
+                    <div id="channelPerformance">
+                        <!-- Channel performance items will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Cultural Insights -->
+            <div class="col-lg-8">
+                <div class="metric-card">
+                    <h3 class="arabic-title mb-3">الرؤى الثقافية</h3>
+                    <div id="culturalInsights">
+                        <!-- Cultural insights will be populated here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Regional Metrics -->
+            <div class="col-lg-4">
+                <div class="metric-card">
+                    <h3 class="arabic-title mb-3">المقاييس الإقليمية</h3>
+                    <div id="regionalMetrics">
+                        <!-- Regional metrics will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Trending Topics -->
+        <div class="row">
+            <div class="col-12">
+                <div class="metric-card">
+                    <h3 class="arabic-title mb-3">المواضيع الرائجة</h3>
+                    <div class="chart-container">
+                        <canvas id="topicsChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Dashboard JavaScript -->
+    <script>
+        class ArabicDashboard {
+            constructor() {
+                this.ws = null;
+                this.charts = {};
+                this.isConnected = false;
+                this.metrics = null;
+                
+                this.initializeCharts();
+                this.connectWebSocket();
+                this.startHealthCheck();
+            }
+
+            connectWebSocket() {
+                const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+                const wsUrl = `${protocol}//${window.location.host}/api/analytics/realtime/ws`;
+                
+                try {
+                    this.ws = new WebSocket(wsUrl);
+                    
+                    this.ws.onopen = () => {
+                        console.log('WebSocket connected');
+                        this.isConnected = true;
+                        this.updateConnectionStatus(true);
+                    };
+                    
+                    this.ws.onmessage = (event) => {
+                        const data = JSON.parse(event.data);
+                        if (data.type === 'metrics_update') {
+                            this.updateDashboard(data.data);
+                        }
+                    };
+                    
+                    this.ws.onclose = () => {
+                        console.log('WebSocket disconnected');
+                        this.isConnected = false;
+                        this.updateConnectionStatus(false);
+                        
+                        // Reconnect after 5 seconds
+                        setTimeout(() => this.connectWebSocket(), 5000);
+                    };
+                    
+                    this.ws.onerror = (error) => {
+                        console.error('WebSocket error:', error);
+                        this.updateConnectionStatus(false);
+                    };
+                    
+                } catch (error) {
+                    console.error('Failed to connect WebSocket:', error);
+                    this.updateConnectionStatus(false);
+                }
+            }
+
+            updateConnectionStatus(connected) {
+                const statusElement = document.getElementById('connectionStatus');
+                const indicatorElement = document.getElementById('liveIndicator');
+                
+                if (connected) {
+                    statusElement.textContent = 'متصل';
+                    statusElement.className = 'status-connected';
+                    indicatorElement.style.display = 'inline-block';
+                } else {
+                    statusElement.textContent = 'غير متصل';
+                    statusElement.className = 'status-disconnected';
+                    indicatorElement.style.display = 'none';
+                }
+            }
+
+            updateDashboard(metrics) {
+                this.metrics = metrics;
+                this.updateKeyMetrics(metrics);
+                this.updateCharts(metrics);
+                this.updateDialectBreakdown(metrics.dialect_breakdown);
+                this.updateChannelPerformance(metrics.channel_performance);
+                this.updateCulturalInsights(metrics.cultural_insights);
+                this.updateRegionalMetrics(metrics.regional_metrics);
+                
+                // Update last update time
+                document.getElementById('lastUpdate').textContent = 
+                    new Date().toLocaleTimeString('ar-SA');
+            }
+
+            updateKeyMetrics(metrics) {
+                document.getElementById('totalFeedbackToday').textContent = 
+                    metrics.total_feedback_today.toLocaleString('ar-SA');
+                
+                const sentimentScore = metrics.live_sentiment_score;
+                const sentimentElement = document.getElementById('liveSentimentScore');
+                sentimentElement.textContent = sentimentScore.toFixed(2);
+                
+                // Color code sentiment
+                if (sentimentScore > 0.3) {
+                    sentimentElement.className = 'metric-value text-success';
+                } else if (sentimentScore < -0.3) {
+                    sentimentElement.className = 'metric-value text-danger';
+                } else {
+                    sentimentElement.className = 'metric-value text-warning';
+                }
+                
+                // Calculate positive percentage
+                const total = Object.values(metrics.sentiment_distribution).reduce((a, b) => a + b, 0);
+                const positivePercentage = total > 0 ? 
+                    (metrics.sentiment_distribution.positive / total * 100).toFixed(1) : 0;
+                document.getElementById('positivePercentage').textContent = `${positivePercentage}%`;
+                
+                document.getElementById('activeChannels').textContent = 
+                    metrics.channel_performance.length;
+            }
+
+            initializeCharts() {
+                // Configure Chart.js for RTL
+                Chart.defaults.font.family = 'Cairo';
+                Chart.defaults.plugins.legend.rtl = true;
+                Chart.defaults.plugins.legend.textDirection = 'rtl';
+
+                // Sentiment Trends Chart
+                const sentimentCtx = document.getElementById('sentimentTrendsChart').getContext('2d');
+                this.charts.sentiment = new Chart(sentimentCtx, {
+                    type: 'line',
+                    data: {
+                        labels: [],
+                        datasets: [{
+                            label: 'نتيجة المشاعر',
+                            data: [],
+                            borderColor: '#2E8B57',
+                            backgroundColor: 'rgba(46, 139, 87, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                rtl: true,
+                                textDirection: 'rtl'
+                            }
+                        },
+                        scales: {
+                            y: {
+                                min: -1,
+                                max: 1,
+                                ticks: {
+                                    callback: function(value) {
+                                        if (value > 0.5) return 'إيجابي';
+                                        if (value < -0.5) return 'سلبي';
+                                        return 'محايد';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+
+                // Dialect Chart
+                const dialectCtx = document.getElementById('dialectChart').getContext('2d');
+                this.charts.dialect = new Chart(dialectCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: [],
+                        datasets: [{
+                            data: [],
+                            backgroundColor: [
+                                '#FF6384',
+                                '#36A2EB', 
+                                '#FFCE56',
+                                '#4BC0C0',
+                                '#9966FF'
+                            ]
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                rtl: true,
+                                textDirection: 'rtl'
+                            }
+                        }
+                    }
+                });
+
+                // Topics Chart
+                const topicsCtx = document.getElementById('topicsChart').getContext('2d');
+                this.charts.topics = new Chart(topicsCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: [],
+                        datasets: [{
+                            label: 'عدد الذكر',
+                            data: [],
+                            backgroundColor: 'rgba(46, 139, 87, 0.8)'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        indexAxis: 'y',
+                        plugins: {
+                            legend: {
+                                rtl: true,
+                                textDirection: 'rtl'
+                            }
+                        }
+                    }
+                });
+
+                // Sentiment Gauge
+                this.initializeSentimentGauge();
+            }
+
+            initializeSentimentGauge() {
+                const canvas = document.getElementById('sentimentGauge');
+                const ctx = canvas.getContext('2d');
+                
+                this.drawSentimentGauge(ctx, 0); // Initial value
+            }
+
+            drawSentimentGauge(ctx, value) {
+                const centerX = 100;
+                const centerY = 100;
+                const radius = 80;
+                
+                // Clear canvas
+                ctx.clearRect(0, 0, 200, 200);
+                
+                // Draw background arc
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, radius, Math.PI, 0);
+                ctx.lineWidth = 20;
+                ctx.strokeStyle = '#e9ecef';
+                ctx.stroke();
+                
+                // Calculate value angle
+                const angle = Math.PI * (value + 1) / 2; // Convert -1 to 1 range to 0 to π
+                
+                // Draw value arc
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, radius, Math.PI, Math.PI + angle);
+                ctx.lineWidth = 20;
+                
+                // Color based on value
+                if (value > 0.3) {
+                    ctx.strokeStyle = '#28a745';
+                } else if (value < -0.3) {
+                    ctx.strokeStyle = '#dc3545';
+                } else {
+                    ctx.strokeStyle = '#ffc107';
+                }
+                ctx.stroke();
+                
+                // Draw center text
+                ctx.fillStyle = '#2c3e50';
+                ctx.font = 'bold 24px Cairo';
+                ctx.textAlign = 'center';
+                ctx.fillText(value.toFixed(2), centerX, centerY + 8);
+                
+                // Draw labels
+                ctx.font = '12px Cairo';
+                ctx.fillText('سلبي', 30, centerY + 30);
+                ctx.fillText('إيجابي', 170, centerY + 30);
+            }
+
+            updateCharts(metrics) {
+                // Update sentiment gauge
+                const canvas = document.getElementById('sentimentGauge');
+                const ctx = canvas.getContext('2d');
+                this.drawSentimentGauge(ctx, metrics.live_sentiment_score);
+
+                // Update dialect chart
+                if (metrics.dialect_breakdown && metrics.dialect_breakdown.length > 0) {
+                    const dialectNames = {
+                        'gulf': 'خليجي',
+                        'egyptian': 'مصري',
+                        'levantine': 'شامي',
+                        'moroccan': 'مغربي',
+                        'other': 'أخرى'
+                    };
+                    
+                    this.charts.dialect.data.labels = metrics.dialect_breakdown.map(d => 
+                        dialectNames[d.dialect] || d.dialect);
+                    this.charts.dialect.data.datasets[0].data = metrics.dialect_breakdown.map(d => d.count);
+                    this.charts.dialect.update();
+                }
+
+                // Update topics chart
+                if (metrics.trending_topics && metrics.trending_topics.length > 0) {
+                    this.charts.topics.data.labels = metrics.trending_topics.map(t => t.topic);
+                    this.charts.topics.data.datasets[0].data = metrics.trending_topics.map(t => t.mentions);
+                    this.charts.topics.update();
+                }
+            }
+
+            updateDialectBreakdown(dialects) {
+                const container = document.getElementById('dialectBreakdown');
+                container.innerHTML = '';
+                
+                const dialectNames = {
+                    'gulf': 'خليجي',
+                    'egyptian': 'مصري', 
+                    'levantine': 'شامي',
+                    'moroccan': 'مغربي',
+                    'other': 'أخرى'
+                };
+                
+                dialects.forEach(dialect => {
+                    const chip = document.createElement('span');
+                    chip.className = 'dialect-chip';
+                    chip.innerHTML = `${dialectNames[dialect.dialect] || dialect.dialect}: ${dialect.count}`;
+                    container.appendChild(chip);
+                });
+            }
+
+            updateChannelPerformance(channels) {
+                const container = document.getElementById('channelPerformance');
+                container.innerHTML = '';
+                
+                channels.forEach(channel => {
+                    const item = document.createElement('div');
+                    item.className = 'channel-performance';
+                    
+                    const sentimentClass = channel.avg_sentiment > 0 ? 'text-success' : 
+                                         channel.avg_sentiment < 0 ? 'text-danger' : 'text-warning';
+                    
+                    item.innerHTML = `
+                        <div>
+                            <strong>${channel.channel_ar}</strong>
+                            <small class="d-block text-muted">${channel.total_feedback} تعليق</small>
+                        </div>
+                        <div class="text-end">
+                            <span class="${sentimentClass}">${channel.avg_sentiment.toFixed(2)}</span>
+                            ${channel.trending_up ? '<i class="fas fa-trending-up trending-up"></i>' : 
+                              '<i class="fas fa-trending-down trending-down"></i>'}
+                        </div>
+                    `;
+                    
+                    container.appendChild(item);
+                });
+            }
+
+            updateCulturalInsights(insights) {
+                const container = document.getElementById('culturalInsights');
+                container.innerHTML = '';
+                
+                insights.forEach(insight => {
+                    const item = document.createElement('div');
+                    item.className = 'cultural-insight';
+                    item.innerHTML = `
+                        <h6>${insight.insight_ar}</h6>
+                        <p class="mb-1">${insight.description_ar}</p>
+                        <small class="text-muted">تأثير: ${(insight.impact_score * 100).toFixed(1)}%</small>
+                    `;
+                    container.appendChild(item);
+                });
+            }
+
+            updateRegionalMetrics(regions) {
+                const container = document.getElementById('regionalMetrics');
+                container.innerHTML = '';
+                
+                regions.forEach(region => {
+                    const item = document.createElement('div');
+                    item.className = 'mb-3 p-2 border rounded';
+                    
+                    const sentimentClass = region.sentiment_score > 0 ? 'text-success' : 
+                                         region.sentiment_score < 0 ? 'text-danger' : 'text-warning';
+                    
+                    item.innerHTML = `
+                        <h6>${region.region_ar}</h6>
+                        <div class="d-flex justify-content-between">
+                            <span>${region.feedback_count} تعليق</span>
+                            <span class="${sentimentClass}">${region.sentiment_score.toFixed(2)}</span>
+                        </div>
+                    `;
+                    container.appendChild(item);
+                });
+            }
+
+            startHealthCheck() {
+                // Fallback: Load data via HTTP if WebSocket fails
+                setInterval(() => {
+                    if (!this.isConnected) {
+                        this.loadDashboardData();
+                    }
+                }, 10000); // Every 10 seconds
+            }
+
+            async loadDashboardData() {
+                try {
+                    const response = await fetch('/api/analytics/realtime/dashboard');
+                    if (response.ok) {
+                        const data = await response.json();
+                        this.updateDashboard(data);
+                    }
+                } catch (error) {
+                    console.error('Failed to load dashboard data:', error);
+                }
+            }
+        }
+
+        // Initialize dashboard when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            window.dashboard = new ArabicDashboard();
+        });
+    </script>
+</body>
+</html>

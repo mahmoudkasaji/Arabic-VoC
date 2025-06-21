@@ -93,6 +93,12 @@ try:
 except ImportError:
     logger.warning("Feedback collection router not available")
 
+try:
+    from api.analytics_realtime import router as realtime_analytics_router
+    app.include_router(realtime_analytics_router)
+except ImportError:
+    logger.warning("Real-time analytics router not available")
+
 app.include_router(analytics_router)
 
 @app.get("/")
