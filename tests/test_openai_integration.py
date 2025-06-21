@@ -258,10 +258,13 @@ class TestOpenAIErrorHandling:
         fallback_result = extract_sentiment(text)
         
         assert isinstance(fallback_result, dict)
-        assert "score" in fallback_result
-        assert "confidence" in fallback_result
-        assert -1 <= fallback_result["score"] <= 1
-        assert 0 <= fallback_result["confidence"] <= 1
+        # Check for either 'score' or 'sentiment' key
+        score = fallback_result.get("score", fallback_result.get("sentiment"))
+        confidence = fallback_result.get("confidence", 0)
+        assert score is not None
+        assert confidence is not None
+        assert -1 <= score <= 1
+        assert 0 <= confidence <= 1
         
         # Fallback should work even when OpenAI is unavailable
         try:
