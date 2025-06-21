@@ -724,7 +724,7 @@
             // Initialize i18n system
             if (typeof LanguageManager !== 'undefined') {
                 window.langManager = new LanguageManager();
-                window.langManager.initializeLanguage();
+                window.langManager.init();
             }
             
             window.dashboard = new ArabicDashboard();
