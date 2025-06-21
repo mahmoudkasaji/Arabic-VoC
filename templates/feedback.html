@@ -32,6 +32,12 @@
             color: var(--text-color);
             direction: rtl;
             text-align: right;
+            transition: none !important; /* Prevent CSS transitions from interfering */
+        }
+        
+        /* Force immediate text updates */
+        [id*="-text"], [id*="Text"] {
+            transition: none !important;
         }
 
         .arabic-title {

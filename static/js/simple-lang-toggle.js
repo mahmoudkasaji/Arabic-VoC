@@ -67,21 +67,40 @@ function toggleLanguage() {
     // Switch language
     currentLang = currentLang === 'ar' ? 'en' : 'ar';
     
+    console.log('Language switched to:', currentLang);
+    
     // Update document attributes immediately
     document.documentElement.lang = currentLang;
     document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
     
-    // Update body direction and alignment
-    document.body.style.direction = currentLang === 'ar' ? 'rtl' : 'ltr';
-    document.body.style.textAlign = currentLang === 'ar' ? 'right' : 'left';
+    // Update body direction and alignment with force
+    const body = document.body;
+    body.style.direction = currentLang === 'ar' ? 'rtl' : 'ltr';
+    body.style.textAlign = currentLang === 'ar' ? 'right' : 'left';
+    body.className = body.className.replace(/lang-\w+/g, '') + ` lang-${currentLang}`;
     
-    // Update all translatable elements immediately
+    // Force immediate visual update with multiple approaches
     updateAllTexts();
+    
+    // Force browser repaint
+    setTimeout(() => {
+        document.querySelectorAll('[id*="-text"], [id*="Text"]').forEach(el => {
+            const currentText = el.textContent;
+            el.textContent = '';
+            el.offsetHeight; // force reflow
+            el.textContent = currentText;
+            
+            // Force style recalculation
+            el.style.transform = 'translateZ(0)';
+            setTimeout(() => { el.style.transform = ''; }, 1);
+        });
+        
+        // Force page reflow
+        document.body.offsetHeight;
+    }, 1);
     
     // Save preference
     localStorage.setItem('language', currentLang);
-    
-    console.log('Language switched to:', currentLang);
 }
 
 // Update all text elements
@@ -109,12 +128,26 @@ function updateAllTexts() {
         'dialect-help-text': 'dialect-help'
     };
     
-    // Update text content
+    // Update text content with forced reflow
     Object.keys(idMappings).forEach(elementId => {
         const element = document.getElementById(elementId);
         const translationKey = idMappings[elementId];
         if (element && langData[translationKey]) {
+            // Clear and set text with forced DOM update
+            element.textContent = '';
+            element.innerHTML = '';
+            
+            // Force reflow
+            element.offsetHeight;
+            
+            // Set new text
             element.textContent = langData[translationKey];
+            
+            // Force another reflow
+            element.style.visibility = 'hidden';
+            element.offsetHeight;
+            element.style.visibility = 'visible';
+            
             console.log(`Updated ${elementId}: ${langData[translationKey]}`);
         } else {
             console.warn(`Element not found or translation missing: ${elementId} -> ${translationKey}`);
@@ -132,6 +165,7 @@ function updateAllTexts() {
         const translationKey = placeholderMappings[elementId];
         if (element && langData[translationKey]) {
             element.placeholder = langData[translationKey];
+            element.setAttribute('placeholder', langData[translationKey]);
             console.log(`Updated placeholder ${elementId}: ${langData[translationKey]}`);
         } else {
             console.warn(`Placeholder element not found: ${elementId} -> ${translationKey}`);
