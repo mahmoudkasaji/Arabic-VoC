@@ -131,9 +131,15 @@
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
         <div class="container">
+            <!-- Language Toggle Button -->
+            <button class="btn btn-outline-primary btn-sm me-3" onclick="toggleLanguage()" id="langToggle">
+                <i class="fas fa-globe me-1"></i>
+                <span id="langText">English</span>
+            </button>
+            
             <a class="navbar-brand arabic-title" href="/">
                 <i class="fas fa-comments text-primary"></i>
-                منصة صوت العميل العربية
+                <span id="brandText">منصة صوت العميل العربية</span>
             </a>
             
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -220,8 +226,14 @@
     <section class="container">
         <div class="row">
             <div class="col-12 text-center mb-5">
-                <h2 class="arabic-title display-6 mb-3">المميزات الرئيسية</h2>
-                <p class="lead text-muted">منصة شاملة مصممة خصيصاً للسوق العربي</p>
+                <h2 class="arabic-title display-6 mb-3">
+                    <span class="feature-title-ar">المميزات الرئيسية</span>
+                    <span class="feature-title-en d-none">Key Features</span>
+                </h2>
+                <p class="lead text-muted">
+                    <span class="feature-desc-ar">منصة شاملة مصممة خصيصاً للسوق العربي</span>
+                    <span class="feature-desc-en d-none">Comprehensive platform designed specifically for the Arabic market</span>
+                </p>
             </div>
         </div>
         
@@ -230,10 +242,13 @@
                 <div class="feature-card" onclick="window.location.href='/dashboard/realtime'">
                     <div class="text-center">
                         <i class="fas fa-chart-line feature-icon"></i>
-                        <h4 class="arabic-title mb-3">تحليلات في الوقت الفعلي</h4>
+                        <h4 class="arabic-title mb-3">
+                            <span class="card-title-ar">تحليلات في الوقت الفعلي</span>
+                            <span class="card-title-en d-none">Real-time Analytics</span>
+                        </h4>
                         <p class="text-muted">
-                            اطلع على تحليل المشاعر والاتجاهات لحظة بلحظة مع لوحة تحكم تفاعلية
-                            تدعم التحديثات المباشرة أقل من ثانية واحدة.
+                            <span class="card-text-ar">اطلع على تحليل المشاعر والاتجاهات لحظة بلحظة مع لوحة تحكم تفاعلية تدعم التحديثات المباشرة أقل من ثانية واحدة.</span>
+                            <span class="card-text-en d-none">View sentiment analysis and trends moment by moment with an interactive dashboard supporting real-time updates in less than one second.</span>
                         </p>
                     </div>
                 </div>
@@ -243,9 +258,13 @@
                 <div class="feature-card" onclick="window.location.href='/feedback'">
                     <div class="text-center">
                         <i class="fas fa-comments feature-icon"></i>
-                        <h4 class="arabic-title mb-3">دعم اللهجات العربية</h4>
+                        <h4 class="arabic-title mb-3">
+                            <span class="card-title-ar">دعم اللهجات العربية</span>
+                            <span class="card-title-en d-none">Arabic Dialect Support</span>
+                        </h4>
                         <p class="text-muted">
-                            معالجة متقدمة للهجات الخليجية والمصرية والشامية والمغربية
+                            <span class="card-text-ar">معالجة متقدمة للهجات الخليجية والمصرية والشامية والمغربية</span>
+                            <span class="card-text-en d-none">Advanced processing for Gulf, Egyptian, Levantine, and Maghrebi dialects</span>
                             مع فهم السياق الثقافي والتعبيرات المحلية.
                         </p>
                     </div>
