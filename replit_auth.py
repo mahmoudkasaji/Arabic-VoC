@@ -18,7 +18,7 @@ from werkzeug.local import LocalProxy
 
 def init_auth(app, db):
     """Initialize authentication with the Flask app"""
-    from models import OAuth, User
+    from auth_models import OAuth, User
 
     login_manager = LoginManager(app)
 
