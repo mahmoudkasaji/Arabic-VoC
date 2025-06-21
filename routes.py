@@ -91,6 +91,22 @@ def setup_routes(app):
         else:
             return jsonify({'error': 'Not authenticated'}), 401
 
+    # Dashboard API endpoints
+    @app.route('/api/dashboard/stats')
+    @require_login
+    def dashboard_stats():
+        """Get dashboard statistics"""
+        try:
+            # Mock data for now - replace with actual database queries
+            stats = {
+                'total': 0,
+                'avgRating': 0,
+                'recent': []
+            }
+            return jsonify(stats)
+        except Exception as e:
+            return jsonify({'error': str(e)}), 500
+
     # Health check
     @app.route('/health')
     def health_check():

@@ -30,7 +30,7 @@ db = SQLAlchemy(app, model_class=Base)
 
 if __name__ == "__main__":
     # Import models and routes here to avoid circular imports
-    from models import User, OAuth, Feedback
+    import models  # This will trigger model creation
     from routes import setup_routes
     
     # Setup routes

@@ -1,4 +1,3 @@
-
 class LanguageManager {
     constructor() {
         this.currentLang = localStorage.getItem('language') || 'en';
@@ -68,7 +67,7 @@ class LanguageManager {
 
     applyLanguage(lang) {
         console.log('Switching to:', lang);
-        
+
         // Update text content
         Object.keys(this.translations[lang]).forEach(key => {
             const element = document.getElementById(key);
@@ -88,12 +87,18 @@ class LanguageManager {
     }
 }
 
-// Global function for template compatibility
+// Global toggle function for backward compatibility
 function toggleLanguage() {
     if (window.langManager) {
         window.langManager.toggleLanguage();
+    } else {
+        console.warn('Language manager not initialized');
     }
 }
+
+// Make LanguageManager available globally
+window.LanguageManager = LanguageManager;
+window.toggleLanguage = toggleLanguage;
 
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
