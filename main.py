@@ -80,6 +80,7 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
 # Include API routers
+app.include_router(auth_router)
 app.include_router(feedback_router, prefix="/api/feedback", tags=["feedback"])
 app.include_router(analytics_router, prefix="/api/analytics", tags=["analytics"])
 

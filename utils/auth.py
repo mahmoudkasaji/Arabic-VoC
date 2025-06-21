@@ -237,8 +237,8 @@ class ArabicNameValidator:
             if '\u0621' <= char <= '\u064A' or '\u0660' <= char <= '\u0669':
                 arabic_chars += 1
         
-        # Consider text Arabic if more than 70% of alphabetic characters are Arabic
-        return total_chars > 0 and (arabic_chars / total_chars) > 0.7
+        # Consider text Arabic if more than 50% of alphabetic characters are Arabic
+        return total_chars > 0 and (arabic_chars / total_chars) > 0.5
     
     @staticmethod
     def normalize_arabic_name(name: str) -> str:
