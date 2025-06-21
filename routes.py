@@ -1,6 +1,6 @@
 
 from flask import session, render_template, redirect, url_for, request, jsonify
-from app import app, db
+from main import app, db
 from replit_auth import require_login, make_replit_blueprint, replit
 from flask_login import current_user
 import json

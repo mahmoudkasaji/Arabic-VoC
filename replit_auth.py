@@ -20,7 +20,14 @@ from app import app, db
 import sys
 import os
 sys.path.append(os.path.dirname(__file__))
-from models import OAuth, User
+import sys
+import os
+sys.path.append(os.path.dirname(__file__))
+
+# Import from root models.py file
+import models as root_models
+OAuth = root_models.OAuth
+User = root_models.User
 
 login_manager = LoginManager(app)
 
