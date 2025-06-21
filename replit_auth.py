@@ -17,6 +17,9 @@ from sqlalchemy.exc import NoResultFound
 from werkzeug.local import LocalProxy
 
 from app import app, db
+import sys
+import os
+sys.path.append(os.path.dirname(__file__))
 from models import OAuth, User
 
 login_manager = LoginManager(app)
