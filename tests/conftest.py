@@ -3,6 +3,7 @@ Pytest configuration and fixtures for Arabic VoC platform testing
 """
 
 import pytest
+import pytest_asyncio
 import asyncio
 import os
 from httpx import AsyncClient
