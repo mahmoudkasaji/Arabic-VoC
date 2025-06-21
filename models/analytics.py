@@ -5,10 +5,8 @@ Analytics and aggregation models for feedback data
 import enum
 from datetime import datetime
 from sqlalchemy import Column, Integer, String, DateTime, Float, JSON, Enum, ForeignKey
-from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
-
-Base = declarative_base()
+from utils.database import Base
 
 class AggregationPeriod(str, enum.Enum):
     """Time periods for data aggregation"""

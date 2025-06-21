@@ -5,9 +5,7 @@ Feedback database models with Arabic support
 import enum
 from datetime import datetime
 from sqlalchemy import Column, Integer, String, Text, DateTime, Float, JSON, Enum
-from sqlalchemy.ext.declarative import declarative_base
-
-Base = declarative_base()
+from utils.database import Base
 
 class FeedbackChannel(str, enum.Enum):
     """Channels through which feedback can be received"""
