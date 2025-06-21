@@ -1,0 +1,257 @@
+name: Arabic VoC Platform CI/CD
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  release:
+    types: [ published ]
+
+env:
+  PYTHON_VERSION: '3.11'
+  NODE_VERSION: '18'
+
+jobs:
+  code-quality:
+    name: Code Quality & Security
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install black flake8 pylint mypy bandit safety
+          pip install -r requirements.txt || pip install -e .
+
+      - name: Code formatting check
+        run: black --check --diff .
+
+      - name: Linting
+        run: |
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=88 --statistics
+
+      - name: Type checking
+        run: mypy . --ignore-missing-imports
+
+      - name: Security analysis
+        run: |
+          bandit -r . -f json -o bandit-report.json || true
+          safety check --json || true
+
+      - name: Upload security reports
+        uses: actions/upload-artifact@v3
+        with:
+          name: security-reports
+          path: |
+            bandit-report.json
+
+  test-suite:
+    name: Comprehensive Test Suite
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:13
+        env:
+          POSTGRES_PASSWORD: test_password
+          POSTGRES_DB: arabic_voc_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest pytest-cov pytest-asyncio
+          pip install -e .
+
+      - name: Run Arabic processing tests
+        env:
+          DATABASE_URL: postgresql://postgres:test_password@localhost:5432/arabic_voc_test
+        run: |
+          python -m pytest tests/test_arabic_processing.py -v --cov=utils/arabic_processor
+
+      - name: Run authentication tests
+        env:
+          DATABASE_URL: postgresql://postgres:test_password@localhost:5432/arabic_voc_test
+          JWT_SECRET_KEY: test-secret-key-for-ci
+        run: |
+          python -m pytest tests/test_auth_integration.py -v --cov=utils/auth
+
+      - name: Run security tests
+        env:
+          DATABASE_URL: postgresql://postgres:test_password@localhost:5432/arabic_voc_test
+        run: |
+          python -m pytest tests/test_security.py -v --cov=utils/security
+
+      - name: Run performance tests
+        env:
+          DATABASE_URL: postgresql://postgres:test_password@localhost:5432/arabic_voc_test
+        run: |
+          python -m pytest tests/test_performance.py -v --timeout=300
+
+      - name: Generate coverage report
+        run: |
+          python -m pytest tests/ --cov=. --cov-report=xml --cov-report=html
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          file: ./coverage.xml
+          flags: unittests
+          name: codecov-umbrella
+
+  build-and-test:
+    name: Build & Integration Test
+    runs-on: ubuntu-latest
+    needs: [code-quality, test-suite]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Build application
+        run: |
+          python -m pip install --upgrade pip
+          pip install build
+          python -m build
+
+      - name: Test application startup
+        run: |
+          pip install dist/*.whl
+          python -c "from main import app; print('Application loads successfully')"
+
+      - name: Run integration tests
+        env:
+          DATABASE_URL: sqlite:///test.db
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          python -m pytest tests/test_api_endpoints.py::TestBasicEndpoints -v
+
+  security-scan:
+    name: Security Vulnerability Scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+
+      - name: Upload Trivy scan results
+        uses: github/codeql-action/upload-sarif@v2
+        if: always()
+        with:
+          sarif_file: 'trivy-results.sarif'
+
+  deploy-staging:
+    name: Deploy to Staging
+    runs-on: ubuntu-latest
+    needs: [build-and-test, security-scan]
+    if: github.ref == 'refs/heads/develop'
+    environment: staging
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy to staging
+        env:
+          STAGING_URL: ${{ secrets.STAGING_URL }}
+          DEPLOY_KEY: ${{ secrets.STAGING_DEPLOY_KEY }}
+        run: |
+          echo "Deploying to staging environment..."
+          # Add actual deployment commands here
+          curl -X POST "$STAGING_URL/deploy" \
+            -H "Authorization: Bearer $DEPLOY_KEY" \
+            -H "Content-Type: application/json" \
+            -d "{\"ref\": \"$GITHUB_SHA\", \"environment\": \"staging\"}"
+
+      - name: Run smoke tests on staging
+        env:
+          STAGING_URL: ${{ secrets.STAGING_URL }}
+        run: |
+          python -m pytest tests/test_api_endpoints.py::TestBasicEndpoints \
+            --base-url="$STAGING_URL" -v
+
+  deploy-production:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    needs: [deploy-staging]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy to production
+        env:
+          PRODUCTION_URL: ${{ secrets.PRODUCTION_URL }}
+          DEPLOY_KEY: ${{ secrets.PRODUCTION_DEPLOY_KEY }}
+        run: |
+          echo "Deploying to production environment..."
+          # Add actual deployment commands here
+          curl -X POST "$PRODUCTION_URL/deploy" \
+            -H "Authorization: Bearer $DEPLOY_KEY" \
+            -H "Content-Type: application/json" \
+            -d "{\"ref\": \"$GITHUB_SHA\", \"environment\": \"production\"}"
+
+      - name: Run production health checks
+        env:
+          PRODUCTION_URL: ${{ secrets.PRODUCTION_URL }}
+        run: |
+          # Wait for deployment to complete
+          sleep 30
+          
+          # Health check
+          curl -f "$PRODUCTION_URL/health" || exit 1
+          
+          # Arabic processing check
+          curl -f "$PRODUCTION_URL/api/health/arabic" || exit 1
+          
+          echo "Production deployment successful!"
+
+  notify:
+    name: Deployment Notification
+    runs-on: ubuntu-latest
+    needs: [deploy-production]
+    if: always()
+    steps:
+      - name: Notify deployment status
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+        run: |
+          if [ "${{ needs.deploy-production.result }}" == "success" ]; then
+            curl -X POST -H 'Content-type: application/json' \
+              --data '{"text":"✅ Arabic VoC Platform deployed successfully to production"}' \
+              $SLACK_WEBHOOK
+          else
+            curl -X POST -H 'Content-type: application/json' \
+              --data '{"text":"❌ Arabic VoC Platform deployment failed"}' \
+              $SLACK_WEBHOOK
+          fi
