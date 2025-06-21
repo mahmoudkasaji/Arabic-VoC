@@ -69,16 +69,32 @@
             document.body.style.direction = currentLang === 'ar' ? 'rtl' : 'ltr';
             document.body.style.textAlign = currentLang === 'ar' ? 'right' : 'left';
             
-            // Update all text elements
+            // Update all text elements with aggressive DOM manipulation
             Object.keys(translations[currentLang]).forEach(elementId => {
                 const element = document.getElementById(elementId);
                 if (element) {
+                    // Clear content first
+                    element.innerHTML = '';
+                    element.textContent = '';
+                    
+                    // Force DOM refresh
+                    element.style.display = 'none';
+                    document.body.offsetHeight; // force reflow
+                    element.style.display = '';
+                    
+                    // Set new content
                     element.textContent = translations[currentLang][elementId];
+                    element.innerHTML = translations[currentLang][elementId];
+                    
                     console.log('Updated', elementId, ':', translations[currentLang][elementId]);
+                    
+                    // Visual confirmation - flash the element
+                    element.style.backgroundColor = '#ffff00';
+                    setTimeout(() => { element.style.backgroundColor = ''; }, 200);
                 }
             });
             
-            // Update placeholders
+            // Update placeholders with visual confirmation
             const content = document.getElementById('content');
             const customerName = document.getElementById('customerName');
             
@@ -86,15 +102,27 @@
                 content.placeholder = currentLang === 'ar' ? 
                     'شاركنا تجربتك ورأيك بالتفصيل...' : 
                     'Share your experience and opinion in detail...';
+                content.style.backgroundColor = '#ffff00';
+                setTimeout(() => { content.style.backgroundColor = ''; }, 200);
             }
             
             if (customerName) {
                 customerName.placeholder = currentLang === 'ar' ? 
                     'أدخل اسمك' : 
                     'Enter your name';
+                customerName.style.backgroundColor = '#ffff00';
+                setTimeout(() => { customerName.style.backgroundColor = ''; }, 200);
             }
             
             localStorage.setItem('language', currentLang);
+            
+            // Force page refresh for stubborn elements
+            setTimeout(() => {
+                document.querySelectorAll('[id*="-text"]').forEach(el => {
+                    const computedStyle = window.getComputedStyle(el);
+                    el.style.display = computedStyle.display;
+                });
+            }, 300);
         }
         
         // Initialize on page load
