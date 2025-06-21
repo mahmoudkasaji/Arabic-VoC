@@ -310,6 +310,13 @@
             // document.getElementById('username').value = 'demo@arabic-voc.com';
             // document.getElementById('password').value = 'demo123';
         });
+
+        // Language toggle function
+        function toggleLanguage() {
+            if (window.langManager) {
+                window.langManager.toggleLanguage();
+            }
+        }
     </script>
 </body>
 </html>

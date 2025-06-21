@@ -428,6 +428,13 @@
                 submitBtn.disabled = false;
             }
         });
+
+        // Language toggle function
+        function toggleLanguage() {
+            if (window.langManager) {
+                window.langManager.toggleLanguage();
+            }
+        }
     </script>
 </body>
 </html>
