@@ -172,7 +172,7 @@ class ArabicSecurityValidator:
         if not email:
             return True  # Email is optional
         
-        email_pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+        email_pattern = r'^[a-zA-Z0-9]([a-zA-Z0-9._%-])*[a-zA-Z0-9]@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
         return bool(re.match(email_pattern, email))
     
     def validate_phone(self, phone: str) -> bool:
