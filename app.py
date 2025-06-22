@@ -165,6 +165,12 @@ def analytics_page():
     return render_template('analytics.html', 
                          title='التحليلات')
 
+@app.route('/executive-dashboard')
+def executive_dashboard_page():
+    """Executive dashboard page"""
+    return render_template('executive_dashboard.html',
+                         title='لوحة القيادة التنفيذية')
+
 @app.route('/integrations')
 def integrations_page():
     """Integrations management page"""

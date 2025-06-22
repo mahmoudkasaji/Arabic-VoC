@@ -8,7 +8,7 @@ from datetime import datetime, timedelta
 from sqlalchemy import func, and_, text
 from sqlalchemy.orm import sessionmaker
 from models_unified import Feedback, FeedbackChannel, FeedbackStatus, FeedbackAggregation
-from utils.database import get_db_session
+from app import db
 import logging
 
 # Create blueprint
@@ -16,7 +16,7 @@ executive_bp = Blueprint('executive', __name__, url_prefix='/api/executive-dashb
 
 logger = logging.getLogger(__name__)
 
-def calculate_csat_score(db_session, days=30):
+def calculate_csat_score(days=30):
     """
     Calculate Customer Satisfaction Score based on sentiment analysis
     """
@@ -26,7 +26,7 @@ def calculate_csat_score(db_session, days=30):
         start_date = end_date - timedelta(days=days)
         
         # Query for processed feedback with sentiment scores
-        feedback_query = db_session.query(Feedback).filter(
+        feedback_query = db.session.query(Feedback).filter(
             and_(
                 Feedback.created_at >= start_date,
                 Feedback.created_at <= end_date,
@@ -59,7 +59,7 @@ def calculate_csat_score(db_session, days=30):
         prev_start = start_date - timedelta(days=days)
         prev_end = start_date
         
-        prev_feedback = db_session.query(Feedback).filter(
+        prev_feedback = db.session.query(Feedback).filter(
             and_(
                 Feedback.created_at >= prev_start,
                 Feedback.created_at < prev_end,
@@ -92,7 +92,7 @@ def calculate_csat_score(db_session, days=30):
             'confidence': 0.0
         }
 
-def calculate_volume_metrics(db_session):
+def calculate_volume_metrics():
     """
     Calculate response volume metrics
     """
@@ -101,32 +101,32 @@ def calculate_volume_metrics(db_session):
         
         # Today
         today_start = now.replace(hour=0, minute=0, second=0, microsecond=0)
-        today_count = db_session.query(func.count(Feedback.id)).filter(
+        today_count = db.session.query(func.count(Feedback.id)).filter(
             Feedback.created_at >= today_start
         ).scalar() or 0
         
         # This week
         week_start = now - timedelta(days=now.weekday())
         week_start = week_start.replace(hour=0, minute=0, second=0, microsecond=0)
-        week_count = db_session.query(func.count(Feedback.id)).filter(
+        week_count = db.session.query(func.count(Feedback.id)).filter(
             Feedback.created_at >= week_start
         ).scalar() or 0
         
         # This month
         month_start = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
-        month_count = db_session.query(func.count(Feedback.id)).filter(
+        month_count = db.session.query(func.count(Feedback.id)).filter(
             Feedback.created_at >= month_start
         ).scalar() or 0
         
         # Total (last 30 days)
         thirty_days_ago = now - timedelta(days=30)
-        total_count = db_session.query(func.count(Feedback.id)).filter(
+        total_count = db.session.query(func.count(Feedback.id)).filter(
             Feedback.created_at >= thirty_days_ago
         ).scalar() or 0
         
         # Calculate trend (this week vs last week)
         last_week_start = week_start - timedelta(days=7)
-        last_week_count = db_session.query(func.count(Feedback.id)).filter(
+        last_week_count = db.session.query(func.count(Feedback.id)).filter(
             and_(
                 Feedback.created_at >= last_week_start,
                 Feedback.created_at < week_start
@@ -153,7 +153,7 @@ def calculate_volume_metrics(db_session):
             'trend': 0.0
         }
 
-def calculate_sentiment_metrics(db_session, days=30):
+def calculate_sentiment_metrics(days=30):
     """
     Calculate Arabic sentiment metrics
     """
@@ -162,7 +162,7 @@ def calculate_sentiment_metrics(db_session, days=30):
         start_date = end_date - timedelta(days=days)
         
         # Get current period sentiment data
-        current_feedback = db_session.query(Feedback.sentiment_score, Feedback.confidence_score).filter(
+        current_feedback = db.session.query(Feedback.sentiment_score, Feedback.confidence_score).filter(
             and_(
                 Feedback.created_at >= start_date,
                 Feedback.created_at <= end_date,
@@ -196,7 +196,7 @@ def calculate_sentiment_metrics(db_session, days=30):
         prev_start = start_date - timedelta(days=days)
         prev_end = start_date
         
-        prev_sentiment = db_session.query(func.avg(Feedback.sentiment_score)).filter(
+        prev_sentiment = db.session.query(func.avg(Feedback.sentiment_score)).filter(
             and_(
                 Feedback.created_at >= prev_start,
                 Feedback.created_at < prev_end,
@@ -227,7 +227,7 @@ def calculate_sentiment_metrics(db_session, days=30):
             'distribution': {'positive': 0, 'neutral': 0, 'negative': 0}
         }
 
-def get_trend_data(db_session, days=30):
+def get_trend_data(days=30):
     """
     Get trend data for the last 30 days
     """
@@ -245,7 +245,7 @@ def get_trend_data(db_session, days=30):
             day_end = day_start + timedelta(days=1)
             
             # Get feedback for this day
-            day_feedback = db_session.query(Feedback.sentiment_score).filter(
+            day_feedback = db.session.query(Feedback.sentiment_score).filter(
                 and_(
                     Feedback.created_at >= day_start,
                     Feedback.created_at < day_end,
@@ -276,7 +276,7 @@ def get_trend_data(db_session, days=30):
             'values': []
         }
 
-def get_channel_distribution(db_session, days=30):
+def get_channel_distribution(days=30):
     """
     Get feedback distribution by channel
     """
@@ -285,7 +285,7 @@ def get_channel_distribution(db_session, days=30):
         start_date = end_date - timedelta(days=days)
         
         # Query channel distribution
-        channel_data = db_session.query(
+        channel_data = db.session.query(
             Feedback.channel,
             func.count(Feedback.id).label('count')
         ).filter(
@@ -334,13 +334,12 @@ def get_dashboard_metrics():
     Get all executive dashboard metrics
     """
     try:
-        with get_db_session() as db_session:
-            # Calculate all metrics
-            csat = calculate_csat_score(db_session)
-            volume = calculate_volume_metrics(db_session)
-            sentiment = calculate_sentiment_metrics(db_session)
-            trends = get_trend_data(db_session)
-            channels = get_channel_distribution(db_session)
+        # Calculate all metrics
+        csat = calculate_csat_score()
+        volume = calculate_volume_metrics()
+        sentiment = calculate_sentiment_metrics()
+        trends = get_trend_data()
+        channels = get_channel_distribution()
             
             return jsonify({
                 'csat': csat,
@@ -361,9 +360,8 @@ def get_csat_metrics():
     Get detailed CSAT metrics
     """
     try:
-        with get_db_session() as db_session:
-            csat = calculate_csat_score(db_session)
-            return jsonify(csat)
+        csat = calculate_csat_score()
+        return jsonify(csat)
             
     except Exception as e:
         logger.error(f"Error getting CSAT metrics: {e}")
@@ -375,9 +373,8 @@ def get_volume_metrics():
     Get detailed volume metrics
     """
     try:
-        with get_db_session() as db_session:
-            volume = calculate_volume_metrics(db_session)
-            return jsonify(volume)
+        volume = calculate_volume_metrics()
+        return jsonify(volume)
             
     except Exception as e:
         logger.error(f"Error getting volume metrics: {e}")
@@ -389,9 +386,8 @@ def get_sentiment_metrics_endpoint():
     Get detailed sentiment metrics
     """
     try:
-        with get_db_session() as db_session:
-            sentiment = calculate_sentiment_metrics(db_session)
-            return jsonify(sentiment)
+        sentiment = calculate_sentiment_metrics()
+        return jsonify(sentiment)
             
     except Exception as e:
         logger.error(f"Error getting sentiment metrics: {e}")

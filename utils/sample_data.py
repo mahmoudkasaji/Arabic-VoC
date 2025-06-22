@@ -38,8 +38,9 @@ def generate_sample_feedback(days_back=30, count_per_day=10):
     """
     Generate sample feedback data for testing the executive dashboard
     """
+    from app import app, db
     try:
-        with get_db_session() as db_session:
+        with app.app_context():
             end_date = datetime.utcnow()
             
             for day in range(days_back):
@@ -85,9 +86,9 @@ def generate_sample_feedback(days_back=30, count_per_day=10):
                         region="SA"
                     )
                     
-                    db_session.add(feedback)
+                    db.session.add(feedback)
             
-            db_session.commit()
+            db.session.commit()
             logger.info(f"Generated {days_back * count_per_day} sample feedback records")
             
     except Exception as e:
@@ -98,10 +99,11 @@ def clear_sample_data():
     """
     Clear all feedback data (use with caution!)
     """
+    from app import app, db
     try:
-        with get_db_session() as db_session:
-            db_session.query(Feedback).delete()
-            db_session.commit()
+        with app.app_context():
+            db.session.query(Feedback).delete()
+            db.session.commit()
             logger.info("Cleared all feedback data")
             
     except Exception as e:
