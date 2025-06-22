@@ -126,6 +126,7 @@ An Arabic-first multi-channel feedback processing platform built with Flask and 
 - **June 22**: Flask migration from FastAPI for optimal Replit compatibility
 - **June 22**: Dual AI Integration - OpenAI (GPT-4o) and Anthropic (Claude-3-Sonnet) with intelligent service selection
 - **June 22**: JAIS 30B Integration - Native Arabic model with intelligent routing engine for optimal model selection
+- **June 22**: Agent Committee System - LangGraph orchestration with specialized committee agents replacing rule-based routing
 
 ### Platform Features Completed
 - Arabic-first survey builder with drag-and-drop functionality
@@ -181,6 +182,8 @@ An Arabic-first multi-channel feedback processing platform built with Flask and 
 - API key management system with service health monitoring and automatic fallback
 - Intelligent routing engine that analyzes content complexity and selects optimal AI model for each task
 - Native Arabic dialectal understanding with JAIS integration for superior cultural intelligence
+- Agent Committee System with specialized agents (TextAnalyzer, ModelExpert, ContextAgent, DeciderAgent)
+- Multi-agent orchestration for collaborative decision-making with confidence scoring and rationale generation
 
 ## User Preferences
 

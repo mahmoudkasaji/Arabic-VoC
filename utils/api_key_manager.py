@@ -257,8 +257,33 @@ class APIKeyManager:
         
         return None
     
-    def analyze_arabic_text(self, text: str, service: str = None, task_type: str = "arabic_analysis") -> Dict[str, Any]:
-        """Analyze Arabic text using intelligent service selection"""
+    def analyze_arabic_text(self, text: str, service: str = None, task_type: str = "arabic_analysis", 
+                           use_agent_committee: bool = True, business_context: Dict = None) -> Dict[str, Any]:
+        """Analyze Arabic text using agent committee or fallback to rule-based routing"""
+        
+        # Try agent committee first if enabled
+        if use_agent_committee:
+            try:
+                from utils.agent_committee import get_committee_orchestrator
+                orchestrator = get_committee_orchestrator(self)
+                
+                # Use async committee routing (simulate with sync for now)
+                import asyncio
+                loop = asyncio.new_event_loop()
+                asyncio.set_event_loop(loop)
+                try:
+                    result = loop.run_until_complete(
+                        orchestrator.route_analysis_request(text, task_type, business_context)
+                    )
+                    logger.info("Agent committee routing successful")
+                    return result
+                finally:
+                    loop.close()
+                    
+            except Exception as e:
+                logger.warning(f"Agent committee failed ({e}), falling back to rule-based routing")
+        
+        # Fallback to original rule-based routing
         if not service:
             service = self.get_recommended_service(text, task_type)
         
@@ -286,7 +311,7 @@ class APIKeyManager:
             if available_services:
                 fallback_service = available_services[0]  # Use best available fallback
                 logger.warning(f"Primary service {service} failed, falling back to {fallback_service}")
-                return self.analyze_arabic_text(text, fallback_service, task_type)
+                return self.analyze_arabic_text(text, fallback_service, task_type, False, business_context)
             else:
                 raise e
     
