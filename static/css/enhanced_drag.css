@@ -1,0 +1,288 @@
+/* Enhanced Drag and Drop Styles for Survey Builder */
+
+/* Auto-scroll styling */
+.auto-scroll-zone {
+    position: fixed;
+    z-index: 9998;
+    background: linear-gradient(transparent, rgba(46, 139, 87, 0.1));
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 200ms ease;
+}
+
+.auto-scroll-zone.active {
+    opacity: 1;
+}
+
+.auto-scroll-zone.top {
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 50px;
+    background: linear-gradient(rgba(46, 139, 87, 0.1), transparent);
+}
+
+.auto-scroll-zone.bottom {
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 50px;
+}
+
+/* Multi-select styling */
+.question-item.selected {
+    border-color: var(--primary-color);
+    background: rgba(46, 139, 87, 0.05);
+    transform: translateX(-3px);
+}
+
+.question-item.selected::before {
+    content: '';
+    position: absolute;
+    left: -3px;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: var(--primary-color);
+    border-radius: 0 2px 2px 0;
+}
+
+.bulk-selection-toolbar {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    padding: 12px 20px;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    z-index: 9999;
+    opacity: 0;
+    transform: translateX(-50%) translateY(20px);
+    transition: all 300ms cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    pointer-events: none;
+}
+
+.bulk-selection-toolbar.active {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+    pointer-events: all;
+}
+
+.selection-count {
+    background: var(--primary-color);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+/* Undo/Redo styling */
+.undo-redo-controls {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    display: flex;
+    gap: 8px;
+    z-index: 9999;
+}
+
+.undo-redo-controls button {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+    background: white;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    color: var(--text-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 200ms ease;
+    cursor: pointer;
+}
+
+.undo-redo-controls button:hover {
+    background: var(--primary-color);
+    color: white;
+    transform: scale(1.1);
+}
+
+.undo-redo-controls button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.undo-redo-controls button:disabled:hover {
+    background: white;
+    color: var(--text-color);
+}
+
+/* Enhanced question type hover effects */
+.question-type {
+    transform-origin: center;
+    will-change: transform;
+}
+
+.question-type:hover {
+    animation: questionTypeHover 0.6s ease infinite;
+}
+
+@keyframes questionTypeHover {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-2px) scale(1.02); }
+}
+
+/* Magnetic snap zones */
+.snap-zone {
+    position: absolute;
+    border: 2px dashed var(--primary-color);
+    border-radius: 8px;
+    background: rgba(46, 139, 87, 0.1);
+    opacity: 0;
+    transition: all 200ms ease;
+    pointer-events: none;
+}
+
+.snap-zone.active {
+    opacity: 1;
+    animation: snapZonePulse 1s ease infinite;
+}
+
+@keyframes snapZonePulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+/* Enhanced feedback animations */
+.drag-feedback {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--primary-color);
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    z-index: 9999;
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.8);
+    transition: all 300ms cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.drag-feedback.show {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.drag-feedback.success {
+    background: #28a745;
+}
+
+.drag-feedback.error {
+    background: #dc3545;
+}
+
+/* Keyboard navigation indicators */
+.keyboard-focus {
+    outline: 3px solid var(--primary-color);
+    outline-offset: 2px;
+    border-radius: 8px;
+}
+
+.keyboard-drag-mode .question-item {
+    border: 2px dashed rgba(46, 139, 87, 0.3);
+}
+
+.keyboard-drag-mode .question-item.keyboard-focus {
+    border-color: var(--primary-color);
+    background: rgba(46, 139, 87, 0.1);
+}
+
+/* Touch-specific enhancements */
+@media (pointer: coarse) {
+    .question-type {
+        padding: 20px 15px;
+        margin-bottom: 15px;
+    }
+    
+    .question-item {
+        padding: 25px;
+        margin-bottom: 25px;
+    }
+    
+    .drag-handle {
+        font-size: 1.5rem;
+        padding: 10px;
+    }
+    
+    .question-actions button {
+        min-width: 44px;
+        min-height: 44px;
+    }
+}
+
+/* Performance optimizations */
+.dragging-active * {
+    pointer-events: none;
+}
+
+.dragging-active .question-item {
+    pointer-events: all;
+}
+
+.dragging-active .question-type {
+    pointer-events: all;
+}
+
+/* Loading states */
+.drag-loading {
+    position: relative;
+    overflow: hidden;
+}
+
+.drag-loading::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+
+/* Error states */
+.drag-error {
+    border-color: #dc3545;
+    background: rgba(220, 53, 69, 0.05);
+    animation: errorPulse 0.5s ease-in-out;
+}
+
+@keyframes errorPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.02); }
+}
+
+/* Success states */
+.drag-success {
+    border-color: #28a745;
+    background: rgba(40, 167, 69, 0.05);
+    animation: successGlow 1s ease-out;
+}
+
+@keyframes successGlow {
+    0% { box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.5); }
+    100% { box-shadow: 0 0 0 15px rgba(40, 167, 69, 0); }
+}
