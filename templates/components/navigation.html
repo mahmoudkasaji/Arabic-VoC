@@ -308,10 +308,14 @@
         }
 
         renderBreadcrumbs(items) {
+            if (!this.breadcrumbContainer) return;
+            
             // Keep home breadcrumb
             const homeCrumb = this.breadcrumbContainer.querySelector('li:first-child');
             this.breadcrumbContainer.innerHTML = '';
-            this.breadcrumbContainer.appendChild(homeCrumb);
+            if (homeCrumb) {
+                this.breadcrumbContainer.appendChild(homeCrumb);
+            }
 
             // Add dynamic breadcrumbs
             items.forEach((item, index) => {
@@ -322,7 +326,7 @@
                     li.textContent = item;
                 } else {
                     const a = document.createElement('a');
-                    a.href = '#';
+                    a.href = 'javascript:void(0)';
                     a.textContent = item;
                     li.appendChild(a);
                 }
