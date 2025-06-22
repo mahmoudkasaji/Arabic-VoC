@@ -766,19 +766,33 @@
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
         <div class="container-fluid">
-            <a class="navbar-brand" href="/">
-                <i class="fas fa-comments text-primary"></i>
+            <a class="navbar-brand" href="/" title="العودة للصفحة الرئيسية">
+                <i class="fas fa-home text-primary me-2"></i>
                 منصة صوت العميل العربية
             </a>
             
-            <div class="d-flex align-items-center gap-3">
-                <button class="btn btn-outline-custom" onclick="previewSurvey()">
-                    <i class="fas fa-eye me-2"></i>
+            <!-- Breadcrumb Navigation -->
+            <nav aria-label="breadcrumb" class="d-none d-lg-block">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a href="/" class="text-decoration-none">الرئيسية</a></li>
+                    <li class="breadcrumb-item"><a href="/surveys" class="text-decoration-none">الاستطلاعات</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">منشئ الاستطلاعات</li>
+                </ol>
+            </nav>
+            
+            <!-- Survey Builder Actions -->
+            <div class="d-flex align-items-center gap-2">
+                <a href="/surveys" class="btn btn-outline-secondary btn-sm" title="العودة للاستطلاعات">
+                    <i class="fas fa-arrow-right me-1"></i>
+                    عودة
+                </a>
+                <button class="btn btn-outline-custom btn-sm" onclick="previewSurvey()" title="معاينة الاستطلاع">
+                    <i class="fas fa-eye me-1"></i>
                     معاينة
                 </button>
-                <button class="btn btn-primary-custom" onclick="saveSurvey()">
-                    <i class="fas fa-save me-2"></i>
-                    حفظ الاستطلاع
+                <button class="btn btn-primary-custom btn-sm" onclick="saveSurvey()" title="حفظ الاستطلاع">
+                    <i class="fas fa-save me-1"></i>
+                    حفظ
                 </button>
             </div>
         </div>

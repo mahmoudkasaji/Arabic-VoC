@@ -589,8 +589,124 @@ const Dashboard = {
     }
 };
 
+// Navigation Enhancement Functions
+const Navigation = {
+    /**
+     * Initialize navigation enhancements
+     */
+    init() {
+        this.highlightActivePage();
+        this.addMobileOptimizations();
+        this.addNavigationTooltips();
+        this.initBackToTop();
+    },
+
+    /**
+     * Highlight the current page in navigation
+     */
+    highlightActivePage() {
+        const currentPath = window.location.pathname;
+        const navLinks = document.querySelectorAll('.nav-link');
+        
+        navLinks.forEach(link => {
+            link.classList.remove('active');
+            if (link.getAttribute('href') === currentPath) {
+                link.classList.add('active');
+            }
+        });
+    },
+
+    /**
+     * Add mobile-specific optimizations
+     */
+    addMobileOptimizations() {
+        // Auto-close mobile menu when link is clicked
+        const navLinks = document.querySelectorAll('.navbar-nav .nav-link');
+        const navbarCollapse = document.getElementById('navbarNav');
+        
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth < 992 && navbarCollapse.classList.contains('show')) {
+                    const bsCollapse = new bootstrap.Collapse(navbarCollapse);
+                    bsCollapse.hide();
+                }
+            });
+        });
+    },
+
+    /**
+     * Add helpful tooltips to navigation items
+     */
+    addNavigationTooltips() {
+        const tooltips = {
+            '/': 'الصفحة الرئيسية للمنصة',
+            '/dashboard/realtime': 'عرض التحليلات والمقاييس المباشرة',
+            '/feedback': 'إرسال تعليق أو ملاحظة جديدة',
+            '/surveys': 'إدارة وعرض الاستطلاعات',
+            '/survey-builder': 'إنشاء استطلاع جديد',
+            '/analytics': 'تحليلات مفصلة ومتقدمة'
+        };
+
+        Object.entries(tooltips).forEach(([path, tooltip]) => {
+            const link = document.querySelector(`a[href="${path}"]`);
+            if (link && !link.hasAttribute('title')) {
+                link.setAttribute('title', tooltip);
+            }
+        });
+    },
+
+    /**
+     * Initialize back to top functionality
+     */
+    initBackToTop() {
+        // Create back to top button
+        const backToTopBtn = document.createElement('button');
+        backToTopBtn.innerHTML = '<i class="fas fa-chevron-up"></i>';
+        backToTopBtn.className = 'back-to-top';
+        backToTopBtn.style.cssText = `
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            width: 50px;
+            height: 50px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: none;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        `;
+
+        document.body.appendChild(backToTopBtn);
+
+        // Show/hide button based on scroll position
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                backToTopBtn.style.display = 'block';
+            } else {
+                backToTopBtn.style.display = 'none';
+            }
+        });
+
+        // Scroll to top when clicked
+        backToTopBtn.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+    }
+};
+
 // Initialization on DOM load
 document.addEventListener('DOMContentLoaded', () => {
+    // Initialize navigation enhancements
+    Navigation.init();
+    
     // Initialize language management
     LanguageManager.initializeLanguage();
     

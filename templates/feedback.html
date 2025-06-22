@@ -153,10 +153,30 @@
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
         <div class="container">
-            <a class="navbar-brand arabic-title" href="/">
-                <i class="fas fa-comments text-primary"></i>
+            <a class="navbar-brand arabic-title" href="/" title="العودة للصفحة الرئيسية">
+                <i class="fas fa-home text-primary me-2"></i>
                 منصة صوت العميل العربية
             </a>
+            
+            <!-- Breadcrumb Navigation -->
+            <nav aria-label="breadcrumb" class="d-none d-md-block">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a href="/" class="text-decoration-none">الرئيسية</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">إرسال تعليق</li>
+                </ol>
+            </nav>
+            
+            <!-- Quick Navigation Links -->
+            <div class="d-flex gap-2">
+                <a href="/dashboard/realtime" class="btn btn-outline-primary btn-sm" title="لوحة التحليلات">
+                    <i class="fas fa-chart-line me-1"></i>
+                    التحليلات
+                </a>
+                <a href="/surveys" class="btn btn-outline-primary btn-sm" title="الاستطلاعات">
+                    <i class="fas fa-poll me-1"></i>
+                    الاستطلاعات
+                </a>
+            </div>
             
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
