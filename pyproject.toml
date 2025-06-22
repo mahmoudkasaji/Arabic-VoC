@@ -16,6 +16,10 @@ dependencies = [
     "gunicorn[gthread,uvicorn]>=23.0.0",
     "httpx>=0.28.1",
     "jinja2>=3.1.6",
+    "langchain>=0.3.26",
+    "langchain-core>=0.3.66",
+    "langchain-openai>=0.3.24",
+    "langgraph>=0.4.8",
     "locust>=2.37.10",
     "openai>=1.90.0",
     "passlib>=1.7.4",
@@ -29,4 +33,5 @@ dependencies = [
     "python-multipart>=0.0.20",
     "sqlalchemy>=2.0.41",
     "uvicorn[standard]>=0.34.3",
+    "werkzeug>=3.1.3",
 ]

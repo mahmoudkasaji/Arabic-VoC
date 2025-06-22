@@ -216,7 +216,7 @@ class ArabicFeedbackAnalyzer:
 arabic_analyzer = ArabicFeedbackAnalyzer()
 
 def analyze_arabic_feedback(text: str) -> Dict[str, Any]:
-    """Complete analysis of Arabic feedback text"""
+    """Complete analysis of Arabic feedback text (Legacy - use agent orchestrator for new code)"""
     try:
         logger.info(f"Starting comprehensive analysis of Arabic feedback")
         
@@ -271,6 +271,18 @@ def analyze_arabic_feedback(text: str) -> Dict[str, Any]:
             "model_used": arabic_analyzer.model,
             "error": str(e)
         }
+
+async def analyze_arabic_feedback_with_agents(text: str) -> Dict[str, Any]:
+    """Modern agent-based analysis using LangGraph orchestration"""
+    try:
+        from utils.arabic_agent_orchestrator import analyze_arabic_feedback_agents
+        return await analyze_arabic_feedback_agents(text)
+    except ImportError:
+        logger.warning("Agent orchestrator not available, falling back to legacy analysis")
+        return analyze_arabic_feedback(text)
+    except Exception as e:
+        logger.error(f"Agent-based analysis failed: {e}, falling back to legacy")
+        return analyze_arabic_feedback(text)
 
 def batch_analyze_feedback(feedback_list: List[str]) -> List[Dict[str, Any]]:
     """Analyze multiple feedback texts in batch"""
