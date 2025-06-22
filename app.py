@@ -276,6 +276,51 @@ def register_page():
     return render_template('register.html', 
                          title='إنشاء حساب')
 
+@app.route('/api/ai-services-status')
+def ai_services_status():
+    """Get AI services configuration status"""
+    try:
+        from utils.api_key_manager import api_manager
+        
+        services = api_manager.get_available_services()
+        openai_test = api_manager.test_openai_connection()
+        anthropic_test = api_manager.test_anthropic_connection()
+        
+        return jsonify({
+            'services_configured': services,
+            'openai_status': openai_test,
+            'anthropic_status': anthropic_test,
+            'recommended_service': api_manager.get_recommended_service('arabic_analysis'),
+            'timestamp': datetime.utcnow().isoformat()
+        })
+        
+    except Exception as e:
+        logger.error(f"Error checking AI services: {e}")
+        return jsonify({'error': 'Failed to check AI services status'}), 500
+
+@app.route('/api/test-ai-analysis', methods=['POST'])
+def test_ai_analysis():
+    """Test AI analysis with sample Arabic text"""
+    try:
+        from utils.api_key_manager import api_manager
+        
+        data = request.get_json()
+        test_text = data.get('text', 'الخدمة ممتازة جداً والموظفين محترفين')
+        service = data.get('service')  # Optional: specify service
+        
+        analysis = api_manager.analyze_arabic_text(test_text, service)
+        
+        return jsonify({
+            'status': 'success',
+            'text_analyzed': test_text,
+            'analysis': analysis,
+            'timestamp': datetime.utcnow().isoformat()
+        })
+        
+    except Exception as e:
+        logger.error(f"Error in AI analysis test: {e}")
+        return jsonify({'error': f'AI analysis failed: {str(e)}'}), 500
+
 @app.route('/api/dashboard/metrics')
 def dashboard_metrics():
     """Dashboard metrics API"""
