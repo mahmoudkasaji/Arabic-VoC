@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إنشاء حساب - منصة صوت العميل العربية</title>
+    
+    <!-- Bootstrap RTL CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+    
+    <!-- Arabic Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-color: #2E8B57;
+            --secondary-color: #F4A460;
+            --accent-color: #4169E1;
+            --text-color: #2c3e50;
+            --bg-color: #f8f9fa;
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: var(--text-color);
+            direction: rtl;
+            text-align: right;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 2rem 0;
+        }
+
+        .arabic-title {
+            font-family: 'Amiri', serif;
+            font-weight: 700;
+        }
+
+        .register-container {
+            background: white;
+            border-radius: 20px;
+            padding: 3rem;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .form-control {
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+            padding: 0.75rem 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(46, 139, 87, 0.25);
+        }
+
+        .btn-primary-custom {
+            background: var(--primary-color);
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .btn-primary-custom:hover {
+            background: #236B47;
+            transform: translateY(-2px);
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: var(--text-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .register-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .register-header i {
+            font-size: 4rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .form-text {
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+
+        .form-text a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .form-text a:hover {
+            text-decoration: underline;
+        }
+
+        .back-link {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .back-link:hover {
+            color: #f8f9fa;
+            text-decoration: none;
+        }
+
+        .form-check-input:checked {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        @media (max-width: 768px) {
+            .register-container {
+                margin: 1rem;
+                padding: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Back to Home Link -->
+    <a href="/" class="back-link">
+        <i class="fas fa-arrow-right me-2"></i>
+        العودة للرئيسية
+    </a>
+
+    <!-- Register Container -->
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="register-container">
+                    
+                    <!-- Register Header -->
+                    <div class="register-header">
+                        <i class="fas fa-user-plus"></i>
+                        <h2 class="arabic-title">إنشاء حساب جديد</h2>
+                        <p class="text-muted">انضم إلى منصة صوت العميل العربية</p>
+                    </div>
+
+                    <!-- Register Form -->
+                    <form id="registerForm">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="firstName" class="form-label">الاسم الأول:</label>
+                                <input 
+                                    type="text" 
+                                    class="form-control" 
+                                    id="firstName" 
+                                    name="first_name"
+                                    placeholder="أحمد"
+                                    required
+                                >
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="lastName" class="form-label">الاسم الأخير:</label>
+                                <input 
+                                    type="text" 
+                                    class="form-control" 
+                                    id="lastName" 
+                                    name="last_name"
+                                    placeholder="محمد"
+                                    required
+                                >
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="firstNameAr" class="form-label">الاسم الأول بالعربية:</label>
+                                <input 
+                                    type="text" 
+                                    class="form-control" 
+                                    id="firstNameAr" 
+                                    name="first_name_ar"
+                                    placeholder="أحمد"
+                                >
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="lastNameAr" class="form-label">الاسم الأخير بالعربية:</label>
+                                <input 
+                                    type="text" 
+                                    class="form-control" 
+                                    id="lastNameAr" 
+                                    name="last_name_ar"
+                                    placeholder="محمد"
+                                >
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="username" class="form-label">اسم المستخدم:</label>
+                            <input 
+                                type="text" 
+                                class="form-control" 
+                                id="username" 
+                                name="username"
+                                placeholder="ahmed_mohamed"
+                                required
+                            >
+                            <small class="form-text text-muted">يجب أن يكون 3 أحرف على الأقل</small>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="email" class="form-label">البريد الإلكتروني:</label>
+                            <input 
+                                type="email" 
+                                class="form-control" 
+                                id="email" 
+                                name="email"
+                                placeholder="ahmed@example.com"
+                                required
+                            >
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="phone" class="form-label">رقم الهاتف (اختياري):</label>
+                            <input 
+                                type="tel" 
+                                class="form-control" 
+                                id="phone" 
+                                name="phone"
+                                placeholder="+966501234567"
+                            >
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="password" class="form-label">كلمة المرور:</label>
+                                <div class="position-relative">
+                                    <input 
+                                        type="password" 
+                                        class="form-control" 
+                                        id="password" 
+                                        name="password"
+                                        placeholder="كلمة مرور قوية"
+                                        required
+                                    >
+                                    <button 
+                                        type="button" 
+                                        class="btn btn-link position-absolute end-0 top-50 translate-middle-y"
+                                        id="togglePassword"
+                                        style="border: none; background: none; padding: 0 0.75rem;"
+                                    >
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                                <small class="form-text text-muted">8 أحرف على الأقل</small>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="confirmPassword" class="form-label">تأكيد كلمة المرور:</label>
+                                <input 
+                                    type="password" 
+                                    class="form-control" 
+                                    id="confirmPassword" 
+                                    name="confirm_password"
+                                    placeholder="أعد كتابة كلمة المرور"
+                                    required
+                                >
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="languagePreference" class="form-label">اللغة المفضلة:</label>
+                                <select class="form-control" id="languagePreference" name="language_preference">
+                                    <option value="ar" selected>العربية</option>
+                                    <option value="en">English</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="timezone" class="form-label">المنطقة الزمنية:</label>
+                                <select class="form-control" id="timezone" name="timezone">
+                                    <option value="Asia/Riyadh" selected>الرياض (GMT+3)</option>
+                                    <option value="Asia/Dubai">دبي (GMT+4)</option>
+                                    <option value="Asia/Kuwait">الكويت (GMT+3)</option>
+                                    <option value="Africa/Cairo">القاهرة (GMT+2)</option>
+                                    <option value="Asia/Beirut">بيروت (GMT+2)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="agreeTerms" required>
+                            <label class="form-check-label" for="agreeTerms">
+                                أوافق على 
+                                <a href="#" onclick="alert('شروط الاستخدام وسياسة الخصوصية')">شروط الاستخدام وسياسة الخصوصية</a>
+                            </label>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary-custom">
+                            <i class="fas fa-user-plus me-2"></i>
+                            إنشاء الحساب
+                        </button>
+
+                        <div class="form-text">
+                            لديك حساب بالفعل؟ 
+                            <a href="/login">تسجيل الدخول</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JavaScript -->
+    <script>
+        // Toggle password visibility
+        document.getElementById('togglePassword').addEventListener('click', function() {
+            const passwordInput = document.getElementById('password');
+            const icon = this.querySelector('i');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        });
+
+        // Password validation
+        document.getElementById('confirmPassword').addEventListener('input', function() {
+            const password = document.getElementById('password').value;
+            const confirmPassword = this.value;
+            
+            if (confirmPassword && password !== confirmPassword) {
+                this.setCustomValidity('كلمتا المرور غير متطابقتين');
+            } else {
+                this.setCustomValidity('');
+            }
+        });
+
+        // Username validation
+        document.getElementById('username').addEventListener('input', function() {
+            const username = this.value;
+            if (username.length > 0 && username.length < 3) {
+                this.setCustomValidity('اسم المستخدم يجب أن يكون 3 أحرف على الأقل');
+            } else {
+                this.setCustomValidity('');
+            }
+        });
+
+        // Form submission
+        document.getElementById('registerForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Validate passwords match
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            if (password !== confirmPassword) {
+                alert('كلمتا المرور غير متطابقتين');
+                return;
+            }
+            
+            // Get form data
+            const formData = new FormData(this);
+            const data = {
+                username: formData.get('username'),
+                email: formData.get('email'),
+                password: formData.get('password'),
+                first_name: formData.get('first_name'),
+                last_name: formData.get('last_name'),
+                first_name_ar: formData.get('first_name_ar'),
+                last_name_ar: formData.get('last_name_ar'),
+                phone: formData.get('phone'),
+                language_preference: formData.get('language_preference'),
+                timezone: formData.get('timezone')
+            };
+            
+            // Disable submit button
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>جاري إنشاء الحساب...';
+            submitBtn.disabled = true;
+            
+            try {
+                // Submit registration
+                const response = await fetch('/api/auth/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    alert('تم إنشاء الحساب بنجاح! يمكنك الآن تسجيل الدخول.');
+                    window.location.href = '/login';
+                    
+                } else {
+                    const error = await response.json();
+                    alert('خطأ في إنشاء الحساب: ' + (error.detail || 'يرجى التحقق من البيانات'));
+                }
+                
+            } catch (error) {
+                alert('حدث خطأ أثناء إنشاء الحساب. يرجى المحاولة مرة أخرى.');
+                console.error('Error:', error);
+            } finally {
+                // Re-enable submit button
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,255 @@
+/* Enhanced Drag-and-Drop Styles for Survey Builder */
+
+/* Smooth animations for all drag operations */
+* {
+    transition-property: transform, box-shadow, border-color, background-color;
+    transition-duration: 0.2s;
+    transition-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Enhanced question type hover effects */
+.question-type {
+    cursor: grab;
+    user-select: none;
+    touch-action: manipulation;
+}
+
+.question-type:active {
+    cursor: grabbing;
+}
+
+.question-type:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(46, 139, 87, 0.15);
+}
+
+/* Drag handle styling */
+.drag-handle {
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    cursor: grab;
+    color: #6c757d;
+}
+
+.question-item:hover .drag-handle {
+    opacity: 1;
+}
+
+.drag-handle:hover {
+    color: var(--primary-color);
+}
+
+/* Auto-scroll indicators */
+.auto-scroll-indicator {
+    position: fixed;
+    width: 100%;
+    height: 50px;
+    background: linear-gradient(to bottom, rgba(46, 139, 87, 0.1), transparent);
+    z-index: 999;
+    pointer-events: none;
+    animation: scrollPulse 1s infinite;
+}
+
+.auto-scroll-indicator.top {
+    top: 0;
+    background: linear-gradient(to bottom, rgba(46, 139, 87, 0.2), transparent);
+}
+
+.auto-scroll-indicator.bottom {
+    bottom: 0;
+    background: linear-gradient(to top, rgba(46, 139, 87, 0.2), transparent);
+}
+
+@keyframes scrollPulse {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; }
+}
+
+/* Multi-select states */
+.question-item.selected {
+    border-color: var(--primary-color);
+    background: rgba(46, 139, 87, 0.05);
+}
+
+.question-item.selected::before {
+    content: '';
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 20px;
+    height: 20px;
+    background: var(--primary-color);
+    border-radius: 50%;
+    z-index: 10;
+}
+
+.question-item.selected::after {
+    content: '✓';
+    position: absolute;
+    top: 13px;
+    right: 15px;
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    z-index: 11;
+}
+
+/* Bulk selection toolbar */
+.bulk-actions-toolbar {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: white;
+    border-radius: 25px;
+    padding: 10px 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    z-index: 1000;
+    opacity: 0;
+    transform: translateX(-50%) translateY(20px);
+    transition: all 0.3s ease;
+}
+
+.bulk-actions-toolbar.visible {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+/* Magnetic snap zones */
+.snap-zone {
+    position: relative;
+}
+
+.snap-zone::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+    border: 2px dashed transparent;
+    border-radius: 15px;
+    transition: border-color 0.2s ease;
+}
+
+.snap-zone.active::before {
+    border-color: var(--primary-color);
+    background: rgba(46, 139, 87, 0.05);
+}
+
+/* Performance optimizations */
+.question-item {
+    will-change: transform;
+    backface-visibility: hidden;
+}
+
+.question-type {
+    will-change: transform;
+    backface-visibility: hidden;
+}
+
+/* RTL-specific enhancements */
+[dir="rtl"] .drag-handle {
+    transform: scaleX(-1);
+}
+
+[dir="rtl"] .insertion-line {
+    background: linear-gradient(270deg, var(--primary-color), transparent);
+}
+
+/* Touch-specific styles */
+@media (hover: none) and (pointer: coarse) {
+    .question-type {
+        padding: 20px 15px;
+        margin-bottom: 15px;
+    }
+    
+    .drag-handle {
+        opacity: 1;
+        font-size: 1.2rem;
+    }
+    
+    .question-item {
+        padding: 20px;
+    }
+    
+    .drop-zone-indicator {
+        min-height: 120px;
+        font-size: 1rem;
+    }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .drop-zone-indicator {
+        border-width: 3px;
+        border-color: currentColor;
+    }
+    
+    .insertion-line {
+        height: 4px;
+        background: currentColor;
+    }
+    
+    .drag-active {
+        outline: 3px solid currentColor;
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+    }
+    
+    .question-type:hover {
+        transform: none;
+    }
+    
+    .drag-active {
+        transform: none;
+    }
+}
+
+/* Focus indicators for keyboard navigation */
+.question-type:focus-visible,
+.question-item:focus-visible {
+    outline: 3px solid var(--primary-color);
+    outline-offset: 2px;
+    border-radius: 8px;
+}
+
+/* Undo/Redo notification */
+.undo-notification {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #343a40;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 25px;
+    z-index: 1001;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.undo-notification.visible {
+    opacity: 1;
+}
+
+.undo-notification button {
+    background: none;
+    border: 1px solid rgba(255,255,255,0.3);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 15px;
+    margin-left: 10px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.undo-notification button:hover {
+    background: rgba(255,255,255,0.1);
+}

@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إرسال تعليق - منصة صوت العميل العربية</title>
+    
+    <!-- Bootstrap RTL CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+    
+    <!-- Arabic Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-color: #2E8B57;
+            --secondary-color: #F4A460;
+            --accent-color: #4169E1;
+            --text-color: #2c3e50;
+            --bg-color: #f8f9fa;
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            direction: rtl;
+            text-align: right;
+        }
+
+        .arabic-title {
+            font-family: 'Amiri', serif;
+            font-weight: 700;
+        }
+
+        .feedback-form {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: var(--text-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-control {
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+            padding: 0.75rem 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(46, 139, 87, 0.25);
+        }
+
+        .btn-primary-custom {
+            background: var(--primary-color);
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary-custom:hover {
+            background: #236B47;
+            transform: translateY(-2px);
+        }
+
+        .rating-stars {
+            direction: ltr;
+            display: inline-block;
+        }
+
+        .rating-stars input {
+            display: none;
+        }
+
+        .rating-stars label {
+            font-size: 2rem;
+            color: #ddd;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .rating-stars input:checked ~ label,
+        .rating-stars label:hover,
+        .rating-stars label:hover ~ label {
+            color: #ffc107;
+        }
+
+        .channel-select {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .channel-option {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .channel-option:hover {
+            border-color: var(--primary-color);
+            background: rgba(46, 139, 87, 0.1);
+        }
+
+        .channel-option.selected {
+            border-color: var(--primary-color);
+            background: rgba(46, 139, 87, 0.1);
+            color: var(--primary-color);
+        }
+
+        .channel-option i {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .success-message {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 2rem;
+            display: none;
+        }
+
+        .navbar-brand {
+            font-family: 'Amiri', serif;
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+        <div class="container">
+            <a class="navbar-brand arabic-title" href="/" title="العودة للصفحة الرئيسية">
+                <i class="fas fa-home text-primary me-2"></i>
+                منصة صوت العميل العربية
+            </a>
+            
+            <!-- Breadcrumb Navigation -->
+            <nav aria-label="breadcrumb" class="d-none d-md-block">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a href="/" class="text-decoration-none">الرئيسية</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">إرسال تعليق</li>
+                </ol>
+            </nav>
+            
+            <!-- Quick Navigation Links -->
+            <div class="d-flex gap-2">
+                <a href="/dashboard/realtime" class="btn btn-outline-primary btn-sm" title="لوحة التحليلات">
+                    <i class="fas fa-chart-line me-1"></i>
+                    التحليلات
+                </a>
+                <a href="/surveys" class="btn btn-outline-primary btn-sm" title="الاستطلاعات">
+                    <i class="fas fa-poll me-1"></i>
+                    الاستطلاعات
+                </a>
+            </div>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">الرئيسية</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/dashboard/realtime">لوحة التحليلات</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/feedback">إرسال تعليق</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/surveys">الاستطلاعات</a>
+                    </li>
+                </ul>
+                
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/login">تسجيل الدخول</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/register">إنشاء حساب</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                
+                <!-- Success Message -->
+                <div id="successMessage" class="success-message">
+                    <i class="fas fa-check-circle fa-3x mb-3"></i>
+                    <h3 class="arabic-title">شكراً لك!</h3>
+                    <p class="lead mb-0">تم إرسال تعليقك بنجاح وسيتم تحليله قريباً</p>
+                </div>
+
+                <!-- Page Header -->
+                <div class="text-center mb-4">
+                    <h1 class="arabic-title display-5 mb-3">شاركنا رأيك</h1>
+                    <p class="lead text-muted">
+                        نقدر آرائكم وملاحظاتكم لتحسين خدماتنا وتجربتكم معنا
+                    </p>
+                </div>
+
+                <!-- Feedback Form -->
+                <div class="feedback-form">
+                    <form id="feedbackForm">
+                        <!-- Channel Selection -->
+                        <div class="mb-4">
+                            <label class="form-label">اختر القناة التي تريد التعليق عليها:</label>
+                            <div class="channel-select">
+                                <div class="channel-option" data-channel="website">
+                                    <i class="fas fa-globe"></i>
+                                    <div>الموقع الإلكتروني</div>
+                                </div>
+                                <div class="channel-option" data-channel="mobile_app">
+                                    <i class="fas fa-mobile-alt"></i>
+                                    <div>التطبيق المحمول</div>
+                                </div>
+                                <div class="channel-option" data-channel="whatsapp">
+                                    <i class="fab fa-whatsapp"></i>
+                                    <div>واتساب</div>
+                                </div>
+                                <div class="channel-option" data-channel="email">
+                                    <i class="fas fa-envelope"></i>
+                                    <div>البريد الإلكتروني</div>
+                                </div>
+                                <div class="channel-option" data-channel="phone">
+                                    <i class="fas fa-phone"></i>
+                                    <div>الهاتف</div>
+                                </div>
+                                <div class="channel-option" data-channel="social_media">
+                                    <i class="fas fa-share-alt"></i>
+                                    <div>وسائل التواصل</div>
+                                </div>
+                            </div>
+                            <input type="hidden" id="selectedChannel" name="channel" required>
+                        </div>
+
+                        <!-- Rating -->
+                        <div class="mb-4">
+                            <label class="form-label">تقييمك العام:</label>
+                            <div class="rating-stars" dir="ltr">
+                                <input type="radio" id="star5" name="rating" value="5">
+                                <label for="star5">★</label>
+                                <input type="radio" id="star4" name="rating" value="4">
+                                <label for="star4">★</label>
+                                <input type="radio" id="star3" name="rating" value="3">
+                                <label for="star3">★</label>
+                                <input type="radio" id="star2" name="rating" value="2">
+                                <label for="star2">★</label>
+                                <input type="radio" id="star1" name="rating" value="1">
+                                <label for="star1">★</label>
+                            </div>
+                        </div>
+
+                        <!-- Feedback Content -->
+                        <div class="mb-4">
+                            <label for="content" class="form-label">تعليقك أو ملاحظاتك:</label>
+                            <textarea 
+                                class="form-control" 
+                                id="content" 
+                                name="content" 
+                                rows="5" 
+                                placeholder="شاركنا تجربتك ورأيك بالتفصيل..."
+                                required
+                            ></textarea>
+                            <div class="form-text">يمكنك الكتابة بأي لهجة عربية - سنفهمها جميعاً</div>
+                        </div>
+
+                        <!-- Customer Information -->
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <label for="customerName" class="form-label">الاسم (اختياري):</label>
+                                <input 
+                                    type="text" 
+                                    class="form-control" 
+                                    id="customerName" 
+                                    name="customer_name_ar"
+                                    placeholder="أدخل اسمك"
+                                >
+                            </div>
+                            <div class="col-md-6">
+                                <label for="customerEmail" class="form-label">البريد الإلكتروني (اختياري):</label>
+                                <input 
+                                    type="email" 
+                                    class="form-control" 
+                                    id="customerEmail" 
+                                    name="customer_email"
+                                    placeholder="example@email.com"
+                                >
+                            </div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary-custom btn-lg">
+                                <i class="fas fa-paper-plane me-2"></i>
+                                إرسال التعليق
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Recent Feedback Examples -->
+                <div class="feedback-form">
+                    <h4 class="arabic-title mb-3">أمثلة على التعليقات الأخيرة</h4>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <div class="p-3 bg-light rounded">
+                                <div class="d-flex align-items-center mb-2">
+                                    <div class="rating-stars" dir="ltr" style="font-size: 1rem;">
+                                        <span style="color: #ffc107;">★★★★★</span>
+                                    </div>
+                                    <small class="text-muted me-2">الموقع الإلكتروني</small>
+                                </div>
+                                <p class="mb-0 small">"الخدمة ممتازة والموقع سهل الاستخدام"</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="p-3 bg-light rounded">
+                                <div class="d-flex align-items-center mb-2">
+                                    <div class="rating-stars" dir="ltr" style="font-size: 1rem;">
+                                        <span style="color: #ffc107;">★★★★</span><span style="color: #ddd;">★</span>
+                                    </div>
+                                    <small class="text-muted me-2">التطبيق المحمول</small>
+                                </div>
+                                <p class="mb-0 small">"التطبيق كويس بس محتاج تحسينات في السرعة"</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JavaScript -->
+    <script>
+        // Channel selection
+        document.querySelectorAll('.channel-option').forEach(option => {
+            option.addEventListener('click', function() {
+                // Remove selected class from all options
+                document.querySelectorAll('.channel-option').forEach(opt => {
+                    opt.classList.remove('selected');
+                });
+                
+                // Add selected class to clicked option
+                this.classList.add('selected');
+                
+                // Set hidden input value
+                document.getElementById('selectedChannel').value = this.dataset.channel;
+            });
+        });
+
+        // Form submission
+        document.getElementById('feedbackForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Validate channel selection
+            if (!document.getElementById('selectedChannel').value) {
+                alert('يرجى اختيار القناة أولاً');
+                return;
+            }
+            
+            // Get form data
+            const formData = new FormData(this);
+            const data = {
+                content: formData.get('content'),
+                channel: formData.get('channel'),
+                rating: parseInt(formData.get('rating')) || null,
+                customer_name_ar: formData.get('customer_name_ar') || null,
+                customer_email: formData.get('customer_email') || null
+            };
+            
+            // Disable submit button
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>جاري الإرسال...';
+            submitBtn.disabled = true;
+            
+            try {
+                // Submit feedback
+                const response = await fetch('/api/feedback/submit', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                if (response.ok) {
+                    // Show success message
+                    document.getElementById('successMessage').style.display = 'block';
+                    document.querySelector('.feedback-form').style.display = 'none';
+                    
+                    // Scroll to success message
+                    document.getElementById('successMessage').scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                    
+                } else {
+                    throw new Error('Failed to submit feedback');
+                }
+                
+            } catch (error) {
+                alert('حدث خطأ أثناء إرسال التعليق. يرجى المحاولة مرة أخرى.');
+                console.error('Error:', error);
+            } finally {
+                // Re-enable submit button
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
+        });
+
+        // Rating stars interaction
+        document.querySelectorAll('.rating-stars input').forEach(input => {
+            input.addEventListener('change', function() {
+                const value = this.value;
+                const labels = document.querySelectorAll('.rating-stars label');
+                
+                labels.forEach((label, index) => {
+                    if (index >= 5 - value) {
+                        label.style.color = '#ffc107';
+                    } else {
+                        label.style.color = '#ddd';
+                    }
+                });
+            });
+        });
+
+        // Auto-expand textarea
+        document.getElementById('content').addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = this.scrollHeight + 'px';
+        });
+    </script>
+</body>
+</html>

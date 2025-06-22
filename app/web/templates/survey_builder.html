@@ -1,0 +1,1015 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منشئ الاستطلاعات - منصة صوت العميل العربية</title>
+    
+    <!-- Bootstrap RTL CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+    
+    <!-- Arabic Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Enhanced Drag Styles -->
+    <link href="/static/css/drag_enhancements.css" rel="stylesheet">
+    
+    <!-- Sortable JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+    
+    <!-- Advanced Drag Controller -->
+    <script src="/static/js/advanced_drag_controller.js"></script>
+    
+    <style>
+        :root {
+            --primary-color: #2E8B57;
+            --secondary-color: #F4A460;
+            --accent-color: #4169E1;
+            --text-color: #2c3e50;
+            --bg-color: #f8f9fa;
+            --border-color: #dee2e6;
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            direction: rtl;
+            text-align: right;
+        }
+
+        .builder-container {
+            display: grid;
+            grid-template-columns: 240px 1fr 340px;
+            gap: 12px;
+            height: calc(100vh - 80px);
+            padding: 12px;
+            max-width: 1800px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 1400px) {
+            .builder-container {
+                grid-template-columns: 220px 1fr 320px;
+                gap: 10px;
+            }
+        }
+
+        @media (max-width: 1200px) {
+            .builder-container {
+                grid-template-columns: 200px 1fr 300px;
+                gap: 8px;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .builder-container {
+                grid-template-columns: 1fr;
+                grid-template-rows: 1fr auto;
+                height: auto;
+                min-height: calc(100vh - 80px);
+            }
+            
+            .sidebar {
+                display: none; /* Hide desktop sidebar on mobile */
+            }
+            
+            .main-canvas {
+                order: 1;
+                min-height: 500px;
+            }
+            
+            #propertiesSidebar {
+                order: 2;
+            }
+        }
+
+        .sidebar {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            overflow-y: auto;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar h5 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-color);
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .properties-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .properties-header {
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 12px;
+            margin-bottom: 15px;
+        }
+
+        .properties-header h5 {
+            margin: 0;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        .question-types-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 8px;
+        }
+
+        .collapsible-sidebar {
+            transition: transform 0.3s ease;
+        }
+
+        @media (max-width: 992px) {
+            .collapsible-sidebar {
+                position: fixed;
+                top: 80px;
+                right: -300px;
+                width: 280px;
+                height: calc(100vh - 80px);
+                z-index: 1000;
+                border-radius: 0;
+            }
+            
+            .collapsible-sidebar.open {
+                transform: translateX(-300px);
+            }
+        }
+
+        .main-canvas {
+            background: white;
+            border-radius: 12px;
+            padding: 20px 25px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            overflow-y: auto;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .canvas-header {
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+            flex-shrink: 0;
+        }
+
+        .canvas-content {
+            flex: 1;
+            min-height: 600px;
+        }
+
+        .canvas-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-color);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .canvas-subtitle {
+            font-size: 0.85rem;
+            color: #666;
+            margin: 3px 0 0 0;
+        }
+
+        .survey-header-section {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .survey-header-section h6 {
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        /* Mobile Question Type Dropdown */
+        .mobile-question-selector {
+            display: none;
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 15px;
+            border: 1px solid var(--border-color);
+        }
+
+        .mobile-question-selector h6 {
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .question-type-dropdown {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            background: white;
+            font-size: 1rem;
+            color: var(--text-color);
+            transition: all 0.2s ease;
+        }
+
+        .question-type-dropdown:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(46, 139, 87, 0.1);
+        }
+
+        .add-question-btn {
+            width: 100%;
+            padding: 12px 20px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            margin-top: 12px;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .add-question-btn:hover {
+            background: #236B47;
+            transform: translateY(-1px);
+        }
+
+        .add-question-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Question reordering visual feedback */
+        body.question-reordering {
+            cursor: grabbing;
+        }
+
+        body.question-reordering .question-item:not(.sortable-chosen) {
+            opacity: 0.7;
+        }
+
+        .question-item.sortable-chosen .drag-handle {
+            opacity: 1;
+            background: var(--primary-color);
+            color: white;
+        }
+
+        @media (max-width: 992px) {
+            .mobile-question-selector {
+                display: block;
+            }
+        }
+
+        .question-type {
+            display: flex;
+            align-items: center;
+            padding: 10px 12px;
+            margin-bottom: 4px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            cursor: grab;
+            transition: all 0.2s ease;
+            border: 1px solid transparent;
+            font-size: 0.85rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .question-type::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 3px;
+            height: 100%;
+            background: var(--primary-color);
+            transform: scaleY(0);
+            transition: transform 0.2s ease;
+        }
+
+        .question-type:hover {
+            background: rgba(46, 139, 87, 0.1);
+            border-color: var(--primary-color);
+            transform: translateY(-1px);
+        }
+
+        .question-type:hover::before {
+            transform: scaleY(1);
+        }
+
+        .question-type-icon {
+            width: 16px;
+            text-align: center;
+            margin-left: 8px;
+            color: var(--primary-color);
+            font-size: 0.9rem;
+        }
+
+        .question-type-label {
+            flex: 1;
+            font-weight: 500;
+            line-height: 1.3;
+        }
+
+        .question-type-description {
+            font-size: 0.75rem;
+            color: #666;
+            margin-top: 1px;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            line-height: 1.2;
+        }
+
+        .question-type:hover .question-type-description {
+            opacity: 1;
+        }
+
+        .question-type i {
+            margin-left: 15px;
+            font-size: 1.2em;
+        }
+
+        .question-item {
+            background: white;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+            position: relative;
+            cursor: move;
+        }
+
+        .question-item:hover .drag-handle {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+
+        .question-item.sortable-chosen {
+            transform: scale(1.02);
+            box-shadow: 0 8px 25px rgba(46, 139, 87, 0.2);
+            border-color: var(--primary-color);
+            z-index: 1000;
+        }
+
+        .question-item.sortable-ghost {
+            opacity: 0.3;
+            background: #f8f9fa;
+        }
+
+        .question-item:hover {
+            border-color: var(--primary-color);
+            box-shadow: 0 4px 15px rgba(46, 139, 87, 0.2);
+        }
+
+        .question-item.active {
+            border-color: var(--primary-color);
+            box-shadow: 0 4px 15px rgba(46, 139, 87, 0.3);
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .question-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .drag-handle {
+            cursor: grab;
+            color: var(--primary-color);
+            opacity: 0.3;
+            transition: all 0.2s ease;
+            font-size: 1.1rem;
+            padding: 5px;
+            border-radius: 4px;
+        }
+
+        .drag-handle:hover {
+            opacity: 1;
+            background: rgba(46, 139, 87, 0.1);
+            transform: scale(1.1);
+        }
+
+        .drag-handle:active {
+            cursor: grabbing;
+        }
+
+        .drag-handle:hover {
+            opacity: 1;
+        }
+
+        .form-control-modern {
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            padding: 12px 15px;
+            font-family: 'Cairo', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .form-control-modern:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(46, 139, 87, 0.1);
+        }
+
+        .btn-primary-custom {
+            background: var(--primary-color);
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary-custom:hover {
+            background: #236B47;
+            transform: translateY(-2px);
+        }
+
+        .btn-outline-custom {
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            background: transparent;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-outline-custom:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .survey-preview {
+            border: 2px dashed var(--border-color);
+            border-radius: 10px;
+            padding: 30px;
+            text-align: center;
+            color: var(--text-color);
+            opacity: 0.7;
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        .survey-preview.has-questions {
+            border: none;
+            padding: 0;
+            text-align: right;
+        }
+
+        .option-input {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .option-input input {
+            flex: 1;
+            margin-left: 10px;
+        }
+
+        .property-group {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .property-group h6 {
+            margin-bottom: 15px;
+            color: var(--primary-color);
+            font-weight: 700;
+        }
+
+        .preview-question {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+
+        /* Enhanced Drag and Drop Styles */
+        .dragging-active {
+            user-select: none;
+        }
+
+        .dragging-active * {
+            cursor: grabbing !important;
+        }
+
+        /* Drop Zone Indicators */
+        .drop-zones-active {
+            background: linear-gradient(135deg, rgba(46, 139, 87, 0.05) 0%, rgba(46, 139, 87, 0.1) 100%);
+            border: 2px dashed rgba(46, 139, 87, 0.3);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .drop-zone-indicator {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 200px;
+            border: 2px dashed rgba(46, 139, 87, 0.4);
+            border-radius: 12px;
+            background: rgba(46, 139, 87, 0.05);
+            transition: all 0.3s ease;
+            margin: 20px 0;
+        }
+
+        .drop-zone-indicator:hover {
+            border-color: var(--primary-color);
+            background: rgba(46, 139, 87, 0.1);
+        }
+
+        .drop-zone-content {
+            text-align: center;
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .drop-zone-content i {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .insertion-line {
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+            border-radius: 2px;
+            margin: 8px 0;
+            opacity: 0;
+            animation: insertionPulse 1s ease-in-out infinite;
+        }
+
+        .drop-zone-highlight {
+            border-color: var(--primary-color) !important;
+            background: rgba(46, 139, 87, 0.1) !important;
+            transform: scale(1.02);
+        }
+
+        /* Enhanced Drag States */
+        .drag-active {
+            opacity: 0.8;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+            z-index: 1000;
+            transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .drag-ghost {
+            opacity: 0.5;
+            filter: blur(1px);
+        }
+
+        .drag-chosen {
+            transform: scale(1.01);
+            box-shadow: 0 4px 15px rgba(46, 139, 87, 0.2);
+        }
+
+        .question-dragging {
+            opacity: 0.8;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            z-index: 999;
+            border-color: var(--primary-color);
+        }
+
+        .question-ghost {
+            opacity: 0.4;
+        }
+
+        .question-chosen {
+            transform: scale(1.01);
+            border-color: var(--primary-color);
+        }
+
+        /* Reorder Drop Zones */
+        .reorder-drop-zone {
+            position: relative;
+        }
+
+        .reorder-drop-zone::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: rgba(46, 139, 87, 0.3);
+            border-radius: 2px;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .reorder-drop-zone:hover::before {
+            opacity: 1;
+        }
+
+        /* Success Animations */
+        .success-ripple {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: radial-gradient(circle, rgba(46, 139, 87, 0.3) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: rippleEffect 1s ease-out;
+            pointer-events: none;
+        }
+
+        .reorder-animation {
+            animation: reorderBounce 0.3s ease-out;
+        }
+
+        .invalid-drop {
+            animation: invalidShake 0.3s ease-in-out;
+        }
+
+        /* Touch Drag Preview */
+        .touch-drag-preview {
+            opacity: 0.8;
+            transform: scale(0.9) rotate(5deg);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+            border: 2px solid var(--primary-color);
+            z-index: 9999;
+        }
+
+        /* Keyboard Navigation */
+        .question-type:focus,
+        .question-item:focus {
+            outline: 3px solid rgba(46, 139, 87, 0.5);
+            outline-offset: 2px;
+        }
+
+        /* High Contrast Mode */
+        @media (prefers-contrast: high) {
+            .drop-zone-indicator {
+                border-width: 3px;
+                border-color: var(--primary-color);
+            }
+            
+            .drag-active {
+                border: 3px solid var(--primary-color);
+            }
+        }
+
+        /* Reduced Motion */
+        @media (prefers-reduced-motion: reduce) {
+            .drag-active,
+            .question-dragging,
+            .reorder-animation {
+                transition: none;
+                animation: none;
+                transform: none;
+            }
+            
+            .question-type:hover {
+                transform: none;
+            }
+        }
+
+        /* Animations */
+        @keyframes insertionPulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+
+        @keyframes rippleEffect {
+            0% {
+                width: 0;
+                height: 0;
+                opacity: 1;
+                transform: translate(-50%, -50%);
+            }
+            100% {
+                width: 200px;
+                height: 200px;
+                opacity: 0;
+                transform: translate(-50%, -50%);
+            }
+        }
+
+        @keyframes reorderBounce {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes invalidShake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        /* Screen Reader Only */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        @media (max-width: 1200px) {
+            .builder-container {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto auto 1fr;
+            }
+            
+            .sidebar {
+                height: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/" title="العودة للصفحة الرئيسية">
+                <i class="fas fa-home text-primary me-2"></i>
+                منصة صوت العميل العربية
+            </a>
+            
+            <!-- Breadcrumb Navigation -->
+            <nav aria-label="breadcrumb" class="d-none d-lg-block">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a href="/" class="text-decoration-none">الرئيسية</a></li>
+                    <li class="breadcrumb-item"><a href="/surveys" class="text-decoration-none">الاستطلاعات</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">منشئ الاستطلاعات</li>
+                </ol>
+            </nav>
+            
+            <!-- Survey Builder Actions -->
+            <div class="d-flex align-items-center gap-2">
+                <a href="/surveys" class="btn btn-outline-secondary btn-sm" title="العودة للاستطلاعات">
+                    <i class="fas fa-arrow-right me-1"></i>
+                    عودة
+                </a>
+                <button class="btn btn-outline-custom btn-sm" onclick="previewSurvey()" title="معاينة الاستطلاع">
+                    <i class="fas fa-eye me-1"></i>
+                    معاينة
+                </button>
+                <button class="btn btn-primary-custom btn-sm" onclick="saveSurvey()" title="حفظ الاستطلاع">
+                    <i class="fas fa-save me-1"></i>
+                    حفظ
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="builder-container">
+        <!-- Question Types Sidebar -->
+        <div class="sidebar">
+            <h5 class="mb-4">أنواع الأسئلة</h5>
+            
+            <div class="question-types" id="questionTypes">
+                <div class="question-type" data-type="text">
+                    <i class="fas fa-font"></i>
+                    <span>نص قصير</span>
+                </div>
+                
+                <div class="question-type" data-type="textarea">
+                    <i class="fas fa-align-left"></i>
+                    <span>نص طويل</span>
+                </div>
+                
+                <div class="question-type" data-type="multiple_choice">
+                    <i class="fas fa-list"></i>
+                    <span>اختيار متعدد</span>
+                </div>
+                
+                <div class="question-type" data-type="checkbox">
+                    <i class="fas fa-check-square"></i>
+                    <span>مربعات اختيار</span>
+                </div>
+                
+                <div class="question-type" data-type="dropdown">
+                    <i class="fas fa-chevron-down"></i>
+                    <span>قائمة منسدلة</span>
+                </div>
+                
+                <div class="question-type" data-type="rating">
+                    <i class="fas fa-star"></i>
+                    <span>تقييم بالنجوم</span>
+                </div>
+                
+                <div class="question-type" data-type="slider">
+                    <i class="fas fa-sliders-h"></i>
+                    <span>مؤشر تمرير</span>
+                </div>
+                
+                <div class="question-type" data-type="nps">
+                    <i class="fas fa-chart-line"></i>
+                    <span>مؤشر الترشيح</span>
+                </div>
+                
+                <div class="question-type" data-type="date">
+                    <i class="fas fa-calendar"></i>
+                    <span>تاريخ</span>
+                </div>
+                
+                <div class="question-type" data-type="email">
+                    <i class="fas fa-envelope"></i>
+                    <span>بريد إلكتروني</span>
+                </div>
+                
+                <div class="question-type" data-type="phone">
+                    <i class="fas fa-phone"></i>
+                    <span>رقم هاتف</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Canvas -->
+        <div class="main-canvas">
+            <!-- Mobile Question Type Selector -->
+            <div class="mobile-question-selector">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label">عنوان الاستطلاع</label>
+                            <input type="text" class="form-control form-control-modern" 
+                                   id="surveyTitle" placeholder="أدخل عنوان الاستطلاع">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label">العنوان بالإنجليزية</label>
+                            <input type="text" class="form-control form-control-modern" 
+                                   id="surveyTitleEn" placeholder="Enter survey title">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label">وصف الاستطلاع</label>
+                            <textarea class="form-control form-control-modern" rows="3" 
+                                      id="surveyDescription" placeholder="أدخل وصف الاستطلاع"></textarea>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label">الوصف بالإنجليزية</label>
+                            <textarea class="form-control form-control-modern" rows="3" 
+                                      id="surveyDescriptionEn" placeholder="Enter survey description"></textarea>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Mobile Question Type Selector -->
+                <div class="mobile-question-selector">
+                    <h6><i class="fas fa-plus-circle"></i>إضافة سؤال جديد</h6>
+                    <select class="question-type-dropdown" id="mobileQuestionTypeSelect">
+                        <option value="">اختر نوع السؤال...</option>
+                        <option value="text">نص قصير - إجابة نصية في سطر واحد</option>
+                        <option value="textarea">نص طويل - إجابة نصية مفصلة</option>
+                        <option value="multiple_choice">اختيار متعدد - اختيار واحد من عدة خيارات</option>
+                        <option value="checkbox">مربعات اختيار - اختيار متعدد من الخيارات</option>
+                        <option value="dropdown">قائمة منسدلة - قائمة خيارات منسدلة</option>
+                        <option value="rating">تقييم بالنجوم - تقييم من 1 إلى 5 نجوم</option>
+                        <option value="slider">مؤشر تمرير - قيمة على مقياس متدرج</option>
+                        <option value="nps">مؤشر الترشيح - مقياس من 0 إلى 10</option>
+                        <option value="date">تاريخ - اختيار التاريخ</option>
+                        <option value="email">بريد إلكتروني - عنوان بريد إلكتروني</option>
+                        <option value="phone">رقم هاتف - رقم هاتف محمول</option>
+                    </select>
+                    <button class="add-question-btn" id="mobileAddQuestionBtn" disabled>
+                        <i class="fas fa-plus"></i>
+                        إضافة السؤال
+                    </button>
+                </div>
+            </div>
+
+            <hr class="my-4">
+
+            <!-- Questions Area -->
+            <div class="questions-container">
+                <div class="survey-preview" id="questionsArea">
+                    <i class="fas fa-plus-circle" style="font-size: 3rem; color: var(--primary-color); margin-bottom: 1rem;"></i>
+                    <h4>ابدأ ببناء استطلاعك</h4>
+                    <p class="text-muted">اسحب أنواع الأسئلة من الشريط الجانبي لإضافتها هنا</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Properties Sidebar -->
+        <div class="sidebar properties-sidebar" id="propertiesSidebar">
+            <!-- Survey Information Section -->
+            <div class="survey-info-section">
+                <div class="properties-header">
+                    <h5><i class="fas fa-info-circle me-2"></i>معلومات الاستطلاع</h5>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">العنوان بالعربية</label>
+                    <input type="text" class="form-control form-control-modern" id="surveyTitleAr" 
+                           placeholder="عنوان الاستطلاع">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">العنوان بالإنجليزية</label>
+                    <input type="text" class="form-control form-control-modern" id="surveyTitle" 
+                           placeholder="Survey Title">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">الوصف بالعربية</label>
+                    <textarea class="form-control form-control-modern" id="surveyDescriptionAr" rows="2" 
+                              placeholder="وصف الاستطلاع"></textarea>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">الوصف بالإنجليزية</label>
+                    <textarea class="form-control form-control-modern" id="surveyDescription" rows="2" 
+                              placeholder="Survey Description"></textarea>
+                </div>
+            </div>
+
+            <!-- Question Properties Section -->
+            <div class="question-properties-section">
+                <div class="properties-header">
+                    <h5><i class="fas fa-cog me-2"></i>خصائص السؤال</h5>
+                </div>
+                <div id="questionProperties">
+                    <p class="text-muted text-center">حدد سؤالاً لتحرير خصائصه</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Survey Preview Modal -->
+    <div class="modal fade" id="previewModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">معاينة الاستطلاع</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="previewContent">
+                    <!-- Preview content will be generated here -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
+                    <button type="button" class="btn btn-primary-custom" onclick="publishSurvey()">
+                        <i class="fas fa-rocket me-2"></i>
+                        نشر الاستطلاع
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script src="/static/js/survey_builder.js"></script>
+    
+    <script>
+        // Initialize survey builder when page loads
+        let surveyBuilder;
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded, initializing survey builder...');
+            surveyBuilder = new SurveyBuilder();
+        });
+    </script>
+</body>
+</html>
