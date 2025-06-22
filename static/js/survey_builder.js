@@ -199,6 +199,18 @@ class SurveyBuilder {
             this.selectQuestion(question.id);
         });
 
+        // Add keyboard support
+        questionElement.setAttribute('tabindex', '0');
+        questionElement.setAttribute('role', 'button');
+        questionElement.setAttribute('aria-label', `تحرير السؤال: ${question.text_ar || question.text}`);
+        
+        questionElement.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                this.selectQuestion(question.id);
+            }
+        });
+
         // Keyboard navigation support
         questionElement.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' || e.key === ' ') {
