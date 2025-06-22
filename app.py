@@ -285,12 +285,15 @@ def ai_services_status():
         services = api_manager.get_available_services()
         openai_test = api_manager.test_openai_connection()
         anthropic_test = api_manager.test_anthropic_connection()
+        jais_test = api_manager.test_jais_connection()
         
         return jsonify({
             'services_configured': services,
             'openai_status': openai_test,
             'anthropic_status': anthropic_test,
-            'recommended_service': api_manager.get_recommended_service('arabic_analysis'),
+            'jais_status': jais_test,
+            'recommended_service': api_manager.get_recommended_service('', 'arabic_analysis'),
+            'model_routing_info': api_manager.model_config,
             'timestamp': datetime.utcnow().isoformat()
         })
         
