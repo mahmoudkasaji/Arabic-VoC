@@ -22,21 +22,18 @@ class Base(DeclarativeBase):
 
 db = SQLAlchemy(model_class=Base)
 
+# Import configuration
+from config import get_config
+
 # Create Flask app
 app = Flask(__name__)
 
-# Set secret key for sessions
-app.secret_key = os.environ.get("SESSION_SECRET", "arabic-voc-secret-key-2025")
+# Load environment-specific configuration
+config_class = get_config()
+app.config.from_object(config_class)
 
 # Configure proxy fix for Replit
 app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
-
-# Configure database
-app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL")
-app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
-    "pool_recycle": 300,
-    "pool_pre_ping": True,
-}
 
 # Initialize database
 db.init_app(app)
