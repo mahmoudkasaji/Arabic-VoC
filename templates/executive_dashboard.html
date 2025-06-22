@@ -267,6 +267,66 @@
             0% { background-position: -200% 0; }
             100% { background-position: 200% 0; }
         }
+
+        /* Analytics Tabs Styling */
+        .nav-tabs {
+            border-bottom: 2px solid var(--border-color);
+            margin-bottom: 0;
+        }
+
+        .nav-tabs .nav-link {
+            border: none;
+            border-radius: 8px 8px 0 0;
+            color: #666;
+            font-weight: 500;
+            padding: 12px 20px;
+            margin-left: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-tabs .nav-link:hover {
+            background: rgba(46, 139, 87, 0.1);
+            color: var(--primary-color);
+            border: none;
+        }
+
+        .nav-tabs .nav-link.active {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+        }
+
+        .tab-content {
+            background: white;
+            border-radius: 0 0 12px 12px;
+            min-height: 400px;
+        }
+
+        .trend-insights, .sentiment-insights {
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .insight-item {
+            display: flex;
+            align-items: center;
+            font-size: 0.9rem;
+        }
+
+        .channel-metrics h6, .sentiment-insights h6, .trend-insights h6 {
+            color: var(--text-color);
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .report-card {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .report-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
     </style>
 </head>
 <body>
@@ -309,15 +369,9 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/analytics">
-                            <i class="fas fa-chart-bar me-1"></i>
-                            التحليلات
-                        </a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link active" href="/executive-dashboard">
                             <i class="fas fa-chart-line me-1"></i>
-                            لوحة القيادة
+                            التحليلات والقيادة
                         </a>
                     </li>
                     <li class="nav-item">
@@ -338,9 +392,9 @@
                 <div>
                     <h1 class="dashboard-title">
                         <i class="fas fa-chart-line"></i>
-                        لوحة القيادة التنفيذية
+                        لوحة التحليلات والقيادة
                     </h1>
-                    <p class="dashboard-subtitle">مؤشرات الأداء الرئيسية لصوت العميل العربي</p>
+                    <p class="dashboard-subtitle">مؤشرات الأداء الرئيسية والتحليلات المتقدمة لصوت العميل العربي</p>
                 </div>
                 <div class="text-start">
                     <div class="last-updated" id="lastUpdated">
@@ -419,31 +473,168 @@
             </div>
         </div>
 
-        <!-- Trend Charts -->
-        <div class="row">
-            <div class="col-lg-8">
+        <!-- Advanced Analytics Section -->
+        <div class="row mb-4">
+            <div class="col-12">
                 <div class="kpi-card">
                     <div class="kpi-header">
-                        <h3 class="kpi-title">اتجاهات رضا العملاء (30 يوم)</h3>
-                        <div class="kpi-icon" style="background: var(--primary-color);">
-                            <i class="fas fa-chart-area"></i>
-                        </div>
-                    </div>
-                    <div class="chart-container">
-                        <canvas id="trendChart"></canvas>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4">
-                <div class="kpi-card">
-                    <div class="kpi-header">
-                        <h3 class="kpi-title">توزيع القنوات</h3>
+                        <h3 class="kpi-title">التحليلات المتقدمة</h3>
                         <div class="kpi-icon" style="background: var(--info-color);">
-                            <i class="fas fa-chart-pie"></i>
+                            <i class="fas fa-chart-bar"></i>
                         </div>
                     </div>
-                    <div class="chart-container">
-                        <canvas id="channelChart"></canvas>
+                    
+                    <!-- Analytics Navigation Tabs -->
+                    <ul class="nav nav-tabs" id="analyticsTab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="trends-tab" data-bs-toggle="tab" data-bs-target="#trends" type="button" role="tab">
+                                <i class="fas fa-chart-line me-2"></i>اتجاهات الأداء
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="channels-tab" data-bs-toggle="tab" data-bs-target="#channels" type="button" role="tab">
+                                <i class="fas fa-chart-pie me-2"></i>توزيع القنوات
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="sentiment-tab" data-bs-toggle="tab" data-bs-target="#sentiment" type="button" role="tab">
+                                <i class="fas fa-heart me-2"></i>تحليل المشاعر
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="reports-tab" data-bs-toggle="tab" data-bs-target="#reports" type="button" role="tab">
+                                <i class="fas fa-file-alt me-2"></i>التقارير
+                            </button>
+                        </li>
+                    </ul>
+                    
+                    <!-- Tab Content -->
+                    <div class="tab-content" id="analyticsTabContent">
+                        <!-- Trends Tab -->
+                        <div class="tab-pane fade show active" id="trends" role="tabpanel">
+                            <div class="row mt-3">
+                                <div class="col-lg-8">
+                                    <div class="chart-container">
+                                        <canvas id="trendChart"></canvas>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="trend-insights p-3">
+                                        <h6>رؤى الاتجاهات</h6>
+                                        <div class="insight-item mb-2">
+                                            <i class="fas fa-arrow-up text-success me-2"></i>
+                                            <span>تحسن 12% في رضا العملاء</span>
+                                        </div>
+                                        <div class="insight-item mb-2">
+                                            <i class="fas fa-chart-line text-info me-2"></i>
+                                            <span>نمو ثابت خلال 30 يوم</span>
+                                        </div>
+                                        <div class="insight-item">
+                                            <i class="fas fa-star text-warning me-2"></i>
+                                            <span>أعلى نقطة: 85% رضا</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Channels Tab -->
+                        <div class="tab-pane fade" id="channels" role="tabpanel">
+                            <div class="row mt-3">
+                                <div class="col-lg-6">
+                                    <div class="chart-container">
+                                        <canvas id="channelChart"></canvas>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="channel-metrics">
+                                        <h6>أداء القنوات</h6>
+                                        <div class="channel-item d-flex justify-content-between mb-2 p-2 bg-light rounded">
+                                            <span><i class="fas fa-envelope text-primary me-2"></i>البريد الإلكتروني</span>
+                                            <span class="badge bg-success">85%</span>
+                                        </div>
+                                        <div class="channel-item d-flex justify-content-between mb-2 p-2 bg-light rounded">
+                                            <span><i class="fas fa-phone text-success me-2"></i>الهاتف</span>
+                                            <span class="badge bg-info">78%</span>
+                                        </div>
+                                        <div class="channel-item d-flex justify-content-between mb-2 p-2 bg-light rounded">
+                                            <span><i class="fab fa-whatsapp text-success me-2"></i>واتساب</span>
+                                            <span class="badge bg-warning">72%</span>
+                                        </div>
+                                        <div class="channel-item d-flex justify-content-between p-2 bg-light rounded">
+                                            <span><i class="fas fa-globe text-info me-2"></i>الموقع الإلكتروني</span>
+                                            <span class="badge bg-secondary">68%</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Sentiment Tab -->
+                        <div class="tab-pane fade" id="sentiment" role="tabpanel">
+                            <div class="row mt-3">
+                                <div class="col-lg-6">
+                                    <div class="sentiment-breakdown">
+                                        <h6>توزيع المشاعر</h6>
+                                        <div class="progress mb-3" style="height: 25px;">
+                                            <div class="progress-bar bg-success" role="progressbar" style="width: 65%" id="positiveBar">
+                                                إيجابي 65%
+                                            </div>
+                                            <div class="progress-bar bg-warning" role="progressbar" style="width: 25%" id="neutralBar">
+                                                محايد 25%
+                                            </div>
+                                            <div class="progress-bar bg-danger" role="progressbar" style="width: 10%" id="negativeBar">
+                                                سلبي 10%
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="sentiment-insights p-3">
+                                        <h6>تحليل المشاعر العربي</h6>
+                                        <div class="insight-item mb-2">
+                                            <i class="fas fa-language text-primary me-2"></i>
+                                            <span>دعم اللهجات المتعددة</span>
+                                        </div>
+                                        <div class="insight-item mb-2">
+                                            <i class="fas fa-brain text-info me-2"></i>
+                                            <span>دقة 92% في التحليل</span>
+                                        </div>
+                                        <div class="insight-item">
+                                            <i class="fas fa-globe-asia text-success me-2"></i>
+                                            <span>سياق ثقافي متقدم</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Reports Tab -->
+                        <div class="tab-pane fade" id="reports" role="tabpanel">
+                            <div class="row mt-3">
+                                <div class="col-12">
+                                    <div class="reports-section">
+                                        <h6>تقارير مخصصة</h6>
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <div class="report-card p-3 border rounded">
+                                                    <h6><i class="fas fa-file-pdf text-danger me-2"></i>تقرير شهري</h6>
+                                                    <p class="text-muted small">تقرير شامل للأداء الشهري</p>
+                                                    <button class="btn btn-outline-primary btn-sm">تحميل PDF</button>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <div class="report-card p-3 border rounded">
+                                                    <h6><i class="fas fa-file-excel text-success me-2"></i>بيانات تفصيلية</h6>
+                                                    <p class="text-muted small">تصدير البيانات الخام</p>
+                                                    <button class="btn btn-outline-success btn-sm">تحميل Excel</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

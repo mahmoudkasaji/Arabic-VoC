@@ -176,12 +176,12 @@ An Arabic-first multi-channel feedback processing platform built with Flask and 
 - Advanced survey builder with drag-and-drop functionality
 - Professional integrations page with AI/LLM management and data export capabilities
 
-**Latest Update (June 22, 2025)**: Executive Dashboard Phase 1 MVP completed with seamless navigation:
-- ✓ Implemented comprehensive Arabic executive dashboard with real-time KPIs
-- ✓ Added consistent navigation bar across all pages with home button
-- ✓ Fixed Chart.js integration and WebSocket polling for reliability
-- ✓ Created CSAT, Volume, and Sentiment monitoring with 240+ sample data points
-- ✓ Professional Arabic RTL design with performance gauges and trend visualization
+**Latest Update (June 22, 2025)**: Unified Analytics & Executive Dashboard with consolidated features:
+- ✓ Consolidated analytics and executive dashboard into unified "التحليلات والقيادة" interface
+- ✓ Eliminated feature redundancy by redirecting /analytics to executive dashboard
+- ✓ Added tabbed interface for: Performance Trends, Channel Distribution, Sentiment Analysis, Custom Reports
+- ✓ Unified navigation with consistent design language across all pages
+- ✓ Enhanced visual hierarchy with professional Arabic RTL design and interactive components
 
 **Previous Update**: Executive Dashboard roadmap created with phased development plan leveraging 80% existing infrastructure:
 - MVP Phase 1: Core KPIs (CSAT, Volume, Arabic Sentiment) - 2-3 weeks feasible

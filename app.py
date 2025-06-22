@@ -161,9 +161,8 @@ def survey_builder():
 
 @app.route('/analytics')
 def analytics_page():
-    """Analytics dashboard page"""
-    return render_template('analytics.html', 
-                         title='التحليلات')
+    """Redirect analytics to executive dashboard"""
+    return redirect(url_for('executive_dashboard_page'))
 
 @app.route('/executive-dashboard')
 def executive_dashboard_page():
