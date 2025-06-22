@@ -10,7 +10,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase
 from werkzeug.middleware.proxy_fix import ProxyFix
 
-from app.config.base import get_config
+from app.config import get_config
 
 # Configure logging
 logging.basicConfig(
