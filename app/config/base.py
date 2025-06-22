@@ -196,7 +196,7 @@ config_map = {
     "production": ProductionConfig,
 }
 
-def get_config():
+def get_config_direct():
     """Get configuration based on FLASK_ENV environment variable"""
     env = os.environ.get("FLASK_ENV", "development")
     return config_map.get(env, DevelopmentConfig)
