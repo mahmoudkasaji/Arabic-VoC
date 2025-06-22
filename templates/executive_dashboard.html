@@ -515,21 +515,25 @@
                     return;
                 }
                 
-                // Update CSAT
-                if (data.csat) this.updateCSAT(data.csat);
-                
-                // Update Volume
-                if (data.volume) this.updateVolume(data.volume);
-                
-                // Update Sentiment
-                if (data.sentiment) this.updateSentiment(data.sentiment);
-                
-                // Update Charts
-                if (data.trends) this.updateTrendChart(data.trends);
-                if (data.channels) this.updateChannelChart(data.channels);
-                
-                // Update last refresh timestamp
-                this.updateLastRefresh();
+                try {
+                    // Update CSAT
+                    if (data.csat) this.updateCSAT(data.csat);
+                    
+                    // Update Volume
+                    if (data.volume) this.updateVolume(data.volume);
+                    
+                    // Update Sentiment
+                    if (data.sentiment) this.updateSentiment(data.sentiment);
+                    
+                    // Update Charts
+                    if (data.trends) this.updateTrendChart(data.trends);
+                    if (data.channels) this.updateChannelChart(data.channels);
+                    
+                    // Update last refresh timestamp
+                    this.updateLastRefresh();
+                } catch (error) {
+                    console.error('Error updating dashboard:', error);
+                }
             }
 
             updateCSAT(csat) {
@@ -636,31 +640,38 @@
             }
 
             initializeChannelChart() {
-                const ctx = document.getElementById('channelChart');
-                if (!ctx) return;
-                
-                this.charts.channel = new Chart(ctx, {
-                    type: 'doughnut',
-                    data: {
-                        labels: [],
-                        datasets: [{
-                            data: [],
-                            backgroundColor: [
-                                '#2E8B57', '#17a2b8', '#ffc107', '#dc3545', 
-                                '#6f42c1', '#20c997', '#fd7e14', '#e83e8c'
-                            ]
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: {
-                                position: 'bottom'
+                try {
+                    const ctx = document.getElementById('channelChart');
+                    if (!ctx) {
+                        console.warn('Channel chart canvas not found');
+                        return;
+                    }
+                    
+                    this.charts.channel = new Chart(ctx, {
+                        type: 'doughnut',
+                        data: {
+                            labels: [],
+                            datasets: [{
+                                data: [],
+                                backgroundColor: [
+                                    '#2E8B57', '#17a2b8', '#ffc107', '#dc3545', 
+                                    '#6f42c1', '#20c997', '#fd7e14', '#e83e8c'
+                                ]
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    position: 'bottom'
+                                }
                             }
                         }
-                    }
-                });
+                    });
+                } catch (error) {
+                    console.error('Error initializing channel chart:', error);
+                }
             }
 
             updateTrendChart(trends) {
@@ -680,11 +691,15 @@
             }
 
             updateLastRefresh() {
-                const now = new Date();
-                const timeString = now.toLocaleTimeString('ar-SA');
-                const element = document.getElementById('lastUpdate');
-                if (element) {
-                    element.textContent = timeString;
+                try {
+                    const now = new Date();
+                    const timeString = now.toLocaleTimeString('ar-SA');
+                    const element = document.getElementById('lastUpdate');
+                    if (element) {
+                        element.textContent = timeString;
+                    }
+                } catch (error) {
+                    console.error('Error updating last refresh:', error);
                 }
             }
 
