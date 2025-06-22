@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>التكاملات - منصة صوت العميل العربية</title>
+    
+    <!-- Bootstrap RTL CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+    
+    <!-- Arabic Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-color: #2E8B57;
+            --secondary-color: #F4A460;
+            --accent-color: #4169E1;
+            --text-color: #2c3e50;
+            --bg-color: #f8f9fa;
+            --border-color: #dee2e6;
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            direction: rtl;
+            text-align: right;
+        }
+
+        .header-section {
+            background: white;
+            border-bottom: 1px solid var(--border-color);
+            padding: 2rem 0;
+        }
+
+        .integration-card {
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .integration-card:hover {
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .integration-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .integration-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .integration-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: white;
+        }
+
+        .openai-icon {
+            background: #10a37f;
+        }
+
+        .anthropic-icon {
+            background: #d4a574;
+        }
+
+        .aws-icon {
+            background: #ff9900;
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status-active {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-connected {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .btn-configure {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-configure:hover {
+            background: #0056b3;
+            color: white;
+        }
+
+        .btn-manage {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+
+        .btn-test {
+            background: transparent;
+            color: #007bff;
+            border: 1px solid #007bff;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+
+        .capabilities-list {
+            list-style: none;
+            padding: 0;
+            margin: 0.5rem 0;
+        }
+
+        .capabilities-list li {
+            display: inline-block;
+            background: #f8f9fa;
+            padding: 0.25rem 0.75rem;
+            margin: 0.25rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            color: #495057;
+        }
+
+        .section-title {
+            font-family: 'Amiri', serif;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-color);
+        }
+
+        .section-subtitle {
+            color: #6c757d;
+            font-size: 0.9rem;
+            margin-bottom: 2rem;
+        }
+
+        .api-section {
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .api-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid #f8f9fa;
+        }
+
+        .api-item:last-child {
+            border-bottom: none;
+        }
+
+        .api-info h6 {
+            margin: 0 0 0.5rem 0;
+            font-weight: 600;
+        }
+
+        .api-details {
+            font-size: 0.8rem;
+            color: #6c757d;
+        }
+
+        .btn-new {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 600;
+        }
+
+        .export-card {
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .export-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .export-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+
+        .tableau-icon {
+            background: #ffa500;
+            color: white;
+        }
+
+        .powerbi-icon {
+            background: #f2c811;
+            color: black;
+        }
+
+        .csv-icon {
+            background: #28a745;
+            color: white;
+        }
+
+        .json-icon {
+            background: #6f42c1;
+            color: white;
+        }
+
+        .export-input {
+            flex: 1;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 0.5rem;
+        }
+
+        .btn-export {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+
+        .btn-download {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 6px;
+            font-weight: 600;
+            width: 100%;
+        }
+
+        .navbar-brand {
+            font-family: 'Amiri', serif;
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+
+        .top-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .btn-export-data, .btn-fix {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            color: var(--text-color);
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .btn-export-data:hover, .btn-fix:hover {
+            background: #f8f9fa;
+            color: var(--text-color);
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-comments text-primary"></i>
+                منصة صوت العميل العربية
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">الرئيسية</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/dashboard/realtime">لوحة التحليلات</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/feedback">إرسال تعليق</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/surveys">الاستطلاعات</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/integrations">التكاملات</a>
+                    </li>
+                </ul>
+                
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/login">تسجيل الدخول</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/register">إنشاء حساب</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header Section -->
+    <div class="header-section">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="section-title mb-2">التكاملات</h1>
+                    <p class="section-subtitle mb-0">اربط مع الأدوات الخارجية واستورد البيانات</p>
+                </div>
+                <div class="top-actions">
+                    <a href="#" class="btn-export-data">
+                        <i class="fas fa-download me-2"></i>
+                        تصدير البيانات
+                    </a>
+                    <a href="#" class="btn-fix">
+                        <i class="fas fa-tools me-2"></i>
+                        إصلاح
+                    </a>
+                    <a href="#" class="btn-fix">
+                        <i class="fas fa-user me-2"></i>
+                        المستخدم
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container mt-4">
+        <!-- AI & LLM Integrations Section -->
+        <div class="mb-5">
+            <div class="d-flex align-items-center mb-3">
+                <i class="fas fa-robot text-primary me-2"></i>
+                <h2 class="section-title mb-0">تكاملات الذكاء الاصطناعي</h2>
+            </div>
+            <p class="section-subtitle">إدارة نماذج اللغة للذكاء الاصطناعي لتحليل النصوص ومعالجة المشاعر</p>
+
+            <div class="row">
+                <div class="col-lg-6">
+                    <!-- OpenAI Integration -->
+                    <div class="integration-card">
+                        <div class="integration-header">
+                            <div class="integration-info">
+                                <div class="integration-icon openai-icon">
+                                    <i class="fas fa-brain"></i>
+                                </div>
+                                <div>
+                                    <h5 class="mb-1">OpenAI GPT-4o</h5>
+                                    <p class="text-muted mb-0">تحليل متقدم</p>
+                                </div>
+                            </div>
+                            <span class="status-badge status-active">نشط</span>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <p class="text-muted small mb-2">النموذج: gpt-4o</p>
+                            <p class="text-muted small mb-2">الاستخدام: تحليل المشاعر العربية</p>
+                        </div>
+
+                        <div class="mb-3">
+                            <p class="text-muted small mb-2">القدرات:</p>
+                            <ul class="capabilities-list">
+                                <li>تحليل المشاعر المتطور</li>
+                                <li>استخراج الكيانات</li>
+                                <li>تصنيف النصوص</li>
+                                <li>تحليل اللهجات العربية</li>
+                            </ul>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <button class="btn-configure">
+                                <i class="fas fa-cog me-2"></i>
+                                تكوين
+                            </button>
+                            <button class="btn-test">اختبار API</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <!-- Anthropic Integration -->
+                    <div class="integration-card">
+                        <div class="integration-header">
+                            <div class="integration-info">
+                                <div class="integration-icon anthropic-icon">
+                                    <i class="fas fa-microchip"></i>
+                                </div>
+                                <div>
+                                    <h5 class="mb-1">Claude AI من Anthropic</h5>
+                                    <p class="text-muted mb-0">تحليل السياق العربي</p>
+                                </div>
+                            </div>
+                            <span class="status-badge status-active">نشط</span>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <p class="text-muted small mb-2">النموذج: claude-3-sonnet</p>
+                            <p class="text-muted small mb-2">الاستخدام: فهم السياق الثقافي</p>
+                        </div>
+
+                        <div class="mb-3">
+                            <p class="text-muted small mb-2">القدرات:</p>
+                            <ul class="capabilities-list">
+                                <li>تحليل السياق الثقافي</li>
+                                <li>فهم اللهجات المحلية</li>
+                                <li>تحليل المشاعر المتدرج</li>
+                                <li>استخراج الموضوعات</li>
+                            </ul>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <button class="btn-configure">
+                                <i class="fas fa-cog me-2"></i>
+                                تكوين
+                            </button>
+                            <button class="btn-test">اختبار API</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <!-- AWS Bedrock Integration -->
+                    <div class="integration-card">
+                        <div class="integration-header">
+                            <div class="integration-info">
+                                <div class="integration-icon aws-icon">
+                                    <i class="fab fa-aws"></i>
+                                </div>
+                                <div>
+                                    <h5 class="mb-1">AWS Bedrock LLM</h5>
+                                    <p class="text-muted mb-0">معالجة النصوص المؤسسية</p>
+                                </div>
+                            </div>
+                            <span class="status-badge status-connected">متصل</span>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <p class="text-muted small mb-2">النموذج: LLM متعدد</p>
+                            <p class="text-muted small mb-2">الاستخدام: معالجة النصوص العربية</p>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <button class="btn-manage">
+                                <i class="fas fa-cog me-2"></i>
+                                إدارة
+                            </button>
+                            <button class="btn-test">اختبار API</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- API Endpoints Section -->
+        <div class="mb-5">
+            <h2 class="section-title">نقاط النهاية للAPI</h2>
+            <p class="section-subtitle">تكوين مجموعات البيانات من الأنظمة الخارجية</p>
+
+            <div class="api-section">
+                <div class="api-item">
+                    <div class="api-info">
+                        <h6>Event Tracking API</h6>
+                        <div class="api-details">
+                            <div>Endpoints: /api/v1/events</div>
+                            <div>Methods: POST</div>
+                            <div>Auth: Bearer Token</div>
+                            <div>Events/Day: 24k</div>
+                        </div>
+                        <a href="#" class="text-primary small">عرض التوثيق</a>
+                    </div>
+                    <button class="btn-new">جديد</button>
+                </div>
+
+                <div class="api-item">
+                    <div class="api-info">
+                        <h6>Survey Response API</h6>
+                        <div class="api-details">
+                            <div>Endpoints: /api/v1/responses</div>
+                            <div>Methods: POST</div>
+                            <div>Auth: API Key</div>
+                            <div>Events/Day: 24k</div>
+                        </div>
+                        <a href="#" class="text-primary small">عرض التوثيق</a>
+                    </div>
+                    <button class="btn-new">جديد</button>
+                </div>
+
+                <div class="api-item">
+                    <div class="api-info">
+                        <h6>Arabic NLP API</h6>
+                        <div class="api-details">
+                            <div>Endpoints: /api/v1/nlp/analyze</div>
+                            <div>Methods: POST</div>
+                            <div>Auth: Bearer Token</div>
+                            <div>Events/Day: 10k</div>
+                        </div>
+                        <a href="#" class="text-primary small">عرض التوثيق</a>
+                    </div>
+                    <button class="btn-new">جديد</button>
+                </div>
+
+                <div class="text-center mt-4">
+                    <button class="btn btn-outline-primary">
+                        إضافة نقطة نهاية API جديدة
+                    </button>
+                    <p class="text-muted mt-2 small">إنشاء نقطة نهاية</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Data Export Section -->
+        <div class="mb-5">
+            <h2 class="section-title">تصدير البيانات</h2>
+            <p class="section-subtitle">تصدير البيانات إلى أدوات التحليل الخارجية</p>
+
+            <div class="export-card">
+                <div class="export-item">
+                    <div class="export-icon tableau-icon">
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <h6 class="mb-1">Tableau</h6>
+                        <p class="text-muted small mb-0">منصة ذكاء الأعمال</p>
+                    </div>
+                    <input type="text" class="export-input me-2" placeholder="تكوين التصدير">
+                    <button class="btn-export">تكوين التصدير</button>
+                </div>
+
+                <div class="export-item">
+                    <div class="export-icon powerbi-icon">
+                        <i class="fas fa-chart-pie"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <h6 class="mb-1">Power BI</h6>
+                        <p class="text-muted small mb-0">خدمة تحليلات مايكروسوفت</p>
+                    </div>
+                    <input type="text" class="export-input me-2" placeholder="تكوين التصدير">
+                    <button class="btn-export">تكوين التصدير</button>
+                </div>
+
+                <div class="export-item">
+                    <div class="export-icon csv-icon">
+                        <i class="fas fa-file-csv"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <h6 class="mb-1">CSV Export</h6>
+                        <p class="text-muted small mb-0">تصدير البيانات المتقدمة</p>
+                    </div>
+                    <button class="btn-download">
+                        <i class="fas fa-download me-2"></i>
+                        تحميل CSV
+                    </button>
+                </div>
+
+                <div class="export-item">
+                    <div class="export-icon json-icon">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <h6 class="mb-1">JSON API</h6>
+                        <p class="text-muted small mb-0">وصول برمجي للبيانات</p>
+                    </div>
+                    <input type="text" class="export-input me-2" placeholder="API Key" value="sk-...">
+                    <button class="btn-test">اختبار API Key</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Integration functionality
+        document.querySelectorAll('.btn-configure, .btn-manage').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const card = this.closest('.integration-card');
+                const title = card.querySelector('h5').textContent;
+                alert(`تكوين ${title}\nسيتم فتح نافذة التكوين قريباً`);
+            });
+        });
+
+        document.querySelectorAll('.btn-test').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const card = this.closest('.integration-card, .export-item');
+                const title = card.querySelector('h5, h6').textContent;
+                
+                // Simulate API test
+                this.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>جاري الاختبار...';
+                this.disabled = true;
+                
+                setTimeout(() => {
+                    this.innerHTML = '<i class="fas fa-check me-2"></i>نجح الاختبار';
+                    this.style.background = '#28a745';
+                    this.style.borderColor = '#28a745';
+                    
+                    setTimeout(() => {
+                        this.innerHTML = 'اختبار API';
+                        this.style.background = '';
+                        this.style.borderColor = '';
+                        this.disabled = false;
+                    }, 2000);
+                }, 1500);
+            });
+        });
+
+        document.querySelectorAll('.btn-export').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const exportItem = this.closest('.export-item');
+                const title = exportItem.querySelector('h6').textContent;
+                alert(`تكوين تصدير ${title}\nسيتم فتح إعدادات التصدير`);
+            });
+        });
+
+        document.querySelectorAll('.btn-download').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Simulate download
+                this.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>جاري التحضير...';
+                
+                setTimeout(() => {
+                    this.innerHTML = '<i class="fas fa-download me-2"></i>تحميل CSV';
+                    alert('تم إنشاء ملف CSV وسيبدأ التحميل قريباً');
+                }, 2000);
+            });
+        });
+
+        // Top action buttons
+        document.querySelector('.btn-export-data').addEventListener('click', function(e) {
+            e.preventDefault();
+            alert('ستتم إعادة توجيهك إلى صفحة تصدير البيانات');
+        });
+
+        document.querySelectorAll('.btn-fix').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const text = this.textContent.trim();
+                alert(`فتح ${text}`);
+            });
+        });
+    </script>
+</body>
+</html>

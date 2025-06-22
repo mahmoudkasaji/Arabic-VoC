@@ -177,6 +177,14 @@ async def analytics_page(request: Request):
         {"request": request, "title": "لوحة التحليلات"}
     )
 
+@app.get("/integrations")
+async def integrations_page(request: Request):
+    """Integrations management page"""
+    return templates.TemplateResponse(
+        "integrations.html",
+        {"request": request, "title": "التكاملات"}
+    )
+
 @app.get("/health")
 async def health_check():
     """Health check endpoint"""

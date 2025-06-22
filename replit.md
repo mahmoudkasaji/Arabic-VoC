@@ -161,6 +161,8 @@ An Arabic-first multi-channel feedback processing platform built with FastAPI an
 - Survey management interface
 - User authentication pages
 - Comprehensive Arabic-first UI design with RTL support
+- Advanced survey builder with drag-and-drop functionality
+- Professional integrations page with AI/LLM management and data export capabilities
 
 ## User Preferences
 
