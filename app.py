@@ -40,6 +40,10 @@ db.init_app(app)
 
 # Import models after db initialization
 from models_unified import Feedback, FeedbackChannel, FeedbackStatus
+
+# Import and register survey blueprint
+from api.surveys_flask import surveys_bp
+app.register_blueprint(surveys_bp)
 from models.survey import Survey, Question, SurveyStatus, QuestionType
 
 # Import survey management API
@@ -146,8 +150,8 @@ def realtime_dashboard():
 @app.route('/surveys')
 def surveys_page():
     """Survey management page"""
-    return render_template('surveys.html', 
-                         title='الاستطلاعات')
+    return render_template('surveys_modern.html', 
+                         title='Survey Builder')
 
 @app.route('/survey-builder')
 def survey_builder():
