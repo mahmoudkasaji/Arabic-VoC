@@ -1,0 +1,257 @@
+"""
+Flask Arabic Voice of Customer Platform
+Main application with proper Arabic support and WSGI compatibility
+"""
+
+import os
+import logging
+from flask import Flask, render_template, request, jsonify, redirect, url_for
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.orm import DeclarativeBase
+from werkzeug.middleware.proxy_fix import ProxyFix
+
+# Configure logging for Arabic text
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
+
+class Base(DeclarativeBase):
+    pass
+
+db = SQLAlchemy(model_class=Base)
+
+# Create Flask app
+app = Flask(__name__)
+
+# Set secret key for sessions
+app.secret_key = os.environ.get("SESSION_SECRET", "arabic-voc-secret-key-2025")
+
+# Configure proxy fix for Replit
+app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
+
+# Configure database
+app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL")
+app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
+    "pool_recycle": 300,
+    "pool_pre_ping": True,
+}
+
+# Initialize database
+db.init_app(app)
+
+# Import models after db initialization
+from models_unified import Feedback, FeedbackChannel, FeedbackStatus
+
+@app.route('/')
+def index():
+    """Main Arabic dashboard page"""
+    return render_template('index.html', 
+                         lang='ar', 
+                         dir='rtl',
+                         title='منصة صوت العميل العربية')
+
+@app.route('/feedback')
+def feedback_page():
+    """Feedback submission page"""
+    return render_template('feedback.html', 
+                         title='إرسال تعليق',
+                         channels=list(FeedbackChannel))
+
+@app.route('/api/feedback/submit', methods=['POST'])
+def submit_feedback():
+    """Submit new feedback"""
+    try:
+        data = request.get_json()
+        
+        if not data or 'content' not in data:
+            return jsonify({'error': 'Missing feedback content'}), 400
+            
+        content = data.get('content', '').strip()
+        if not content:
+            return jsonify({'error': 'Feedback content cannot be empty'}), 400
+            
+        channel = data.get('channel', 'website')
+        if channel not in [c.value for c in FeedbackChannel]:
+            channel = 'website'
+            
+        # Create feedback record
+        feedback = Feedback(
+            content=content,
+            channel=FeedbackChannel(channel),
+            status=FeedbackStatus.PENDING,
+            customer_email=data.get('customer_email'),
+            customer_phone=data.get('customer_phone'),
+            rating=data.get('rating'),
+            language_detected='ar'
+        )
+        
+        db.session.add(feedback)
+        db.session.commit()
+        
+        return jsonify({
+            'success': True,
+            'message': 'تم إرسال التعليق بنجاح',
+            'feedback_id': feedback.id
+        })
+        
+    except Exception as e:
+        logger.error(f"Error submitting feedback: {e}")
+        db.session.rollback()
+        return jsonify({'error': 'حدث خطأ في إرسال التعليق'}), 500
+
+@app.route('/api/feedback/list')
+def list_feedback():
+    """Get feedback list"""
+    try:
+        page = request.args.get('page', 1, type=int)
+        per_page = request.args.get('per_page', 10, type=int)
+        
+        feedback_query = Feedback.query.order_by(Feedback.created_at.desc())
+        feedback_paginated = feedback_query.paginate(
+            page=page, per_page=per_page, error_out=False
+        )
+        
+        feedback_list = []
+        for feedback in feedback_paginated.items:
+            feedback_list.append({
+                'id': feedback.id,
+                'content': feedback.content[:100] + '...' if len(feedback.content) > 100 else feedback.content,
+                'channel': feedback.channel.value,
+                'status': feedback.status.value,
+                'rating': feedback.rating,
+                'sentiment_score': feedback.sentiment_score,
+                'created_at': feedback.created_at.isoformat() if feedback.created_at else None
+            })
+        
+        return jsonify({
+            'feedback': feedback_list,
+            'total': feedback_paginated.total,
+            'pages': feedback_paginated.pages,
+            'current_page': page
+        })
+        
+    except Exception as e:
+        logger.error(f"Error listing feedback: {e}")
+        return jsonify({'error': 'حدث خطأ في جلب التعليقات'}), 500
+
+@app.route('/dashboard/realtime')
+def realtime_dashboard():
+    """Real-time analytics dashboard"""
+    return render_template('dashboard_realtime.html', 
+                         title='لوحة التحليلات المباشرة')
+
+@app.route('/surveys')
+def surveys_page():
+    """Survey management page"""
+    return render_template('surveys.html', 
+                         title='الاستطلاعات')
+
+@app.route('/survey-builder')
+def survey_builder():
+    """Survey builder page"""
+    return render_template('survey_builder.html', 
+                         title='منشئ الاستطلاعات')
+
+@app.route('/analytics')
+def analytics_page():
+    """Analytics dashboard page"""
+    return render_template('analytics.html', 
+                         title='التحليلات')
+
+@app.route('/integrations')
+def integrations_page():
+    """Integrations management page"""
+    return render_template('integrations.html', 
+                         title='التكاملات')
+
+@app.route('/login')
+def login_page():
+    """Login page"""
+    return render_template('login.html', 
+                         title='تسجيل الدخول')
+
+@app.route('/register')
+def register_page():
+    """Registration page"""
+    return render_template('register.html', 
+                         title='إنشاء حساب')
+
+@app.route('/api/dashboard/metrics')
+def dashboard_metrics():
+    """Dashboard metrics API"""
+    try:
+        # Get basic metrics
+        total_feedback = Feedback.query.count()
+        processed_feedback = Feedback.query.filter_by(status=FeedbackStatus.PROCESSED).count()
+        pending_feedback = Feedback.query.filter_by(status=FeedbackStatus.PENDING).count()
+        
+        # Calculate average sentiment
+        avg_sentiment = db.session.query(
+            db.func.avg(Feedback.sentiment_score)
+        ).filter(Feedback.sentiment_score.isnot(None)).scalar() or 0.0
+        
+        # Channel breakdown
+        channel_stats = db.session.query(
+            Feedback.channel,
+            db.func.count(Feedback.id).label('count')
+        ).group_by(Feedback.channel).all()
+        
+        channel_metrics = []
+        for channel, count in channel_stats:
+            channel_metrics.append({
+                'channel': channel.value,
+                'count': count,
+                'percentage': round((count / total_feedback * 100) if total_feedback > 0 else 0, 1)
+            })
+        
+        return jsonify({
+            'total_feedback': total_feedback,
+            'processed_feedback': processed_feedback,
+            'pending_feedback': pending_feedback,
+            'average_sentiment': round(avg_sentiment, 2),
+            'channel_metrics': channel_metrics,
+            'sentiment_distribution': {
+                'positive': processed_feedback // 3,  # Mock data for now
+                'neutral': processed_feedback // 3,
+                'negative': processed_feedback // 3
+            }
+        })
+        
+    except Exception as e:
+        logger.error(f"Error getting dashboard metrics: {e}")
+        return jsonify({'error': 'حدث خطأ في جلب البيانات'}), 500
+
+@app.route('/health')
+def health_check():
+    """Health check endpoint"""
+    try:
+        # Test database connection
+        db.session.execute(db.text('SELECT 1'))
+        return jsonify({
+            'status': 'healthy',
+            'database': 'connected',
+            'arabic_support': 'enabled'
+        })
+    except Exception as e:
+        logger.error(f"Health check failed: {e}")
+        return jsonify({
+            'status': 'unhealthy',
+            'error': str(e)
+        }), 500
+
+# Initialize database tables
+with app.app_context():
+    try:
+        db.create_all()
+        logger.info("Database tables created successfully")
+    except Exception as e:
+        logger.error(f"Error creating database tables: {e}")
+
+if __name__ == '__main__':
+    # Configure for Arabic text
+    os.environ.setdefault("PYTHONIOENCODING", "utf-8")
+    
+    # Run Flask app
+    app.run(host='0.0.0.0', port=5000, debug=True)
