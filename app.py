@@ -49,6 +49,10 @@ from models.survey import Survey, Question, SurveyStatus, QuestionType
 # Import survey management API
 import api.survey_management
 
+# Register executive dashboard API blueprint
+from api.executive_dashboard import executive_bp
+app.register_blueprint(executive_bp, url_prefix='/api/executive-dashboard')
+
 @app.route('/')
 def index():
     """Main Arabic dashboard page"""
