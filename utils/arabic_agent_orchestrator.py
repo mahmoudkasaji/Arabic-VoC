@@ -66,6 +66,9 @@ class ArabicAnalysisOrchestrator:
             api_key=os.getenv("OPENAI_API_KEY", "default_key")
         )
         
+        # Memory for conversation state
+        self.memory = MemorySaver()
+        
         # Initialize specialized agents
         self.sentiment_agent = SentimentAgent(self.llm)
         self.topic_agent = TopicAgent(self.llm)
@@ -73,9 +76,6 @@ class ArabicAnalysisOrchestrator:
         
         # Build the analysis workflow graph
         self.workflow = self._build_workflow()
-        
-        # Memory for conversation state
-        self.memory = MemorySaver()
         
     def _build_workflow(self) -> StateGraph:
         """Build the LangGraph workflow for analysis"""
