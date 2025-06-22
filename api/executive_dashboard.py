@@ -92,6 +92,302 @@ def calculate_csat_score(days=30):
             'confidence': 0.0
         }
 
+def calculate_nps_score(days=30):
+    """
+    Calculate Net Promoter Score based on sentiment analysis and ratings
+    """
+    try:
+        end_date = datetime.utcnow()
+        start_date = end_date - timedelta(days=days)
+        
+        # Get feedback with ratings or high sentiment scores
+        current_feedback = db.session.query(Feedback).filter(
+            and_(
+                Feedback.created_at >= start_date,
+                Feedback.created_at <= end_date,
+                Feedback.status == FeedbackStatus.PROCESSED,
+                or_(
+                    Feedback.rating.isnot(None),
+                    Feedback.sentiment_score.isnot(None)
+                )
+            )
+        ).all()
+        
+        if not current_feedback:
+            return {'score': 0.0, 'trend': 0.0, 'promoters': 0, 'detractors': 0, 'passives': 0}
+        
+        promoters = 0
+        detractors = 0
+        passives = 0
+        
+        for feedback in current_feedback:
+            # Use rating if available, otherwise convert sentiment to 0-10 scale
+            if feedback.rating:
+                score = (feedback.rating - 1) * 2.5  # Convert 1-5 to 0-10
+            else:
+                score = (feedback.sentiment_score + 1) * 5  # Convert -1,1 to 0-10
+            
+            if score >= 9:
+                promoters += 1
+            elif score <= 6:
+                detractors += 1
+            else:
+                passives += 1
+        
+        total = len(current_feedback)
+        nps = ((promoters - detractors) / total * 100) if total > 0 else 0.0
+        
+        # Calculate trend
+        prev_start = start_date - timedelta(days=days)
+        prev_end = start_date
+        
+        prev_feedback = db.session.query(Feedback).filter(
+            and_(
+                Feedback.created_at >= prev_start,
+                Feedback.created_at < prev_end,
+                Feedback.status == FeedbackStatus.PROCESSED,
+                or_(
+                    Feedback.rating.isnot(None),
+                    Feedback.sentiment_score.isnot(None)
+                )
+            )
+        ).all()
+        
+        if prev_feedback:
+            prev_promoters = 0
+            prev_detractors = 0
+            
+            for feedback in prev_feedback:
+                if feedback.rating:
+                    score = (feedback.rating - 1) * 2.5
+                else:
+                    score = (feedback.sentiment_score + 1) * 5
+                
+                if score >= 9:
+                    prev_promoters += 1
+                elif score <= 6:
+                    prev_detractors += 1
+            
+            prev_total = len(prev_feedback)
+            prev_nps = ((prev_promoters - prev_detractors) / prev_total * 100) if prev_total > 0 else 0.0
+            trend = nps - prev_nps
+        else:
+            trend = 0.0
+        
+        return {
+            'score': nps,
+            'trend': trend,
+            'promoters': promoters,
+            'detractors': detractors,
+            'passives': passives
+        }
+        
+    except Exception as e:
+        logger.error(f"Error calculating NPS: {e}")
+        return {'score': 0.0, 'trend': 0.0, 'promoters': 0, 'detractors': 0, 'passives': 0}
+
+def calculate_ces_score(days=30):
+    """
+    Calculate Customer Effort Score based on interaction complexity
+    """
+    try:
+        end_date = datetime.utcnow()
+        start_date = end_date - timedelta(days=days)
+        
+        # Get feedback and analyze effort indicators
+        current_feedback = db.session.query(Feedback).filter(
+            and_(
+                Feedback.created_at >= start_date,
+                Feedback.created_at <= end_date,
+                Feedback.status == FeedbackStatus.PROCESSED
+            )
+        ).all()
+        
+        if not current_feedback:
+            return {'score': 5.0, 'trend': 0.0, 'easy_count': 0, 'difficult_count': 0}
+        
+        effort_scores = []
+        easy_count = 0
+        difficult_count = 0
+        
+        for feedback in current_feedback:
+            # Estimate effort based on content length, sentiment, and channel
+            content_length = len(feedback.content) if feedback.content else 0
+            sentiment = feedback.sentiment_score or 0.0
+            
+            # Base effort score (1-7 scale, lower is better)
+            effort = 4.0  # Neutral starting point
+            
+            # Adjust based on sentiment (negative sentiment suggests more effort)
+            effort += (sentiment * -1.5)  # Negative sentiment increases effort
+            
+            # Adjust based on content length (longer content suggests more effort)
+            if content_length > 500:
+                effort += 1.5
+            elif content_length > 200:
+                effort += 0.5
+            
+            # Channel complexity
+            channel_effort = {
+                FeedbackChannel.PHONE: -0.5,      # Phone is easier
+                FeedbackChannel.WHATSAPP: -0.3,   # WhatsApp is easier
+                FeedbackChannel.WEBSITE: 0.2,     # Website neutral to harder
+                FeedbackChannel.EMAIL: 0.5,       # Email requires more effort
+                FeedbackChannel.SOCIAL_MEDIA: 0.3  # Social media medium effort
+            }
+            effort += channel_effort.get(feedback.channel, 0)
+            
+            # Clamp to 1-7 range
+            effort = max(1.0, min(7.0, effort))
+            effort_scores.append(effort)
+            
+            if effort <= 3.0:
+                easy_count += 1
+            elif effort >= 5.0:
+                difficult_count += 1
+        
+        avg_effort = sum(effort_scores) / len(effort_scores) if effort_scores else 4.0
+        
+        # Calculate trend
+        prev_start = start_date - timedelta(days=days)
+        prev_end = start_date
+        
+        prev_feedback = db.session.query(Feedback).filter(
+            and_(
+                Feedback.created_at >= prev_start,
+                Feedback.created_at < prev_end,
+                Feedback.status == FeedbackStatus.PROCESSED
+            )
+        ).all()
+        
+        if prev_feedback:
+            prev_effort_scores = []
+            for feedback in prev_feedback:
+                content_length = len(feedback.content) if feedback.content else 0
+                sentiment = feedback.sentiment_score or 0.0
+                effort = 4.0 + (sentiment * -1.5)
+                
+                if content_length > 500:
+                    effort += 1.5
+                elif content_length > 200:
+                    effort += 0.5
+                
+                channel_effort = {
+                    FeedbackChannel.PHONE: -0.5,
+                    FeedbackChannel.WHATSAPP: -0.3,
+                    FeedbackChannel.WEBSITE: 0.2,
+                    FeedbackChannel.EMAIL: 0.5,
+                    FeedbackChannel.SOCIAL_MEDIA: 0.3
+                }
+                effort += channel_effort.get(feedback.channel, 0)
+                effort = max(1.0, min(7.0, effort))
+                prev_effort_scores.append(effort)
+            
+            prev_avg_effort = sum(prev_effort_scores) / len(prev_effort_scores) if prev_effort_scores else 4.0
+            trend = ((avg_effort - prev_avg_effort) / prev_avg_effort * 100) if prev_avg_effort > 0 else 0.0
+        else:
+            trend = 0.0
+        
+        return {
+            'score': avg_effort,
+            'trend': trend,
+            'easy_count': easy_count,
+            'difficult_count': difficult_count
+        }
+        
+    except Exception as e:
+        logger.error(f"Error calculating CES: {e}")
+        return {'score': 5.0, 'trend': 0.0, 'easy_count': 0, 'difficult_count': 0}
+
+def calculate_fcr_score(days=30):
+    """
+    Calculate First Call Resolution based on feedback patterns
+    """
+    try:
+        end_date = datetime.utcnow()
+        start_date = end_date - timedelta(days=days)
+        
+        # Get feedback from phone and chat channels
+        resolution_channels = [FeedbackChannel.PHONE, FeedbackChannel.WHATSAPP, FeedbackChannel.CHATBOT]
+        
+        current_feedback = db.session.query(Feedback).filter(
+            and_(
+                Feedback.created_at >= start_date,
+                Feedback.created_at <= end_date,
+                Feedback.status == FeedbackStatus.PROCESSED,
+                Feedback.channel.in_(resolution_channels)
+            )
+        ).all()
+        
+        if not current_feedback:
+            return {'score': 0.85, 'trend': 0.0, 'resolved_first': 0, 'escalated': 0}
+        
+        resolved_first = 0
+        escalated = 0
+        
+        for feedback in current_feedback:
+            # Estimate FCR based on sentiment, content, and response patterns
+            sentiment = feedback.sentiment_score or 0.0
+            content_length = len(feedback.content) if feedback.content else 0
+            
+            # Positive sentiment and shorter content suggest first call resolution
+            if sentiment > 0.2 and content_length < 300:
+                resolved_first += 1
+            # Very negative sentiment or very long content suggests escalation
+            elif sentiment < -0.3 or content_length > 800:
+                escalated += 1
+            else:
+                # Medium cases - use rating if available
+                if feedback.rating and feedback.rating >= 4:
+                    resolved_first += 1
+                else:
+                    escalated += 1
+        
+        total = len(current_feedback)
+        fcr_rate = resolved_first / total if total > 0 else 0.85
+        
+        # Calculate trend
+        prev_start = start_date - timedelta(days=days)
+        prev_end = start_date
+        
+        prev_feedback = db.session.query(Feedback).filter(
+            and_(
+                Feedback.created_at >= prev_start,
+                Feedback.created_at < prev_end,
+                Feedback.status == FeedbackStatus.PROCESSED,
+                Feedback.channel.in_(resolution_channels)
+            )
+        ).all()
+        
+        if prev_feedback:
+            prev_resolved = 0
+            for feedback in prev_feedback:
+                sentiment = feedback.sentiment_score or 0.0
+                content_length = len(feedback.content) if feedback.content else 0
+                
+                if sentiment > 0.2 and content_length < 300:
+                    prev_resolved += 1
+                elif sentiment >= -0.3 and content_length <= 800:
+                    if feedback.rating and feedback.rating >= 4:
+                        prev_resolved += 1
+            
+            prev_total = len(prev_feedback)
+            prev_fcr = prev_resolved / prev_total if prev_total > 0 else 0.85
+            trend = ((fcr_rate - prev_fcr) / prev_fcr * 100) if prev_fcr > 0 else 0.0
+        else:
+            trend = 0.0
+        
+        return {
+            'score': fcr_rate,
+            'trend': trend,
+            'resolved_first': resolved_first,
+            'escalated': escalated
+        }
+        
+    except Exception as e:
+        logger.error(f"Error calculating FCR: {e}")
+        return {'score': 0.85, 'trend': 0.0, 'resolved_first': 0, 'escalated': 0}
+
 def calculate_volume_metrics():
     """
     Calculate response volume metrics
@@ -331,18 +627,24 @@ def get_channel_distribution(days=30):
 @executive_bp.route('/metrics')
 def get_dashboard_metrics():
     """
-    Get all executive dashboard metrics
+    Get all executive dashboard metrics including NPS, CSAT, CES, FCR
     """
     try:
         # Calculate all metrics
+        nps = calculate_nps_score()
         csat = calculate_csat_score()
+        ces = calculate_ces_score()
+        fcr = calculate_fcr_score()
         volume = calculate_volume_metrics()
         sentiment = calculate_sentiment_metrics()
         trends = get_trend_data()
         channels = get_channel_distribution()
         
         return jsonify({
+                'nps': nps,
                 'csat': csat,
+                'ces': ces,
+                'fcr': fcr,
                 'volume': volume,
                 'sentiment': sentiment,
                 'trends': trends,
