@@ -31,18 +31,23 @@ class SurveyBuilder {
             return;
         }
 
-        // Setup sortable for questions area
+        // Setup sortable for questions area with enhanced reordering
         this.sortable = Sortable.create(questionsArea, {
             group: {
                 name: 'questions',
                 pull: false,
                 put: ['questionTypes']
             },
-            animation: 300,
+            animation: 250,
             easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)',
             ghostClass: 'sortable-ghost',
             chosenClass: 'sortable-chosen',
             dragClass: 'sortable-drag',
+            handle: '.drag-handle, .question-item',
+            scroll: true,
+            scrollSensitivity: 100,
+            scrollSpeed: 15,
+            bubbleScroll: true,
             onAdd: (evt) => {
                 const questionType = evt.item.dataset.type;
                 console.log('Adding question type:', questionType);
@@ -52,8 +57,16 @@ class SurveyBuilder {
                 }
             },
             onUpdate: (evt) => {
-                console.log('Question reordered');
-                this.reorderQuestions();
+                console.log('Question reordered from', evt.oldIndex, 'to', evt.newIndex);
+                this.handleQuestionReorder(evt);
+            },
+            onStart: (evt) => {
+                console.log('Started reordering question');
+                document.body.classList.add('question-reordering');
+            },
+            onEnd: (evt) => {
+                console.log('Finished reordering question');
+                document.body.classList.remove('question-reordering');
             }
         });
 
@@ -246,15 +259,15 @@ class SurveyBuilder {
         questionElement.innerHTML = `
             <div class="question-header">
                 <div class="d-flex align-items-center">
-                    <i class="fas fa-bars drag-handle me-3"></i>
+                    <i class="fas fa-grip-vertical drag-handle me-3" title="اسحب لإعادة الترتيب"></i>
                     <span class="badge bg-primary me-2">${this.getQuestionTypeLabel(question.type)}</span>
                     <span class="question-number">السؤال ${question.order_index + 1}</span>
                 </div>
                 <div class="question-actions">
-                    <button class="btn btn-sm btn-outline-primary" onclick="surveyBuilder.duplicateQuestion(${question.id})">
+                    <button class="btn btn-sm btn-outline-primary" onclick="surveyBuilder.duplicateQuestion(${question.id})" title="نسخ السؤال">
                         <i class="fas fa-copy"></i>
                     </button>
-                    <button class="btn btn-sm btn-outline-danger" onclick="surveyBuilder.deleteQuestion(${question.id})">
+                    <button class="btn btn-sm btn-outline-danger" onclick="surveyBuilder.deleteQuestion(${question.id})" title="حذف السؤال">
                         <i class="fas fa-trash"></i>
                     </button>
                 </div>
@@ -509,10 +522,46 @@ class SurveyBuilder {
         }
     }
 
+    handleQuestionReorder(evt) {
+        // Get the actual DOM order and update the questions array
+        const questionsContainer = document.querySelector('.questions-container');
+        const questionElements = Array.from(questionsContainer.querySelectorAll('.question-item'));
+        
+        // Create new ordered array based on DOM order
+        const newQuestions = [];
+        questionElements.forEach((element, index) => {
+            const questionId = parseInt(element.dataset.questionId);
+            const question = this.questions.find(q => q.id === questionId);
+            if (question) {
+                question.order_index = index;
+                newQuestions.push(question);
+            }
+        });
+        
+        // Update the questions array
+        this.questions = newQuestions;
+        
+        // Update question numbers in the display
+        this.updateQuestionNumbers();
+        
+        console.log('Questions reordered:', this.questions.map(q => q.id));
+    }
+
+    updateQuestionNumbers() {
+        const questionElements = document.querySelectorAll('.question-item');
+        questionElements.forEach((element, index) => {
+            const questionNumber = element.querySelector('.question-number');
+            if (questionNumber) {
+                questionNumber.textContent = `السؤال ${index + 1}`;
+            }
+        });
+    }
+
     reorderQuestions() {
         this.questions.forEach((question, index) => {
             question.order_index = index;
         });
+        this.updateQuestionNumbers();
     }
 
     updateQuestionsArea() {
@@ -522,13 +571,21 @@ class SurveyBuilder {
                 <div class="questions-container">
                     <div class="empty-state">
                         <i class="fas fa-plus-circle empty-state-icon"></i>
-                        <h5 class="text-muted">ابدأ في بناء استطلاعك</h5>
-                        <p class="text-muted">اسحب نوع السؤال من الشريط الجانبي لإضافة أول سؤال</p>
-                        <div class="mt-3">
-                            <small class="text-muted">
-                                <i class="fas fa-lightbulb me-1"></i>
-                                نصيحة: ابدأ بسؤال ترحيبي لجذب انتباه المشاركين
-                            </small>
+                        <h4 class="text-muted mb-3">منطقة بناء الاستطلاع</h4>
+                        <p class="text-muted mb-3">اسحب أنواع الأسئلة من الشريط الجانبي لبناء استطلاعك</p>
+                        <div class="empty-state-tips">
+                            <div class="tip-item">
+                                <i class="fas fa-drag me-2"></i>
+                                <span>اسحب الأسئلة لإعادة ترتيبها</span>
+                            </div>
+                            <div class="tip-item">
+                                <i class="fas fa-edit me-2"></i>
+                                <span>اضغط على السؤال لتحرير خصائصه</span>
+                            </div>
+                            <div class="tip-item">
+                                <i class="fas fa-lightbulb me-2"></i>
+                                <span>ابدأ بسؤال ترحيبي</span>
+                            </div>
                         </div>
                     </div>
                 </div>

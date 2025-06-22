@@ -163,30 +163,30 @@
         }
 
         .canvas-header {
-            padding-bottom: 15px;
-            margin-bottom: 20px;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
             flex-shrink: 0;
         }
 
         .canvas-content {
             flex: 1;
-            min-height: 500px;
+            min-height: 600px;
         }
 
         .canvas-title {
-            font-size: 1.1rem;
+            font-size: 1rem;
             font-weight: 600;
             color: var(--text-color);
             margin: 0;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
         }
 
         .canvas-subtitle {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             color: #666;
-            margin: 5px 0 0 0;
+            margin: 3px 0 0 0;
         }
 
         .survey-header-section {
@@ -264,6 +264,21 @@
             background: #ccc;
             cursor: not-allowed;
             transform: none;
+        }
+
+        /* Question reordering visual feedback */
+        body.question-reordering {
+            cursor: grabbing;
+        }
+
+        body.question-reordering .question-item:not(.sortable-chosen) {
+            opacity: 0.7;
+        }
+
+        .question-item.sortable-chosen .drag-handle {
+            opacity: 1;
+            background: var(--primary-color);
+            color: white;
         }
 
         @media (max-width: 992px) {
@@ -346,9 +361,27 @@
             border: 2px solid var(--border-color);
             border-radius: 10px;
             padding: 20px;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             transition: all 0.3s ease;
             position: relative;
+            cursor: move;
+        }
+
+        .question-item:hover .drag-handle {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+
+        .question-item.sortable-chosen {
+            transform: scale(1.02);
+            box-shadow: 0 8px 25px rgba(46, 139, 87, 0.2);
+            border-color: var(--primary-color);
+            z-index: 1000;
+        }
+
+        .question-item.sortable-ghost {
+            opacity: 0.3;
+            background: #f8f9fa;
         }
 
         .question-item:hover {
@@ -375,8 +408,22 @@
 
         .drag-handle {
             cursor: grab;
-            color: var(--text-color);
-            opacity: 0.5;
+            color: var(--primary-color);
+            opacity: 0.3;
+            transition: all 0.2s ease;
+            font-size: 1.1rem;
+            padding: 5px;
+            border-radius: 4px;
+        }
+
+        .drag-handle:hover {
+            opacity: 1;
+            background: rgba(46, 139, 87, 0.1);
+            transform: scale(1.1);
+        }
+
+        .drag-handle:active {
+            cursor: grabbing;
         }
 
         .drag-handle:hover {
