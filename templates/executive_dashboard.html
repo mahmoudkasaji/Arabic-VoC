@@ -662,11 +662,7 @@
                 this.startAutoRefresh();
             }
 
-            initializeWebSocket() {
-                // Skip WebSocket for now and use polling for reliability
-                console.log('Using polling for real-time updates');
-                this.startPolling();
-            }
+
 
             async loadInitialData() {
                 try {
