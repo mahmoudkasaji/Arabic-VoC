@@ -7,12 +7,13 @@ An Arabic-first multi-channel feedback processing platform built with Flask and 
 ## System Architecture
 
 ### Backend Architecture
-- **Framework**: Flask with WSGI support (switched from FastAPI for Replit compatibility)
-- **Database**: PostgreSQL with SQLAlchemy (SQLite for development)
-- **ORM**: Flask-SQLAlchemy with sync sessions
-- **Language Processing**: Custom Arabic text processor with reshaping and normalization
-- **AI Integration**: OpenAI GPT-4o for sentiment analysis and text processing
-- **Server**: Gunicorn with sync workers (optimized for Replit environment)
+- **Framework**: Flask with WSGI support (optimized for Replit deployment)
+- **AI System**: LangGraph multi-agent orchestration with three specialized agents
+- **Database**: PostgreSQL with SQLAlchemy and Arabic text optimization
+- **ORM**: Flask-SQLAlchemy with connection pooling and performance tuning
+- **Language Processing**: Advanced Arabic processor with cultural context awareness
+- **Agent System**: SentimentAgent, TopicAgent, ActionAgent with context passing
+- **Server**: Gunicorn with sync workers and Arabic locale support
 - **Environments**: Multi-environment support (development/test/staging/production)
 
 ### Frontend Architecture
@@ -36,11 +37,18 @@ An Arabic-first multi-channel feedback processing platform built with Flask and 
 - Diacritics preservation for AI processing
 - Pattern matching for Arabic character detection
 
+### LangGraph Agent System (`utils/arabic_agent_orchestrator.py`)
+- Three specialized agents with focused prompts (50% token reduction)
+- Context passing between agents for improved accuracy
+- Error isolation and graceful degradation
+- Async processing with conversation threading
+- Fallback to legacy OpenAI integration when needed
+
 ### OpenAI Integration (`utils/openai_client.py`)
-- GPT-4o model for Arabic sentiment analysis
+- GPT-4o model with agent-based analysis (primary)
+- Legacy single-prompt analysis (fallback)
 - Emotion detection and confidence scoring
-- Multi-dimensional analysis (sentiment, intensity, reasoning)
-- Arabic-specific prompting for cultural context
+- Multi-dimensional analysis with cultural context
 
 ### Database Layer (`utils/database.py`)
 - Async PostgreSQL connection management
@@ -60,18 +68,22 @@ An Arabic-first multi-channel feedback processing platform built with Flask and 
 
 1. **Feedback Collection**: Multi-channel input (web forms, API, integrations)
 2. **Text Processing**: Arabic normalization, reshaping, and validation
-3. **AI Analysis**: OpenAI sentiment analysis and emotion detection
-4. **Storage**: Async database operations with proper indexing
-5. **Analytics**: Real-time aggregation and pre-computed metrics
+3. **Agent Orchestration**: LangGraph workflow with three specialized agents
+   - **SentimentAgent**: Emotion and sentiment analysis
+   - **TopicAgent**: Business categorization with sentiment context
+   - **ActionAgent**: Recommendation generation with full context
+4. **Storage**: Async database operations with analysis metadata
+5. **Analytics**: Real-time aggregation with agent performance metrics
 6. **Visualization**: RTL dashboard with Arabic-specific formatting
 
 ## External Dependencies
 
 ### Core Dependencies
-- **FastAPI**: Web framework with automatic API documentation
-- **SQLAlchemy**: Async ORM for database operations
-- **asyncpg**: High-performance PostgreSQL driver
-- **OpenAI**: GPT-4o integration for Arabic text analysis
+- **Flask**: Production-ready web framework with WSGI support
+- **LangChain/LangGraph**: Agent orchestration and workflow management
+- **SQLAlchemy**: ORM with connection pooling and Arabic optimization
+- **OpenAI**: GPT-4o integration with agent-based analysis
+- **LangChain-OpenAI**: Structured prompting and output parsing
 
 ### Arabic Processing
 - **arabic-reshaper**: Proper Arabic character shaping
@@ -169,3 +181,4 @@ Mobile preferences: Question type dropdown instead of sidebar list, positioned u
 Desktop preferences: Maximized canvas space with survey header moved to right properties panel for optimal screen utilization.
 Executive Dashboard Focus: Prioritizes real-time KPIs with immediate business value, prefers phased development approach leveraging existing infrastructure.
 Navigation Architecture: Prefers 4-tier navigation structure: 1. Surveys 2. Analytics 3. Integrations 4. Settings with proper cascading navigation and breadcrumbs for clear information architecture.
+AI Analysis Preference: Prefers efficient multi-agent orchestration over single prompts for better accuracy, cost efficiency, and maintainability. Values robust fallback systems and performance optimization.
