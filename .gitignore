@@ -31,30 +31,47 @@ ENV/
 *.swp
 *.swo
 
-# Environment variables
-.env
-.env.local
-.env.production
-
 # Database
-*.db
+*.sqlite
 *.sqlite3
+*.db
 
 # Logs
 *.log
 logs/
 
-# Testing
-.pytest_cache/
-.coverage
-htmlcov/
-.tox/
+# Environment variables
+.env
+.env.local
+.env.production
 
 # OS
 .DS_Store
 Thumbs.db
 
-# Project specific
-test.db
-coverage.xml
-*.orig
+# Replit specific
+.replit
+replit.nix
+.config/
+
+# Temporary files
+*.tmp
+*.temp
+temp/
+tmp/
+
+# Flask
+instance/
+.webassets-cache
+
+# Testing
+.coverage
+.pytest_cache/
+htmlcov/
+
+# Backup files
+*.bak
+*.backup
+
+# Lock files (these cause git issues)
+*.lock

@@ -105,6 +105,10 @@ An Arabic-first multi-channel feedback processing platform built with Flask and 
 - `ARABIC_LOCALE`: Locale configuration for Arabic text
 
 ## Changelog
+- June 22, 2025: **CRITICAL ARCHITECTURE CHANGE** - Switched from FastAPI to Flask for Replit compatibility
+- June 22, 2025: Resolved persistent ASGI/WSGI compatibility issues by migrating to Flask + Gunicorn
+- June 22, 2025: Fixed all database operations and API endpoints - application now stable
+- June 22, 2025: **CURRENT BLOCKER** - GitHub repository sync failing due to git lock files
 - June 21, 2025: Initial Arabic Voice of Customer platform setup
 - June 21, 2025: Resolved ASGI/WSGI compatibility issues with FastAPI and Gunicorn
 - June 21, 2025: Unified database models to prevent SQLAlchemy conflicts
