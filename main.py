@@ -139,6 +139,14 @@ async def surveys_page(request: Request):
 
 @app.get("/survey-builder")
 async def survey_builder_page(request: Request):
+    """Survey builder page"""
+    return templates.TemplateResponse(
+        "survey_builder.html",
+        {"request": request, "title": "منشئ الاستطلاعات"}
+    )
+
+@app.get("/survey-builder")
+async def survey_builder_page(request: Request):
     """Interactive survey builder page"""
     return templates.TemplateResponse(
         "survey_builder.html", 
