@@ -92,6 +92,49 @@ class SurveyBuilder {
         if (titleArField) titleArField.addEventListener('input', () => this.updateSurveyHeader());
         if (descField) descField.addEventListener('input', () => this.updateSurveyHeader());
         if (descArField) descArField.addEventListener('input', () => this.updateSurveyHeader());
+
+        // Mobile question type selector
+        this.setupMobileQuestionSelector();
+    }
+
+    setupMobileQuestionSelector() {
+        const mobileSelect = document.getElementById('mobileQuestionTypeSelect');
+        const mobileAddBtn = document.getElementById('mobileAddQuestionBtn');
+
+        if (mobileSelect && mobileAddBtn) {
+            // Enable/disable add button based on selection
+            mobileSelect.addEventListener('change', () => {
+                const selectedType = mobileSelect.value;
+                mobileAddBtn.disabled = !selectedType;
+                
+                if (selectedType) {
+                    mobileAddBtn.textContent = `إضافة: ${this.getQuestionTypeLabel(selectedType)}`;
+                } else {
+                    mobileAddBtn.innerHTML = '<i class="fas fa-plus"></i> إضافة السؤال';
+                }
+            });
+
+            // Add question when button is clicked
+            mobileAddBtn.addEventListener('click', () => {
+                const selectedType = mobileSelect.value;
+                if (selectedType) {
+                    this.addQuestion(selectedType);
+                    // Reset selection
+                    mobileSelect.value = '';
+                    mobileAddBtn.disabled = true;
+                    mobileAddBtn.innerHTML = '<i class="fas fa-plus"></i> إضافة السؤال';
+                    
+                    // Show success feedback
+                    mobileAddBtn.innerHTML = '<i class="fas fa-check"></i> تم الإضافة!';
+                    mobileAddBtn.style.background = '#28a745';
+                    
+                    setTimeout(() => {
+                        mobileAddBtn.innerHTML = '<i class="fas fa-plus"></i> إضافة السؤال';
+                        mobileAddBtn.style.background = '';
+                    }, 1500);
+                }
+            });
+        }
     }
 
     addQuestion(type) {

@@ -197,3 +197,4 @@ An Arabic-first multi-channel feedback processing platform built with Flask and 
 Preferred communication style: Simple, everyday language.
 Visual preferences: Subtle drag-and-drop effects without tilting or rotation - prefers clean, minimal visual feedback.
 UX preferences: Industry-standard layouts with 70% canvas space, collapsible sidebars, and professional question type galleries.
+Mobile preferences: Question type dropdown instead of sidebar list, positioned under survey header section.
