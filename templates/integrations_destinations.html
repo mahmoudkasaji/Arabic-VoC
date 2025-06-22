@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>وجهات البيانات - منصة صوت العميل العربية</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { 
+            font-family: 'Cairo', sans-serif; 
+            direction: rtl; 
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+        
+        .page-header { 
+            background: white; 
+            padding: 2rem; 
+            margin-bottom: 2rem; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1); 
+        }
+        
+        .destination-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-left: 4px solid #007bff;
+        }
+        
+        .destination-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .destination-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            margin-left: 1rem;
+        }
+        
+        .trigger-badge {
+            font-size: 0.7rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 8px;
+            margin-right: 0.25rem;
+            margin-bottom: 0.25rem;
+            display: inline-block;
+        }
+        
+        .trigger-urgent { background: #fff5f5; color: #c53030; border: 1px solid #fed7d7; }
+        .trigger-negative { background: #fef5e7; color: #dd6b20; border: 1px solid #fbd38d; }
+        .trigger-positive { background: #f0fff4; color: #38a169; border: 1px solid #9ae6b4; }
+        
+        .category-section {
+            margin-bottom: 3rem;
+        }
+        
+        .category-header {
+            color: #007bff;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e9ecef;
+        }
+        
+        .automation-count {
+            background: rgba(0, 123, 255, 0.1);
+            color: #007bff;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    {% include 'components/navigation.html' %}
+    
+    <div class="container-fluid">
+        <div class="page-header">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <h1>
+                        <i class="fas fa-upload text-primary me-2"></i>
+                        وجهات البيانات
+                    </h1>
+                    <p class="text-muted">كتالوج الأنظمة لاتخاذ إجراءات تجربة العملاء بناءً على الرؤى</p>
+                </div>
+                <button class="btn btn-primary">
+                    <i class="fas fa-plus me-2"></i>
+                    إضافة وجهة جديدة
+                </button>
+            </div>
+        </div>
+        
+        <!-- CX Action Systems -->
+        <div class="category-section">
+            <h3 class="category-header">
+                <i class="fas fa-users-cog me-2"></i>
+                أنظمة إجراءات تجربة العملاء
+            </h3>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="destination-card">
+                        <div class="d-flex align-items-start">
+                            <div class="destination-icon" style="background: #03363d;">
+                                <i class="fas fa-ticket-alt"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <h5 class="mb-0">Zendesk Auto-Ticketing</h5>
+                                    <span class="automation-count">12 إجراء/اليوم</span>
+                                </div>
+                                <p class="text-muted mb-2">إنشاء تذاكر تلقائية للمشاكل العاجلة</p>
+                                
+                                <div class="mb-2">
+                                    <span class="trigger-badge trigger-urgent">مشكلة عاجلة</span>
+                                    <span class="trigger-badge trigger-negative">تقييم سلبي</span>
+                                </div>
+                                
+                                <small class="text-success">
+                                    <i class="fas fa-check-circle me-1"></i>
+                                    آخر إجراء: منذ 15 دقيقة
+                                </small>
+                            </div>
+                        </div>
+                        <div class="mt-3">
+                            <button class="btn btn-outline-primary btn-sm me-2">تعديل القواعد</button>
+                            <button class="btn btn-outline-secondary btn-sm">عرض السجل</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="destination-card">
+                        <div class="d-flex align-items-start">
+                            <div class="destination-icon" style="background: #e74c3c;">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <h5 class="mb-0">Customer Risk Alerts</h5>
+                                    <span class="automation-count">3 تنبيهات/اليوم</span>
+                                </div>
+                                <p class="text-muted mb-2">تنبيهات استباقية للعملاء المعرضين للخطر</p>
+                                
+                                <div class="mb-2">
+                                    <span class="trigger-badge trigger-urgent">عميل مهم</span>
+                                    <span class="trigger-badge trigger-negative">تقييم متكرر سلبي</span>
+                                </div>
+                                
+                                <small class="text-warning">
+                                    <i class="fas fa-clock me-1"></i>
+                                    آخر تنبيه: منذ 2 ساعات
+                                </small>
+                            </div>
+                        </div>
+                        <div class="mt-3">
+                            <button class="btn btn-outline-danger btn-sm me-2">إعداد التنبيهات</button>
+                            <button class="btn btn-outline-secondary btn-sm">عرض العملاء</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Business Intelligence -->
+        <div class="category-section">
+            <h3 class="category-header">
+                <i class="fas fa-chart-line me-2"></i>
+                ذكاء الأعمال والتقارير
+            </h3>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="destination-card">
+                        <div class="d-flex align-items-start">
+                            <div class="destination-icon" style="background: #f2c811;">
+                                <i class="fas fa-chart-bar"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <h5 class="mb-0">Power BI Export</h5>
+                                    <span class="automation-count">يومياً</span>
+                                </div>
+                                <p class="text-muted mb-2">تصدير تلقائي للوحات المعلومات</p>
+                                <small class="text-success">
+                                    <i class="fas fa-sync me-1"></i>
+                                    آخر تصدير: اليوم 6:00 ص
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="destination-card">
+                        <div class="d-flex align-items-start">
+                            <div class="destination-icon" style="background: #4285f4;">
+                                <i class="fab fa-google"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <h5 class="mb-0">BigQuery Warehouse</h5>
+                                    <span class="automation-count">مباشر</span>
+                                </div>
+                                <p class="text-muted mb-2">مستودع البيانات للتحليلات المتقدمة</p>
+                                <small class="text-success">
+                                    <i class="fas fa-database me-1"></i>
+                                    1.2M سجل محفوظ
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="destination-card">
+                        <div class="d-flex align-items-start">
+                            <div class="destination-icon" style="background: #ff6b35;">
+                                <i class="fas fa-file-pdf"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <h5 class="mb-0">تقارير تلقائية</h5>
+                                    <span class="automation-count">أسبوعياً</span>
+                                </div>
+                                <p class="text-muted mb-2">تقارير PDF للإدارة العليا</p>
+                                <small class="text-info">
+                                    <i class="fas fa-calendar me-1"></i>
+                                    التقرير القادم: الأحد
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Marketing & Communication -->
+        <div class="category-section">
+            <h3 class="category-header">
+                <i class="fas fa-bullhorn me-2"></i>
+                التسويق والتواصل
+            </h3>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="destination-card">
+                        <div class="d-flex align-items-start">
+                            <div class="destination-icon" style="background: #ffe01b;">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <h5 class="mb-0">MailChimp Campaigns</h5>
+                                    <span class="automation-count">5 حملات نشطة</span>
+                                </div>
+                                <p class="text-muted mb-2">حملات بريد إلكتروني بناءً على التعليقات</p>
+                                
+                                <div class="mb-2">
+                                    <span class="trigger-badge trigger-positive">تقييم إيجابي</span>
+                                    <span class="trigger-badge trigger-negative">متابعة مشكلة</span>
+                                </div>
+                                
+                                <small class="text-success">
+                                    <i class="fas fa-paper-plane me-1"></i>
+                                    156 رسالة مرسلة اليوم
+                                </small>
+                            </div>
+                        </div>
+                        <div class="mt-3">
+                            <button class="btn btn-outline-warning btn-sm me-2">إدارة الحملات</button>
+                            <button class="btn btn-outline-secondary btn-sm">الإحصائيات</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="destination-card">
+                        <div class="d-flex align-items-start">
+                            <div class="destination-icon" style="background: #0084ff;">
+                                <i class="fas fa-sms"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <h5 class="mb-0">Twilio SMS Alerts</h5>
+                                    <span class="automation-count">للمشاكل العاجلة</span>
+                                </div>
+                                <p class="text-muted mb-2">رسائل نصية فورية للحالات الحرجة</p>
+                                
+                                <div class="mb-2">
+                                    <span class="trigger-badge trigger-urgent">مشكلة حرجة</span>
+                                </div>
+                                
+                                <small class="text-warning">
+                                    <i class="fas fa-mobile-alt me-1"></i>
+                                    آخر رسالة: منذ 3 ساعات
+                                </small>
+                            </div>
+                        </div>
+                        <div class="mt-3">
+                            <button class="btn btn-outline-info btn-sm me-2">إعداد الرسائل</button>
+                            <button class="btn btn-outline-secondary btn-sm">سجل الإرسال</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Quick Setup Guide -->
+        <div class="row">
+            <div class="col-12">
+                <div class="alert alert-success">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-route me-3 fs-4"></i>
+                        <div>
+                            <h6 class="mb-1">دليل الإعداد السريع</h6>
+                            <p class="mb-0">
+                                1. حدد النظام المطلوب → 2. اختر المحفزات (تقييم سلبي، مشكلة عاجلة) → 3. كوّن قواعد الإجراء → 4. اختبر التكامل
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

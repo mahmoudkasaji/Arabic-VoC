@@ -217,30 +217,28 @@ def analytics_reports_page():
     return render_template('analytics_reports.html', 
                          title='التقارير والتصدير')
 
-@app.route('/integrations/channels')
-@app.route('/integrations')  # Keep old route for compatibility
-def integrations_page():
-    """Channel setup page"""
-    return render_template('integrations.html', 
-                         title='إعداد القنوات')
+@app.route('/integrations')
+def integrations_redirect():
+    """Redirect to data sources by default"""
+    return redirect(url_for('integrations_sources_page'))
+
+@app.route('/integrations/sources')
+def integrations_sources_page():
+    """Data sources catalog page"""
+    return render_template('integrations_sources.html', 
+                         title='مصادر البيانات')
+
+@app.route('/integrations/destinations')
+def integrations_destinations_page():
+    """Data destinations catalog page"""
+    return render_template('integrations_destinations.html', 
+                         title='وجهات البيانات')
 
 @app.route('/integrations/ai')
 def integrations_ai_page():
     """AI & LLM management page"""
     return render_template('integrations_ai.html', 
                          title='إدارة الذكاء الاصطناعي')
-
-@app.route('/integrations/data')
-def integrations_data_page():
-    """Data connectors page"""
-    return render_template('integrations_data.html', 
-                         title='موصلات البيانات')
-
-@app.route('/integrations/third-party')
-def integrations_third_party_page():
-    """Third-party tools page"""
-    return render_template('integrations_third_party.html', 
-                         title='الأدوات الخارجية')
 
 @app.route('/settings/account')
 def settings_account_page():
