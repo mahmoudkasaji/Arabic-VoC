@@ -164,6 +164,7 @@ def analytics_page():
     """Redirect analytics to executive dashboard"""
     return redirect(url_for('executive_dashboard_page'))
 
+@app.route('/analytics/executive')
 @app.route('/executive-dashboard')
 def executive_dashboard_page():
     """Executive dashboard page"""
