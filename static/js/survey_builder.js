@@ -15,20 +15,93 @@ class SurveyBuilder {
     }
 
     init() {
+        console.log('Initializing SurveyBuilder...');
         this.setupAdvancedDragAndDrop();
         this.setupEventListeners();
         this.loadSurveyData();
+        console.log('SurveyBuilder initialized');
     }
 
     setupAdvancedDragAndDrop() {
-        // Initialize advanced drag controller
-        this.dragController = new AdvancedDragController({
-            container: document.querySelector('.builder-container'),
-            questionsArea: document.getElementById('questionsArea'),
-            sidebar: document.getElementById('questionTypes'),
-            onQuestionAdd: (questionType) => this.addQuestion(questionType),
-            onQuestionReorder: (evt) => this.reorderQuestions(evt)
+        // First check if AdvancedDragController is available
+        if (typeof AdvancedDragController !== 'undefined') {
+            try {
+                this.dragController = new AdvancedDragController({
+                    container: document.querySelector('.builder-container'),
+                    questionsArea: document.getElementById('questionsArea'),
+                    sidebar: document.getElementById('questionTypes'),
+                    onQuestionAdd: (questionType) => this.addQuestion(questionType),
+                    onQuestionReorder: (evt) => this.reorderQuestions(evt)
+                });
+                console.log('Advanced drag controller initialized');
+            } catch (error) {
+                console.warn('Advanced drag controller failed, falling back to basic:', error);
+                this.setupBasicDragAndDrop();
+            }
+        } else {
+            console.warn('AdvancedDragController not found, using basic drag and drop');
+            this.setupBasicDragAndDrop();
+        }
+    }
+
+    setupBasicDragAndDrop() {
+        // Fallback to basic SortableJS implementation
+        const questionTypes = document.getElementById('questionTypes');
+        const questionsArea = document.getElementById('questionsArea');
+        
+        if (!questionTypes || !questionsArea) {
+            console.error('Required elements not found for drag and drop');
+            return;
+        }
+
+        // Setup sortable for questions area
+        this.sortable = Sortable.create(questionsArea, {
+            group: {
+                name: 'questions',
+                pull: false,
+                put: ['questionTypes']
+            },
+            animation: 300,
+            easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+            ghostClass: 'sortable-ghost',
+            chosenClass: 'sortable-chosen',
+            dragClass: 'sortable-drag',
+            onAdd: (evt) => {
+                const questionType = evt.item.dataset.type;
+                console.log('Adding question type:', questionType);
+                if (questionType) {
+                    this.addQuestion(questionType);
+                    evt.item.remove(); // Remove the dragged element
+                }
+            },
+            onUpdate: (evt) => {
+                console.log('Question reordered');
+                this.reorderQuestions();
+            }
         });
+
+        // Make question types sortable (for dragging)
+        this.sidebarSortable = Sortable.create(questionTypes, {
+            group: {
+                name: 'questionTypes',
+                pull: 'clone',
+                put: false
+            },
+            sort: false,
+            animation: 200,
+            onStart: (evt) => {
+                console.log('Started dragging question type:', evt.item.dataset.type);
+                evt.item.classList.add('dragging');
+                document.body.classList.add('drag-active');
+            },
+            onEnd: (evt) => {
+                console.log('Ended dragging');
+                evt.item.classList.remove('dragging');
+                document.body.classList.remove('drag-active');
+            }
+        });
+
+        console.log('Basic drag and drop initialized');
     }
 
     setupEventListeners() {
