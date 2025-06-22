@@ -170,11 +170,100 @@ def executive_dashboard_page():
     return render_template('executive_dashboard.html',
                          title='لوحة القيادة التنفيذية')
 
-@app.route('/integrations')
+# New navigation routes
+@app.route('/surveys/builder')
+@app.route('/survey-builder')  # Keep old route for compatibility
+def survey_builder_new():
+    """Survey builder page"""
+    return render_template('survey_builder.html', 
+                         title='منشئ الاستطلاعات')
+
+@app.route('/surveys/feedback')
+@app.route('/feedback')  # Keep old route for compatibility  
+def feedback_new():
+    """Feedback submission page"""
+    return render_template('feedback.html', 
+                         title='إرسال تعليق',
+                         channels=list(FeedbackChannel))
+
+@app.route('/surveys/manage')
+def surveys_manage_page():
+    """Survey management page"""
+    return render_template('surveys.html', 
+                         title='إدارة الاستطلاعات')
+
+@app.route('/surveys/responses')
+def survey_responses_page():
+    """Survey responses management page"""
+    return render_template('survey_responses.html', 
+                         title='إدارة الردود')
+
+@app.route('/analytics/detailed')
+def analytics_detailed_page():
+    """Detailed analytics page"""
+    return render_template('analytics_detailed.html', 
+                         title='التحليلات التفصيلية')
+
+@app.route('/analytics/arabic')
+def analytics_arabic_page():
+    """Arabic-specific insights page"""
+    return render_template('analytics_arabic.html', 
+                         title='الرؤى العربية')
+
+@app.route('/analytics/reports')
+def analytics_reports_page():
+    """Reports and export page"""
+    return render_template('analytics_reports.html', 
+                         title='التقارير والتصدير')
+
+@app.route('/integrations/channels')
+@app.route('/integrations')  # Keep old route for compatibility
 def integrations_page():
-    """Integrations management page"""
+    """Channel setup page"""
     return render_template('integrations.html', 
-                         title='التكاملات')
+                         title='إعداد القنوات')
+
+@app.route('/integrations/ai')
+def integrations_ai_page():
+    """AI & LLM management page"""
+    return render_template('integrations_ai.html', 
+                         title='إدارة الذكاء الاصطناعي')
+
+@app.route('/integrations/data')
+def integrations_data_page():
+    """Data connectors page"""
+    return render_template('integrations_data.html', 
+                         title='موصلات البيانات')
+
+@app.route('/integrations/third-party')
+def integrations_third_party_page():
+    """Third-party tools page"""
+    return render_template('integrations_third_party.html', 
+                         title='الأدوات الخارجية')
+
+@app.route('/settings/account')
+def settings_account_page():
+    """Account management page"""
+    return render_template('settings_account.html', 
+                         title='إدارة الحساب')
+
+@app.route('/settings/system')
+def settings_system_page():
+    """System configuration page"""
+    return render_template('settings_system.html', 
+                         title='إعدادات النظام')
+
+@app.route('/settings/security')
+def settings_security_page():
+    """Security and privacy page"""
+    return render_template('settings_security.html', 
+                         title='الأمان والخصوصية')
+
+@app.route('/settings/admin')
+def settings_admin_page():
+    """Platform administration page"""
+    return render_template('settings_admin.html', 
+                         title='إدارة المنصة')
 
 @app.route('/login')
 def login_page():
