@@ -99,6 +99,27 @@ class Survey(Base):
         return f"<Survey(id={self.id}, title='{self.title}', status='{self.status}')>"
     
     @property
+    def days_since_update(self):
+        """Calculate days since last update"""
+        if self.updated_at:
+            delta = datetime.utcnow() - self.updated_at
+            return delta.days
+        return 0
+    
+    @property
+    def status_display(self):
+        """Get localized status display"""
+        status_map = {
+            'draft': 'مسودة',
+            'active': 'نشط',
+            'published': 'منشور',
+            'paused': 'متوقف',
+            'completed': 'مكتمل',
+            'archived': 'مؤرشف'
+        }
+        return status_map.get(self.status.value, self.status.value)
+    
+    @property
     def display_title(self) -> str:
         """Get survey title in primary language"""
         if self.primary_language == "ar" and self.title_ar:

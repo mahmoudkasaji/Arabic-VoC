@@ -40,6 +40,10 @@ db.init_app(app)
 
 # Import models after db initialization
 from models_unified import Feedback, FeedbackChannel, FeedbackStatus
+from models.survey import Survey, Question, SurveyStatus, QuestionType
+
+# Import survey management API
+import api.survey_management
 
 @app.route('/')
 def index():
