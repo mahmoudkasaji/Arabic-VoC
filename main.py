@@ -26,7 +26,7 @@ async def lifespan(app: FastAPI):
     """Initialize database on startup"""
     logger.info("Initializing database...")
     await init_db()
-    
+
     # Initialize Arabic database features
     try:
         from utils.database_arabic import init_arabic_database
@@ -34,7 +34,7 @@ async def lifespan(app: FastAPI):
         logger.info("Arabic database features initialized")
     except Exception as e:
         logger.warning(f"Arabic database initialization failed: {e}")
-    
+
     logger.info("Database initialized successfully")
     yield
 
@@ -131,10 +131,18 @@ async def realtime_dashboard(request: Request):
 
 @app.get("/surveys")
 async def surveys_page(request: Request):
-    """Surveys page"""
+    """Survey management page"""
     return templates.TemplateResponse(
         "surveys.html", 
         {"request": request, "title": "الاستطلاعات"}
+    )
+
+@app.get("/survey-builder")
+async def survey_builder_page(request: Request):
+    """Interactive survey builder page"""
+    return templates.TemplateResponse(
+        "survey_builder.html", 
+        {"request": request, "title": "منشئ الاستبيان"}
     )
 
 @app.get("/login")
