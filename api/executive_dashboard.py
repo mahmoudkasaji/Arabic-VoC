@@ -340,8 +340,8 @@ def get_dashboard_metrics():
         sentiment = calculate_sentiment_metrics()
         trends = get_trend_data()
         channels = get_channel_distribution()
-            
-            return jsonify({
+        
+        return jsonify({
                 'csat': csat,
                 'volume': volume,
                 'sentiment': sentiment,
