@@ -193,3 +193,4 @@ An Arabic-first multi-channel feedback processing platform built with Flask and 
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
+Visual preferences: Subtle drag-and-drop effects without tilting or rotation - prefers clean, minimal visual feedback.
