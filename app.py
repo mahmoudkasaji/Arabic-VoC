@@ -157,11 +157,7 @@ def surveys_page():
     return render_template('surveys_modern.html', 
                          title='Survey Builder')
 
-@app.route('/survey-builder')
-def survey_builder():
-    """Survey builder page"""
-    return render_template('survey_builder.html', 
-                         title='منشئ الاستطلاعات')
+
 
 @app.route('/analytics')
 def analytics_page():
