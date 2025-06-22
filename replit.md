@@ -182,3 +182,4 @@ Desktop preferences: Maximized canvas space with survey header moved to right pr
 Executive Dashboard Focus: Prioritizes real-time KPIs with immediate business value, prefers phased development approach leveraging existing infrastructure.
 Navigation Architecture: Prefers 4-tier navigation structure: 1. Surveys 2. Analytics 3. Integrations 4. Settings with proper cascading navigation and breadcrumbs for clear information architecture.
 AI Analysis Preference: Prefers efficient multi-agent orchestration over single prompts for better accuracy, cost efficiency, and maintainability. Values robust fallback systems and performance optimization.
+Code Organization Preference: Prefers rationalized, consolidated file structure with clear separation of concerns. Values plain-language documentation for non-technical users and logical grouping of related functionality (e.g., all testing under unified structure with explanatory guides).
