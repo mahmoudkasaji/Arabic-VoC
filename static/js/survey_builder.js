@@ -9,53 +9,25 @@ class SurveyBuilder {
         this.questions = [];
         this.currentQuestionId = null;
         this.questionIdCounter = 1;
+        this.dragController = null;
         
         this.init();
     }
 
     init() {
-        this.setupDragAndDrop();
+        this.setupAdvancedDragAndDrop();
         this.setupEventListeners();
         this.loadSurveyData();
     }
 
-    setupDragAndDrop() {
-        // Make question types draggable
-        const questionTypes = document.getElementById('questionTypes');
-        
-        // Setup sortable for questions area
-        const questionsArea = document.getElementById('questionsArea');
-        
-        this.sortable = Sortable.create(questionsArea, {
-            group: {
-                name: 'questions',
-                pull: false,
-                put: ['questionTypes']
-            },
-            animation: 150,
-            ghostClass: 'sortable-ghost',
-            chosenClass: 'sortable-chosen',
-            onAdd: (evt) => {
-                const questionType = evt.item.dataset.type;
-                if (questionType) {
-                    this.addQuestion(questionType);
-                    evt.item.remove(); // Remove the dragged element
-                }
-            },
-            onEnd: (evt) => {
-                this.reorderQuestions();
-            }
-        });
-
-        // Make question types sortable (for dragging)
-        Sortable.create(questionTypes, {
-            group: {
-                name: 'questionTypes',
-                pull: 'clone',
-                put: false
-            },
-            sort: false,
-            animation: 150
+    setupAdvancedDragAndDrop() {
+        // Initialize advanced drag controller
+        this.dragController = new AdvancedDragController({
+            container: document.querySelector('.builder-container'),
+            questionsArea: document.getElementById('questionsArea'),
+            sidebar: document.getElementById('questionTypes'),
+            onQuestionAdd: (questionType) => this.addQuestion(questionType),
+            onQuestionReorder: (evt) => this.reorderQuestions(evt)
         });
     }
 
@@ -185,19 +157,30 @@ class SurveyBuilder {
         const questionElement = document.createElement('div');
         questionElement.className = 'question-item';
         questionElement.dataset.questionId = question.id;
+        questionElement.setAttribute('tabindex', '0');
+        questionElement.setAttribute('role', 'button');
+        questionElement.setAttribute('aria-label', `${question.text_ar || question.text} - ${this.getQuestionTypeLabel(question.type)}`);
         
         questionElement.innerHTML = `
             <div class="question-header">
                 <div class="d-flex align-items-center">
-                    <i class="fas fa-bars drag-handle me-3"></i>
+                    <i class="fas fa-grip-vertical drag-handle me-3" 
+                       title="اسحب لإعادة الترتيب" 
+                       aria-label="مقبض السحب لإعادة ترتيب السؤال"></i>
                     <span class="badge bg-primary me-2">${this.getQuestionTypeLabel(question.type)}</span>
                     <span class="question-number">السؤال ${question.order_index + 1}</span>
                 </div>
                 <div class="question-actions">
-                    <button class="btn btn-sm btn-outline-primary" onclick="surveyBuilder.duplicateQuestion(${question.id})">
+                    <button class="btn btn-sm btn-outline-primary" 
+                            onclick="surveyBuilder.duplicateQuestion(${question.id})"
+                            title="نسخ السؤال"
+                            aria-label="نسخ السؤال">
                         <i class="fas fa-copy"></i>
                     </button>
-                    <button class="btn btn-sm btn-outline-danger" onclick="surveyBuilder.deleteQuestion(${question.id})">
+                    <button class="btn btn-sm btn-outline-danger" 
+                            onclick="surveyBuilder.deleteQuestion(${question.id})"
+                            title="حذف السؤال"
+                            aria-label="حذف السؤال">
                         <i class="fas fa-trash"></i>
                     </button>
                 </div>
@@ -211,11 +194,25 @@ class SurveyBuilder {
             </div>
         `;
 
+        // Enhanced event listeners
         questionElement.addEventListener('click', () => {
             this.selectQuestion(question.id);
         });
 
+        // Keyboard navigation support
+        questionElement.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                this.selectQuestion(question.id);
+            }
+        });
+
         questionsArea.appendChild(questionElement);
+        
+        // Animate question addition
+        if (this.dragController && this.dragController.animations) {
+            this.dragController.animations.animateQuestionAdd(questionElement);
+        }
     }
 
     renderQuestionPreview(question) {

@@ -18,6 +18,9 @@
     <!-- Sortable JS -->
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
     
+    <!-- Advanced Drag Controller -->
+    <script src="/static/js/advanced_drag_controller.js"></script>
+    
     <style>
         :root {
             --primary-color: #2E8B57;
@@ -218,12 +221,229 @@
             margin-bottom: 15px;
         }
 
-        .sortable-ghost {
-            opacity: 0.5;
+        /* Enhanced Drag and Drop Styles */
+        .dragging-active {
+            user-select: none;
         }
 
-        .sortable-chosen {
+        .dragging-active * {
+            cursor: grabbing !important;
+        }
+
+        /* Drop Zone Indicators */
+        .drop-zones-active {
+            background: linear-gradient(135deg, rgba(46, 139, 87, 0.05) 0%, rgba(46, 139, 87, 0.1) 100%);
+            border: 2px dashed rgba(46, 139, 87, 0.3);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .drop-zone-indicator {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 200px;
+            border: 2px dashed rgba(46, 139, 87, 0.4);
+            border-radius: 12px;
+            background: rgba(46, 139, 87, 0.05);
+            transition: all 0.3s ease;
+            margin: 20px 0;
+        }
+
+        .drop-zone-indicator:hover {
+            border-color: var(--primary-color);
+            background: rgba(46, 139, 87, 0.1);
+        }
+
+        .drop-zone-content {
+            text-align: center;
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .drop-zone-content i {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .insertion-line {
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+            border-radius: 2px;
+            margin: 8px 0;
+            opacity: 0;
+            animation: insertionPulse 1s ease-in-out infinite;
+        }
+
+        .drop-zone-highlight {
+            border-color: var(--primary-color) !important;
+            background: rgba(46, 139, 87, 0.1) !important;
+            transform: scale(1.02);
+        }
+
+        /* Enhanced Drag States */
+        .drag-active {
+            transform: scale(1.05) rotate(2deg);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.2);
+            z-index: 1000;
+            transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .drag-ghost {
+            opacity: 0.6;
+            transform: scale(0.95);
+            filter: blur(1px);
+        }
+
+        .drag-chosen {
+            transform: scale(1.02);
+            box-shadow: 0 8px 25px rgba(46, 139, 87, 0.3);
+        }
+
+        .question-dragging {
             transform: scale(1.05);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            z-index: 999;
+            border-color: var(--primary-color);
+        }
+
+        .question-ghost {
+            opacity: 0.5;
+            transform: scale(0.9);
+        }
+
+        .question-chosen {
+            transform: scale(1.02);
+            border-color: var(--primary-color);
+        }
+
+        /* Reorder Drop Zones */
+        .reorder-drop-zone {
+            position: relative;
+        }
+
+        .reorder-drop-zone::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: rgba(46, 139, 87, 0.3);
+            border-radius: 2px;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .reorder-drop-zone:hover::before {
+            opacity: 1;
+        }
+
+        /* Success Animations */
+        .success-ripple {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: radial-gradient(circle, rgba(46, 139, 87, 0.3) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: rippleEffect 1s ease-out;
+            pointer-events: none;
+        }
+
+        .reorder-animation {
+            animation: reorderBounce 0.3s ease-out;
+        }
+
+        .invalid-drop {
+            animation: invalidShake 0.3s ease-in-out;
+        }
+
+        /* Touch Drag Preview */
+        .touch-drag-preview {
+            opacity: 0.8;
+            transform: scale(0.9) rotate(5deg);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+            border: 2px solid var(--primary-color);
+            z-index: 9999;
+        }
+
+        /* Keyboard Navigation */
+        .question-type:focus,
+        .question-item:focus {
+            outline: 3px solid rgba(46, 139, 87, 0.5);
+            outline-offset: 2px;
+        }
+
+        /* High Contrast Mode */
+        @media (prefers-contrast: high) {
+            .drop-zone-indicator {
+                border-width: 3px;
+                border-color: var(--primary-color);
+            }
+            
+            .drag-active {
+                border: 3px solid var(--primary-color);
+            }
+        }
+
+        /* Reduced Motion */
+        @media (prefers-reduced-motion: reduce) {
+            .drag-active,
+            .question-dragging,
+            .reorder-animation {
+                transition: none;
+                animation: none;
+                transform: none;
+            }
+        }
+
+        /* Animations */
+        @keyframes insertionPulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+
+        @keyframes rippleEffect {
+            0% {
+                width: 0;
+                height: 0;
+                opacity: 1;
+                transform: translate(-50%, -50%);
+            }
+            100% {
+                width: 200px;
+                height: 200px;
+                opacity: 0;
+                transform: translate(-50%, -50%);
+            }
+        }
+
+        @keyframes reorderBounce {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes invalidShake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        /* Screen Reader Only */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
         }
 
         @media (max-width: 1200px) {
