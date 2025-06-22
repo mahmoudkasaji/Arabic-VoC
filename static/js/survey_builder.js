@@ -190,9 +190,11 @@ class SurveyBuilder {
         const questionsArea = document.getElementById('questionsArea');
         
         if (this.questions.length === 1) {
-            questionsArea.innerHTML = '';
+            questionsArea.innerHTML = '<div class="questions-container"></div>';
             questionsArea.classList.add('has-questions');
         }
+        
+        const questionsContainer = questionsArea.querySelector('.questions-container');
 
         const questionElement = document.createElement('div');
         questionElement.className = 'question-item';
@@ -238,7 +240,7 @@ class SurveyBuilder {
             }
         });
 
-        questionsArea.appendChild(questionElement);
+        questionsContainer.appendChild(questionElement);
     }
 
     renderQuestionPreview(question) {
@@ -474,13 +476,23 @@ class SurveyBuilder {
         const questionsArea = document.getElementById('questionsArea');
         if (this.questions.length === 0) {
             questionsArea.innerHTML = `
-                <div class="empty-state">
-                    <i class="fas fa-plus-circle mb-3" style="font-size: 4rem; color: var(--border-color);"></i>
-                    <h5 class="text-muted">لا توجد أسئلة</h5>
-                    <p class="text-muted">اسحب نوع السؤال من الشريط الجانبي لإضافة سؤال جديد</p>
+                <div class="questions-container">
+                    <div class="empty-state">
+                        <i class="fas fa-plus-circle empty-state-icon"></i>
+                        <h5 class="text-muted">ابدأ في بناء استطلاعك</h5>
+                        <p class="text-muted">اسحب نوع السؤال من الشريط الجانبي لإضافة أول سؤال</p>
+                        <div class="mt-3">
+                            <small class="text-muted">
+                                <i class="fas fa-lightbulb me-1"></i>
+                                نصيحة: ابدأ بسؤال ترحيبي لجذب انتباه المشاركين
+                            </small>
+                        </div>
+                    </div>
                 </div>
             `;
             questionsArea.classList.remove('has-questions');
+        } else {
+            questionsArea.classList.add('has-questions');
         }
     }
 
