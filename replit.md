@@ -2,17 +2,17 @@
 
 ## Overview
 
-An Arabic-first multi-channel feedback processing platform built with FastAPI and SQLAlchemy. The system collects customer feedback from various channels (email, phone, website, social media, etc.), processes Arabic text using AI-powered analysis, and provides real-time analytics and insights.
+An Arabic-first multi-channel feedback processing platform built with Flask and SQLAlchemy. The system collects customer feedback from various channels (email, phone, website, social media, etc.), processes Arabic text using AI-powered analysis, and provides real-time analytics and insights.
 
 ## System Architecture
 
 ### Backend Architecture
-- **Framework**: FastAPI with async support
-- **Database**: PostgreSQL with asyncpg driver
-- **ORM**: SQLAlchemy with async sessions
+- **Framework**: Flask with WSGI support (switched from FastAPI for Replit compatibility)
+- **Database**: PostgreSQL with SQLAlchemy
+- **ORM**: Flask-SQLAlchemy with sync sessions
 - **Language Processing**: Custom Arabic text processor with reshaping and normalization
 - **AI Integration**: OpenAI GPT-4o for sentiment analysis and text processing
-- **Caching**: Redis for real-time analytics and session management
+- **Server**: Gunicorn with sync workers (optimized for Replit environment)
 
 ### Frontend Architecture
 - **Templates**: Jinja2 with RTL (Right-to-Left) support

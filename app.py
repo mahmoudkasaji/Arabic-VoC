@@ -108,9 +108,9 @@ def list_feedback():
         page = request.args.get('page', 1, type=int)
         per_page = request.args.get('per_page', 10, type=int)
         
-        feedback_query = Feedback.query.order_by(Feedback.created_at.desc())
-        feedback_paginated = feedback_query.paginate(
-            page=page, per_page=per_page, error_out=False
+        feedback_query = db.session.query(Feedback).order_by(Feedback.created_at.desc())
+        feedback_paginated = db.paginate(
+            feedback_query, page=page, per_page=per_page, error_out=False
         )
         
         feedback_list = []
@@ -183,9 +183,9 @@ def dashboard_metrics():
     """Dashboard metrics API"""
     try:
         # Get basic metrics
-        total_feedback = Feedback.query.count()
-        processed_feedback = Feedback.query.filter_by(status=FeedbackStatus.PROCESSED).count()
-        pending_feedback = Feedback.query.filter_by(status=FeedbackStatus.PENDING).count()
+        total_feedback = db.session.query(Feedback).count()
+        processed_feedback = db.session.query(Feedback).filter_by(status=FeedbackStatus.PROCESSED).count()
+        pending_feedback = db.session.query(Feedback).filter_by(status=FeedbackStatus.PENDING).count()
         
         # Calculate average sentiment
         avg_sentiment = db.session.query(
