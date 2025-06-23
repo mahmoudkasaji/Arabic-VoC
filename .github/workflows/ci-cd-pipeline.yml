@@ -1,10 +1,8 @@
-name: Arabic VoC Platform CI/CD Pipeline
+# Disabled - replaced with simplified workflow
+name: Arabic VoC Platform CI/CD Pipeline (Disabled)
 
 on:
-  push:
-    branches: [ main, develop, staging ]
-  pull_request:
-    branches: [ main ]
+  workflow_dispatch:  # Only run manually
 
 env:
   PYTHON_VERSION: '3.11'

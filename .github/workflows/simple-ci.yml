@@ -1,0 +1,64 @@
+name: Simple Flask CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python 3.11
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install flask sqlalchemy gunicorn psycopg2-binary
+    
+    - name: Test Flask app syntax
+      run: |
+        python -m py_compile app.py
+        python -m py_compile main.py
+        python -m py_compile config.py
+    
+    - name: Test Flask app imports
+      run: |
+        python -c "
+        try:
+            from app import app
+            print('✅ Flask app imports successfully')
+        except Exception as e:
+            print(f'❌ Import failed: {e}')
+            exit(1)
+        "
+    
+    - name: Check file structure
+      run: |
+        echo "Checking project structure..."
+        ls -la
+        echo "Templates:"
+        ls -la templates/ || echo "No templates directory"
+        echo "Static files:"
+        ls -la static/ || echo "No static directory"
+    
+    - name: Validate templates
+      run: |
+        python -c "
+        import os
+        template_dir = 'templates'
+        if os.path.exists(template_dir):
+            templates = [f for f in os.listdir(template_dir) if f.endswith('.html')]
+            print(f'Found {len(templates)} HTML templates')
+            for template in templates[:5]:  # Show first 5
+                print(f'  - {template}')
+        else:
+            print('No templates directory found')
+        "
