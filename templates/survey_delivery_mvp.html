@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    {% include 'components/head.html' %}
+    <title>توزيع الاستطلاعات - منصة صوت العميل العربية</title>
+</head>
+<body>
+    {% include 'components/navigation.html' %}
+    
+    <div class="container-custom">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1>
+                <i class="fas fa-share-alt me-3 text-primary-custom"></i>
+                توزيع الاستطلاعات
+            </h1>
+            <p class="text-muted">إنشاء استطلاع ويب وتوزيعه عبر البريد الإلكتروني والرسائل النصية وواتساب ورموز QR</p>
+        </div>
+
+        <!-- Step 1: Create or Select Survey -->
+        <div class="card-custom mb-4">
+            <div class="card-header-custom">
+                <h3 class="card-title">
+                    <span class="step-number">1</span>
+                    إنشاء أو اختيار الاستطلاع
+                </h3>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="survey-option">
+                        <i class="fas fa-plus-circle text-primary-custom mb-3"></i>
+                        <h4>إنشاء استطلاع جديد</h4>
+                        <p>استخدم منشئ الاستطلاعات لإنشاء استطلاع مخصص</p>
+                        <a href="/surveys/builder" class="btn btn-primary-custom">
+                            <i class="fas fa-edit me-2"></i>منشئ الاستطلاعات
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="survey-option">
+                        <i class="fas fa-list text-success-custom mb-3"></i>
+                        <h4>اختيار استطلاع موجود</h4>
+                        <p>اختر من الاستطلاعات المحفوظة لديك</p>
+                        <select class="form-select mb-3" id="existingSurvey">
+                            <option value="">اختر استطلاع...</option>
+                            <option value="customer-satisfaction">استطلاع رضا العملاء</option>
+                            <option value="product-feedback">تقييم المنتج الجديد</option>
+                            <option value="service-quality">جودة الخدمة</option>
+                        </select>
+                        <button class="btn btn-success-custom" onclick="selectSurvey()">
+                            <i class="fas fa-check me-2"></i>اختيار هذا الاستطلاع
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 2: Generate Web Survey Link -->
+        <div class="card-custom mb-4" id="step2" style="display: none;">
+            <div class="card-header-custom">
+                <h3 class="card-title">
+                    <span class="step-number">2</span>
+                    إنشاء رابط الاستطلاع
+                </h3>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="survey-link-generator">
+                        <h5>معلومات الاستطلاع المحدد:</h5>
+                        <div class="selected-survey-info mb-3" id="selectedSurveyInfo">
+                            <!-- Survey info will be populated here -->
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">عنوان مخصص للرابط (اختياري)</label>
+                                <input type="text" class="form-control" id="customSlug" placeholder="customer-survey-2024">
+                                <small class="text-muted">سيتم إنشاء رابط تلقائياً إذا تُرك فارغاً</small>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">تاريخ انتهاء الصلاحية (اختياري)</label>
+                                <input type="datetime-local" class="form-control" id="expiryDate">
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="requirePassword">
+                                <label class="form-check-label" for="requirePassword">
+                                    حماية الاستطلاع بكلمة مرور
+                                </label>
+                            </div>
+                            <input type="password" class="form-control mt-2" id="surveyPassword" placeholder="كلمة المرور" style="display: none;">
+                        </div>
+                        
+                        <button class="btn btn-primary-custom btn-lg" onclick="generateSurveyLink()">
+                            <i class="fas fa-link me-2"></i>إنشاء رابط الاستطلاع
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="preview-box">
+                        <h6>معاينة الاستطلاع</h6>
+                        <div class="survey-preview" id="surveyPreview">
+                            <div class="text-center text-muted">
+                                <i class="fas fa-eye-slash mb-2"></i>
+                                <p>اختر استطلاع لعرض المعاينة</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 3: Distribution Options -->
+        <div class="card-custom mb-4" id="step3" style="display: none;">
+            <div class="card-header-custom">
+                <h3 class="card-title">
+                    <span class="step-number">3</span>
+                    طرق التوزيع
+                </h3>
+            </div>
+            
+            <!-- Generated Survey Link Display -->
+            <div class="generated-link-section mb-4" id="generatedLinkSection" style="display: none;">
+                <div class="alert alert-success d-flex align-items-center">
+                    <i class="fas fa-check-circle me-3"></i>
+                    <div class="flex-grow-1">
+                        <strong>تم إنشاء رابط الاستطلاع بنجاح!</strong>
+                        <div class="survey-url mt-2">
+                            <input type="text" class="form-control" id="generatedUrl" readonly>
+                        </div>
+                    </div>
+                    <button class="btn btn-outline-success btn-sm" onclick="copyToClipboard()">
+                        <i class="fas fa-copy me-1"></i>نسخ
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Distribution Methods -->
+            <div class="row">
+                <!-- Email Distribution -->
+                <div class="col-lg-6 mb-4">
+                    <div class="distribution-card">
+                        <div class="distribution-header">
+                            <i class="fas fa-envelope text-primary-custom"></i>
+                            <h4>البريد الإلكتروني</h4>
+                        </div>
+                        <div class="distribution-body">
+                            <textarea class="form-control mb-3" rows="3" id="emailList" placeholder="أدخل عناوين البريد الإلكتروني (واحد في كل سطر)&#10;example1@email.com&#10;example2@email.com"></textarea>
+                            <div class="mb-3">
+                                <input type="text" class="form-control mb-2" id="emailSubject" placeholder="موضوع الرسالة" value="دعوة للمشاركة في استطلاع">
+                                <textarea class="form-control" rows="3" id="emailMessage" placeholder="نص الرسالة">مرحباً،
+
+نود دعوتك للمشاركة في استطلاع مهم. مشاركتك ستساعدنا في تحسين خدماتنا.
+
+رابط الاستطلاع: [SURVEY_LINK]
+
+شكراً لوقتك
+فريق العمل</textarea>
+                            </div>
+                            <button class="btn btn-primary-custom w-100" onclick="sendEmail()">
+                                <i class="fas fa-paper-plane me-2"></i>إرسال عبر البريد الإلكتروني
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- SMS Distribution -->
+                <div class="col-lg-6 mb-4">
+                    <div class="distribution-card">
+                        <div class="distribution-header">
+                            <i class="fas fa-sms text-success-custom"></i>
+                            <h4>الرسائل النصية</h4>
+                        </div>
+                        <div class="distribution-body">
+                            <textarea class="form-control mb-3" rows="3" id="phoneList" placeholder="أدخل أرقام الهواتف (واحد في كل سطر)&#10;+966501234567&#10;+966507654321"></textarea>
+                            <div class="mb-3">
+                                <label class="form-label">نص الرسالة (160 حرف كحد أقصى)</label>
+                                <textarea class="form-control" rows="3" id="smsMessage" maxlength="160" placeholder="شارك في استطلاعنا: [SURVEY_LINK]">مرحباً! ندعوك للمشاركة في استطلاع سريع لتحسين خدماتنا: [SURVEY_LINK]</textarea>
+                                <small class="text-muted"><span id="smsCount">0</span>/160 حرف</small>
+                            </div>
+                            <button class="btn btn-success-custom w-100" onclick="sendSMS()">
+                                <i class="fas fa-mobile-alt me-2"></i>إرسال عبر الرسائل النصية
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- WhatsApp Distribution -->
+                <div class="col-lg-6 mb-4">
+                    <div class="distribution-card">
+                        <div class="distribution-header">
+                            <i class="fab fa-whatsapp" style="color: #25D366;"></i>
+                            <h4>واتساب</h4>
+                        </div>
+                        <div class="distribution-body">
+                            <textarea class="form-control mb-3" rows="3" id="whatsappList" placeholder="أدخل أرقام واتساب (واحد في كل سطر)&#10;+966501234567&#10;+966507654321"></textarea>
+                            <div class="mb-3">
+                                <textarea class="form-control" rows="4" id="whatsappMessage" placeholder="رسالة واتساب">السلام عليكم،
+
+نأمل منك المشاركة في استطلاع مهم لتطوير خدماتنا.
+
+رابط الاستطلاع: [SURVEY_LINK]
+
+شكراً لك 🙏</textarea>
+                            </div>
+                            <button class="btn w-100" style="background-color: #25D366; color: white;" onclick="sendWhatsApp()">
+                                <i class="fab fa-whatsapp me-2"></i>إرسال عبر واتساب
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- QR Code Generation -->
+                <div class="col-lg-6 mb-4">
+                    <div class="distribution-card">
+                        <div class="distribution-header">
+                            <i class="fas fa-qrcode text-info-custom"></i>
+                            <h4>رمز QR</h4>
+                        </div>
+                        <div class="distribution-body text-center">
+                            <p class="text-muted mb-3">إنشاء رمز QR للاستطلاع لمشاركته في الأماكن المادية</p>
+                            <div class="qr-code-container mb-3" id="qrCodeContainer">
+                                <div class="qr-placeholder">
+                                    <i class="fas fa-qrcode" style="font-size: 4rem; color: #dee2e6;"></i>
+                                    <p class="text-muted mt-2">سيظهر رمز QR هنا</p>
+                                </div>
+                            </div>
+                            <button class="btn btn-info-custom w-100 mb-2" onclick="generateQRCode()">
+                                <i class="fas fa-qrcode me-2"></i>إنشاء رمز QR
+                            </button>
+                            <button class="btn btn-outline-info-custom w-100" onclick="downloadQR()" style="display: none;" id="downloadQRBtn">
+                                <i class="fas fa-download me-2"></i>تحميل الرمز
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div class="card-custom" id="resultsSection" style="display: none;">
+            <div class="card-header-custom">
+                <h3 class="card-title">
+                    <i class="fas fa-chart-bar me-2"></i>
+                    نتائج التوزيع
+                </h3>
+            </div>
+            <div id="distributionResults">
+                <!-- Results will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    {% include 'components/scripts.html' %}
+    
+    <script>
+    let selectedSurveyId = null;
+    let generatedSurveyUrl = null;
+    
+    // SMS character counter
+    document.getElementById('smsMessage').addEventListener('input', function() {
+        const count = this.value.length;
+        document.getElementById('smsCount').textContent = count;
+    });
+    
+    // Password field toggle
+    document.getElementById('requirePassword').addEventListener('change', function() {
+        const passwordField = document.getElementById('surveyPassword');
+        passwordField.style.display = this.checked ? 'block' : 'none';
+    });
+    
+    // Survey selection
+    function selectSurvey() {
+        const surveySelect = document.getElementById('existingSurvey');
+        selectedSurveyId = surveySelect.value;
+        
+        if (!selectedSurveyId) {
+            alert('يرجى اختيار استطلاع');
+            return;
+        }
+        
+        // Show survey info
+        const surveyInfo = {
+            'customer-satisfaction': {
+                title: 'استطلاع رضا العملاء',
+                description: 'استطلاع شامل لقياس مستوى رضا العملاء عن الخدمات',
+                questions: 8,
+                estimatedTime: '3-5 دقائق'
+            },
+            'product-feedback': {
+                title: 'تقييم المنتج الجديد',
+                description: 'جمع آراء العملاء حول المنتج الجديد وميزاته',
+                questions: 6,
+                estimatedTime: '2-3 دقائق'
+            },
+            'service-quality': {
+                title: 'جودة الخدمة',
+                description: 'تقييم جودة خدمة العملاء وسرعة الاستجابة',
+                questions: 5,
+                estimatedTime: '2 دقيقة'
+            }
+        };
+        
+        const survey = surveyInfo[selectedSurveyId];
+        document.getElementById('selectedSurveyInfo').innerHTML = `
+            <div class="selected-survey-card">
+                <h6><i class="fas fa-poll me-2"></i>${survey.title}</h6>
+                <p class="text-muted mb-2">${survey.description}</p>
+                <div class="row">
+                    <div class="col-md-6">
+                        <small class="text-muted"><i class="fas fa-question-circle me-1"></i>${survey.questions} أسئلة</small>
+                    </div>
+                    <div class="col-md-6">
+                        <small class="text-muted"><i class="fas fa-clock me-1"></i>${survey.estimatedTime}</small>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        // Show survey preview
+        document.getElementById('surveyPreview').innerHTML = `
+            <div class="survey-preview-content">
+                <h6>${survey.title}</h6>
+                <p class="small text-muted">${survey.description}</p>
+                <div class="preview-questions">
+                    <div class="preview-question">1. كيف تقيم خدمتنا بشكل عام؟</div>
+                    <div class="preview-question">2. ما مدى احتمالية توصيتك لنا؟</div>
+                    <div class="preview-question">3. ${survey.questions > 2 ? 'ما هي اقتراحاتك للتحسين؟' : ''}</div>
+                </div>
+            </div>
+        `;
+        
+        // Show step 2
+        document.getElementById('step2').style.display = 'block';
+        document.getElementById('step2').scrollIntoView({ behavior: 'smooth' });
+    }
+    
+    // Generate survey link
+    function generateSurveyLink() {
+        if (!selectedSurveyId) {
+            alert('يرجى اختيار استطلاع أولاً');
+            return;
+        }
+        
+        const customSlug = document.getElementById('customSlug').value;
+        const expiryDate = document.getElementById('expiryDate').value;
+        const requirePassword = document.getElementById('requirePassword').checked;
+        const password = document.getElementById('surveyPassword').value;
+        
+        // Generate survey URL
+        const surveyId = customSlug || `survey-${Date.now()}`;
+        generatedSurveyUrl = `${window.location.origin}/s/${surveyId}`;
+        
+        // Show generated link
+        document.getElementById('generatedUrl').value = generatedSurveyUrl;
+        document.getElementById('generatedLinkSection').style.display = 'block';
+        
+        // Update placeholders in messages
+        updateMessagePlaceholders();
+        
+        // Show step 3
+        document.getElementById('step3').style.display = 'block';
+        document.getElementById('step3').scrollIntoView({ behavior: 'smooth' });
+        
+        // Show success message
+        showNotification('تم إنشاء رابط الاستطلاع بنجاح!', 'success');
+    }
+    
+    // Update message placeholders
+    function updateMessagePlaceholders() {
+        if (!generatedSurveyUrl) return;
+        
+        // Update email message
+        const emailMessage = document.getElementById('emailMessage');
+        emailMessage.value = emailMessage.value.replace('[SURVEY_LINK]', generatedSurveyUrl);
+        
+        // Update SMS message
+        const smsMessage = document.getElementById('smsMessage');
+        smsMessage.value = smsMessage.value.replace('[SURVEY_LINK]', generatedSurveyUrl);
+        
+        // Update WhatsApp message
+        const whatsappMessage = document.getElementById('whatsappMessage');
+        whatsappMessage.value = whatsappMessage.value.replace('[SURVEY_LINK]', generatedSurveyUrl);
+    }
+    
+    // Copy to clipboard
+    function copyToClipboard() {
+        const urlField = document.getElementById('generatedUrl');
+        urlField.select();
+        document.execCommand('copy');
+        showNotification('تم نسخ الرابط إلى الحافظة', 'info');
+    }
+    
+    // Send email
+    function sendEmail() {
+        const emailList = document.getElementById('emailList').value.trim();
+        const subject = document.getElementById('emailSubject').value;
+        const message = document.getElementById('emailMessage').value;
+        
+        if (!emailList) {
+            alert('يرجى إدخال عناوين البريد الإلكتروني');
+            return;
+        }
+        
+        const emails = emailList.split('\\n').filter(email => email.trim());
+        
+        // Simulate email sending
+        showDistributionResult('email', `تم إرسال الاستطلاع إلى ${emails.length} عنوان بريد إلكتروني`);
+    }
+    
+    // Send SMS
+    function sendSMS() {
+        const phoneList = document.getElementById('phoneList').value.trim();
+        const message = document.getElementById('smsMessage').value;
+        
+        if (!phoneList) {
+            alert('يرجى إدخال أرقام الهواتف');
+            return;
+        }
+        
+        const phones = phoneList.split('\\n').filter(phone => phone.trim());
+        
+        // Simulate SMS sending
+        showDistributionResult('sms', `تم إرسال الاستطلاع إلى ${phones.length} رقم هاتف`);
+    }
+    
+    // Send WhatsApp
+    function sendWhatsApp() {
+        const whatsappList = document.getElementById('whatsappList').value.trim();
+        const message = document.getElementById('whatsappMessage').value;
+        
+        if (!whatsappList) {
+            alert('يرجى إدخال أرقام واتساب');
+            return;
+        }
+        
+        const numbers = whatsappList.split('\\n').filter(num => num.trim());
+        
+        // Simulate WhatsApp sending
+        showDistributionResult('whatsapp', `تم إرسال الاستطلاع إلى ${numbers.length} رقم واتساب`);
+    }
+    
+    // Generate QR Code
+    function generateQRCode() {
+        if (!generatedSurveyUrl) {
+            alert('يرجى إنشاء رابط الاستطلاع أولاً');
+            return;
+        }
+        
+        // Generate QR code (using a simple placeholder)
+        document.getElementById('qrCodeContainer').innerHTML = `
+            <div class="qr-code-generated">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(generatedSurveyUrl)}" 
+                     alt="QR Code" class="img-fluid">
+            </div>
+        `;
+        
+        document.getElementById('downloadQRBtn').style.display = 'block';
+        showNotification('تم إنشاء رمز QR بنجاح!', 'success');
+    }
+    
+    // Download QR
+    function downloadQR() {
+        const link = document.createElement('a');
+        link.download = 'survey-qr-code.png';
+        link.href = `https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=${encodeURIComponent(generatedSurveyUrl)}`;
+        link.click();
+    }
+    
+    // Show distribution result
+    function showDistributionResult(channel, message) {
+        const resultsSection = document.getElementById('resultsSection');
+        const results = document.getElementById('distributionResults');
+        
+        const channelIcons = {
+            email: 'fas fa-envelope',
+            sms: 'fas fa-sms',
+            whatsapp: 'fab fa-whatsapp'
+        };
+        
+        const channelColors = {
+            email: 'primary',
+            sms: 'success',
+            whatsapp: 'success'
+        };
+        
+        results.innerHTML += `
+            <div class="alert alert-${channelColors[channel]} d-flex align-items-center mb-2">
+                <i class="${channelIcons[channel]} me-3"></i>
+                <span>${message}</span>
+                <small class="text-muted ms-auto">${new Date().toLocaleTimeString('ar-SA')}</small>
+            </div>
+        `;
+        
+        resultsSection.style.display = 'block';
+        resultsSection.scrollIntoView({ behavior: 'smooth' });
+    }
+    
+    // Show notification
+    function showNotification(message, type) {
+        // Simple notification system
+        const notification = document.createElement('div');
+        notification.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
+        notification.style.top = '20px';
+        notification.style.left = '20px';
+        notification.style.zIndex = '9999';
+        notification.innerHTML = `
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        `;
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            notification.remove();
+        }, 3000);
+    }
+    </script>
+</body>
+</html>

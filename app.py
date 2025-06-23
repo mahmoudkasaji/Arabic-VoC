@@ -194,9 +194,9 @@ def surveys_manage_page():
 
 @app.route('/surveys/distribution-demo')
 def survey_distribution_demo():
-    """Comprehensive survey distribution system"""
-    return render_template('survey_delivery_comprehensive.html', 
-                         title='نظام التوزيع الشامل')
+    """MVP Survey distribution system"""
+    return render_template('survey_delivery_mvp.html', 
+                         title='توزيع الاستطلاعات')
 
 @app.route('/surveys/access')
 def survey_distribution_access():

@@ -522,6 +522,123 @@ p {
 .px-6 { padding-left: var(--space-6); padding-right: var(--space-6); }
 .py-8 { padding-top: var(--space-8); padding-bottom: var(--space-8); }
 
+/* ===== SURVEY DELIVERY MVP STYLES ===== */
+
+.step-number {
+    background: var(--primary-500);
+    color: white;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    margin-left: 0.5rem;
+}
+
+.survey-option {
+    text-align: center;
+    padding: 2rem;
+    border: 2px solid var(--neutral-200);
+    border-radius: var(--border-radius-lg);
+    transition: all 0.3s ease;
+    height: 100%;
+}
+
+.survey-option:hover {
+    border-color: var(--primary-500);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.survey-option i {
+    font-size: 3rem;
+    display: block;
+    margin-bottom: 1rem;
+}
+
+.selected-survey-card {
+    background: var(--neutral-50);
+    padding: 1rem;
+    border-radius: var(--border-radius-md);
+    border-left: 4px solid var(--primary-500);
+}
+
+.preview-box {
+    background: var(--neutral-50);
+    padding: 1.5rem;
+    border-radius: var(--border-radius-lg);
+    border: 1px solid var(--neutral-200);
+    height: 100%;
+}
+
+.survey-preview-content h6 {
+    color: var(--primary-600);
+    margin-bottom: 0.5rem;
+}
+
+.preview-question {
+    background: white;
+    padding: 0.5rem;
+    margin: 0.25rem 0;
+    border-radius: var(--border-radius-sm);
+    font-size: 0.85rem;
+    border-left: 3px solid var(--primary-200);
+}
+
+.distribution-card {
+    border: 2px solid var(--neutral-200);
+    border-radius: var(--border-radius-lg);
+    padding: 1.5rem;
+    height: 100%;
+    transition: all 0.3s ease;
+}
+
+.distribution-card:hover {
+    border-color: var(--primary-300);
+    box-shadow: var(--shadow-md);
+}
+
+.distribution-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--neutral-200);
+}
+
+.distribution-header i {
+    font-size: 1.5rem;
+}
+
+.distribution-header h4 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.qr-placeholder {
+    padding: 2rem;
+    background: var(--neutral-100);
+    border-radius: var(--border-radius-md);
+    border: 2px dashed var(--neutral-300);
+}
+
+.qr-code-generated {
+    padding: 1rem;
+    background: white;
+    border-radius: var(--border-radius-md);
+    border: 1px solid var(--neutral-200);
+}
+
+.survey-url input {
+    font-family: monospace;
+    font-size: 0.9rem;
+    background: var(--neutral-50);
+}
+
 /* ===== RESPONSIVE DESIGN ===== */
 @media (max-width: 768px) {
     .container-custom {
