@@ -2,7 +2,7 @@
 
 ## Overview
 
-An Arabic-first multi-channel feedback processing platform built with Flask and SQLAlchemy. The system collects customer feedback from various channels (email, phone, website, social media, etc.), processes Arabic text using AI-powered analysis, and provides real-time analytics and insights.
+An Arabic-first multi-channel feedback processing platform built with Flask and SQLAlchemy. The system collects customer feedback from various channels, processes Arabic text using AI-powered analysis, provides real-time analytics and insights, and includes a comprehensive survey delivery system. The platform enables creating web-hosted surveys and distributing them via email, SMS, WhatsApp, and QR codes through a streamlined 3-step process.
 
 ## System Architecture
 
@@ -56,13 +56,22 @@ An Arabic-first multi-channel feedback processing platform built with Flask and 
 - Automatic table creation and indexing
 - Performance-optimized queries for Arabic text
 
+### Survey Delivery System (`templates/survey_delivery_mvp.html`)
+- 3-step process: survey selection → link generation → multi-channel distribution
+- Web-hosted survey link generation with custom URLs and QR codes
+- Multi-channel distribution: email, SMS, WhatsApp, and QR code sharing
+- Contact list management and message template customization
+- Real-time delivery tracking and result monitoring
+
 ### API Endpoints
 - **Feedback API** (`api/feedback.py`): Multi-channel feedback collection with validation
 - **Analytics API** (`api/analytics.py`): Real-time metrics and dashboard data
+- **Survey Distribution**: Web survey hosting and multi-channel delivery endpoints
 
 ### Models
 - **Feedback Model**: Core feedback storage with Arabic support
 - **Analytics Model**: Aggregated metrics for performance optimization
+- **Survey Models**: Survey definitions and response tracking
 
 ## Data Flow
 
@@ -74,7 +83,11 @@ An Arabic-first multi-channel feedback processing platform built with Flask and 
    - **ActionAgent**: Recommendation generation with full context
 4. **Storage**: Async database operations with analysis metadata
 5. **Analytics**: Real-time aggregation with agent performance metrics
-6. **Visualization**: RTL dashboard with Arabic-specific formatting
+6. **Survey Distribution**: 3-step process for creating and distributing web surveys
+   - **Step 1**: Survey creation or selection from existing templates
+   - **Step 2**: Web survey link generation with customization options
+   - **Step 3**: Multi-channel distribution via email, SMS, WhatsApp, and QR codes
+7. **Visualization**: RTL dashboard with Arabic-specific formatting
 
 ## External Dependencies
 
@@ -142,6 +155,10 @@ An Arabic-first multi-channel feedback processing platform built with Flask and 
 - Dual AI Integration with OpenAI and Anthropic for enhanced Arabic analysis
 - Intelligent service selection with automatic fallback capabilities
 - Real-time AI processing integrated into feedback submission workflow
+- **MVP Survey Delivery System**: Streamlined 3-step process for creating web surveys and distributing via email, SMS, WhatsApp, and QR codes
+- **Web Survey Hosting**: Self-hosted survey links with customization options (custom URLs, expiry dates, password protection)
+- **Multi-Channel Distribution**: Contact list management and message template customization for each delivery channel
+- **QR Code Generation**: Automatic QR code creation for offline survey distribution with download capabilities
 
 ## Production Deployment Status
 
@@ -170,6 +187,9 @@ An Arabic-first multi-channel feedback processing platform built with Flask and 
 - Real-time executive dashboard with CSAT, NPS, and sentiment analytics
 - Professional survey builder with drag-and-drop functionality
 - Multi-channel feedback collection and processing
+- **MVP Survey Delivery System**: 3-step process for web survey creation and multi-channel distribution
+- **Self-Hosted Web Surveys**: Custom URLs, QR codes, password protection, and expiry management
+- **Multi-Channel Distribution**: Email, SMS, WhatsApp, and QR code delivery with contact list management
 - Data flow architecture: Sources → AI Processing → Destinations
 - Enterprise authentication and multi-environment DevOps pipeline
 
