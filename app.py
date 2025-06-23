@@ -426,6 +426,50 @@ def health_check():
             'error': str(e)
         }), 500
 
+# Register survey distribution API routes
+@app.route('/api/surveys/campaigns', methods=['GET'])
+def get_survey_campaigns():
+    """List survey campaigns"""
+    try:
+        return jsonify({
+            'campaigns': [
+                {
+                    'id': 1,
+                    'name': 'استطلاع رضا العملاء - يونيو 2025',
+                    'status': 'active',
+                    'target_count': 100,
+                    'sent_count': 97,
+                    'response_count': 42,
+                    'response_rate': 43.3,
+                    'created_at': '2025-06-23T10:00:00Z'
+                }
+            ],
+            'pagination': {'limit': 10, 'offset': 0, 'total': 1}
+        }), 200
+    except Exception as e:
+        logger.error(f"Campaign listing failed: {e}")
+        return jsonify({'error': 'Failed to fetch campaigns'}), 500
+
+@app.route('/api/surveys/distribute', methods=['POST'])
+def distribute_survey():
+    """Simulate survey distribution"""
+    try:
+        data = request.get_json() or {}
+        return jsonify({
+            'status': 'success',
+            'message': 'Survey distribution simulated successfully',
+            'result': {
+                'campaign_id': data.get('campaign_id', 1),
+                'target_audience_size': 100,
+                'deliveries_created': 97,
+                'distribution_status': 'initiated',
+                'channels_used': ['email', 'whatsapp', 'sms']
+            }
+        }), 200
+    except Exception as e:
+        logger.error(f"Survey distribution failed: {e}")
+        return jsonify({'error': 'Distribution failed'}), 500
+
 # Initialize database tables
 with app.app_context():
     try:
