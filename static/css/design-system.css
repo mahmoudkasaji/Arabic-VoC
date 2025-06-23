@@ -492,12 +492,12 @@ p {
 }
 
 /* ===== UTILITY CLASSES ===== */
-.text-primary-custom { color: var(--primary-500); }
-.text-secondary-custom { color: var(--secondary-500); }
-.text-success-custom { color: var(--success); }
-.text-warning-custom { color: var(--warning); }
-.text-danger-custom { color: var(--danger); }
-.text-muted-custom { color: var(--text-muted); }
+.text-primary-custom { color: var(--primary-500) !important; }
+.text-secondary-custom { color: var(--secondary-500) !important; }
+.text-success-custom { color: var(--success) !important; }
+.text-warning-custom { color: var(--warning) !important; }
+.text-danger-custom { color: var(--danger) !important; }
+.text-muted-custom { color: var(--text-muted) !important; }
 
 .bg-primary-custom { background-color: var(--primary-500); }
 .bg-secondary-custom { background-color: var(--secondary-500); }
