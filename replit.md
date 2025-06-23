@@ -186,12 +186,13 @@ An Arabic-first multi-channel feedback processing platform built with Flask and 
 - Multi-agent orchestration for collaborative decision-making with confidence scoring and rationale generation
 - Comprehensive CX-focused testing with real Arabic customer scenarios validating cultural intelligence and adaptive processing
 - Continuous improvement framework demonstrating 95% adaptive intelligence across complexity levels
+- Settings simplified to remove gimmicky features, focusing on practical user needs (language, timezone, notifications, security)
 
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
 Visual preferences: Subtle drag-and-drop effects without tilting or rotation - prefers clean, minimal visual feedback.
-UX preferences: Industry-standard layouts with 70% canvas space, collapsible sidebars, and professional question type galleries.
+UX preferences: Industry-standard layouts with 70% canvas space, collapsible sidebars, and professional question type galleries. Prefers practical, non-gimmicky features - avoid complex Arabic text analytics settings or "Arabic visions" type features that native speakers wouldn't use.
 Mobile preferences: Question type dropdown instead of sidebar list, positioned under survey header section.
 Desktop preferences: Maximized canvas space with survey header moved to right properties panel for optimal screen utilization.
 Executive Dashboard Focus: Prioritizes real-time KPIs with immediate business value, prefers phased development approach leveraging existing infrastructure.
