@@ -44,6 +44,8 @@ dependencies = [
     "sqlalchemy>=2.0.41",
     "uvicorn>=0.34.3",
     "anthropic>=0.54.0",
+    "twilio>=9.6.3",
+    "sendgrid>=6.12.4",
 ]
 
 [project.optional-dependencies]
