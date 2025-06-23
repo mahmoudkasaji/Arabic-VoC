@@ -153,8 +153,8 @@ def realtime_dashboard():
 @app.route('/surveys')
 def surveys_page():
     """Survey management page"""
-    return render_template('surveys_modern.html', 
-                         title='Survey Builder')
+    return render_template('surveys.html',
+                         title='إدارة الاستطلاعات')
 
 
 
