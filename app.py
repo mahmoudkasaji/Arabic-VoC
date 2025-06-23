@@ -192,6 +192,11 @@ def surveys_manage_page():
     return render_template('surveys.html', 
                          title='إدارة الاستطلاعات')
 
+@app.route('/surveys/distribution-demo')
+def survey_distribution_demo():
+    """Survey distribution system demonstration"""
+    return render_template('survey_distribution_demo.html')
+
 @app.route('/surveys/responses')
 def survey_responses_page():
     """Survey responses management page"""
