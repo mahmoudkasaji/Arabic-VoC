@@ -195,8 +195,8 @@ def surveys_manage_page():
 @app.route('/surveys/distribution-demo')
 def survey_distribution_demo():
     """Survey distribution system demonstration"""
-    return render_template('survey_distribution_demo.html', 
-                         title='عرض نظام التوزيع')
+    return render_template('survey_demo_simple.html', 
+                         title='نظام التوزيع')
 
 @app.route('/surveys/access')
 def survey_distribution_access():
