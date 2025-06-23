@@ -147,9 +147,8 @@ def list_feedback():
 
 @app.route('/dashboard/realtime')
 def realtime_dashboard():
-    """Real-time analytics dashboard"""
-    return render_template('dashboard_realtime.html', 
-                         title='لوحة التحليلات المباشرة')
+    """Redirect to executive dashboard (replaces old real-time dashboard)"""
+    return redirect(url_for('executive_dashboard_page'))
 
 @app.route('/surveys')
 def surveys_page():
