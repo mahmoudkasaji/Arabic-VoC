@@ -1,0 +1,70 @@
+Enhanced Committee Orchestration
+pythonclass VoCAnalysisCommittee:
+    def __init__(self):
+        self.agents = {
+            "sentiment": SentimentAnalysisAgent(),
+            "topical": TopicalAnalysisAgent(),
+            "recommendation": RecommendationAgent()
+        }
+        self.consensus_threshold = 0.7
+        
+    def analyze_with_consensus(self, text: str, context: Dict) -> Dict:
+        """Run analysis with self-consistency checking"""
+        
+        # Run sentiment analysis 3 times with different strategies
+        sentiment_results = []
+        for strategy in [PromptStrategy.DIRECT, PromptStrategy.CHAIN_OF_THOUGHT, PromptStrategy.FEW_SHOT]:
+            self.agents["sentiment"].prompt_strategy = strategy
+            result = self.agents["sentiment"].analyze(text, context)
+            sentiment_results.append(result)
+        
+        # Calculate consensus
+        final_sentiment = self._calculate_consensus(sentiment_results)
+        
+        # Topical analysis with validation
+        topics = self.agents["topical"].analyze_with_uncertainty(text, context)
+        
+        # Generate recommendations based on consensus
+        analysis = {
+            "sentiment": final_sentiment,
+            "topics": topics,
+            "consensus_confidence": self._calculate_consensus_confidence(sentiment_results)
+        }
+        
+        recommendations = self.agents["recommendation"].generate_recommendations(analysis)
+        
+        return {
+            "text": text,
+            "sentiment": final_sentiment,
+            "topics": topics,
+            "recommendations": recommendations,
+            "metadata": {
+                "analysis_strategies_used": ["direct", "cot", "few_shot"],
+                "consensus_score": self._calculate_consensus_confidence(sentiment_results),
+                "processing_time": self._get_processing_time()
+            }
+        }
+    
+    def _calculate_consensus(self, results: List[Dict]) -> Dict:
+        """Synthesize multiple results into consensus"""
+        scores = [r["sentiment"]["score"] for r in results]
+        labels = [r["sentiment"]["label"] for r in results]
+        
+        # Majority vote for label
+        label_counts = {}
+        for label in labels:
+            label_counts[label] = label_counts.get(label, 0) + 1
+        consensus_label = max(label_counts, key=label_counts.get)
+        
+        # Average score with outlier removal
+        if len(scores) > 2:
+            scores.sort()
+            scores = scores[1:-1]  # Remove outliers
+        consensus_score = sum(scores) / len(scores)
+        
+        return {
+            "score": consensus_score,
+            "label": consensus_label,
+            "confidence": self._calculate_consensus_confidence(results),
+            "reasoning": self._synthesize_reasoning(results)
+        }

@@ -1,16 +1,400 @@
 """
-Specialized Agent Orchestrator for Arabic VoC Analysis
-Coordinates sentiment, topic, and recommendation agents with clean separation of concerns
+Enhanced Committee Orchestration for Arabic VoC Analysis
+Implements consensus mechanisms and self-consistency checking with multiple strategy validation
 """
 
 import logging
 import asyncio
-from typing import Dict, Any, Optional
+import time
+import json
+from typing import Dict, Any, Optional, List
 from datetime import datetime
+from statistics import median, mode
 
-from .specialized_agents import SentimentAnalysisAgent, TopicalAnalysisAgent, RecommendationAgent
+from .specialized_agents import SentimentAnalysisAgent, TopicalAnalysisAgent, RecommendationAgent, PromptStrategy
 
 logger = logging.getLogger(__name__)
+
+class VoCAnalysisCommittee:
+    """Enhanced committee orchestration with consensus mechanisms and self-consistency checking"""
+    
+    def __init__(self, api_manager):
+        self.api_manager = api_manager
+        
+        # Initialize specialized agents
+        self.agents = {
+            "sentiment": SentimentAnalysisAgent(api_manager),
+            "topical": TopicalAnalysisAgent(api_manager),
+            "recommendation": RecommendationAgent(api_manager)
+        }
+        
+        # Consensus configuration
+        self.consensus_threshold = 0.7
+        self.outlier_threshold = 0.3  # For outlier detection in score averaging
+        
+        # Performance tracking
+        self.analysis_history = []
+        self.processing_times = []
+    
+    async def analyze_with_consensus(self, text: str, context: Dict = None) -> Dict[str, Any]:
+        """Run comprehensive analysis with self-consistency checking and consensus mechanisms"""
+        
+        start_time = time.time()
+        analysis_id = f"consensus_{int(start_time)}"
+        
+        if context is None:
+            context = {}
+        
+        logger.info(f"Starting consensus analysis {analysis_id}")
+        
+        try:
+            # Step 1: Multi-strategy sentiment analysis for consensus
+            sentiment_consensus = await self._run_sentiment_consensus(text, context)
+            
+            # Step 2: Enhanced topical analysis with uncertainty quantification
+            topics_analysis = await self.agents["topical"].analyze_with_uncertainty(text, {
+                'text_characteristics': context.get('text_characteristics', {}),
+                'sentiment_context': sentiment_consensus
+            })
+            
+            # Step 3: Generate recommendations based on consensus results
+            combined_analysis = {
+                "sentiment": sentiment_consensus,
+                "topics": topics_analysis,
+                "consensus_confidence": sentiment_consensus.get("consensus_confidence", 0.0)
+            }
+            
+            recommendations = await self.agents["recommendation"].generate_recommendations(
+                text, combined_analysis, context
+            )
+            
+            # Step 4: Calculate final processing metrics
+            processing_time = time.time() - start_time
+            self.processing_times.append(processing_time)
+            
+            # Step 5: Compile comprehensive results
+            final_result = {
+                "analysis_id": analysis_id,
+                "text": text,
+                "sentiment": sentiment_consensus,
+                "topics": topics_analysis,
+                "recommendations": recommendations,
+                "metadata": {
+                    "analysis_strategies_used": ["direct", "chain_of_thought", "few_shot"],
+                    "consensus_score": sentiment_consensus.get("consensus_confidence", 0.0),
+                    "validation_agreement": topics_analysis.get("validation_agreement", 0.0),
+                    "processing_time": processing_time,
+                    "uncertainty_levels": {
+                        "sentiment": sentiment_consensus.get("uncertainty_score", 0.0),
+                        "topics": self._calculate_topic_uncertainty(topics_analysis)
+                    },
+                    "enhanced_features": {
+                        "consensus_mechanism": True,
+                        "uncertainty_quantification": True,
+                        "multi_strategy_validation": True,
+                        "hierarchical_topics": True,
+                        "emerging_trend_detection": True
+                    }
+                }
+            }
+            
+            # Store in analysis history
+            self.analysis_history.append({
+                "timestamp": datetime.utcnow(),
+                "analysis_id": analysis_id,
+                "processing_time": processing_time,
+                "consensus_score": sentiment_consensus.get("consensus_confidence", 0.0),
+                "validation_agreement": topics_analysis.get("validation_agreement", 0.0)
+            })
+            
+            logger.info(f"Consensus analysis {analysis_id} completed in {processing_time:.2f}s")
+            return final_result
+            
+        except Exception as e:
+            logger.error(f"Consensus analysis failed: {e}")
+            # Fallback to single-strategy analysis
+            return await self._fallback_analysis(text, context, analysis_id)
+    
+    async def _run_sentiment_consensus(self, text: str, context: Dict) -> Dict[str, Any]:
+        """Run sentiment analysis with multiple strategies and calculate consensus"""
+        
+        strategies = [PromptStrategy.DIRECT, PromptStrategy.CHAIN_OF_THOUGHT, PromptStrategy.FEW_SHOT]
+        sentiment_results = []
+        
+        # Execute sentiment analysis with different strategies
+        for strategy in strategies:
+            try:
+                # Set strategy for this iteration
+                original_strategy = getattr(self.agents["sentiment"], 'current_strategy', PromptStrategy.DIRECT)
+                
+                # Perform analysis with specific strategy
+                result = await self.agents["sentiment"].analyze_with_strategy(text, strategy, context)
+                sentiment_results.append({
+                    "strategy": strategy.value,
+                    "result": result
+                })
+                
+                # Restore original strategy
+                setattr(self.agents["sentiment"], 'current_strategy', original_strategy)
+                
+            except Exception as e:
+                logger.warning(f"Strategy {strategy.value} failed: {e}")
+                continue
+        
+        if not sentiment_results:
+            # If all strategies failed, use fallback
+            fallback_result = await self.agents["sentiment"].analyze_sentiment(text, {}, context)
+            return {
+                "score": fallback_result.get("sentiment_score", 0.0),
+                "label": fallback_result.get("sentiment_label", "neutral"),
+                "confidence": 0.3,  # Low confidence for fallback
+                "consensus_confidence": 0.3,
+                "reasoning": "Fallback analysis due to strategy failures",
+                "strategies_used": ["fallback"]
+            }
+        
+        # Calculate consensus from multiple results
+        return self._calculate_sentiment_consensus(sentiment_results)
+    
+    def _calculate_sentiment_consensus(self, results: List[Dict]) -> Dict[str, Any]:
+        """Synthesize multiple sentiment results into consensus with outlier detection"""
+        
+        if not results:
+            return {"error": "No results to synthesize"}
+        
+        # Extract scores and labels
+        scores = []
+        labels = []
+        confidences = []
+        reasoning_parts = []
+        
+        for result_data in results:
+            result = result_data["result"]
+            if "sentiment_score" in result:
+                scores.append(result["sentiment_score"])
+                labels.append(result.get("sentiment_label", "neutral"))
+                confidences.append(result.get("confidence_score", 0.5))
+                reasoning_parts.append(result.get("reasoning", ""))
+        
+        if not scores:
+            return {"error": "No valid sentiment scores found"}
+        
+        # Majority vote for label with confidence weighting
+        label_weights = {}
+        for i, label in enumerate(labels):
+            weight = confidences[i] if i < len(confidences) else 0.5
+            label_weights[label] = label_weights.get(label, 0) + weight
+        
+        consensus_label = max(label_weights.keys(), key=lambda k: label_weights[k])
+        
+        # Robust score averaging with outlier detection
+        consensus_score = self._calculate_robust_average(scores)
+        
+        # Calculate consensus confidence based on agreement
+        consensus_confidence = self._calculate_consensus_confidence(results)
+        
+        # Calculate uncertainty score
+        uncertainty_score = self._calculate_uncertainty_score(scores, labels)
+        
+        # Synthesize reasoning
+        combined_reasoning = self._synthesize_reasoning(reasoning_parts, consensus_label, consensus_score)
+        
+        return {
+            "score": consensus_score,
+            "label": consensus_label,
+            "confidence": consensus_confidence,
+            "consensus_confidence": consensus_confidence,
+            "uncertainty_score": uncertainty_score,
+            "reasoning": combined_reasoning,
+            "strategies_used": [r["strategy"] for r in results],
+            "individual_scores": scores,
+            "score_variance": self._calculate_variance(scores),
+            "label_agreement": sum(1 for l in labels if l == consensus_label) / len(labels)
+        }
+    
+    def _calculate_robust_average(self, scores: List[float]) -> float:
+        """Calculate average with outlier removal for more robust consensus"""
+        
+        if len(scores) <= 2:
+            return sum(scores) / len(scores)
+        
+        # Use median for outlier detection
+        median_score = median(scores)
+        
+        # Remove outliers (scores that deviate too much from median)
+        filtered_scores = []
+        for score in scores:
+            if abs(score - median_score) <= self.outlier_threshold:
+                filtered_scores.append(score)
+        
+        # If too many outliers, use all scores
+        if len(filtered_scores) < len(scores) * 0.5:
+            filtered_scores = scores
+        
+        return sum(filtered_scores) / len(filtered_scores)
+    
+    def _calculate_consensus_confidence(self, results: List[Dict]) -> float:
+        """Calculate confidence based on agreement between different strategies"""
+        
+        if len(results) < 2:
+            return 0.5  # Medium confidence for single result
+        
+        scores = [r["result"].get("sentiment_score", 0) for r in results]
+        labels = [r["result"].get("sentiment_label", "neutral") for r in results]
+        
+        # Score agreement (lower variance = higher confidence)
+        score_variance = self._calculate_variance(scores)
+        score_confidence = max(0.0, 1.0 - (score_variance * 2))  # Scale variance to confidence
+        
+        # Label agreement
+        most_common_label = mode(labels) if len(set(labels)) < len(labels) else labels[0]
+        label_agreement = sum(1 for l in labels if l == most_common_label) / len(labels)
+        
+        # Combined confidence
+        consensus_confidence = (score_confidence * 0.6 + label_agreement * 0.4)
+        
+        return min(1.0, max(0.0, consensus_confidence))
+    
+    def _calculate_uncertainty_score(self, scores: List[float], labels: List[str]) -> float:
+        """Calculate uncertainty score based on disagreement between methods"""
+        
+        # Score disagreement
+        score_variance = self._calculate_variance(scores)
+        
+        # Label disagreement
+        unique_labels = len(set(labels))
+        label_disagreement = (unique_labels - 1) / max(1, len(labels) - 1) if len(labels) > 1 else 0
+        
+        # Combined uncertainty (higher variance and disagreement = higher uncertainty)
+        uncertainty = (score_variance * 0.7 + label_disagreement * 0.3)
+        
+        return min(1.0, max(0.0, uncertainty))
+    
+    def _calculate_variance(self, scores: List[float]) -> float:
+        """Calculate variance of scores"""
+        if len(scores) <= 1:
+            return 0.0
+        
+        mean_score = sum(scores) / len(scores)
+        variance = sum((score - mean_score) ** 2 for score in scores) / len(scores)
+        return variance
+    
+    def _synthesize_reasoning(self, reasoning_parts: List[str], consensus_label: str, consensus_score: float) -> str:
+        """Synthesize reasoning from multiple analyses"""
+        
+        # Filter out empty reasoning
+        valid_reasoning = [r for r in reasoning_parts if r and r.strip()]
+        
+        if not valid_reasoning:
+            return f"Consensus analysis indicates {consensus_label} sentiment with score {consensus_score:.2f}"
+        
+        # Combine unique insights
+        unique_insights = []
+        for reasoning in valid_reasoning:
+            # Extract key phrases (simplified approach)
+            insights = [phrase.strip() for phrase in reasoning.split('.') if phrase.strip()]
+            for insight in insights[:2]:  # Take first 2 insights from each
+                if insight not in unique_insights and len(insight) > 10:
+                    unique_insights.append(insight)
+        
+        # Construct synthesized reasoning
+        if len(unique_insights) >= 2:
+            synthesized = f"Multiple analysis strategies converge on {consensus_label} sentiment. {unique_insights[0]}. {unique_insights[1]}."
+        elif len(unique_insights) == 1:
+            synthesized = f"Consensus analysis indicates {consensus_label} sentiment. {unique_insights[0]}."
+        else:
+            synthesized = f"Consensus analysis indicates {consensus_label} sentiment with score {consensus_score:.2f}."
+        
+        return synthesized
+    
+    def _calculate_topic_uncertainty(self, topics_analysis: Dict) -> float:
+        """Calculate topic uncertainty from uncertainty analysis"""
+        
+        uncertainty_analysis = topics_analysis.get("uncertainty_analysis", {})
+        
+        # Count topics by confidence level
+        high_conf = len(uncertainty_analysis.get("high_confidence", []))
+        medium_conf = len(uncertainty_analysis.get("medium_confidence", []))
+        low_conf = len(uncertainty_analysis.get("low_confidence", []))
+        
+        total_topics = high_conf + medium_conf + low_conf
+        
+        if total_topics == 0:
+            return 0.5  # Medium uncertainty when no topics detected
+        
+        # Calculate weighted uncertainty (low confidence topics increase uncertainty)
+        uncertainty = (low_conf * 1.0 + medium_conf * 0.5 + high_conf * 0.0) / total_topics
+        
+        return min(1.0, max(0.0, uncertainty))
+    
+    async def _fallback_analysis(self, text: str, context: Dict, analysis_id: str) -> Dict[str, Any]:
+        """Fallback analysis when consensus mechanism fails"""
+        
+        logger.warning(f"Using fallback analysis for {analysis_id}")
+        
+        try:
+            # Simple single-strategy analysis
+            sentiment_result = await self.agents["sentiment"].analyze_sentiment(text, {}, context)
+            topics_result = await self.agents["topical"].analyze_topics(text, context.get('text_characteristics', {}), sentiment_result)
+            recommendations_result = await self.agents["recommendation"].generate_recommendations(text, {
+                "sentiment": sentiment_result,
+                "topics": topics_result
+            }, context)
+            
+            return {
+                "analysis_id": analysis_id,
+                "text": text,
+                "sentiment": sentiment_result,
+                "topics": topics_result,
+                "recommendations": recommendations_result,
+                "metadata": {
+                    "analysis_mode": "fallback",
+                    "consensus_score": 0.0,
+                    "processing_time": 0.0,
+                    "enhanced_features": {
+                        "consensus_mechanism": False,
+                        "uncertainty_quantification": False,
+                        "multi_strategy_validation": False
+                    }
+                }
+            }
+            
+        except Exception as e:
+            logger.error(f"Fallback analysis also failed: {e}")
+            return {
+                "analysis_id": analysis_id,
+                "error": "Analysis failed completely",
+                "text": text,
+                "metadata": {
+                    "analysis_mode": "error",
+                    "error_message": str(e)
+                }
+            }
+    
+    def get_performance_metrics(self) -> Dict[str, Any]:
+        """Get committee performance metrics"""
+        
+        if not self.analysis_history:
+            return {"error": "No analysis history available"}
+        
+        recent_analyses = self.analysis_history[-10:]  # Last 10 analyses
+        
+        avg_processing_time = sum(a["processing_time"] for a in recent_analyses) / len(recent_analyses)
+        avg_consensus_score = sum(a["consensus_score"] for a in recent_analyses) / len(recent_analyses)
+        avg_validation_agreement = sum(a.get("validation_agreement", 0) for a in recent_analyses) / len(recent_analyses)
+        
+        return {
+            "total_analyses": len(self.analysis_history),
+            "recent_performance": {
+                "average_processing_time": avg_processing_time,
+                "average_consensus_score": avg_consensus_score,
+                "average_validation_agreement": avg_validation_agreement
+            },
+            "consensus_threshold": self.consensus_threshold,
+            "committee_agents": list(self.agents.keys()),
+            "enhanced_features_active": True
+        }
+
 
 class SpecializedAnalysisOrchestrator:
     """Orchestrates specialized agents for comprehensive Arabic text analysis"""

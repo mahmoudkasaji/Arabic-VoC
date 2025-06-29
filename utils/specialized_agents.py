@@ -1598,14 +1598,20 @@ class RecommendationAgent(BaseAgent):
     
     async def generate_recommendations(self, 
                                     text: str, 
-                                    sentiment_analysis: Dict, 
-                                    topic_analysis: Dict,
-                                    text_characteristics: Dict) -> Dict[str, Any]:
-        """Generate contextual business recommendations"""
+                                    combined_analysis: Dict, 
+                                    context: Dict = None) -> Dict[str, Any]:
+        """Generate contextual business recommendations based on consensus analysis"""
+        
+        if context is None:
+            context = {}
+            
+        # Extract sentiment and topic data from combined analysis
+        sentiment_analysis = combined_analysis.get("sentiment", {})
+        topic_analysis = combined_analysis.get("topics", {})
         
         # Determine recommendation strategy
         recommendation_context = self._analyze_recommendation_context(
-            sentiment_analysis, topic_analysis, text_characteristics
+            sentiment_analysis, topic_analysis, context
         )
         
         # Choose model for recommendation generation
@@ -1623,7 +1629,7 @@ class RecommendationAgent(BaseAgent):
             logger.error(f"Recommendation generation failed with {best_service}: {e}")
             return self._fallback_recommendations(sentiment_analysis, topic_analysis)
     
-    def _analyze_recommendation_context(self, sentiment_analysis: Dict, topic_analysis: Dict, text_characteristics: Dict) -> Dict[str, Any]:
+    def _analyze_recommendation_context(self, sentiment_analysis: Dict, topic_analysis: Dict, context: Dict) -> Dict[str, Any]:
         """Analyze context to determine recommendation strategy"""
         
         sentiment_score = sentiment_analysis.get('sentiment', {}).get('score', 0)
