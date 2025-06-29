@@ -258,30 +258,30 @@ class APIKeyManager:
         return None
     
     def analyze_arabic_text(self, text: str, service: str = None, task_type: str = "arabic_analysis", 
-                           use_agent_committee: bool = True, business_context: Dict = None) -> Dict[str, Any]:
-        """Analyze Arabic text using agent committee or fallback to rule-based routing"""
+                           use_agent_committee: bool = True, business_context: Optional[Dict] = None) -> Dict[str, Any]:
+        """Analyze Arabic text using specialized agents or fallback to rule-based routing"""
         
-        # Try agent committee first if enabled
+        # Try specialized agent system first if enabled
         if use_agent_committee:
             try:
-                from utils.agent_committee import get_committee_orchestrator
-                orchestrator = get_committee_orchestrator(self)
+                from utils.specialized_orchestrator import get_specialized_orchestrator
+                orchestrator = get_specialized_orchestrator(self)
                 
-                # Use async committee routing (simulate with sync for now)
+                # Use async specialized agent orchestration
                 import asyncio
                 loop = asyncio.new_event_loop()
                 asyncio.set_event_loop(loop)
                 try:
                     result = loop.run_until_complete(
-                        orchestrator.route_analysis_request(text, task_type, business_context)
+                        orchestrator.analyze_text_comprehensive(text, task_type, business_context)
                     )
-                    logger.info("Agent committee routing successful")
+                    logger.info("Specialized agent analysis successful")
                     return result
                 finally:
                     loop.close()
                     
             except Exception as e:
-                logger.warning(f"Agent committee failed ({e}), falling back to rule-based routing")
+                logger.warning(f"Specialized agents failed ({e}), falling back to rule-based routing")
         
         # Fallback to original rule-based routing
         if not service:
