@@ -287,6 +287,13 @@ Severity: critical/high/medium/low
                 raise ValueError("Empty response from AI")
             
             result_text = result_text.strip()
+            
+            # Extract JSON from code blocks if present
+            if result_text.startswith('```json'):
+                result_text = result_text.replace('```json', '').replace('```', '').strip()
+            elif result_text.startswith('```'):
+                result_text = result_text.replace('```', '').strip()
+            
             try:
                 result = json.loads(result_text)
             except json.JSONDecodeError as e:
@@ -381,6 +388,13 @@ Priority: P1=Critical+High$ P2=High$ P3=Medium$ P4=Low$
                 raise ValueError("Empty response from AI")
             
             result_text = result_text.strip()
+            
+            # Extract JSON from code blocks if present
+            if result_text.startswith('```json'):
+                result_text = result_text.replace('```json', '').replace('```', '').strip()
+            elif result_text.startswith('```'):
+                result_text = result_text.replace('```', '').strip()
+            
             try:
                 result = json.loads(result_text)
             except json.JSONDecodeError as e:
