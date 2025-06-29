@@ -37,12 +37,14 @@ An Arabic-first multi-channel feedback processing platform built with Flask and 
 - Diacritics preservation for AI processing
 - Pattern matching for Arabic character detection
 
-### LangGraph Agent System (`utils/arabic_agent_orchestrator.py`)
-- Three specialized agents with focused prompts (50% token reduction)
-- Context passing between agents for improved accuracy
-- Error isolation and graceful degradation
-- Async processing with conversation threading
-- Fallback to legacy OpenAI integration when needed
+### Specialized Agent System (`utils/specialized_agents.py`, `utils/specialized_orchestrator.py`)
+- **SentimentAnalysisAgent**: Dedicated Arabic sentiment analysis with cultural context awareness
+- **TopicalAnalysisAgent**: Business topic detection and categorization with industry intelligence
+- **RecommendationAgent**: Actionable business recommendations with timeline and metrics
+- Clean separation of concerns with agent-specific prompts and model selection
+- Context passing between agents for comprehensive analysis
+- Multi-model orchestration (JAIS, Anthropic, OpenAI) with intelligent routing
+- Performance tracking and fallback mechanisms
 
 ### OpenAI Integration (`utils/openai_client.py`)
 - GPT-4o model with agent-based analysis (primary)
@@ -133,6 +135,9 @@ An Arabic-first multi-channel feedback processing platform built with Flask and 
 ## Recent Changes (June 2025)
 
 ### Major Architecture Updates
+- **June 29**: **Specialized Agent System Implemented** - Complete redesign with dedicated agents for sentiment, topical analysis, and recommendations
+- **June 29**: **Agent Architecture** - SentimentAnalysisAgent, TopicalAnalysisAgent, RecommendationAgent with clean separation of concerns
+- **June 29**: **Multi-Model Orchestration** - Intelligent routing between JAIS 30B, Anthropic Claude, and OpenAI GPT-4o based on content analysis
 - **June 29**: Complete navigation restructure to 5-tab architecture with UX/CX best practices
 - **June 29**: New templates: Analyst dashboard, AI testing lab, enhanced settings with language/AI configuration
 - **June 29**: Catalog-style integrations with filtering for sources and destinations

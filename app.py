@@ -424,6 +424,34 @@ def committee_performance():
         logger.error(f"Error getting committee performance: {e}")
         return jsonify({'error': f'Failed to get committee metrics: {str(e)}'}), 500
 
+@app.route('/api/specialized-agents-performance', methods=['GET'])
+def specialized_agents_performance():
+    """Get performance metrics for specialized agents system"""
+    try:
+        from utils.api_key_manager import api_manager
+        from utils.specialized_orchestrator import get_specialized_orchestrator
+        orchestrator = get_specialized_orchestrator(api_manager)
+        
+        performance_metrics = orchestrator.get_performance_metrics()
+        
+        return jsonify({
+            "status": "success",
+            "performance_data": performance_metrics,
+            "agent_system": "specialized_agents",
+            "agents": [
+                {"name": "SentimentAnalyst", "purpose": "Arabic sentiment analysis with cultural context"},
+                {"name": "TopicalAnalyst", "purpose": "Business topic detection and categorization"},
+                {"name": "RecommendationSpecialist", "purpose": "Actionable business recommendations"}
+            ]
+        })
+        
+    except Exception as e:
+        logger.error(f"Performance metrics failed: {e}")
+        return jsonify({
+            "error": "Failed to get performance metrics",
+            "details": str(e)
+        }), 500
+
 @app.route('/api/dashboard/metrics')
 def dashboard_metrics():
     """Dashboard metrics API"""
