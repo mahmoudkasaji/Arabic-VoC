@@ -2,120 +2,352 @@
 <html lang="ar" dir="rtl">
 <head>
     {% include 'components/head.html' %}
-    <title>إعدادات النظام - منصة صوت العميل العربية</title>
+    <title>{{ title }} - منصة صوت العميل العربية</title>
 </head>
 <body>
     {% include 'components/navigation.html' %}
-    
-    <div class="container-custom">
-        <div class="page-header">
-            <h1 class="arabic-title"><i class="fas fa-sliders-h me-2"></i>إعدادات النظام</h1>
-            <p class="text-muted">إعدادات عامة للمنصة والتفضيلات</p>
-        </div>
-        
+
+    <div class="container-fluid mt-4">
         <div class="row">
-            <div class="col-md-6">
-                <div class="card-custom">
-                    <div class="card-header-custom">
-                        <h5 class="card-title"><i class="fas fa-globe me-2"></i>اللغة والمنطقة</h5>
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h1 class="h3 text-primary">
+                            <i class="fas fa-sliders-h me-2"></i>
+                            إعدادات النظام
+                        </h1>
+                        <p class="text-muted">تكوين اللغة والذكاء الاصطناعي وإعدادات المنصة</p>
                     </div>
-                        
-                    <div class="form-group-custom">
-                        <label class="form-label-custom">لغة الواجهة</label>
-                        <select class="form-control-custom">
-                            <option value="ar" selected>العربية</option>
-                            <option value="en">English</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group-custom">
-                        <label class="form-label-custom">المنطقة الزمنية</label>
-                        <select class="form-control-custom">
-                            <option value="Asia/Riyadh" selected>الرياض (GMT+3)</option>
-                            <option value="Asia/Dubai">دبي (GMT+4)</option>
-                            <option value="Asia/Kuwait">الكويت (GMT+3)</option>
-                            <option value="Africa/Cairo">القاهرة (GMT+2)</option>
-                            <option value="Asia/Beirut">بيروت (GMT+2)</option>
-                        </select>
-                    </div>
+                    <button class="btn btn-primary" onclick="saveSettings()">
+                        <i class="fas fa-save me-1"></i>
+                        حفظ الإعدادات
+                    </button>
                 </div>
-            </div>
-            
-            <div class="col-md-6">
-                <div class="card-custom">
-                    <div class="card-header-custom">
-                        <h5 class="card-title"><i class="fas fa-bell me-2"></i>الإشعارات</h5>
-                    </div>
-                        
-                    <div class="form-check-custom">
-                        <input class="form-check-input-custom" type="checkbox" id="emailNotifications" checked>
-                        <label class="form-check-label-custom" for="emailNotifications">
-                            إشعارات البريد الإلكتروني
-                        </label>
-                    </div>
-                    
-                    <div class="form-check-custom">
-                        <input class="form-check-input-custom" type="checkbox" id="urgentAlerts" checked>
-                        <label class="form-check-label-custom" for="urgentAlerts">
-                            تنبيهات عاجلة للتعليقات السلبية
-                        </label>
-                    </div>
-                    
-                    <div class="form-check-custom">
-                        <input class="form-check-input-custom" type="checkbox" id="weeklyReports">
-                        <label class="form-check-label-custom" for="weeklyReports">
-                            تقارير أسبوعية
-                        </label>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="row">
-            <div class="col-md-12">
-                <div class="card-custom">
-                    <div class="card-header-custom">
-                        <h5 class="card-title"><i class="fas fa-shield-alt me-2"></i>الأمان والخصوصية</h5>
-                    </div>
-                        
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-check-custom">
-                                <input class="form-check-input-custom" type="checkbox" id="dataRetention" checked>
-                                <label class="form-check-label-custom" for="dataRetention">
-                                    الاحتفاظ بالبيانات لمدة 90 يوم
-                                </label>
+
+                <div class="row">
+                    <div class="col-lg-8">
+                        <!-- Language Preferences -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">
+                                    <i class="fas fa-language me-2"></i>
+                                    تفضيلات اللغة
+                                </h5>
                             </div>
-                            
-                            <div class="form-check-custom">
-                                <input class="form-check-input-custom" type="checkbox" id="anonymizeData">
-                                <label class="form-check-label-custom" for="anonymizeData">
-                                    إخفاء هوية البيانات الشخصية
-                                </label>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="interfaceLanguage" class="form-label">لغة الواجهة</label>
+                                            <select class="form-select" id="interfaceLanguage">
+                                                <option value="ar" selected>العربية</option>
+                                                <option value="en">English</option>
+                                                <option value="ar-en">ثنائي اللغة (عربي-إنجليزي)</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="textDirection" class="form-label">اتجاه النص</label>
+                                            <select class="form-select" id="textDirection">
+                                                <option value="rtl" selected>من اليمين لليسار (RTL)</option>
+                                                <option value="ltr">من اليسار لليمين (LTR)</option>
+                                                <option value="auto">تلقائي حسب المحتوى</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="arabicFont" class="form-label">خط العربية</label>
+                                            <select class="form-select" id="arabicFont">
+                                                <option value="cairo" selected>Cairo (حديث)</option>
+                                                <option value="amiri">Amiri (تقليدي)</option>
+                                                <option value="noto-sans-arabic">Noto Sans Arabic</option>
+                                                <option value="tajawal">Tajawal</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="timezone" class="form-label">المنطقة الزمنية</label>
+                                            <select class="form-select" id="timezone">
+                                                <option value="Asia/Riyadh" selected>الرياض (GMT+3)</option>
+                                                <option value="Asia/Dubai">دبي (GMT+4)</option>
+                                                <option value="Africa/Cairo">القاهرة (GMT+2)</option>
+                                                <option value="Asia/Baghdad">بغداد (GMT+3)</option>
+                                                <option value="Asia/Beirut">بيروت (GMT+2)</option>
+                                                <option value="UTC">توقيت جرينتش (UTC)</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" type="checkbox" id="enableArabicNumerals" checked>
+                                    <label class="form-check-label" for="enableArabicNumerals">
+                                        استخدام الأرقام العربية الهندية (٠١٢٣)
+                                    </label>
+                                </div>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="enableDialectSupport" checked>
+                                    <label class="form-check-label" for="enableDialectSupport">
+                                        دعم اللهجات العربية المحلية
+                                    </label>
+                                </div>
                             </div>
                         </div>
-                        
-                        <div class="col-md-6">
-                            <div class="form-check-custom">
-                                <input class="form-check-input-custom" type="checkbox" id="auditLog" checked>
-                                <label class="form-check-label-custom" for="auditLog">
-                                    تسجيل عمليات النظام
-                                </label>
+
+                        <!-- AI Configuration -->
+                        <div class="card mb-4">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="card-title mb-0">
+                                    <i class="fas fa-brain me-2"></i>
+                                    إعدادات الذكاء الاصطناعي
+                                </h5>
+                                <button class="btn btn-sm btn-outline-primary" onclick="testAIServices()">
+                                    <i class="fas fa-flask me-1"></i>
+                                    اختبار الخدمات
+                                </button>
                             </div>
-                            
-                            <div class="form-check-custom">
-                                <input class="form-check-input-custom" type="checkbox" id="backupData" checked>
-                                <label class="form-check-label-custom" for="backupData">
-                                    النسخ الاحتياطي اليومي
-                                </label>
+                            <div class="card-body">
+                                <!-- OpenAI Configuration -->
+                                <div class="border rounded p-3 mb-3">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <h6 class="mb-0">OpenAI GPT-4o</h6>
+                                        <span class="badge bg-success" id="openaiStatus">متصل</span>
+                                    </div>
+                                    <div class="mb-2">
+                                        <label for="openaiKey" class="form-label">مفتاح API</label>
+                                        <div class="input-group">
+                                            <input type="password" class="form-control" id="openaiKey" placeholder="sk-...">
+                                            <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('openaiKey')">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="enableOpenAI" checked>
+                                        <label class="form-check-label" for="enableOpenAI">
+                                            تفعيل OpenAI
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <!-- Anthropic Configuration -->
+                                <div class="border rounded p-3 mb-3">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <h6 class="mb-0">Anthropic Claude 3 Sonnet</h6>
+                                        <span class="badge bg-warning" id="anthropicStatus">غير متصل</span>
+                                    </div>
+                                    <div class="mb-2">
+                                        <label for="anthropicKey" class="form-label">مفتاح API</label>
+                                        <div class="input-group">
+                                            <input type="password" class="form-control" id="anthropicKey" placeholder="sk-ant-...">
+                                            <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('anthropicKey')">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="enableAnthropic">
+                                        <label class="form-check-label" for="enableAnthropic">
+                                            تفعيل Anthropic
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <!-- JAIS Configuration -->
+                                <div class="border rounded p-3 mb-3">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <h6 class="mb-0">JAIS 30B (نموذج عربي أصلي)</h6>
+                                        <span class="badge bg-secondary" id="jaisStatus">غير مُعدّ</span>
+                                    </div>
+                                    <div class="mb-2">
+                                        <label for="jaisEndpoint" class="form-label">رابط API</label>
+                                        <input type="url" class="form-control" id="jaisEndpoint" placeholder="https://api.jais.ai/v1">
+                                    </div>
+                                    <div class="mb-2">
+                                        <label for="jaisKey" class="form-label">مفتاح API</label>
+                                        <div class="input-group">
+                                            <input type="password" class="form-control" id="jaisKey" placeholder="مفتاح JAIS">
+                                            <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('jaisKey')">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="enableJAIS">
+                                        <label class="form-check-label" for="enableJAIS">
+                                            تفعيل JAIS
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <!-- AI Preferences -->
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="primaryAI" class="form-label">النموذج الأساسي</label>
+                                            <select class="form-select" id="primaryAI">
+                                                <option value="auto" selected>اختيار تلقائي ذكي</option>
+                                                <option value="openai">OpenAI GPT-4o</option>
+                                                <option value="anthropic">Anthropic Claude</option>
+                                                <option value="jais">JAIS 30B</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="aiTimeout" class="form-label">مهلة الاستجابة (ثانية)</label>
+                                            <input type="number" class="form-control" id="aiTimeout" value="30" min="10" max="120">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="enableFallback" checked>
+                                    <label class="form-check-label" for="enableFallback">
+                                        تفعيل النماذج البديلة عند الفشل
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- General Settings -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">
+                                    <i class="fas fa-cog me-2"></i>
+                                    الإعدادات العامة
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="platformName" class="form-label">اسم المنصة</label>
+                                            <input type="text" class="form-control" id="platformName" value="منصة صوت العميل العربية">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="dateFormat" class="form-label">تنسيق التاريخ</label>
+                                            <select class="form-select" id="dateFormat">
+                                                <option value="dd/mm/yyyy" selected>يوم/شهر/سنة</option>
+                                                <option value="mm/dd/yyyy">شهر/يوم/سنة</option>
+                                                <option value="yyyy-mm-dd">سنة-شهر-يوم</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="sessionTimeout" class="form-label">انتهاء صلاحية الجلسة (دقيقة)</label>
+                                            <input type="number" class="form-control" id="sessionTimeout" value="60">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="autoSaveInterval" class="form-label">الحفظ التلقائي (ثانية)</label>
+                                            <input type="number" class="form-control" id="autoSaveInterval" value="30">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" type="checkbox" id="enableNotifications" checked>
+                                    <label class="form-check-label" for="enableNotifications">
+                                        تفعيل الإشعارات
+                                    </label>
+                                </div>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="enableAnalytics" checked>
+                                    <label class="form-check-label" for="enableAnalytics">
+                                        تفعيل التحليلات
+                                    </label>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    
-                    <div class="mt-4">
-                        <button type="button" class="btn-primary-custom">
-                            <i class="fas fa-save me-2"></i>حفظ الإعدادات
-                        </button>
+
+                    <div class="col-lg-4">
+                        <!-- AI Services Status -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">
+                                    <i class="fas fa-robot me-2"></i>
+                                    حالة خدمات الذكاء الاصطناعي
+                                </h5>
+                            </div>
+                            <div class="card-body" id="aiServicesStatus">
+                                <div class="text-center">
+                                    <div class="spinner-border text-primary" role="status">
+                                        <span class="visually-hidden">جاري التحميل...</span>
+                                    </div>
+                                    <p class="mt-2 text-muted">جاري فحص الخدمات...</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- System Status -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">
+                                    <i class="fas fa-heartbeat me-2"></i>
+                                    حالة النظام
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span>قاعدة البيانات</span>
+                                    <span class="badge bg-success">متصل</span>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span>معالجة النصوص العربية</span>
+                                    <span class="badge bg-success">نشط</span>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span>نظام التحليلات</span>
+                                    <span class="badge bg-success">يعمل</span>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span>النسخ الاحتياطي</span>
+                                    <span class="badge bg-warning">تحديث مطلوب</span>
+                                </div>
+                                <hr>
+                                <small class="text-muted">آخر تحديث: منذ 5 دقائق</small>
+                            </div>
+                        </div>
+
+                        <!-- Quick Actions -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">
+                                    <i class="fas fa-bolt me-2"></i>
+                                    إجراءات سريعة
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="d-grid gap-2">
+                                    <button class="btn btn-outline-primary btn-sm" onclick="refreshAIStatus()">
+                                        <i class="fas fa-sync me-1"></i>
+                                        تحديث حالة الذكاء الاصطناعي
+                                    </button>
+                                    <button class="btn btn-outline-success btn-sm" onclick="testAllServices()">
+                                        <i class="fas fa-flask me-1"></i>
+                                        اختبار جميع الخدمات
+                                    </button>
+                                    <button class="btn btn-outline-warning btn-sm">
+                                        <i class="fas fa-download me-1"></i>
+                                        نسخ احتياطي
+                                    </button>
+                                    <button class="btn btn-outline-info btn-sm">
+                                        <i class="fas fa-chart-bar me-1"></i>
+                                        تقرير النظام
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -123,5 +355,133 @@
     </div>
 
     {% include 'components/scripts.html' %}
+    
+    <script>
+        // Load AI services status on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadAIServicesStatus();
+        });
+
+        function loadAIServicesStatus() {
+            fetch('/api/ai-services-status')
+                .then(response => response.json())
+                .then(data => {
+                    displayAIServicesStatus(data);
+                })
+                .catch(error => {
+                    console.error('Error loading AI services status:', error);
+                    document.getElementById('aiServicesStatus').innerHTML = `
+                        <div class="alert alert-danger">
+                            <i class="fas fa-exclamation-circle me-2"></i>
+                            خطأ في تحميل حالة الخدمات
+                        </div>
+                    `;
+                });
+        }
+
+        function displayAIServicesStatus(data) {
+            const container = document.getElementById('aiServicesStatus');
+            let html = '';
+
+            // OpenAI Status
+            const openaiStatus = data.openai?.status === 'active' ? 'success' : 'danger';
+            html += `
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span>OpenAI GPT-4o</span>
+                    <span class="badge bg-${openaiStatus}">${data.openai?.status === 'active' ? 'متصل' : 'غير متصل'}</span>
+                </div>
+            `;
+
+            // Anthropic Status
+            const anthropicStatus = data.anthropic?.status === 'active' ? 'success' : 'danger';
+            html += `
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span>Anthropic Claude</span>
+                    <span class="badge bg-${anthropicStatus}">${data.anthropic?.status === 'active' ? 'متصل' : 'غير متصل'}</span>
+                </div>
+            `;
+
+            // JAIS Status
+            const jaisStatus = data.jais?.status === 'active' ? 'success' : 'secondary';
+            html += `
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span>JAIS 30B</span>
+                    <span class="badge bg-${jaisStatus}">${data.jais?.status === 'active' ? 'متصل' : 'غير مُعدّ'}</span>
+                </div>
+            `;
+
+            html += `
+                <hr>
+                <div class="small text-muted">
+                    <strong>النموذج الأساسي:</strong> ${data.summary?.primary_model || 'غير محدد'}<br>
+                    <strong>النماذج النشطة:</strong> ${data.summary?.active_models || 0} من ${data.summary?.total_models || 3}
+                </div>
+            `;
+
+            container.innerHTML = html;
+        }
+
+        function togglePassword(fieldId) {
+            const field = document.getElementById(fieldId);
+            const icon = field.nextElementSibling.querySelector('i');
+            
+            if (field.type === 'password') {
+                field.type = 'text';
+                icon.className = 'fas fa-eye-slash';
+            } else {
+                field.type = 'password';
+                icon.className = 'fas fa-eye';
+            }
+        }
+
+        function refreshAIStatus() {
+            loadAIServicesStatus();
+        }
+
+        function testAIServices() {
+            alert('اختبار الخدمات - هذه الميزة قيد التطوير');
+        }
+
+        function testAllServices() {
+            alert('اختبار جميع الخدمات - هذه الميزة قيد التطوير');
+        }
+
+        function saveSettings() {
+            // Collect all form data
+            const settings = {
+                // Language preferences
+                interfaceLanguage: document.getElementById('interfaceLanguage').value,
+                textDirection: document.getElementById('textDirection').value,
+                arabicFont: document.getElementById('arabicFont').value,
+                timezone: document.getElementById('timezone').value,
+                enableArabicNumerals: document.getElementById('enableArabicNumerals').checked,
+                enableDialectSupport: document.getElementById('enableDialectSupport').checked,
+
+                // AI configuration
+                openaiKey: document.getElementById('openaiKey').value,
+                enableOpenAI: document.getElementById('enableOpenAI').checked,
+                anthropicKey: document.getElementById('anthropicKey').value,
+                enableAnthropic: document.getElementById('enableAnthropic').checked,
+                jaisEndpoint: document.getElementById('jaisEndpoint').value,
+                jaisKey: document.getElementById('jaisKey').value,
+                enableJAIS: document.getElementById('enableJAIS').checked,
+                primaryAI: document.getElementById('primaryAI').value,
+                aiTimeout: document.getElementById('aiTimeout').value,
+                enableFallback: document.getElementById('enableFallback').checked,
+
+                // General settings
+                platformName: document.getElementById('platformName').value,
+                dateFormat: document.getElementById('dateFormat').value,
+                sessionTimeout: document.getElementById('sessionTimeout').value,
+                autoSaveInterval: document.getElementById('autoSaveInterval').value,
+                enableNotifications: document.getElementById('enableNotifications').checked,
+                enableAnalytics: document.getElementById('enableAnalytics').checked
+            };
+
+            console.log('Saving settings:', settings);
+            alert('تم حفظ الإعدادات بنجاح');
+            refreshAIStatus();
+        }
+    </script>
 </body>
 </html>

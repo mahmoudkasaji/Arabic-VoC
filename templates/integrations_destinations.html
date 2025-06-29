@@ -1,334 +1,384 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>وجهات البيانات - منصة صوت العميل العربية</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;600;700&display=swap" rel="stylesheet">
+    {% include 'components/head.html' %}
+    <title>{{ title }} - منصة صوت العميل العربية</title>
     <style>
-        body { 
-            font-family: 'Cairo', sans-serif; 
-            direction: rtl; 
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            min-height: 100vh;
+        .catalog-card {
+            transition: all 0.3s ease;
+            border: 1px solid #e9ecef;
+            cursor: pointer;
         }
-        
-        .page-header { 
-            background: white; 
-            padding: 2rem; 
-            margin-bottom: 2rem; 
-            border-radius: 12px; 
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1); 
-        }
-        
-        .destination-card {
-            background: white;
-            border-radius: 12px;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            border-left: 4px solid #007bff;
-        }
-        
-        .destination-card:hover {
+        .catalog-card:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border-color: #007bff;
         }
-        
-        .destination-icon {
-            width: 50px;
-            height: 50px;
-            border-radius: 10px;
+        .catalog-icon {
+            width: 48px;
+            height: 48px;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
-            font-size: 1.5rem;
-            margin-left: 1rem;
-        }
-        
-        .trigger-badge {
-            font-size: 0.7rem;
-            padding: 0.2rem 0.5rem;
             border-radius: 8px;
-            margin-right: 0.25rem;
-            margin-bottom: 0.25rem;
-            display: inline-block;
+            margin-bottom: 16px;
         }
-        
-        .trigger-urgent { background: #fff5f5; color: #c53030; border: 1px solid #fed7d7; }
-        .trigger-negative { background: #fef5e7; color: #dd6b20; border: 1px solid #fbd38d; }
-        .trigger-positive { background: #f0fff4; color: #38a169; border: 1px solid #9ae6b4; }
-        
-        .category-section {
-            margin-bottom: 3rem;
+        .status-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
         }
-        
-        .category-header {
-            color: #007bff;
-            font-weight: 600;
-            margin-bottom: 1.5rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 2px solid #e9ecef;
-        }
-        
-        .automation-count {
-            background: rgba(0, 123, 255, 0.1);
-            color: #007bff;
-            padding: 0.25rem 0.75rem;
-            border-radius: 12px;
-            font-size: 0.8rem;
-            font-weight: 600;
+        .integration-category {
+            border-left: 4px solid #28a745;
+            padding-left: 1rem;
+            margin-bottom: 2rem;
         }
     </style>
 </head>
 <body>
     {% include 'components/navigation.html' %}
     
-    <div class="container-fluid">
-        <div class="page-header">
-            <div class="d-flex justify-content-between align-items-start">
-                <div>
-                    <h1>
-                        <i class="fas fa-upload text-primary me-2"></i>
-                        وجهات البيانات
-                    </h1>
-                    <p class="text-muted">كتالوج الأنظمة لاتخاذ إجراءات تجربة العملاء بناءً على الرؤى</p>
-                </div>
-                <button class="btn btn-primary">
-                    <i class="fas fa-plus me-2"></i>
-                    إضافة وجهة جديدة
-                </button>
-            </div>
-        </div>
-        
-        <!-- CX Action Systems -->
-        <div class="category-section">
-            <h3 class="category-header">
-                <i class="fas fa-users-cog me-2"></i>
-                أنظمة إجراءات تجربة العملاء
-            </h3>
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="destination-card">
-                        <div class="d-flex align-items-start">
-                            <div class="destination-icon" style="background: #03363d;">
-                                <i class="fas fa-ticket-alt"></i>
-                            </div>
-                            <div class="flex-grow-1">
-                                <div class="d-flex justify-content-between align-items-start mb-2">
-                                    <h5 class="mb-0">Zendesk Auto-Ticketing</h5>
-                                    <span class="automation-count">12 إجراء/اليوم</span>
-                                </div>
-                                <p class="text-muted mb-2">إنشاء تذاكر تلقائية للمشاكل العاجلة</p>
-                                
-                                <div class="mb-2">
-                                    <span class="trigger-badge trigger-urgent">مشكلة عاجلة</span>
-                                    <span class="trigger-badge trigger-negative">تقييم سلبي</span>
-                                </div>
-                                
-                                <small class="text-success">
-                                    <i class="fas fa-check-circle me-1"></i>
-                                    آخر إجراء: منذ 15 دقيقة
-                                </small>
-                            </div>
-                        </div>
-                        <div class="mt-3">
-                            <button class="btn btn-outline-primary btn-sm me-2">تعديل القواعد</button>
-                            <button class="btn btn-outline-secondary btn-sm">عرض السجل</button>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="col-md-6">
-                    <div class="destination-card">
-                        <div class="d-flex align-items-start">
-                            <div class="destination-icon" style="background: #e74c3c;">
-                                <i class="fas fa-exclamation-triangle"></i>
-                            </div>
-                            <div class="flex-grow-1">
-                                <div class="d-flex justify-content-between align-items-start mb-2">
-                                    <h5 class="mb-0">Customer Risk Alerts</h5>
-                                    <span class="automation-count">3 تنبيهات/اليوم</span>
-                                </div>
-                                <p class="text-muted mb-2">تنبيهات استباقية للعملاء المعرضين للخطر</p>
-                                
-                                <div class="mb-2">
-                                    <span class="trigger-badge trigger-urgent">عميل مهم</span>
-                                    <span class="trigger-badge trigger-negative">تقييم متكرر سلبي</span>
-                                </div>
-                                
-                                <small class="text-warning">
-                                    <i class="fas fa-clock me-1"></i>
-                                    آخر تنبيه: منذ 2 ساعات
-                                </small>
-                            </div>
-                        </div>
-                        <div class="mt-3">
-                            <button class="btn btn-outline-danger btn-sm me-2">إعداد التنبيهات</button>
-                            <button class="btn btn-outline-secondary btn-sm">عرض العملاء</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Business Intelligence -->
-        <div class="category-section">
-            <h3 class="category-header">
-                <i class="fas fa-chart-line me-2"></i>
-                ذكاء الأعمال والتقارير
-            </h3>
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="destination-card">
-                        <div class="d-flex align-items-start">
-                            <div class="destination-icon" style="background: #f2c811;">
-                                <i class="fas fa-chart-bar"></i>
-                            </div>
-                            <div class="flex-grow-1">
-                                <div class="d-flex justify-content-between align-items-start mb-2">
-                                    <h5 class="mb-0">Power BI Export</h5>
-                                    <span class="automation-count">يومياً</span>
-                                </div>
-                                <p class="text-muted mb-2">تصدير تلقائي للوحات المعلومات</p>
-                                <small class="text-success">
-                                    <i class="fas fa-sync me-1"></i>
-                                    آخر تصدير: اليوم 6:00 ص
-                                </small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="col-md-4">
-                    <div class="destination-card">
-                        <div class="d-flex align-items-start">
-                            <div class="destination-icon" style="background: #4285f4;">
-                                <i class="fab fa-google"></i>
-                            </div>
-                            <div class="flex-grow-1">
-                                <div class="d-flex justify-content-between align-items-start mb-2">
-                                    <h5 class="mb-0">BigQuery Warehouse</h5>
-                                    <span class="automation-count">مباشر</span>
-                                </div>
-                                <p class="text-muted mb-2">مستودع البيانات للتحليلات المتقدمة</p>
-                                <small class="text-success">
-                                    <i class="fas fa-database me-1"></i>
-                                    1.2M سجل محفوظ
-                                </small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="col-md-4">
-                    <div class="destination-card">
-                        <div class="d-flex align-items-start">
-                            <div class="destination-icon" style="background: #ff6b35;">
-                                <i class="fas fa-file-pdf"></i>
-                            </div>
-                            <div class="flex-grow-1">
-                                <div class="d-flex justify-content-between align-items-start mb-2">
-                                    <h5 class="mb-0">تقارير تلقائية</h5>
-                                    <span class="automation-count">أسبوعياً</span>
-                                </div>
-                                <p class="text-muted mb-2">تقارير PDF للإدارة العليا</p>
-                                <small class="text-info">
-                                    <i class="fas fa-calendar me-1"></i>
-                                    التقرير القادم: الأحد
-                                </small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Marketing & Communication -->
-        <div class="category-section">
-            <h3 class="category-header">
-                <i class="fas fa-bullhorn me-2"></i>
-                التسويق والتواصل
-            </h3>
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="destination-card">
-                        <div class="d-flex align-items-start">
-                            <div class="destination-icon" style="background: #ffe01b;">
-                                <i class="fas fa-envelope"></i>
-                            </div>
-                            <div class="flex-grow-1">
-                                <div class="d-flex justify-content-between align-items-start mb-2">
-                                    <h5 class="mb-0">MailChimp Campaigns</h5>
-                                    <span class="automation-count">5 حملات نشطة</span>
-                                </div>
-                                <p class="text-muted mb-2">حملات بريد إلكتروني بناءً على التعليقات</p>
-                                
-                                <div class="mb-2">
-                                    <span class="trigger-badge trigger-positive">تقييم إيجابي</span>
-                                    <span class="trigger-badge trigger-negative">متابعة مشكلة</span>
-                                </div>
-                                
-                                <small class="text-success">
-                                    <i class="fas fa-paper-plane me-1"></i>
-                                    156 رسالة مرسلة اليوم
-                                </small>
-                            </div>
-                        </div>
-                        <div class="mt-3">
-                            <button class="btn btn-outline-warning btn-sm me-2">إدارة الحملات</button>
-                            <button class="btn btn-outline-secondary btn-sm">الإحصائيات</button>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="col-md-6">
-                    <div class="destination-card">
-                        <div class="d-flex align-items-start">
-                            <div class="destination-icon" style="background: #0084ff;">
-                                <i class="fas fa-sms"></i>
-                            </div>
-                            <div class="flex-grow-1">
-                                <div class="d-flex justify-content-between align-items-start mb-2">
-                                    <h5 class="mb-0">Twilio SMS Alerts</h5>
-                                    <span class="automation-count">للمشاكل العاجلة</span>
-                                </div>
-                                <p class="text-muted mb-2">رسائل نصية فورية للحالات الحرجة</p>
-                                
-                                <div class="mb-2">
-                                    <span class="trigger-badge trigger-urgent">مشكلة حرجة</span>
-                                </div>
-                                
-                                <small class="text-warning">
-                                    <i class="fas fa-mobile-alt me-1"></i>
-                                    آخر رسالة: منذ 3 ساعات
-                                </small>
-                            </div>
-                        </div>
-                        <div class="mt-3">
-                            <button class="btn btn-outline-info btn-sm me-2">إعداد الرسائل</button>
-                            <button class="btn btn-outline-secondary btn-sm">سجل الإرسال</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Quick Setup Guide -->
+    <div class="container-fluid mt-4">
         <div class="row">
             <div class="col-12">
-                <div class="alert alert-success">
-                    <div class="d-flex align-items-center">
-                        <i class="fas fa-route me-3 fs-4"></i>
-                        <div>
-                            <h6 class="mb-1">دليل الإعداد السريع</h6>
-                            <p class="mb-0">
-                                1. حدد النظام المطلوب → 2. اختر المحفزات (تقييم سلبي، مشكلة عاجلة) → 3. كوّن قواعد الإجراء → 4. اختبر التكامل
-                            </p>
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h1 class="h3 text-success">
+                            <i class="fas fa-upload me-2"></i>
+                            وجهات البيانات
+                        </h1>
+                        <p class="text-muted">تصدير وإرسال التحليلات والتقارير إلى أنظمة خارجية</p>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-outline-success">
+                            <i class="fas fa-filter me-1"></i>
+                            فلترة
+                        </button>
+                        <button class="btn btn-success">
+                            <i class="fas fa-plus me-1"></i>
+                            إضافة وجهة جديدة
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Search and Filter Bar -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-md-6">
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-search"></i></span>
+                                    <input type="text" class="form-control" placeholder="البحث في وجهات البيانات...">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="d-flex gap-2">
+                                    <select class="form-select">
+                                        <option>جميع الفئات</option>
+                                        <option>BI وتحليل البيانات</option>
+                                        <option>تصدير الملفات</option>
+                                        <option>إرسال التقارير</option>
+                                        <option>قواعد البيانات</option>
+                                    </select>
+                                    <select class="form-select">
+                                        <option>جميع الحالات</option>
+                                        <option>نشط</option>
+                                        <option>متوقف</option>
+                                        <option>قيد الإعداد</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BI & Analytics Platforms -->
+                <div class="integration-category">
+                    <h4 class="mb-3">
+                        <i class="fas fa-chart-bar me-2"></i>
+                        منصات الذكاء التجاري والتحليلات
+                    </h4>
+                    <div class="row">
+                        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                            <div class="card catalog-card h-100 position-relative">
+                                <span class="badge bg-success status-badge">نشط</span>
+                                <div class="card-body text-center">
+                                    <div class="catalog-icon bg-warning text-white mx-auto">
+                                        <i class="fas fa-chart-line fa-lg"></i>
+                                    </div>
+                                    <h6 class="card-title">Power BI</h6>
+                                    <p class="card-text text-muted small">إرسال البيانات إلى Microsoft Power BI</p>
+                                    <div class="d-flex justify-content-between align-items-center mt-3">
+                                        <small class="text-muted">آخر تصدير: اليوم</small>
+                                        <button class="btn btn-sm btn-outline-success">إعداد</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                            <div class="card catalog-card h-100 position-relative">
+                                <span class="badge bg-success status-badge">نشط</span>
+                                <div class="card-body text-center">
+                                    <div class="catalog-icon bg-primary text-white mx-auto">
+                                        <i class="fas fa-chart-area fa-lg"></i>
+                                    </div>
+                                    <h6 class="card-title">Tableau</h6>
+                                    <p class="card-text text-muted small">تصدير البيانات إلى Tableau</p>
+                                    <div class="d-flex justify-content-between align-items-center mt-3">
+                                        <small class="text-muted">آخر تصدير: أمس</small>
+                                        <button class="btn btn-sm btn-outline-success">إعداد</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                            <div class="card catalog-card h-100 position-relative">
+                                <span class="badge bg-secondary status-badge">غير متصل</span>
+                                <div class="card-body text-center">
+                                    <div class="catalog-icon bg-info text-white mx-auto">
+                                        <i class="fab fa-google fa-lg"></i>
+                                    </div>
+                                    <h6 class="card-title">Google Analytics</h6>
+                                    <p class="card-text text-muted small">إرسال بيانات الأحداث إلى GA</p>
+                                    <div class="d-flex justify-content-between align-items-center mt-3">
+                                        <small class="text-muted">غير مُعدّ</small>
+                                        <button class="btn btn-sm btn-outline-secondary">إعداد</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                            <div class="card catalog-card h-100 position-relative">
+                                <span class="badge bg-secondary status-badge">غير متصل</span>
+                                <div class="card-body text-center">
+                                    <div class="catalog-icon bg-dark text-white mx-auto">
+                                        <i class="fas fa-chart-pie fa-lg"></i>
+                                    </div>
+                                    <h6 class="card-title">Qlik Sense</h6>
+                                    <p class="card-text text-muted small">تكامل مع Qlik Sense</p>
+                                    <div class="d-flex justify-content-between align-items-center mt-3">
+                                        <small class="text-muted">غير مُعدّ</small>
+                                        <button class="btn btn-sm btn-outline-secondary">إعداد</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- File Export -->
+                <div class="integration-category">
+                    <h4 class="mb-3">
+                        <i class="fas fa-file-export me-2"></i>
+                        تصدير الملفات
+                    </h4>
+                    <div class="row">
+                        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                            <div class="card catalog-card h-100 position-relative">
+                                <span class="badge bg-success status-badge">نشط</span>
+                                <div class="card-body text-center">
+                                    <div class="catalog-icon bg-success text-white mx-auto">
+                                        <i class="fas fa-file-excel fa-lg"></i>
+                                    </div>
+                                    <h6 class="card-title">Excel Export</h6>
+                                    <p class="card-text text-muted small">تصدير التقارير إلى ملفات Excel</p>
+                                    <div class="d-flex justify-content-between align-items-center mt-3">
+                                        <small class="text-muted">آخر تصدير: اليوم</small>
+                                        <button class="btn btn-sm btn-outline-success">تصدير</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                            <div class="card catalog-card h-100 position-relative">
+                                <span class="badge bg-success status-badge">نشط</span>
+                                <div class="card-body text-center">
+                                    <div class="catalog-icon bg-info text-white mx-auto">
+                                        <i class="fas fa-file-csv fa-lg"></i>
+                                    </div>
+                                    <h6 class="card-title">CSV Export</h6>
+                                    <p class="card-text text-muted small">تصدير البيانات بصيغة CSV</p>
+                                    <div class="d-flex justify-content-between align-items-center mt-3">
+                                        <small class="text-muted">آخر تصدير: اليوم</small>
+                                        <button class="btn btn-sm btn-outline-success">تصدير</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                            <div class="card catalog-card h-100 position-relative">
+                                <span class="badge bg-success status-badge">نشط</span>
+                                <div class="card-body text-center">
+                                    <div class="catalog-icon bg-danger text-white mx-auto">
+                                        <i class="fas fa-file-pdf fa-lg"></i>
+                                    </div>
+                                    <h6 class="card-title">PDF Reports</h6>
+                                    <p class="card-text text-muted small">إنشاء تقارير PDF مع النتائج</p>
+                                    <div class="d-flex justify-content-between align-items-center mt-3">
+                                        <small class="text-muted">آخر تقرير: أمس</small>
+                                        <button class="btn btn-sm btn-outline-success">إنشاء</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                            <div class="card catalog-card h-100 position-relative">
+                                <span class="badge bg-warning status-badge">قيد الإعداد</span>
+                                <div class="card-body text-center">
+                                    <div class="catalog-icon bg-warning text-white mx-auto">
+                                        <i class="fas fa-code fa-lg"></i>
+                                    </div>
+                                    <h6 class="card-title">JSON/API Export</h6>
+                                    <p class="card-text text-muted small">تصدير البيانات عبر API</p>
+                                    <div class="d-flex justify-content-between align-items-center mt-3">
+                                        <small class="text-muted">قيد الإعداد</small>
+                                        <button class="btn btn-sm btn-primary">إعداد</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Email & Notifications -->
+                <div class="integration-category">
+                    <h4 class="mb-3">
+                        <i class="fas fa-bell me-2"></i>
+                        الإشعارات والتقارير
+                    </h4>
+                    <div class="row">
+                        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                            <div class="card catalog-card h-100 position-relative">
+                                <span class="badge bg-success status-badge">نشط</span>
+                                <div class="card-body text-center">
+                                    <div class="catalog-icon bg-primary text-white mx-auto">
+                                        <i class="fas fa-envelope fa-lg"></i>
+                                    </div>
+                                    <h6 class="card-title">Email Reports</h6>
+                                    <p class="card-text text-muted small">إرسال التقارير الدورية بالبريد</p>
+                                    <div class="d-flex justify-content-between align-items-center mt-3">
+                                        <small class="text-muted">التقرير القادم: غداً</small>
+                                        <button class="btn btn-sm btn-outline-success">إعداد</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                            <div class="card catalog-card h-100 position-relative">
+                                <span class="badge bg-secondary status-badge">غير متصل</span>
+                                <div class="card-body text-center">
+                                    <div class="catalog-icon bg-info text-white mx-auto">
+                                        <i class="fab fa-slack fa-lg"></i>
+                                    </div>
+                                    <h6 class="card-title">Slack Notifications</h6>
+                                    <p class="card-text text-muted small">إرسال تنبيهات إلى Slack</p>
+                                    <div class="d-flex justify-content-between align-items-center mt-3">
+                                        <small class="text-muted">غير مُعدّ</small>
+                                        <button class="btn btn-sm btn-outline-secondary">إعداد</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                            <div class="card catalog-card h-100 position-relative">
+                                <span class="badge bg-secondary status-badge">غير متصل</span>
+                                <div class="card-body text-center">
+                                    <div class="catalog-icon bg-success text-white mx-auto">
+                                        <i class="fab fa-microsoft fa-lg"></i>
+                                    </div>
+                                    <h6 class="card-title">Microsoft Teams</h6>
+                                    <p class="card-text text-muted small">إرسال تنبيهات إلى Teams</p>
+                                    <div class="d-flex justify-content-between align-items-center mt-3">
+                                        <small class="text-muted">غير مُعدّ</small>
+                                        <button class="btn btn-sm btn-outline-secondary">إعداد</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                            <div class="card catalog-card h-100 position-relative">
+                                <span class="badge bg-warning status-badge">قيد التطوير</span>
+                                <div class="card-body text-center">
+                                    <div class="catalog-icon bg-warning text-white mx-auto">
+                                        <i class="fas fa-mobile-alt fa-lg"></i>
+                                    </div>
+                                    <h6 class="card-title">SMS Alerts</h6>
+                                    <p class="card-text text-muted small">إرسال تنبيهات عبر الرسائل النصية</p>
+                                    <div class="d-flex justify-content-between align-items-center mt-3">
+                                        <small class="text-muted">قريباً</small>
+                                        <button class="btn btn-sm btn-outline-secondary" disabled>قريباً</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Database & Storage -->
+                <div class="integration-category">
+                    <h4 class="mb-3">
+                        <i class="fas fa-database me-2"></i>
+                        قواعد البيانات والتخزين
+                    </h4>
+                    <div class="row">
+                        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                            <div class="card catalog-card h-100 position-relative">
+                                <span class="badge bg-success status-badge">نشط</span>
+                                <div class="card-body text-center">
+                                    <div class="catalog-icon bg-dark text-white mx-auto">
+                                        <i class="fas fa-database fa-lg"></i>
+                                    </div>
+                                    <h6 class="card-title">Data Warehouse</h6>
+                                    <p class="card-text text-muted small">تصدير إلى مستودع البيانات</p>
+                                    <div class="d-flex justify-content-between align-items-center mt-3">
+                                        <small class="text-muted">آخر مزامنة: اليوم</small>
+                                        <button class="btn btn-sm btn-outline-success">إعداد</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                            <div class="card catalog-card h-100 position-relative">
+                                <span class="badge bg-secondary status-badge">غير متصل</span>
+                                <div class="card-body text-center">
+                                    <div class="catalog-icon bg-primary text-white mx-auto">
+                                        <i class="fab fa-aws fa-lg"></i>
+                                    </div>
+                                    <h6 class="card-title">Amazon S3</h6>
+                                    <p class="card-text text-muted small">تخزين الملفات في AWS S3</p>
+                                    <div class="d-flex justify-content-between align-items-center mt-3">
+                                        <small class="text-muted">غير مُعدّ</small>
+                                        <button class="btn btn-sm btn-outline-secondary">إعداد</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                            <div class="card catalog-card h-100 position-relative">
+                                <span class="badge bg-secondary status-badge">غير متصل</span>
+                                <div class="card-body text-center">
+                                    <div class="catalog-icon bg-info text-white mx-auto">
+                                        <i class="fab fa-google-drive fa-lg"></i>
+                                    </div>
+                                    <h6 class="card-title">Google Drive</h6>
+                                    <p class="card-text text-muted small">حفظ التقارير في Google Drive</p>
+                                    <div class="d-flex justify-content-between align-items-center mt-3">
+                                        <small class="text-muted">غير مُعدّ</small>
+                                        <button class="btn btn-sm btn-outline-secondary">إعداد</button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -336,6 +386,15 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    {% include 'components/scripts.html' %}
+    
+    <script>
+        document.querySelectorAll('.catalog-card').forEach(card => {
+            card.addEventListener('click', function() {
+                const title = this.querySelector('.card-title').textContent;
+                alert(`فتح إعدادات: ${title}`);
+            });
+        });
+    </script>
 </body>
 </html>

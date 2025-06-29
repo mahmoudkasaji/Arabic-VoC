@@ -1,289 +1,333 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مصادر البيانات - منصة صوت العميل العربية</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;600;700&display=swap" rel="stylesheet">
+    {% include 'components/head.html' %}
+    <title>{{ title }} - منصة صوت العميل العربية</title>
     <style>
-        body { 
-            font-family: 'Cairo', sans-serif; 
-            direction: rtl; 
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            min-height: 100vh;
+        .catalog-card {
+            transition: all 0.3s ease;
+            border: 1px solid #e9ecef;
+            cursor: pointer;
         }
-        
-        .page-header { 
-            background: white; 
-            padding: 2rem; 
-            margin-bottom: 2rem; 
-            border-radius: 12px; 
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1); 
-        }
-        
-        .connector-card {
-            background: white;
-            border-radius: 12px;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            border-left: 4px solid #28a745;
-        }
-        
-        .connector-card:hover {
+        .catalog-card:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border-color: #007bff;
         }
-        
-        .connector-icon {
-            width: 50px;
-            height: 50px;
-            border-radius: 10px;
+        .catalog-icon {
+            width: 48px;
+            height: 48px;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
-            font-size: 1.5rem;
-            margin-left: 1rem;
+            border-radius: 8px;
+            margin-bottom: 16px;
         }
-        
         .status-badge {
-            font-size: 0.8rem;
-            padding: 0.25rem 0.75rem;
-            border-radius: 12px;
+            position: absolute;
+            top: 10px;
+            left: 10px;
         }
-        
-        .status-active { background: #d4edda; color: #155724; }
-        .status-inactive { background: #f8d7da; color: #721c24; }
-        .status-pending { background: #fff3cd; color: #856404; }
-        
-        .category-section {
-            margin-bottom: 3rem;
-        }
-        
-        .category-header {
-            color: #2E8B57;
-            font-weight: 600;
-            margin-bottom: 1.5rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 2px solid #e9ecef;
+        .integration-category {
+            border-left: 4px solid #007bff;
+            padding-left: 1rem;
+            margin-bottom: 2rem;
         }
     </style>
 </head>
 <body>
     {% include 'components/navigation.html' %}
     
-    <div class="container-fluid">
-        <div class="page-header">
-            <div class="d-flex justify-content-between align-items-start">
-                <div>
-                    <h1>
-                        <i class="fas fa-download text-success me-2"></i>
-                        مصادر البيانات
-                    </h1>
-                    <p class="text-muted">كتالوج الموصلات المُعدة مسبقاً لاستيراد بيانات صوت العميل</p>
-                </div>
-                <button class="btn btn-success">
-                    <i class="fas fa-plus me-2"></i>
-                    إضافة مصدر جديد
-                </button>
-            </div>
-        </div>
-        
-        <!-- API Connectors -->
-        <div class="category-section">
-            <h3 class="category-header">
-                <i class="fas fa-code me-2"></i>
-                موصلات API
-            </h3>
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="connector-card">
-                        <div class="d-flex align-items-start">
-                            <div class="connector-icon" style="background: #007bff;">
-                                <i class="fas fa-globe"></i>
-                            </div>
-                            <div class="flex-grow-1">
-                                <div class="d-flex justify-content-between align-items-start mb-2">
-                                    <h5 class="mb-0">REST API Endpoints</h5>
-                                    <span class="status-badge status-active">نشط</span>
-                                </div>
-                                <p class="text-muted mb-2">استقبال البيانات من الأنظمة الخارجية عبر REST APIs</p>
-                                <small class="text-success">
-                                    <i class="fas fa-check-circle me-1"></i>
-                                    3 اتصالات نشطة
-                                </small>
-                            </div>
-                        </div>
-                        <div class="mt-3">
-                            <button class="btn btn-outline-primary btn-sm me-2">إعداد</button>
-                            <button class="btn btn-outline-secondary btn-sm">اختبار الاتصال</button>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="col-md-6">
-                    <div class="connector-card">
-                        <div class="d-flex align-items-start">
-                            <div class="connector-icon" style="background: #e91e63;">
-                                <i class="fas fa-project-diagram"></i>
-                            </div>
-                            <div class="flex-grow-1">
-                                <div class="d-flex justify-content-between align-items-start mb-2">
-                                    <h5 class="mb-0">GraphQL Integrations</h5>
-                                    <span class="status-badge status-inactive">غير نشط</span>
-                                </div>
-                                <p class="text-muted mb-2">اتصالات API حديثة مع استعلامات مرنة</p>
-                                <small class="text-muted">
-                                    <i class="fas fa-clock me-1"></i>
-                                    جاهز للإعداد
-                                </small>
-                            </div>
-                        </div>
-                        <div class="mt-3">
-                            <button class="btn btn-success btn-sm me-2">تفعيل</button>
-                            <button class="btn btn-outline-secondary btn-sm">معاينة</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Channel Integrations -->
-        <div class="category-section">
-            <h3 class="category-header">
-                <i class="fas fa-comments me-2"></i>
-                تكاملات القنوات
-            </h3>
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="connector-card">
-                        <div class="d-flex align-items-start">
-                            <div class="connector-icon" style="background: #25d366;">
-                                <i class="fab fa-whatsapp"></i>
-                            </div>
-                            <div class="flex-grow-1">
-                                <div class="d-flex justify-content-between align-items-start mb-2">
-                                    <h5 class="mb-0">WhatsApp Business</h5>
-                                    <span class="status-badge status-active">نشط</span>
-                                </div>
-                                <p class="text-muted mb-2">استقبال الرسائل والتعليقات</p>
-                                <small class="text-success">
-                                    <i class="fas fa-arrow-down me-1"></i>
-                                    156 رسالة اليوم
-                                </small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="col-md-4">
-                    <div class="connector-card">
-                        <div class="d-flex align-items-start">
-                            <div class="connector-icon" style="background: #1da1f2;">
-                                <i class="fab fa-twitter"></i>
-                            </div>
-                            <div class="flex-grow-1">
-                                <div class="d-flex justify-content-between align-items-start mb-2">
-                                    <h5 class="mb-0">Twitter/X API</h5>
-                                    <span class="status-badge status-pending">قيد الإعداد</span>
-                                </div>
-                                <p class="text-muted mb-2">مراقبة الإشارات والردود</p>
-                                <small class="text-warning">
-                                    <i class="fas fa-cog me-1"></i>
-                                    يتطلب مراجعة API
-                                </small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="col-md-4">
-                    <div class="connector-card">
-                        <div class="d-flex align-items-start">
-                            <div class="connector-icon" style="background: #ea4335;">
-                                <i class="fas fa-envelope"></i>
-                            </div>
-                            <div class="flex-grow-1">
-                                <div class="d-flex justify-content-between align-items-start mb-2">
-                                    <h5 class="mb-0">Gmail Integration</h5>
-                                    <span class="status-badge status-active">نشط</span>
-                                </div>
-                                <p class="text-muted mb-2">رسائل الدعم والاستفسارات</p>
-                                <small class="text-success">
-                                    <i class="fas fa-sync me-1"></i>
-                                    آخر مزامنة: منذ 5 دقائق
-                                </small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Business Systems -->
-        <div class="category-section">
-            <h3 class="category-header">
-                <i class="fas fa-building me-2"></i>
-                أنظمة الأعمال
-            </h3>
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="connector-card">
-                        <div class="d-flex align-items-start">
-                            <div class="connector-icon" style="background: #00a1c9;">
-                                <i class="fab fa-salesforce"></i>
-                            </div>
-                            <div class="flex-grow-1">
-                                <div class="d-flex justify-content-between align-items-start mb-2">
-                                    <h5 class="mb-0">Salesforce CRM</h5>
-                                    <span class="status-badge status-inactive">غير نشط</span>
-                                </div>
-                                <p class="text-muted mb-2">بيانات العملاء والحالات</p>
-                                <small class="text-muted">يتطلب مصادقة OAuth</small>
-                            </div>
-                        </div>
-                        <div class="mt-3">
-                            <button class="btn btn-primary btn-sm">ربط Salesforce</button>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="col-md-6">
-                    <div class="connector-card">
-                        <div class="d-flex align-items-start">
-                            <div class="connector-icon" style="background: #03363d;">
-                                <i class="fas fa-headset"></i>
-                            </div>
-                            <div class="flex-grow-1">
-                                <div class="d-flex justify-content-between align-items-start mb-2">
-                                    <h5 class="mb-0">Zendesk Support</h5>
-                                    <span class="status-badge status-active">نشط</span>
-                                </div>
-                                <p class="text-muted mb-2">تذاكر الدعم والتقييمات</p>
-                                <small class="text-success">
-                                    <i class="fas fa-ticket-alt me-1"></i>
-                                    42 تذكرة جديدة
-                                </small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Quick Actions -->
+    <div class="container-fluid mt-4">
         <div class="row">
             <div class="col-12">
-                <div class="alert alert-info">
-                    <div class="d-flex align-items-center">
-                        <i class="fas fa-lightbulb me-3 fs-4"></i>
-                        <div>
-                            <h6 class="mb-1">نصيحة: تدفق البيانات المتكامل</h6>
-                            <p class="mb-0">قم بإعداد مصادر البيانات هنا، ثم توجه إلى "وجهات البيانات" لتكوين الإجراءات التلقائية عند تحليل التعليقات.</p>
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h1 class="h3 text-primary">
+                            <i class="fas fa-download me-2"></i>
+                            مصادر البيانات
+                        </h1>
+                        <p class="text-muted">اتصل بمصادر البيانات المختلفة لجمع التعليقات والاستطلاعات</p>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-outline-primary">
+                            <i class="fas fa-filter me-1"></i>
+                            فلترة
+                        </button>
+                        <button class="btn btn-primary">
+                            <i class="fas fa-plus me-1"></i>
+                            إضافة مصدر جديد
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Search and Filter Bar -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-md-6">
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-search"></i></span>
+                                    <input type="text" class="form-control" placeholder="البحث في مصادر البيانات...">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="d-flex gap-2">
+                                    <select class="form-select">
+                                        <option>جميع الفئات</option>
+                                        <option>API</option>
+                                        <option>قواعد البيانات</option>
+                                        <option>ملفات</option>
+                                        <option>التواصل الاجتماعي</option>
+                                    </select>
+                                    <select class="form-select">
+                                        <option>جميع الحالات</option>
+                                        <option>متصل</option>
+                                        <option>غير متصل</option>
+                                        <option>قيد الإعداد</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- API Integrations -->
+                <div class="integration-category">
+                    <h4 class="mb-3">
+                        <i class="fas fa-code me-2"></i>
+                        تكاملات API
+                    </h4>
+                    <div class="row">
+                        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                            <div class="card catalog-card h-100 position-relative">
+                                <span class="badge bg-success status-badge">متصل</span>
+                                <div class="card-body text-center">
+                                    <div class="catalog-icon bg-primary text-white mx-auto">
+                                        <i class="fab fa-twitter fa-lg"></i>
+                                    </div>
+                                    <h6 class="card-title">Twitter API</h6>
+                                    <p class="card-text text-muted small">جمع التعليقات والإشارات من تويتر</p>
+                                    <div class="d-flex justify-content-between align-items-center mt-3">
+                                        <small class="text-muted">1,247 تعليق</small>
+                                        <button class="btn btn-sm btn-outline-primary">إعداد</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                            <div class="card catalog-card h-100 position-relative">
+                                <span class="badge bg-success status-badge">متصل</span>
+                                <div class="card-body text-center">
+                                    <div class="catalog-icon bg-info text-white mx-auto">
+                                        <i class="fab fa-facebook fa-lg"></i>
+                                    </div>
+                                    <h6 class="card-title">Facebook API</h6>
+                                    <p class="card-text text-muted small">استقبال تعليقات من صفحات فيسبوك</p>
+                                    <div class="d-flex justify-content-between align-items-center mt-3">
+                                        <small class="text-muted">892 تعليق</small>
+                                        <button class="btn btn-sm btn-outline-primary">إعداد</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                            <div class="card catalog-card h-100 position-relative">
+                                <span class="badge bg-warning status-badge">قيد الإعداد</span>
+                                <div class="card-body text-center">
+                                    <div class="catalog-icon bg-success text-white mx-auto">
+                                        <i class="fab fa-whatsapp fa-lg"></i>
+                                    </div>
+                                    <h6 class="card-title">WhatsApp Business API</h6>
+                                    <p class="card-text text-muted small">استقبال رسائل من واتساب بزنس</p>
+                                    <div class="d-flex justify-content-between align-items-center mt-3">
+                                        <small class="text-muted">0 رسالة</small>
+                                        <button class="btn btn-sm btn-primary">إعداد</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                            <div class="card catalog-card h-100 position-relative">
+                                <span class="badge bg-secondary status-badge">غير متصل</span>
+                                <div class="card-body text-center">
+                                    <div class="catalog-icon bg-warning text-white mx-auto">
+                                        <i class="fab fa-instagram fa-lg"></i>
+                                    </div>
+                                    <h6 class="card-title">Instagram API</h6>
+                                    <p class="card-text text-muted small">جمع التعليقات من إنستغرام</p>
+                                    <div class="d-flex justify-content-between align-items-center mt-3">
+                                        <small class="text-muted">غير مُعدّ</small>
+                                        <button class="btn btn-sm btn-outline-secondary">إعداد</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Database Integrations -->
+                <div class="integration-category">
+                    <h4 class="mb-3">
+                        <i class="fas fa-database me-2"></i>
+                        قواعد البيانات
+                    </h4>
+                    <div class="row">
+                        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                            <div class="card catalog-card h-100 position-relative">
+                                <span class="badge bg-success status-badge">متصل</span>
+                                <div class="card-body text-center">
+                                    <div class="catalog-icon bg-dark text-white mx-auto">
+                                        <i class="fas fa-database fa-lg"></i>
+                                    </div>
+                                    <h6 class="card-title">MySQL</h6>
+                                    <p class="card-text text-muted small">اتصال مباشر بقاعدة بيانات MySQL</p>
+                                    <div class="d-flex justify-content-between align-items-center mt-3">
+                                        <small class="text-muted">5 جداول</small>
+                                        <button class="btn btn-sm btn-outline-primary">إعداد</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                            <div class="card catalog-card h-100 position-relative">
+                                <span class="badge bg-secondary status-badge">غير متصل</span>
+                                <div class="card-body text-center">
+                                    <div class="catalog-icon bg-primary text-white mx-auto">
+                                        <i class="fas fa-database fa-lg"></i>
+                                    </div>
+                                    <h6 class="card-title">PostgreSQL</h6>
+                                    <p class="card-text text-muted small">اتصال بقاعدة بيانات PostgreSQL</p>
+                                    <div class="d-flex justify-content-between align-items-center mt-3">
+                                        <small class="text-muted">غير مُعدّ</small>
+                                        <button class="btn btn-sm btn-outline-secondary">إعداد</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                            <div class="card catalog-card h-100 position-relative">
+                                <span class="badge bg-secondary status-badge">غير متصل</span>
+                                <div class="card-body text-center">
+                                    <div class="catalog-icon bg-success text-white mx-auto">
+                                        <i class="fas fa-leaf fa-lg"></i>
+                                    </div>
+                                    <h6 class="card-title">MongoDB</h6>
+                                    <p class="card-text text-muted small">اتصال بقاعدة بيانات MongoDB</p>
+                                    <div class="d-flex justify-content-between align-items-center mt-3">
+                                        <small class="text-muted">غير مُعدّ</small>
+                                        <button class="btn btn-sm btn-outline-secondary">إعداد</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- File Sources -->
+                <div class="integration-category">
+                    <h4 class="mb-3">
+                        <i class="fas fa-file me-2"></i>
+                        مصادر الملفات
+                    </h4>
+                    <div class="row">
+                        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                            <div class="card catalog-card h-100 position-relative">
+                                <span class="badge bg-success status-badge">نشط</span>
+                                <div class="card-body text-center">
+                                    <div class="catalog-icon bg-success text-white mx-auto">
+                                        <i class="fas fa-file-csv fa-lg"></i>
+                                    </div>
+                                    <h6 class="card-title">ملفات CSV</h6>
+                                    <p class="card-text text-muted small">رفع ملفات CSV مع التعليقات</p>
+                                    <div class="d-flex justify-content-between align-items-center mt-3">
+                                        <small class="text-muted">آخر رفع: أمس</small>
+                                        <button class="btn btn-sm btn-outline-primary">رفع</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                            <div class="card catalog-card h-100 position-relative">
+                                <span class="badge bg-success status-badge">نشط</span>
+                                <div class="card-body text-center">
+                                    <div class="catalog-icon bg-info text-white mx-auto">
+                                        <i class="fas fa-file-excel fa-lg"></i>
+                                    </div>
+                                    <h6 class="card-title">ملفات Excel</h6>
+                                    <p class="card-text text-muted small">استيراد من ملفات Excel</p>
+                                    <div class="d-flex justify-content-between align-items-center mt-3">
+                                        <small class="text-muted">آخر رفع: أمس</small>
+                                        <button class="btn btn-sm btn-outline-primary">رفع</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                            <div class="card catalog-card h-100 position-relative">
+                                <span class="badge bg-warning status-badge">قريباً</span>
+                                <div class="card-body text-center">
+                                    <div class="catalog-icon bg-danger text-white mx-auto">
+                                        <i class="fas fa-file-pdf fa-lg"></i>
+                                    </div>
+                                    <h6 class="card-title">ملفات PDF</h6>
+                                    <p class="card-text text-muted small">استخراج النصوص من PDF</p>
+                                    <div class="d-flex justify-content-between align-items-center mt-3">
+                                        <small class="text-muted">قيد التطوير</small>
+                                        <button class="btn btn-sm btn-outline-secondary" disabled>قريباً</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Email & Communication -->
+                <div class="integration-category">
+                    <h4 class="mb-3">
+                        <i class="fas fa-envelope me-2"></i>
+                        البريد الإلكتروني والاتصالات
+                    </h4>
+                    <div class="row">
+                        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                            <div class="card catalog-card h-100 position-relative">
+                                <span class="badge bg-success status-badge">متصل</span>
+                                <div class="card-body text-center">
+                                    <div class="catalog-icon bg-primary text-white mx-auto">
+                                        <i class="fas fa-envelope fa-lg"></i>
+                                    </div>
+                                    <h6 class="card-title">Gmail API</h6>
+                                    <p class="card-text text-muted small">استقبال التعليقات عبر Gmail</p>
+                                    <div class="d-flex justify-content-between align-items-center mt-3">
+                                        <small class="text-muted">234 رسالة</small>
+                                        <button class="btn btn-sm btn-outline-primary">إعداد</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                            <div class="card catalog-card h-100 position-relative">
+                                <span class="badge bg-secondary status-badge">غير متصل</span>
+                                <div class="card-body text-center">
+                                    <div class="catalog-icon bg-warning text-white mx-auto">
+                                        <i class="fas fa-phone fa-lg"></i>
+                                    </div>
+                                    <h6 class="card-title">مركز الاتصال</h6>
+                                    <p class="card-text text-muted small">تسجيلات المكالمات الهاتفية</p>
+                                    <div class="d-flex justify-content-between align-items-center mt-3">
+                                        <small class="text-muted">غير مُعدّ</small>
+                                        <button class="btn btn-sm btn-outline-secondary">إعداد</button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -291,6 +335,15 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    {% include 'components/scripts.html' %}
+    
+    <script>
+        document.querySelectorAll('.catalog-card').forEach(card => {
+            card.addEventListener('click', function() {
+                const title = this.querySelector('.card-title').textContent;
+                alert(`فتح إعدادات: ${title}`);
+            });
+        });
+    </script>
 </body>
 </html>

@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    {% include 'components/head.html' %}
+    <title>{{ title }} - منصة صوت العميل العربية</title>
+</head>
+<body>
+    {% include 'components/navigation.html' %}
+
+    <div class="container-fluid mt-4">
+        <div class="row">
+            <div class="col-12">
+                <!-- Page Header -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h1 class="h3 text-primary">
+                            <i class="fas fa-users me-2"></i>
+                            إدارة المستخدمين
+                        </h1>
+                        <p class="text-muted">إدارة حسابات المستخدمين والصلاحيات</p>
+                    </div>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addUserModal">
+                        <i class="fas fa-plus me-1"></i>
+                        إضافة مستخدم جديد
+                    </button>
+                </div>
+
+                <!-- User Statistics -->
+                <div class="row mb-4">
+                    <div class="col-xl-3 col-md-6 mb-3">
+                        <div class="card bg-primary text-white">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <h6 class="card-title">إجمالي المستخدمين</h6>
+                                        <h3 class="mb-0">127</h3>
+                                    </div>
+                                    <div>
+                                        <i class="fas fa-users fa-2x"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xl-3 col-md-6 mb-3">
+                        <div class="card bg-success text-white">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <h6 class="card-title">المستخدمين النشطين</h6>
+                                        <h3 class="mb-0">89</h3>
+                                    </div>
+                                    <div>
+                                        <i class="fas fa-user-check fa-2x"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xl-3 col-md-6 mb-3">
+                        <div class="card bg-warning text-white">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <h6 class="card-title">المديرين</h6>
+                                        <h3 class="mb-0">12</h3>
+                                    </div>
+                                    <div>
+                                        <i class="fas fa-user-shield fa-2x"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xl-3 col-md-6 mb-3">
+                        <div class="card bg-info text-white">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <h6 class="card-title">تسجيلات دخول اليوم</h6>
+                                        <h3 class="mb-0">47</h3>
+                                    </div>
+                                    <div>
+                                        <i class="fas fa-sign-in-alt fa-2x"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Users Table -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="card-title mb-0">قائمة المستخدمين</h5>
+                            <div class="d-flex gap-2">
+                                <input type="search" class="form-control" placeholder="البحث..." style="width: 200px;">
+                                <select class="form-select" style="width: 150px;">
+                                    <option>جميع الأدوار</option>
+                                    <option>مدير</option>
+                                    <option>محلل</option>
+                                    <option>مستخدم</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>الاسم</th>
+                                        <th>البريد الإلكتروني</th>
+                                        <th>الدور</th>
+                                        <th>الحالة</th>
+                                        <th>آخر دخول</th>
+                                        <th>الإجراءات</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <img src="https://via.placeholder.com/32" class="rounded-circle me-2" alt="صورة المستخدم">
+                                                <span>أحمد محمد</span>
+                                            </div>
+                                        </td>
+                                        <td>ahmed@example.com</td>
+                                        <td><span class="badge bg-danger">مدير</span></td>
+                                        <td><span class="badge bg-success">نشط</span></td>
+                                        <td>منذ 5 دقائق</td>
+                                        <td>
+                                            <div class="btn-group btn-group-sm">
+                                                <button class="btn btn-outline-primary" title="تعديل">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button class="btn btn-outline-warning" title="إيقاف">
+                                                    <i class="fas fa-pause"></i>
+                                                </button>
+                                                <button class="btn btn-outline-danger" title="حذف">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <img src="https://via.placeholder.com/32" class="rounded-circle me-2" alt="صورة المستخدم">
+                                                <span>فاطمة علي</span>
+                                            </div>
+                                        </td>
+                                        <td>fatima@example.com</td>
+                                        <td><span class="badge bg-primary">محلل</span></td>
+                                        <td><span class="badge bg-success">نشط</span></td>
+                                        <td>منذ ساعة</td>
+                                        <td>
+                                            <div class="btn-group btn-group-sm">
+                                                <button class="btn btn-outline-primary" title="تعديل">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button class="btn btn-outline-warning" title="إيقاف">
+                                                    <i class="fas fa-pause"></i>
+                                                </button>
+                                                <button class="btn btn-outline-danger" title="حذف">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <img src="https://via.placeholder.com/32" class="rounded-circle me-2" alt="صورة المستخدم">
+                                                <span>خالد سعد</span>
+                                            </div>
+                                        </td>
+                                        <td>khalid@example.com</td>
+                                        <td><span class="badge bg-secondary">مستخدم</span></td>
+                                        <td><span class="badge bg-warning">معلق</span></td>
+                                        <td>أمس</td>
+                                        <td>
+                                            <div class="btn-group btn-group-sm">
+                                                <button class="btn btn-outline-primary" title="تعديل">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button class="btn btn-outline-success" title="تفعيل">
+                                                    <i class="fas fa-play"></i>
+                                                </button>
+                                                <button class="btn btn-outline-danger" title="حذف">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Pagination -->
+                        <nav aria-label="تنقل الصفحات">
+                            <ul class="pagination justify-content-center">
+                                <li class="page-item disabled">
+                                    <a class="page-link" href="#" tabindex="-1">السابق</a>
+                                </li>
+                                <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                <li class="page-item">
+                                    <a class="page-link" href="#">التالي</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add User Modal -->
+    <div class="modal fade" id="addUserModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">إضافة مستخدم جديد</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form id="addUserForm">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="userName" class="form-label">الاسم الكامل</label>
+                            <input type="text" class="form-control" id="userName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="userEmail" class="form-label">البريد الإلكتروني</label>
+                            <input type="email" class="form-control" id="userEmail" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="userRole" class="form-label">الدور</label>
+                            <select class="form-select" id="userRole" required>
+                                <option value="">اختر الدور</option>
+                                <option value="admin">مدير</option>
+                                <option value="analyst">محلل</option>
+                                <option value="user">مستخدم</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="userPassword" class="form-label">كلمة المرور</label>
+                            <input type="password" class="form-control" id="userPassword" required>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="sendInvite" checked>
+                            <label class="form-check-label" for="sendInvite">
+                                إرسال دعوة بالبريد الإلكتروني
+                            </label>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                        <button type="submit" class="btn btn-primary">إضافة المستخدم</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {% include 'components/scripts.html' %}
+    
+    <script>
+        document.getElementById('addUserForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form data
+            const formData = {
+                name: document.getElementById('userName').value,
+                email: document.getElementById('userEmail').value,
+                role: document.getElementById('userRole').value,
+                password: document.getElementById('userPassword').value,
+                sendInvite: document.getElementById('sendInvite').checked
+            };
+            
+            // TODO: Send to backend API
+            console.log('Adding user:', formData);
+            
+            // Close modal and show success message
+            const modal = bootstrap.Modal.getInstance(document.getElementById('addUserModal'));
+            modal.hide();
+            
+            alert('تم إضافة المستخدم بنجاح');
+            
+            // Reset form
+            this.reset();
+        });
+    </script>
+</body>
+</html>
