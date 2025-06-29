@@ -1,221 +1,119 @@
-<!-- Modern Horizontal Navigation System -->
-<nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow-sm">
-    <div class="container-fluid px-4">
+<!-- Arabic Voice of Customer Platform - Main Navigation -->
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
+    <div class="container-fluid">
         <!-- Brand -->
-        <a class="navbar-brand fw-bold text-primary d-flex align-items-center" href="/">
+        <a class="navbar-brand fw-bold text-primary" href="/" style="font-size: 1.25rem;">
             <i class="fas fa-home me-2"></i>
-            <span class="brand-text">منصة صوت العميل العربية</span>
+            منصة صوت العميل العربية
         </a>
         
-        <!-- Mobile toggle -->
-        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <!-- Mobile Toggle -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavigation" 
+                aria-controls="mainNavigation" aria-expanded="false" aria-label="تبديل القائمة">
             <span class="navbar-toggler-icon"></span>
         </button>
         
         <!-- Main Navigation -->
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav mx-auto">
-                <!-- Surveys -->
-                <li class="nav-item dropdown position-relative">
-                    <a class="nav-link dropdown-toggle px-3 py-2" href="#" id="surveysDropdown" 
-                       role="button" data-bs-toggle="dropdown" data-bs-auto-close="outside">
-                        <i class="fas fa-poll me-2"></i>الاستطلاعات
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-center shadow-lg border-0 p-0">
-                        <div class="dropdown-header bg-light px-3 py-2 fw-semibold">إدارة الاستطلاعات</div>
-                        <a class="dropdown-item px-3 py-2" href="/surveys/builder">
-                            <i class="fas fa-plus me-2 text-success"></i>إنشاء استطلاع جديد
-                        </a>
-                        <a class="dropdown-item px-3 py-2" href="/surveys">
-                            <i class="fas fa-list me-2 text-primary"></i>إدارة الاستطلاعات
-                        </a>
-                        <a class="dropdown-item px-3 py-2" href="/feedback">
-                            <i class="fas fa-comment me-2 text-info"></i>جمع التعليقات
-                        </a>
-                        <div class="dropdown-divider"></div>
-                        <div class="dropdown-header bg-light px-3 py-2 fw-semibold">التوزيع والردود</div>
-                        <a class="dropdown-item px-3 py-2" href="/surveys/distribution-demo">
-                            <i class="fas fa-paper-plane me-2 text-warning"></i>نظام التوزيع الجديد
-                        </a>
-                        <a class="dropdown-item px-3 py-2" href="/surveys/responses">
-                            <i class="fas fa-inbox me-2 text-secondary"></i>إدارة الردود
-                        </a>
-                    </div>
-                </li>
-
-                <!-- Analytics -->
-                <li class="nav-item dropdown position-relative">
-                    <a class="nav-link dropdown-toggle px-3 py-2" href="#" id="analyticsDropdown" 
-                       role="button" data-bs-toggle="dropdown" data-bs-auto-close="outside">
-                        <i class="fas fa-chart-line me-2"></i>التحليلات
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-center shadow-lg border-0 p-0">
-                        <div class="dropdown-header bg-light px-3 py-2 fw-semibold">لوحات المعلومات</div>
-                        <a class="dropdown-item px-3 py-2" href="/analytics/executive">
-                            <i class="fas fa-tachometer-alt me-2 text-primary"></i>لوحة القيادة التنفيذية
-                        </a>
-                        <a class="dropdown-item px-3 py-2" href="/analytics/detailed">
-                            <i class="fas fa-chart-bar me-2 text-info"></i>التحليلات التفصيلية
-                        </a>
-                        <div class="dropdown-divider"></div>
-                        <div class="dropdown-header bg-light px-3 py-2 fw-semibold">رؤى متخصصة</div>
-                        <a class="dropdown-item px-3 py-2" href="/analytics/arabic">
-                            <i class="fas fa-language me-2 text-success"></i>الرؤى العربية
-                        </a>
-                        <a class="dropdown-item px-3 py-2" href="/analytics/reports">
-                            <i class="fas fa-file-alt me-2 text-warning"></i>التقارير والتصدير
-                        </a>
-                    </div>
-                </li>
-
-                <!-- Integrations -->
-                <li class="nav-item dropdown position-relative">
-                    <a class="nav-link dropdown-toggle px-3 py-2" href="#" id="integrationsDropdown" 
-                       role="button" data-bs-toggle="dropdown" data-bs-auto-close="outside">
-                        <i class="fas fa-plug me-2"></i>التكاملات
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-center shadow-lg border-0 p-0">
-                        <div class="dropdown-header bg-light px-3 py-2 fw-semibold">تدفق البيانات</div>
-                        <a class="dropdown-item px-3 py-2" href="/integrations/sources">
-                            <i class="fas fa-download me-2 text-success"></i>مصادر البيانات
-                        </a>
-                        <a class="dropdown-item px-3 py-2" href="/integrations/destinations">
-                            <i class="fas fa-upload me-2 text-primary"></i>وجهات البيانات
-                        </a>
-                        <div class="dropdown-divider"></div>
-                        <div class="dropdown-header bg-light px-3 py-2 fw-semibold">الذكاء الاصطناعي</div>
-                        <a class="dropdown-item px-3 py-2" href="/integrations/ai">
-                            <i class="fas fa-brain me-2 text-purple"></i>إدارة الذكاء الاصطناعي
-                        </a>
-                    </div>
-                </li>
-
-                <!-- Settings -->
-                <li class="nav-item dropdown position-relative">
-                    <a class="nav-link dropdown-toggle px-3 py-2" href="#" id="settingsDropdown" 
-                       role="button" data-bs-toggle="dropdown" data-bs-auto-close="outside">
-                        <i class="fas fa-cog me-2"></i>الإعدادات
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-center shadow-lg border-0 p-0">
-                        <div class="dropdown-header bg-light px-3 py-2 fw-semibold">إدارة الحساب</div>
-                        <a class="dropdown-item px-3 py-2" href="/settings/account">
-                            <i class="fas fa-user me-2 text-primary"></i>إدارة الحساب
-                        </a>
-                        <a class="dropdown-item px-3 py-2" href="/settings/system">
-                            <i class="fas fa-sliders-h me-2 text-info"></i>إعدادات النظام
-                        </a>
-                        <div class="dropdown-divider"></div>
-                        <div class="dropdown-header bg-light px-3 py-2 fw-semibold">الأمان والإدارة</div>
-                        <a class="dropdown-item px-3 py-2" href="/settings/security">
-                            <i class="fas fa-shield-alt me-2 text-warning"></i>الأمان والخصوصية
-                        </a>
-                        <a class="dropdown-item px-3 py-2" href="/settings/admin">
-                            <i class="fas fa-server me-2 text-danger"></i>إدارة المنصة
-                        </a>
-                    </div>
-                </li>
-            </ul>
-            
-            <!-- User Actions -->
-            <ul class="navbar-nav">
+        <div class="collapse navbar-collapse" id="mainNavigation">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <!-- 1. Surveys -->
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle px-3 py-2" href="#" id="userDropdown" 
-                       role="button" data-bs-toggle="dropdown">
-                        <i class="fas fa-user-circle me-2"></i>المستخدم
+                    <a class="nav-link dropdown-toggle" href="#" id="surveysDropdown" role="button" 
+                       data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-poll me-1"></i>الاستطلاعات
                     </a>
-                    <div class="dropdown-menu dropdown-menu-start shadow-lg border-0 p-0">
-                        <a class="dropdown-item px-3 py-2" href="/profile">
-                            <i class="fas fa-user me-2"></i>الملف الشخصي
-                        </a>
-                        <a class="dropdown-item px-3 py-2" href="/help">
-                            <i class="fas fa-question-circle me-2"></i>المساعدة
-                        </a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item px-3 py-2" href="/logout">
-                            <i class="fas fa-sign-out-alt me-2"></i>تسجيل الخروج
-                        </a>
-                    </div>
-                </li>
-            </ul>
-        </div>
-    </div>
-</nav></div>
-                            <i class="fas fa-comment me-2"></i>جمع التعليقات
+                    <ul class="dropdown-menu">
+                        <li><h6 class="dropdown-header">إنشاء وإدارة</h6></li>
+                        <li><a class="dropdown-item" href="/surveys/create">
+                            <i class="fas fa-plus me-2"></i>إنشاء استطلاع جديد
+                        </a></li>
+                        <li><a class="dropdown-item" href="/surveys/manage">
+                            <i class="fas fa-list me-2"></i>إدارة الاستطلاعات
                         </a></li>
                         <li><a class="dropdown-item" href="/surveys/responses">
-                            <i class="fas fa-inbox me-2"></i>إدارة الردود
+                            <i class="fas fa-chart-bar me-2"></i>الردود والنتائج
                         </a></li>
                         <li><hr class="dropdown-divider"></li>
-                        <li class="dropdown-header">التوزيع متعدد القنوات</li>
-                        <li><a class="dropdown-item" href="/surveys/distribution-demo" style="background-color: #e8f5e8; font-weight: bold;">
+                        <li><h6 class="dropdown-header">التوزيع متعدد القنوات</h6></li>
+                        <li><a class="dropdown-item" href="/surveys/distribution-demo">
                             <i class="fas fa-paper-plane me-2 text-success"></i>نظام التوزيع الجديد ⭐
                         </a></li>
                     </ul>
                 </li>
                 
-                <!-- 2. Analytics -->
+                <!-- 2. Dashboards -->
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="analyticsDropdown" role="button" data-bs-toggle="dropdown">
-                        <i class="fas fa-chart-line me-1"></i>
-                        التحليلات
+                    <a class="nav-link dropdown-toggle" href="#" id="dashboardsDropdown" role="button" 
+                       data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-tachometer-alt me-1"></i>لوحات القيادة
                     </a>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                        <li class="dropdown-header">لوحات المعلومات</li>
-                        <li><a class="dropdown-item" href="/analytics/executive">
-                            <i class="fas fa-tachometer-alt me-2"></i>لوحة القيادة
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="/dashboards/executive">
+                            <i class="fas fa-crown me-2"></i>العرض التنفيذي
                         </a></li>
-                        <li><a class="dropdown-item" href="/analytics/detailed">
-                            <i class="fas fa-chart-bar me-2"></i>التحليلات التفصيلية
-                        </a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li class="dropdown-header">رؤى متخصصة</li>
-                        <li><a class="dropdown-item" href="/analytics/arabic">
-                            <i class="fas fa-language me-2"></i>الرؤى العربية
-                        </a></li>
-                        <li><a class="dropdown-item" href="/analytics/reports">
-                            <i class="fas fa-file-alt me-2"></i>التقارير والتصدير
+                        <li><a class="dropdown-item" href="/dashboards/analyst">
+                            <i class="fas fa-chart-line me-2"></i>عرض المحلل
                         </a></li>
                     </ul>
                 </li>
                 
                 <!-- 3. Integrations -->
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="integrationsDropdown" role="button" data-bs-toggle="dropdown">
-                        <i class="fas fa-plug me-1"></i>
-                        التكاملات
+                    <a class="nav-link dropdown-toggle" href="#" id="integrationsDropdown" role="button" 
+                       data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-plug me-1"></i>التكاملات
                     </a>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                        <li class="dropdown-header">تدفق البيانات</li>
+                    <ul class="dropdown-menu">
+                        <li><h6 class="dropdown-header">تدفق البيانات</h6></li>
                         <li><a class="dropdown-item" href="/integrations/sources">
-                            <i class="fas fa-download text-success me-2"></i>مصادر البيانات
+                            <i class="fas fa-download me-2 text-success"></i>مصادر البيانات
                         </a></li>
                         <li><a class="dropdown-item" href="/integrations/destinations">
-                            <i class="fas fa-upload text-primary me-2"></i>وجهات البيانات
+                            <i class="fas fa-upload me-2 text-primary"></i>وجهات البيانات
                         </a></li>
                         <li><hr class="dropdown-divider"></li>
-                        <li class="dropdown-header">الذكاء الاصطناعي</li>
+                        <li><h6 class="dropdown-header">الذكاء الاصطناعي</h6></li>
                         <li><a class="dropdown-item" href="/integrations/ai">
-                            <i class="fas fa-brain text-purple me-2"></i>إدارة الذكاء الاصطناعي
+                            <i class="fas fa-brain me-2 text-purple"></i>إدارة الذكاء الاصطناعي
                         </a></li>
                     </ul>
                 </li>
                 
-                <!-- 4. Settings -->
+                <!-- 4. Analytics -->
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="settingsDropdown" role="button" data-bs-toggle="dropdown">
-                        <i class="fas fa-cog me-1"></i>
-                        الإعدادات
+                    <a class="nav-link dropdown-toggle" href="#" id="analyticsDropdown" role="button" 
+                       data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-brain me-1"></i>التحليلات
                     </a>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                        <li class="dropdown-header">إدارة الحساب</li>
-                        <li><a class="dropdown-item" href="/settings/account">
-                            <i class="fas fa-user me-2"></i>إدارة الحساب
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="/analytics/insights">
+                            <i class="fas fa-lightbulb me-2"></i>الرؤى المباشرة
+                        </a></li>
+                        <li><a class="dropdown-item" href="/analytics/reports">
+                            <i class="fas fa-file-export me-2"></i>التقارير والتصدير
+                        </a></li>
+                        <li><a class="dropdown-item" href="/analytics/ai-lab">
+                            <i class="fas fa-flask me-2"></i>مختبر الذكاء الاصطناعي
+                        </a></li>
+                    </ul>
+                </li>
+                
+                <!-- 5. Settings -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="settingsDropdown" role="button" 
+                       data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-cog me-1"></i>الإعدادات
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><h6 class="dropdown-header">إدارة الحساب</h6></li>
+                        <li><a class="dropdown-item" href="/settings/users">
+                            <i class="fas fa-users me-2"></i>إدارة المستخدمين
                         </a></li>
                         <li><a class="dropdown-item" href="/settings/system">
                             <i class="fas fa-sliders-h me-2"></i>إعدادات النظام
                         </a></li>
                         <li><hr class="dropdown-divider"></li>
-                        <li class="dropdown-header">الأمان والإدارة</li>
+                        <li><h6 class="dropdown-header">الأمان والإدارة</h6></li>
                         <li><a class="dropdown-item" href="/settings/security">
                             <i class="fas fa-shield-alt me-2"></i>الأمان والخصوصية
                         </a></li>
@@ -229,18 +127,21 @@
             <!-- User Actions -->
             <ul class="navbar-nav">
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
-                        <i class="fas fa-user-circle me-1"></i>
-                        المستخدم
+                    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" 
+                       data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-user-circle me-1"></i>المستخدم
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="/login">
+                            <i class="fas fa-sign-in-alt me-2"></i>تسجيل الدخول
+                        </a></li>
+                        <li><a class="dropdown-item" href="/register">
+                            <i class="fas fa-user-plus me-2"></i>إنشاء حساب
+                        </a></li>
+                        <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item" href="/profile">
                             <i class="fas fa-user me-2"></i>الملف الشخصي
                         </a></li>
-                        <li><a class="dropdown-item" href="/help">
-                            <i class="fas fa-question-circle me-2"></i>المساعدة
-                        </a></li>
-                        <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item" href="/logout">
                             <i class="fas fa-sign-out-alt me-2"></i>تسجيل الخروج
                         </a></li>
@@ -251,219 +152,98 @@
     </div>
 </nav>
 
-
-
+<!-- Custom CSS for Navigation -->
 <style>
-    .navbar-main {
-        background: rgba(255, 255, 255, 0.95);
-        backdrop-filter: blur(10px);
-        border-bottom: 1px solid #e9ecef;
-        padding: 1rem 0;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.08);
-    }
+.navbar {
+    background: rgba(255, 255, 255, 0.95) !important;
+    backdrop-filter: blur(10px);  
+    border-bottom: 1px solid #e9ecef;
+}
 
-    .navbar-brand {
-        font-weight: 700;
-        color: var(--primary-color) !important;
-        font-size: 1.5rem;
-        transition: color 0.3s ease;
-    }
+.navbar-brand {
+    font-weight: 700;
+    color: var(--primary-500, #2E8B57) !important;
+    transition: opacity 0.3s ease;
+}
 
-    .navbar-brand:hover {
-        color: var(--primary-color) !important;
-        opacity: 0.8;
-    }
+.navbar-brand:hover {
+    opacity: 0.8;
+}
 
-    .nav-link {
-        color: var(--text-color) !important;
-        font-weight: 500;
-        padding: 0.75rem 1rem !important;
-        border-radius: 8px;
-        margin: 0 0.25rem;
-        transition: all 0.3s ease;
-    }
+.navbar-nav .nav-link {
+    font-weight: 500;
+    padding: 0.75rem 1rem;
+    color: var(--text-primary, #2c3e50) !important;
+    transition: all 0.3s ease;
+    border-radius: 0.375rem;
+    margin: 0 0.25rem;
+}
 
-    .nav-link:hover, .nav-link.active {
-        background: var(--primary-color);
-        color: white !important;
-    }
+.navbar-nav .nav-link:hover {
+    background-color: var(--primary-50, #f0f9f4);
+    color: var(--primary-600, #25754a) !important;
+}
 
+.dropdown-menu {
+    border: none;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    border-radius: 0.5rem;
+    padding: 0.5rem 0;
+    margin-top: 0.5rem;
+}
+
+.dropdown-item {
+    padding: 0.5rem 1rem;
+    font-weight: 400;
+    transition: all 0.2s ease;
+}
+
+.dropdown-item:hover {
+    background-color: var(--primary-50, #f0f9f4);
+    color: var(--primary-600, #25754a);
+}
+
+.dropdown-header {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-secondary, #6c757d);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.5rem 1rem 0.25rem;
+}
+
+.dropdown-divider {
+    margin: 0.5rem 0;
+    border-top: 1px solid var(--border-light, #e9ecef);
+}
+
+.text-purple {
+    color: #6f42c1 !important;
+}
+
+/* RTL Support */
+[dir="rtl"] .navbar-nav {
+    flex-direction: row-reverse;
+}
+
+[dir="rtl"] .dropdown-menu {
+    right: 0;
+    left: auto;
+}
+
+/* Mobile Responsive */
+@media (max-width: 991.98px) {
+    .navbar-nav .nav-link {
+        margin: 0;
+        border-radius: 0;
+    }
+    
     .dropdown-menu {
-        border: none;
-        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-        border-radius: 12px;
-        padding: 0.5rem 0;
-        min-width: 250px;
+        position: static !important;
+        transform: none !important;
+        box-shadow: none;
+        border: 1px solid var(--border-light, #e9ecef);
+        margin-top: 0;
     }
-
-    .dropdown-header {
-        color: var(--primary-color);
-        font-weight: 600;
-        font-size: 0.8rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        padding: 0.5rem 1rem 0.25rem;
-    }
-
-    .dropdown-item {
-        padding: 0.75rem 1rem;
-        color: var(--text-color);
-        transition: all 0.3s ease;
-    }
-
-    .dropdown-item:hover {
-        background: rgba(46, 139, 87, 0.1);
-        color: var(--primary-color);
-    }
-
-    .dropdown-item i {
-        width: 20px;
-        text-align: center;
-    }
-
-    .breadcrumb-nav {
-        background: #f8f9fa;
-        padding: 0.5rem 0;
-        border-bottom: 1px solid #e9ecef;
-    }
-
-    .breadcrumb {
-        margin-bottom: 0;
-        background: transparent;
-        font-size: 0.9rem;
-    }
-
-    .breadcrumb-item a {
-        color: var(--primary-color);
-        text-decoration: none;
-        transition: color 0.3s ease;
-    }
-
-    .breadcrumb-item a:hover {
-        color: var(--text-color);
-    }
-
-    .breadcrumb-item.active {
-        color: var(--text-color);
-        font-weight: 500;
-    }
-
-    /* Mobile responsive */
-    @media (max-width: 768px) {
-        .navbar-brand {
-            font-size: 1.2rem;
-        }
-        
-        .dropdown-menu {
-            min-width: 200px;
-        }
-        
-        .breadcrumb {
-            font-size: 0.8rem;
-        }
-    }
-
-    /* RTL specific adjustments */
-    .dropdown-menu-end {
-        right: 0;
-        left: auto;
-    }
-
-    [dir="rtl"] .dropdown-menu-end {
-        right: auto;
-        left: 0;
-    }
+}
 </style>
-
-<script>
-    // Dynamic breadcrumb management
-    class BreadcrumbManager {
-        constructor() {
-            this.breadcrumbContainer = document.getElementById('dynamicBreadcrumb');
-            this.updateBreadcrumb();
-        }
-
-        updateBreadcrumb() {
-            const path = window.location.pathname;
-            const breadcrumbs = this.generateBreadcrumbs(path);
-            this.renderBreadcrumbs(breadcrumbs);
-        }
-
-        generateBreadcrumbs(path) {
-            const pathMap = {
-                '/surveys/builder': ['الاستطلاعات', 'منشئ الاستطلاعات'],
-                '/surveys/manage': ['الاستطلاعات', 'إدارة الاستطلاعات'],
-                '/surveys/feedback': ['الاستطلاعات', 'جمع التعليقات'],
-                '/surveys/responses': ['الاستطلاعات', 'إدارة الردود'],
-                '/analytics/executive': ['التحليلات', 'لوحة القيادة'],
-                '/analytics/detailed': ['التحليلات', 'التحليلات التفصيلية'],
-                '/analytics/arabic': ['التحليلات', 'الرؤى العربية'],
-                '/analytics/reports': ['التحليلات', 'التقارير والتصدير'],
-                '/integrations/sources': ['التكاملات', 'مصادر البيانات'],
-                '/integrations/destinations': ['التكاملات', 'وجهات البيانات'],
-                '/integrations/ai': ['التكاملات', 'إدارة الذكاء الاصطناعي'],
-                '/settings/account': ['الإعدادات', 'إدارة الحساب'],
-                '/settings/system': ['الإعدادات', 'إعدادات النظام'],
-                '/settings/security': ['الإعدادات', 'الأمان والخصوصية'],
-                '/settings/admin': ['الإعدادات', 'إدارة المنصة']
-            };
-
-            return pathMap[path] || [];
-        }
-
-        renderBreadcrumbs(items) {
-            if (!this.breadcrumbContainer) return;
-            
-            // Keep home breadcrumb
-            const homeCrumb = this.breadcrumbContainer.querySelector('li:first-child');
-            this.breadcrumbContainer.innerHTML = '';
-            if (homeCrumb) {
-                this.breadcrumbContainer.appendChild(homeCrumb);
-            }
-
-            // Add dynamic breadcrumbs
-            items.forEach((item, index) => {
-                const li = document.createElement('li');
-                li.className = index === items.length - 1 ? 'breadcrumb-item active' : 'breadcrumb-item';
-                
-                if (index === items.length - 1) {
-                    li.textContent = item;
-                } else {
-                    const a = document.createElement('a');
-                    a.href = 'javascript:void(0)';
-                    a.textContent = item;
-                    li.appendChild(a);
-                }
-                
-                this.breadcrumbContainer.appendChild(li);
-            });
-        }
-    }
-
-    // Initialize breadcrumb manager
-    document.addEventListener('DOMContentLoaded', () => {
-        new BreadcrumbManager();
-    });
-
-    // Update active navigation state
-    function updateActiveNavigation() {
-        const currentPath = window.location.pathname;
-        document.querySelectorAll('.nav-link').forEach(link => {
-            link.classList.remove('active');
-            
-            // Check if current path matches dropdown item
-            const href = link.getAttribute('href');
-            if (href && currentPath.startsWith(href)) {
-                link.classList.add('active');
-                
-                // Also highlight parent dropdown
-                const dropdown = link.closest('.dropdown');
-                if (dropdown) {
-                    dropdown.querySelector('.dropdown-toggle').classList.add('active');
-                }
-            }
-        });
-    }
-
-    document.addEventListener('DOMContentLoaded', updateActiveNavigation);
-</script>
