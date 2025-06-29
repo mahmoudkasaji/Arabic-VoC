@@ -372,6 +372,147 @@
                             </div>
                         </div>
                         
+                        <!-- Financial Impact Tab -->
+                        <div class="tab-pane fade" id="financial" role="tabpanel">
+                            <div class="row mt-3">
+                                <!-- Financial KPIs -->
+                                <div class="col-lg-8">
+                                    <div class="row">
+                                        <!-- Revenue at Risk -->
+                                        <div class="col-md-4 mb-3">
+                                            <div class="card border-danger">
+                                                <div class="card-body text-center">
+                                                    <h6 class="card-title text-danger">إيرادات معرضة للخطر</h6>
+                                                    <h3 class="mb-1 text-danger" id="revenueAtRisk">247,500 ر.س</h3>
+                                                    <small class="text-muted">هذا الشهر</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Cost Savings -->
+                                        <div class="col-md-4 mb-3">
+                                            <div class="card border-success">
+                                                <div class="card-body text-center">
+                                                    <h6 class="card-title text-success">وفورات محققة</h6>
+                                                    <h3 class="mb-1 text-success" id="costSavings">89,200 ر.س</h3>
+                                                    <small class="text-muted">هذا الشهر</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- ROI -->
+                                        <div class="col-md-4 mb-3">
+                                            <div class="card border-primary">
+                                                <div class="card-body text-center">
+                                                    <h6 class="card-title text-primary">عائد الاستثمار</h6>
+                                                    <h3 class="mb-1 text-primary" id="roiValue">342%</h3>
+                                                    <small class="text-muted">متوسط الـ 6 أشهر</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Priority Heatmap -->
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h6 class="mb-0">خريطة أولويات التأثير المالي</h6>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="chart-container">
+                                                <canvas id="priorityHeatmapChart"></canvas>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Financial Insights -->
+                                <div class="col-lg-4">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h6 class="mb-0">رؤى مالية فورية</h6>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="mb-3">
+                                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                                    <span class="badge bg-danger">P1 - حرج</span>
+                                                    <span class="text-danger fw-bold">3 قضايا</span>
+                                                </div>
+                                                <div class="progress" style="height: 8px;">
+                                                    <div class="progress-bar bg-danger" style="width: 75%"></div>
+                                                </div>
+                                                <small class="text-muted">متوسط الخسارة: 45,000 ر.س</small>
+                                            </div>
+                                            
+                                            <div class="mb-3">
+                                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                                    <span class="badge bg-warning">P2 - عالي</span>
+                                                    <span class="text-warning fw-bold">7 قضايا</span>
+                                                </div>
+                                                <div class="progress" style="height: 8px;">
+                                                    <div class="progress-bar bg-warning" style="width: 45%"></div>
+                                                </div>
+                                                <small class="text-muted">متوسط الخسارة: 12,000 ر.س</small>
+                                            </div>
+                                            
+                                            <div class="mb-3">
+                                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                                    <span class="badge bg-info">P3 - متوسط</span>
+                                                    <span class="text-info fw-bold">15 قضية</span>
+                                                </div>
+                                                <div class="progress" style="height: 8px;">
+                                                    <div class="progress-bar bg-info" style="width: 25%"></div>
+                                                </div>
+                                                <small class="text-muted">متوسط الخسارة: 3,500 ر.س</small>
+                                            </div>
+                                            
+                                            <div class="mb-3">
+                                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                                    <span class="badge bg-success">P4 - منخفض</span>
+                                                    <span class="text-success fw-bold">28 تحسين</span>
+                                                </div>
+                                                <div class="progress" style="height: 8px;">
+                                                    <div class="progress-bar bg-success" style="width: 85%"></div>
+                                                </div>
+                                                <small class="text-muted">متوسط الوفورات: 2,100 ر.س</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Action Items -->
+                                    <div class="card mt-3">
+                                        <div class="card-header">
+                                            <h6 class="mb-0">إجراءات مطلوبة فوراً</h6>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="list-group list-group-flush">
+                                                <div class="list-group-item d-flex justify-content-between align-items-start px-0">
+                                                    <div>
+                                                        <div class="fw-bold text-danger">مشكلة نظام الدفع</div>
+                                                        <small>خسارة محتملة: 85,000 ر.س</small>
+                                                    </div>
+                                                    <span class="badge bg-danger rounded-pill">P1</span>
+                                                </div>
+                                                <div class="list-group-item d-flex justify-content-between align-items-start px-0">
+                                                    <div>
+                                                        <div class="fw-bold text-warning">تحسين سرعة الاستجابة</div>
+                                                        <small>وفورات محتملة: 25,000 ر.س</small>
+                                                    </div>
+                                                    <span class="badge bg-warning rounded-pill">P2</span>
+                                                </div>
+                                                <div class="list-group-item d-flex justify-content-between align-items-start px-0">
+                                                    <div>
+                                                        <div class="fw-bold text-info">تطوير واجهة المستخدم</div>
+                                                        <small>تحسين التجربة العامة</small>
+                                                    </div>
+                                                    <span class="badge bg-info rounded-pill">P3</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- Sentiment Tab -->
                         <div class="tab-pane fade" id="sentiment" role="tabpanel">
                             <div class="row mt-3">
@@ -561,6 +702,7 @@
                 if (typeof Chart !== 'undefined') {
                     this.initializeTrendChart();
                     this.initializeChannelChart();
+                    this.initializePriorityHeatmapChart();
                 } else {
                     console.warn('Chart.js not available');
                 }
@@ -655,6 +797,116 @@
                     this.charts.channel.data.datasets[0].data = channels.values;
                     this.charts.channel.update();
                 }
+            }
+
+            initializePriorityHeatmapChart() {
+                const ctx = document.getElementById('priorityHeatmapChart');
+                if (!ctx) return;
+                
+                // Financial impact priority heatmap data
+                const heatmapData = [
+                    {x: 'مشكلة الدفع', y: 'P1 - حرج', v: 85000, issue: 'Payment System Failure'},
+                    {x: 'بطء الاستجابة', y: 'P2 - عالي', v: 25000, issue: 'Response Time Issues'},
+                    {x: 'واجهة المستخدم', y: 'P3 - متوسط', v: 8000, issue: 'UI/UX Improvements'},
+                    {x: 'تحسين العمليات', y: 'P4 - منخفض', v: 3500, issue: 'Process Optimization'},
+                    {x: 'مشاكل التوصيل', y: 'P1 - حرج', v: 65000, issue: 'Delivery Issues'},
+                    {x: 'دعم العملاء', y: 'P2 - عالي', v: 18000, issue: 'Customer Support'},
+                    {x: 'تحديث النظام', y: 'P3 - متوسط', v: 12000, issue: 'System Updates'},
+                    {x: 'تدريب الموظفين', y: 'P4 - منخفض', v: 5000, issue: 'Staff Training'}
+                ];
+                
+                this.charts.priorityHeatmap = new Chart(ctx, {
+                    type: 'scatter',
+                    data: {
+                        datasets: [{
+                            label: 'التأثير المالي (ر.س)',
+                            data: heatmapData,
+                            backgroundColor: function(context) {
+                                const value = context.parsed.v;
+                                if (value > 50000) return 'rgba(220, 53, 69, 0.8)'; // P1 - Red
+                                if (value > 20000) return 'rgba(255, 193, 7, 0.8)'; // P2 - Yellow
+                                if (value > 10000) return 'rgba(23, 162, 184, 0.8)'; // P3 - Blue
+                                return 'rgba(40, 167, 69, 0.8)'; // P4 - Green
+                            },
+                            borderColor: function(context) {
+                                const value = context.parsed.v;
+                                if (value > 50000) return 'rgb(220, 53, 69)';
+                                if (value > 20000) return 'rgb(255, 193, 7)';
+                                if (value > 10000) return 'rgb(23, 162, 184)';
+                                return 'rgb(40, 167, 69)';
+                            },
+                            borderWidth: 2,
+                            pointRadius: function(context) {
+                                return Math.sqrt(context.parsed.v / 1000) + 8;
+                            }
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'مصفوفة الأولوية والتأثير المالي',
+                                font: { size: 16, weight: 'bold' },
+                                color: '#2E8B57'
+                            },
+                            legend: {
+                                display: true,
+                                position: 'bottom',
+                                labels: {
+                                    generateLabels: function() {
+                                        return [
+                                            { text: 'P1 - حرج (> 50,000 ر.س)', fillStyle: 'rgba(220, 53, 69, 0.8)', strokeStyle: 'rgb(220, 53, 69)' },
+                                            { text: 'P2 - عالي (20,000-50,000 ر.س)', fillStyle: 'rgba(255, 193, 7, 0.8)', strokeStyle: 'rgb(255, 193, 7)' },
+                                            { text: 'P3 - متوسط (10,000-20,000 ر.س)', fillStyle: 'rgba(23, 162, 184, 0.8)', strokeStyle: 'rgb(23, 162, 184)' },
+                                            { text: 'P4 - منخفض (< 10,000 ر.س)', fillStyle: 'rgba(40, 167, 69, 0.8)', strokeStyle: 'rgb(40, 167, 69)' }
+                                        ];
+                                    }
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    title: function(context) {
+                                        return context[0].raw.x;
+                                    },
+                                    label: function(context) {
+                                        const point = context.raw;
+                                        return [
+                                            `الأولوية: ${point.y}`,
+                                            `التأثير المالي: ${point.v.toLocaleString()} ر.س`,
+                                            `نوع القضية: ${point.x}`
+                                        ];
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                type: 'category',
+                                labels: ['مشكلة الدفع', 'بطء الاستجابة', 'واجهة المستخدم', 'تحسين العمليات', 'مشاكل التوصيل', 'دعم العملاء', 'تحديث النظام', 'تدريب الموظفين'],
+                                title: {
+                                    display: true,
+                                    text: 'نوع القضية',
+                                    font: { size: 14, weight: 'bold' }
+                                },
+                                ticks: {
+                                    maxRotation: 45,
+                                    minRotation: 0
+                                }
+                            },
+                            y: {
+                                type: 'category',
+                                labels: ['P4 - منخفض', 'P3 - متوسط', 'P2 - عالي', 'P1 - حرج'],
+                                title: {
+                                    display: true,
+                                    text: 'مستوى الأولوية',
+                                    font: { size: 14, weight: 'bold' }
+                                }
+                            }
+                        }
+                    }
+                });
             }
 
             updateLastRefresh() {
