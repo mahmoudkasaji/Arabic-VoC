@@ -37,14 +37,17 @@ An Arabic-first multi-channel feedback processing platform built with Flask and 
 - Diacritics preservation for AI processing
 - Pattern matching for Arabic character detection
 
-### Specialized Agent System (`utils/specialized_agents.py`, `utils/specialized_orchestrator.py`)
-- **SentimentAnalysisAgent**: Dedicated Arabic sentiment analysis with cultural context awareness
-- **TopicalAnalysisAgent**: Business topic detection and categorization with industry intelligence
-- **RecommendationAgent**: Actionable business recommendations with timeline and metrics
-- Clean separation of concerns with agent-specific prompts and model selection
-- Context passing between agents for comprehensive analysis
-- Multi-model orchestration (JAIS, Anthropic, OpenAI) with intelligent routing
-- Performance tracking and fallback mechanisms
+### Enhanced Agent Committee System (`utils/specialized_agents.py`, `utils/specialized_orchestrator.py`, `utils/prompt_optimizer.py`)
+- **VoCAnalysisCommittee**: Enhanced orchestration with consensus mechanisms and self-consistency checking
+- **SentimentAnalysisAgent**: Dialect-specific few-shot examples with confidence anchoring for Gulf, Egyptian, Levantine, and Moroccan dialects
+- **TopicalAnalysisAgent**: Hierarchical business categories with uncertainty quantification and emerging topic detection
+- **RecommendationAgent**: Contextual business recommendations based on consensus analysis
+- **BaseAgent Foundation**: Advanced prompting strategies (DIRECT, CHAIN_OF_THOUGHT, FEW_SHOT, SELF_CONSISTENCY)
+- **PromptOptimizer**: A/B testing, token optimization, and compression utilities with Arabic language support
+- **CulturalContextManager**: Advanced cultural adaptation with religious expressions, regional dialects, and politeness markers
+- Multi-strategy validation with outlier detection and robust averaging
+- Uncertainty quantification through two-pass analysis and validation agreement metrics
+- Performance tracking with consensus scoring and cultural intelligence monitoring
 
 ### OpenAI Integration (`utils/openai_client.py`)
 - GPT-4o model with agent-based analysis (primary)

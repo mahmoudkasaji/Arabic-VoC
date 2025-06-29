@@ -10,6 +10,13 @@ from enum import Enum
 from typing import Dict, List, Any, Optional
 from datetime import datetime
 
+try:
+    from .prompt_optimizer import PromptOptimizer, CulturalContextManager
+except ImportError:
+    # Fallback if prompt_optimizer is not available
+    PromptOptimizer = None
+    CulturalContextManager = None
+
 logger = logging.getLogger(__name__)
 
 class PromptStrategy(Enum):
