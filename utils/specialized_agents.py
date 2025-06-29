@@ -5,17 +5,55 @@ Clean separation of concerns: Sentiment, Topics, and Recommendations
 
 import logging
 import json
+import hashlib
+from enum import Enum
 from typing import Dict, List, Any, Optional
 from datetime import datetime
 
 logger = logging.getLogger(__name__)
 
-class SentimentAnalysisAgent:
+class PromptStrategy(Enum):
+    DIRECT = "direct"
+    CHAIN_OF_THOUGHT = "cot"
+    FEW_SHOT = "few_shot"
+    SELF_CONSISTENCY = "self_consistency"
+
+class BaseAgent:
+    def __init__(self, name: str):
+        self.name = name
+        self.prompt_variants = {}
+        self.few_shot_examples = {}
+        self.prompt_strategy = PromptStrategy.DIRECT
+        
+    def add_prompt_variant(self, variant_name: str, prompt_template: str):
+        """Add A/B testing variant"""
+        self.prompt_variants[variant_name] = prompt_template
+        
+    def add_few_shot_examples(self, service: str, examples: List[Dict]):
+        """Add dialect-specific examples for each service"""
+        self.few_shot_examples[service] = examples
+        
+    def select_prompt_strategy(self, text: str, context: Dict) -> PromptStrategy:
+        """Dynamically select strategy based on input complexity"""
+        text_length = len(text.split())
+        
+        # Complex texts benefit from CoT
+        if text_length > 50 or "؟" in text:  # Questions often need more reasoning
+            return PromptStrategy.CHAIN_OF_THOUGHT
+        
+        # Dialectal text benefits from few-shot
+        dialect_markers = ["والله", "يعني", "ايش", "ليش", "وايد"]
+        if any(marker in text for marker in dialect_markers):
+            return PromptStrategy.FEW_SHOT
+            
+        return PromptStrategy.DIRECT
+
+class SentimentAnalysisAgent(BaseAgent):
     """Dedicated agent for Arabic sentiment analysis with cultural context"""
     
     def __init__(self, api_manager):
+        super().__init__("SentimentAnalyst")
         self.api_manager = api_manager
-        self.name = "SentimentAnalyst"
         
         # Cultural sentiment markers for Arabic
         self.cultural_sentiment_patterns = {
@@ -255,12 +293,12 @@ class SentimentAnalysisAgent:
         }
 
 
-class TopicalAnalysisAgent:
+class TopicalAnalysisAgent(BaseAgent):
     """Dedicated agent for topic detection and categorization"""
     
     def __init__(self, api_manager):
+        super().__init__("TopicalAnalyst")
         self.api_manager = api_manager
-        self.name = "TopicalAnalyst"
         
         # Arabic business topic categories
         self.topic_categories = {
@@ -472,12 +510,12 @@ class TopicalAnalysisAgent:
         }
 
 
-class RecommendationAgent:
+class RecommendationAgent(BaseAgent):
     """Dedicated agent for generating actionable business recommendations"""
     
     def __init__(self, api_manager):
+        super().__init__("RecommendationSpecialist")
         self.api_manager = api_manager
-        self.name = "RecommendationSpecialist"
         
         # Recommendation templates by business scenario
         self.recommendation_templates = {
