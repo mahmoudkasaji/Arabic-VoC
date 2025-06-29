@@ -489,7 +489,7 @@ class SentimentAnalysisAgent(BaseAgent):
             'moroccan': moroccan_score
         }
         
-        primary_dialect = max(scores, key=scores.get)
+        primary_dialect = max(scores.keys(), key=lambda k: scores[k])
         return primary_dialect if scores[primary_dialect] > 0 else 'standard'
     
     def _format_few_shot_examples(self, dialect: str, service: str) -> str:
@@ -816,43 +816,581 @@ Analysis: {json.dumps(example['analysis'], ensure_ascii=False, indent=2)}
 
 
 class TopicalAnalysisAgent(BaseAgent):
-    """Dedicated agent for topic detection and categorization"""
+    """Enhanced agent for hierarchical topic detection with uncertainty quantification"""
     
     def __init__(self, api_manager):
         super().__init__("TopicalAnalyst")
         self.api_manager = api_manager
+        self.setup_prompts()
+        self.setup_few_shot_examples()
+        self.category_hierarchy = self._load_category_hierarchy()
         
-        # Arabic business topic categories
-        self.topic_categories = {
-            'customer_service': ['خدمة العملاء', 'موظف', 'تعامل', 'اهتمام', 'رد'],
-            'product_quality': ['جودة', 'منتج', 'سلعة', 'مواصفات', 'عيب'],
-            'pricing': ['سعر', 'تكلفة', 'مبلغ', 'رسوم', 'مصاريف'],
-            'delivery': ['توصيل', 'شحن', 'وقت', 'تأخير', 'سرعة'],
-            'technical_support': ['دعم فني', 'مساعدة', 'حل', 'مشكلة تقنية'],
-            'billing': ['فاتورة', 'دفع', 'حساب', 'رسوم'],
-            'experience': ['تجربة', 'استخدام', 'سهولة', 'صعوبة']
+        # Emerging topic detection patterns
+        self.emerging_patterns = {
+            'new_technology': ['ذكي', 'تطبيق', 'رقمي', 'تقنية جديدة', 'ابتكار'],
+            'sustainability': ['بيئة', 'استدامة', 'أخضر', 'طبيعي', 'صديق البيئة'],
+            'remote_services': ['عن بعد', 'أونلاين', 'إلكتروني', 'رقمي', 'افتراضي'],
+            'health_safety': ['صحة', 'أمان', 'سلامة', 'تعقيم', 'احتياطات']
+        }
+    
+    def _load_category_hierarchy(self):
+        """Hierarchical categories for sophisticated topic detection"""
+        return {
+            "customer_service": {
+                "subcategories": {
+                    "response_time": ["سرعة الرد", "وقت الاستجابة", "تأخير", "بطء"],
+                    "staff_behavior": ["تعامل", "أدب", "احترام", "لطف", "مساعدة"],
+                    "problem_resolution": ["حل المشكلة", "متابعة", "إنجاز", "نتيجة"],
+                    "communication": ["توضيح", "شرح", "فهم", "تواصل", "إعلام"]
+                },
+                "keywords": ["خدمة العملاء", "موظف", "تعامل", "اهتمام", "رد", "دعم"],
+                "weight": 1.0
+            },
+            "product_quality": {
+                "subcategories": {
+                    "durability": ["متانة", "قوة", "تحمل", "عمر افتراضي"],
+                    "features": ["مميزات", "خصائص", "وظائف", "إمكانيات"],
+                    "defects": ["عيب", "خلل", "مشكلة", "كسر", "تلف"],
+                    "design": ["تصميم", "شكل", "مظهر", "جمال", "أناقة"]
+                },
+                "keywords": ["جودة", "منتج", "سلعة", "مواصفات", "عيب", "نوعية"],
+                "weight": 1.0
+            },
+            "pricing": {
+                "subcategories": {
+                    "cost_effectiveness": ["قيمة مقابل المال", "يستحق", "مناسب", "معقول"],
+                    "competitive_pricing": ["مقارنة", "منافس", "أرخص", "أغلى"],
+                    "hidden_fees": ["رسوم مخفية", "إضافية", "مفاجئة", "غير متوقعة"],
+                    "discounts": ["خصم", "تخفيض", "عرض", "تخفيضات"]
+                },
+                "keywords": ["سعر", "تكلفة", "مبلغ", "رسوم", "مصاريف", "فلوس"],
+                "weight": 0.9
+            },
+            "delivery": {
+                "subcategories": {
+                    "speed": ["سرعة", "سريع", "بطيء", "وقت التوصيل"],
+                    "accuracy": ["دقة", "صحيح", "خطأ", "مكان التسليم"],
+                    "packaging": ["تغليف", "حماية", "تالف", "سليم"],
+                    "tracking": ["تتبع", "معرفة", "موقع", "حالة الطلب"]
+                },
+                "keywords": ["توصيل", "شحن", "وقت", "تأخير", "سرعة", "وصول"],
+                "weight": 0.8
+            },
+            "technical_support": {
+                "subcategories": {
+                    "expertise": ["خبرة", "معرفة", "فهم", "تخصص"],
+                    "availability": ["متاح", "موجود", "ساعات العمل", "وقت"],
+                    "tools": ["أدوات", "برامج", "تقنية", "نظام"],
+                    "documentation": ["شرح", "دليل", "تعليمات", "وثائق"]
+                },
+                "keywords": ["دعم فني", "مساعدة", "حل", "مشكلة تقنية", "تقني"],
+                "weight": 0.9
+            },
+            "billing": {
+                "subcategories": {
+                    "accuracy": ["دقة", "صحيح", "خطأ", "حساب"],
+                    "transparency": ["وضوح", "شفافية", "مفهوم", "واضح"],
+                    "payment_methods": ["طريقة الدفع", "بطاقة", "نقد", "تحويل"],
+                    "invoicing": ["فاتورة", "إيصال", "كشف", "بيان"]
+                },
+                "keywords": ["فاتورة", "دفع", "حساب", "رسوم", "مالي"],
+                "weight": 0.7
+            },
+            "user_experience": {
+                "subcategories": {
+                    "ease_of_use": ["سهولة", "بساطة", "مريح", "معقد"],
+                    "navigation": ["تنقل", "قائمة", "بحث", "وصول"],
+                    "performance": ["أداء", "سرعة", "بطء", "تعليق"],
+                    "accessibility": ["إتاحة", "وصول", "متاح", "صعوبة"]
+                },
+                "keywords": ["تجربة", "استخدام", "سهولة", "صعوبة", "واجهة"],
+                "weight": 0.8
+            }
+        }
+    
+    def setup_prompts(self):
+        """Setup advanced prompting strategies for topic analysis"""
+        self.prompts = {
+            "jais": {
+                PromptStrategy.DIRECT: """
+                حلل هذا النص التجاري العربي واستخرج المواضيع والفئات:
+                
+                النص: {text}
+                
+                أجب بصيغة JSON فقط:
+                {{
+                    "primary_topics": ["موضوع1", "موضوع2"],
+                    "business_categories": {{
+                        "customer_service": 0.0,
+                        "product_quality": 0.0,
+                        "pricing": 0.0,
+                        "delivery": 0.0,
+                        "technical_support": 0.0,
+                        "billing": 0.0,
+                        "user_experience": 0.0
+                    }},
+                    "topic_sentiment_mapping": {{
+                        "موضوع1": "إيجابي/سلبي/محايد",
+                        "موضوع2": "إيجابي/سلبي/محايد"
+                    }},
+                    "business_priority": "عالي/متوسط/منخفض",
+                    "urgency_indicators": ["مؤشر1", "مؤشر2"],
+                    "service": "jais",
+                    "analysis_method": "arabic_business_topics"
+                }}
+                """,
+                
+                PromptStrategy.CHAIN_OF_THOUGHT: """
+                أنت محلل أعمال متخصص. حلل هذا النص خطوة بخطوة:
+
+                النص: {text}
+
+                الخطوة ١: تحديد الكلمات المفتاحية
+                - اذكر الكلمات المفتاحية المتعلقة بالأعمال
+                - حدد المصطلحات التقنية
+
+                الخطوة ٢: تصنيف المواضيع الرئيسية
+                - ما هي المجالات التجارية المذكورة؟
+                - أي قسم من الشركة متأثر؟
+
+                الخطوة ٣: تقييم الأولوية التجارية
+                - ما مدى إلحاح هذا الموضوع؟
+                - كيف يؤثر على العمليات؟
+
+                الخطوة ٤: التصنيف النهائي
+                {{
+                    "reasoning": "تفسير التحليل",
+                    "primary_topics": ["موضوع1", "موضوع2"],
+                    "business_categories": {{
+                        "customer_service": 0.0,
+                        "product_quality": 0.0,
+                        "pricing": 0.0,
+                        "delivery": 0.0,
+                        "technical_support": 0.0,
+                        "billing": 0.0,
+                        "user_experience": 0.0
+                    }},
+                    "hierarchical_analysis": {{
+                        "main_category": "الفئة الرئيسية",
+                        "subcategories": ["فئة فرعية1", "فئة فرعية2"]
+                    }},
+                    "service": "jais",
+                    "analysis_method": "chain_of_thought_business"
+                }}
+                """,
+                
+                PromptStrategy.FEW_SHOT: """
+                حلل المواضيع التجارية في هذا النص مستعيناً بهذه الأمثلة:
+
+                {examples}
+
+                النص المطلوب تحليله: {text}
+
+                استخدم نفس صيغة JSON:
+                {{
+                    "primary_topics": ["موضوع1", "موضوع2"],
+                    "business_categories": {{...}},
+                    "confidence_scores": {{...}},
+                    "service": "jais",
+                    "analysis_method": "few_shot_business_arabic"
+                }}
+                """
+            },
+            
+            "anthropic": {
+                PromptStrategy.DIRECT: """
+                Analyze this Arabic business text for topics and themes with deep business intelligence. {category_hint}
+                
+                Text: {text}
+                
+                Respond with JSON only:
+                {{
+                    "primary_topics": ["topic1", "topic2"],
+                    "business_categories": {{
+                        "customer_service": 0.0,
+                        "product_quality": 0.0,
+                        "pricing": 0.0,
+                        "delivery": 0.0,
+                        "technical_support": 0.0,
+                        "billing": 0.0,
+                        "user_experience": 0.0
+                    }},
+                    "topic_sentiment_mapping": {{
+                        "topic1": "positive/negative/neutral",
+                        "topic2": "positive/negative/neutral"
+                    }},
+                    "business_priority": "high/medium/low",
+                    "urgency_indicators": ["indicator1", "indicator2"],
+                    "service": "anthropic",
+                    "analysis_method": "business_intelligence_topics"
+                }}
+                """,
+                
+                PromptStrategy.CHAIN_OF_THOUGHT: """
+                You are a business intelligence analyst. Analyze this Arabic text systematically:
+
+                Text: {text}
+
+                Step 1: Keyword Extraction
+                - Identify business-relevant keywords
+                - Note industry-specific terms
+
+                Step 2: Topic Categorization
+                - Which business domains are mentioned?
+                - What departments are affected?
+
+                Step 3: Hierarchical Classification
+                - Map topics to main categories and subcategories
+                - Assess topic relationships
+
+                Step 4: Business Impact Assessment
+                - Evaluate urgency and priority
+                - Consider operational implications
+
+                Step 5: Final Analysis
+                {{
+                    "reasoning": "Step-by-step analysis explanation",
+                    "primary_topics": ["topic1", "topic2"],
+                    "business_categories": {{...}},
+                    "hierarchical_structure": {{
+                        "main_category": "category",
+                        "subcategories": ["sub1", "sub2"],
+                        "confidence_levels": {{...}}
+                    }},
+                    "emerging_patterns": ["pattern1", "pattern2"],
+                    "service": "anthropic",
+                    "analysis_method": "hierarchical_business_intelligence"
+                }}
+                """
+            },
+            
+            "openai": {
+                PromptStrategy.DIRECT: """
+                Analyze this Arabic business text for topics and business categories efficiently.
+                
+                Text: {text}
+                
+                Respond with JSON format:
+                {{
+                    "primary_topics": ["topic1", "topic2"],
+                    "business_categories": {{
+                        "customer_service": 0.0,
+                        "product_quality": 0.0,
+                        "pricing": 0.0,
+                        "delivery": 0.0,
+                        "technical_support": 0.0,
+                        "billing": 0.0,
+                        "user_experience": 0.0
+                    }},
+                    "topic_sentiment_mapping": {{
+                        "topic1": "positive/negative/neutral",
+                        "topic2": "positive/negative/neutral"
+                    }},
+                    "business_priority": "high/medium/low",
+                    "urgency_indicators": ["indicator1", "indicator2"],
+                    "service": "openai",
+                    "analysis_method": "fast_topic_categorization"
+                }}
+                """
+            }
+        }
+    
+    def setup_few_shot_examples(self):
+        """Setup business topic examples for few-shot learning"""
+        self.few_shot_examples = {
+            "customer_service": [
+                {
+                    "text": "الموظف كان مفيد جداً وحل مشكلتي بسرعة",
+                    "analysis": {
+                        "primary_topics": ["staff_behavior", "problem_resolution"],
+                        "business_categories": {"customer_service": 0.9, "user_experience": 0.3},
+                        "confidence_scores": {"staff_behavior": 0.95, "problem_resolution": 0.85}
+                    }
+                }
+            ],
+            "product_quality": [
+                {
+                    "text": "المنتج وصل مكسور والجودة سيئة",
+                    "analysis": {
+                        "primary_topics": ["defects", "durability"],
+                        "business_categories": {"product_quality": 0.95, "delivery": 0.4},
+                        "confidence_scores": {"defects": 0.9, "durability": 0.8}
+                    }
+                }
+            ],
+            "pricing": [
+                {
+                    "text": "السعر غالي مقارنة بالمنافسين",
+                    "analysis": {
+                        "primary_topics": ["competitive_pricing", "cost_effectiveness"],
+                        "business_categories": {"pricing": 0.9},
+                        "confidence_scores": {"competitive_pricing": 0.85}
+                    }
+                }
+            ]
         }
     
     async def analyze_topics(self, text: str, text_characteristics: Dict, sentiment_context: Dict) -> Dict[str, Any]:
-        """Comprehensive topic analysis with business intelligence"""
+        """Enhanced topic analysis with uncertainty quantification"""
         
-        # Pre-analysis: Detect obvious topic categories
-        detected_categories = self._detect_topic_categories(text)
+        # Use uncertainty quantification for better confidence scoring
+        return await self.analyze_with_uncertainty(text, {
+            'text_characteristics': text_characteristics,
+            'sentiment_context': sentiment_context
+        })
+    
+    async def analyze_with_uncertainty(self, text: str, context: Dict) -> Dict[str, Any]:
+        """Enhanced analysis with uncertainty quantification"""
         
-        # Choose model based on text complexity and topic depth needed
-        best_service = self._select_topic_model(text_characteristics, detected_categories)
+        # First pass: Extract initial topics using keyword detection
+        initial_topics = self._extract_topics(text)
+        
+        # Second pass: Validate with AI-powered analysis
+        strategy = self.select_prompt_strategy(text, context)
+        ai_service = self._select_topic_model(context.get('text_characteristics', {}), {})
         
         try:
-            if best_service == "anthropic":
-                return await self._analyze_with_anthropic(text, detected_categories, sentiment_context)
-            elif best_service == "jais":
-                return await self._analyze_with_jais(text, detected_categories, sentiment_context)
-            else:
-                return await self._analyze_with_openai(text, detected_categories, sentiment_context)
-                
+            validation_analysis = await self._analyze_with_strategy(text, strategy, ai_service, context)
+            validation_topics = validation_analysis.get('primary_topics', [])
         except Exception as e:
-            logger.error(f"Topic analysis failed with {best_service}: {e}")
-            return self._fallback_topic_analysis(text, detected_categories)
+            logger.warning(f"AI validation failed: {e}")
+            validation_topics = initial_topics
+        
+        # Calculate confidence based on agreement between methods
+        confidence_scores = self._calculate_topic_confidence(initial_topics, validation_topics)
+        
+        # Detect emerging topics and hierarchical structure
+        emerging_topics = self._detect_emerging_topics(text)
+        hierarchical_categories = self._map_to_hierarchy(initial_topics + validation_topics)
+        
+        return {
+            "primary_topics": list(set(initial_topics + validation_topics))[:3],
+            "confidence_scores": confidence_scores,
+            "emerging_topics": emerging_topics,
+            "hierarchical_categories": hierarchical_categories,
+            "business_categories": self._calculate_business_category_scores(initial_topics + validation_topics),
+            "validation_agreement": len(set(initial_topics) & set(validation_topics)) / max(len(initial_topics), 1),
+            "uncertainty_analysis": {
+                "high_confidence": [topic for topic, conf in confidence_scores.items() if conf > 0.8],
+                "medium_confidence": [topic for topic, conf in confidence_scores.items() if 0.5 < conf <= 0.8],
+                "low_confidence": [topic for topic, conf in confidence_scores.items() if conf <= 0.5]
+            },
+            "enhanced_analysis": True,
+            "analysis_method": f"uncertainty_quantification_{strategy.value}"
+        }
+    
+    def _extract_topics(self, text: str) -> List[str]:
+        """Extract topics using hierarchical keyword matching"""
+        detected_topics = []
+        
+        for category, details in self.category_hierarchy.items():
+            # Check main category keywords
+            main_keywords = details.get('keywords', [])
+            if any(keyword in text for keyword in main_keywords):
+                detected_topics.append(category)
+                
+                # Check subcategory keywords for more specific topics
+                for subcat, sub_keywords in details.get('subcategories', {}).items():
+                    if any(keyword in text for keyword in sub_keywords):
+                        detected_topics.append(f"{category}_{subcat}")
+        
+        return detected_topics
+    
+    def _calculate_topic_confidence(self, initial_topics: List[str], validation_topics: List[str]) -> Dict[str, float]:
+        """Calculate confidence scores based on method agreement"""
+        confidence_scores = {}
+        all_topics = set(initial_topics + validation_topics)
+        
+        for topic in all_topics:
+            in_initial = topic in initial_topics
+            in_validation = topic in validation_topics
+            
+            if in_initial and in_validation:
+                confidence_scores[topic] = 0.9  # High confidence - both methods agree
+            elif in_initial or in_validation:
+                confidence_scores[topic] = 0.6  # Medium confidence - one method detected
+            else:
+                confidence_scores[topic] = 0.3  # Low confidence - edge case
+        
+        return confidence_scores
+    
+    def _detect_emerging_topics(self, text: str) -> List[str]:
+        """Detect emerging business trends and topics"""
+        emerging_topics = []
+        
+        for pattern_name, keywords in self.emerging_patterns.items():
+            if any(keyword in text for keyword in keywords):
+                emerging_topics.append(pattern_name)
+        
+        # Additional dynamic pattern detection
+        modern_indicators = ['رقمنة', 'ذكاء اصطناعي', 'بلوك تشين', 'العملة الرقمية']
+        if any(indicator in text for indicator in modern_indicators):
+            emerging_topics.append('digital_transformation')
+            
+        return emerging_topics
+    
+    def _map_to_hierarchy(self, topics: List[str]) -> Dict[str, Any]:
+        """Map detected topics to hierarchical structure"""
+        hierarchical_structure = {}
+        
+        for topic in topics:
+            # Handle subcategory topics (format: category_subcategory)
+            if '_' in topic:
+                main_category, subcategory = topic.split('_', 1)
+                if main_category in self.category_hierarchy:
+                    if main_category not in hierarchical_structure:
+                        hierarchical_structure[main_category] = {
+                            'subcategories': [],
+                            'weight': self.category_hierarchy[main_category].get('weight', 1.0)
+                        }
+                    hierarchical_structure[main_category]['subcategories'].append(subcategory)
+            else:
+                # Main category topic
+                if topic in self.category_hierarchy:
+                    if topic not in hierarchical_structure:
+                        hierarchical_structure[topic] = {
+                            'subcategories': [],
+                            'weight': self.category_hierarchy[topic].get('weight', 1.0)
+                        }
+        
+        return hierarchical_structure
+    
+    def _calculate_business_category_scores(self, topics: List[str]) -> Dict[str, float]:
+        """Calculate weighted scores for business categories"""
+        category_scores = {
+            "customer_service": 0.0,
+            "product_quality": 0.0,
+            "pricing": 0.0,
+            "delivery": 0.0,
+            "technical_support": 0.0,
+            "billing": 0.0,
+            "user_experience": 0.0
+        }
+        
+        for topic in topics:
+            # Extract main category from subcategory topics
+            main_topic = topic.split('_')[0] if '_' in topic else topic
+            
+            if main_topic in category_scores:
+                # Apply weight from hierarchy
+                weight = self.category_hierarchy.get(main_topic, {}).get('weight', 1.0)
+                category_scores[main_topic] = min(1.0, category_scores[main_topic] + (0.3 * weight))
+        
+        return category_scores
+    
+    async def _analyze_with_strategy(self, text: str, strategy: PromptStrategy, service: str, context: Dict) -> Dict[str, Any]:
+        """Execute topic analysis using selected strategy and AI service"""
+        
+        # Get appropriate prompt template
+        prompt_template = self.prompts[service][strategy]
+        
+        # Prepare context for prompt formatting
+        prompt_context = {
+            'category_hint': self._format_category_hint(context)
+        }
+        
+        # Add few-shot examples if using that strategy
+        if strategy == PromptStrategy.FEW_SHOT:
+            primary_category = self._identify_primary_category(text)
+            examples = self._format_business_examples(primary_category, service)
+            prompt_context['examples'] = examples
+        
+        # Format prompt
+        prompt = prompt_template.format(text=text, **prompt_context)
+        
+        # Call appropriate AI service
+        if service == "jais":
+            return await self._call_jais_analysis(prompt)
+        elif service == "anthropic":
+            return await self._call_anthropic_analysis(prompt)
+        else:
+            return await self._call_openai_analysis(prompt)
+    
+    def _identify_primary_category(self, text: str) -> str:
+        """Identify primary business category for few-shot example selection"""
+        category_scores = {}
+        
+        for category, details in self.category_hierarchy.items():
+            keywords = details.get('keywords', [])
+            score = sum(1 for keyword in keywords if keyword in text)
+            if score > 0:
+                category_scores[category] = score
+        
+        if category_scores:
+            return max(category_scores.keys(), key=lambda k: category_scores[k])
+        return "customer_service"  # Default fallback
+    
+    def _format_business_examples(self, category: str, service: str) -> str:
+        """Format business examples for the detected category"""
+        examples = self.few_shot_examples.get(category, self.few_shot_examples['customer_service'])
+        
+        if service == "jais":
+            # Arabic format for JAIS
+            formatted = []
+            for example in examples:
+                formatted.append(f"""
+مثال:
+النص: {example['text']}
+التحليل: {json.dumps(example['analysis'], ensure_ascii=False, indent=2)}
+""")
+            return "\n".join(formatted)
+        else:
+            # English format for Anthropic/OpenAI
+            formatted = []
+            for example in examples:
+                formatted.append(f"""
+Example:
+Text: {example['text']}
+Analysis: {json.dumps(example['analysis'], ensure_ascii=False, indent=2)}
+""")
+            return "\n".join(formatted)
+    
+    def _format_category_hint(self, context: Dict) -> str:
+        """Format category hint based on detected patterns"""
+        text_chars = context.get('text_characteristics', {})
+        if text_chars.get('is_primarily_arabic', False):
+            return "This text contains Arabic business terminology."
+        return ""
+    
+    async def _call_jais_analysis(self, prompt: str) -> Dict[str, Any]:
+        """Call JAIS for topic analysis"""
+        client = self.api_manager.get_jais_client()
+        
+        response = client.chat.completions.create(
+            model="jais-30b-chat",
+            messages=[{"role": "user", "content": prompt}],
+            max_tokens=700,
+            temperature=0.3
+        )
+        
+        return json.loads(response.choices[0].message.content)
+    
+    async def _call_anthropic_analysis(self, prompt: str) -> Dict[str, Any]:
+        """Call Anthropic for topic analysis"""
+        client = self.api_manager.get_anthropic_client()
+        
+        response = client.messages.create(
+            model="claude-3-sonnet-20240229",
+            max_tokens=700,
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0.3
+        )
+        
+        return json.loads(response.content[0].text)
+    
+    async def _call_openai_analysis(self, prompt: str) -> Dict[str, Any]:
+        """Call OpenAI for topic analysis"""
+        client = self.api_manager.get_openai_client()
+        
+        response = client.chat.completions.create(
+            model="gpt-4o",
+            messages=[{"role": "user", "content": prompt}],
+            response_format={"type": "json_object"},
+            max_tokens=600,
+            temperature=0.3
+        )
+        
+        return json.loads(response.choices[0].message.content)
     
     def _detect_topic_categories(self, text: str) -> Dict[str, List[str]]:
         """Pre-detect topic categories using keyword matching"""
