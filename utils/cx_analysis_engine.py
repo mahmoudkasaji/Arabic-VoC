@@ -170,12 +170,20 @@ Requires followup = Customer expects response OR issue is critical
                 model="gpt-4o",
                 messages=[{"role": "user", "content": prompt}],
                 temperature=0.1,
-                max_tokens=500
+                max_tokens=1000
             )
             
-            # Parse JSON response
+            # Parse JSON response with validation
             result_text = response.choices[0].message.content
-            result = json.loads(result_text)
+            if not result_text:
+                raise ValueError("Empty response from AI")
+            
+            result_text = result_text.strip()
+            try:
+                result = json.loads(result_text)
+            except json.JSONDecodeError as e:
+                logger.error(f"JSON parse error in SentimentImpactAgent: {str(e)}, Response: {result_text}")
+                raise ValueError(f"Invalid JSON response: {str(e)}")
             
             # Add calculated churn risk based on phrases
             result["churn_risk"] = self._calculate_churn_risk(text, result.get("csat_prediction", 3))
@@ -268,11 +276,20 @@ Severity Guide:
                 model="gpt-4o",
                 messages=[{"role": "user", "content": prompt}],
                 temperature=0.1,
-                max_tokens=500
+                max_tokens=1000
             )
             
+            # Parse JSON response with validation
             result_text = response.choices[0].message.content
-            result = json.loads(result_text)
+            if not result_text:
+                raise ValueError("Empty response from AI")
+            
+            result_text = result_text.strip()
+            try:
+                result = json.loads(result_text)
+            except json.JSONDecodeError as e:
+                logger.error(f"JSON parse error in DriverAnalysisAgent: {str(e)}, Response: {result_text}")
+                raise ValueError(f"Invalid JSON response: {str(e)}")
             
             return result
             
@@ -361,11 +378,20 @@ P4: Low severity + Low revenue risk (<$1000)
                 model="gpt-4o",
                 messages=[{"role": "user", "content": prompt}],
                 temperature=0.1,
-                max_tokens=600
+                max_tokens=1000
             )
             
+            # Parse JSON response with validation
             result_text = response.choices[0].message.content
-            result = json.loads(result_text)
+            if not result_text or not result_text.strip():
+                raise ValueError("Empty response from AI")
+            
+            result_text = result_text.strip()
+            try:
+                result = json.loads(result_text)
+            except json.JSONDecodeError as e:
+                logger.error(f"JSON parse error in BusinessImpactAgent: {str(e)}, Response: {result_text}")
+                raise ValueError(f"Invalid JSON response: {str(e)}")
             
             # Calculate numeric values from string expressions
             result = self._calculate_numeric_impacts(result)
