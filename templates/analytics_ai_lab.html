@@ -79,22 +79,18 @@
                                     </div>
                                 </div>
 
-                                <!-- Analysis Type Selection -->
+                                <!-- Analysis Description -->
                                 <div class="mb-3">
-                                    <label class="form-label">نوع التحليل</label>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="analysisType" id="cxAnalysis" value="cx_analysis" checked>
-                                        <label class="form-check-label" for="cxAnalysis">
-                                            <strong>تحليل تجربة العميل (CX)</strong>
-                                            <small class="d-block text-muted">تحليل الأعمال المركز: درجة الرضا + المخاطر المالية + أولوية الحلول</small>
-                                        </label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="analysisType" id="legacyAnalysis" value="arabic_analysis">
-                                        <label class="form-check-label" for="legacyAnalysis">
-                                            <strong>التحليل التقليدي</strong>
-                                            <small class="d-block text-muted">النظام السابق: التحليل الثقافي والموضوعي</small>
-                                        </label>
+                                    <div class="card bg-light border-0">
+                                        <div class="card-body py-3">
+                                            <h6 class="card-title mb-2">
+                                                <i class="fas fa-chart-line me-2 text-primary"></i>
+                                                تحليل تجربة العميل (CX)
+                                            </h6>
+                                            <p class="card-text mb-0 text-muted">
+                                                تحليل ذكي مركز على الأعمال: توقع درجة الرضا، تقدير المخاطر المالية، وحساب عائد الاستثمار للحلول
+                                            </p>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -269,7 +265,7 @@
                         text: text,
                         service: document.getElementById('aiModel').value,
                         use_committee: true,
-                        task_type: document.querySelector('input[name="analysisType"]:checked').value
+                        task_type: 'cx_analysis'
                     })
                 });
 
@@ -295,24 +291,10 @@
             }
         }
 
-        // Display analysis results based on type
+        // Display CX Business Intelligence Results
         function displayResults(result, originalText) {
             const analysis = result.analysis || result;
-            const analysisType = result.analysis_type || 'legacy_cultural_analysis';
             
-            if (analysisType === 'cx_business_intelligence') {
-                // Display new CX business intelligence format
-                displayCXBusinessResults(analysis);
-            } else {
-                // Display legacy committee format
-                displayConsensusResults(analysis, result);
-                displayCulturalResults(analysis);
-                displayBusinessResults(analysis);
-            }
-        }
-
-        // Display CX Business Intelligence Results
-        function displayCXBusinessResults(analysis) {
             // Display Executive Summary
             displayExecutiveSummary(analysis.executive_summary);
             

@@ -351,71 +351,38 @@ def ai_services_status():
 
 @app.route('/api/test-ai-analysis', methods=['POST'])
 def test_ai_analysis():
-    """Test CX Analysis with business-focused intelligence"""
+    """CX Analysis with business-focused intelligence"""
     try:
         data = request.get_json()
         text = data.get('text', '')
         service = data.get('service', 'auto')
-        use_committee = data.get('use_committee', True)
-        task_type = data.get('task_type', 'cx_analysis')
         
         if not text.strip():
             return jsonify({
                 'error': 'Text is required'
             }), 400
         
-        # Use new CX Analysis Engine for business intelligence
-        if use_committee and task_type == 'cx_analysis':
-            import asyncio
-            from utils.cx_analysis_engine import CXAnalysisEngine
-            
-            async def run_cx_analysis():
-                cx_engine = CXAnalysisEngine()
-                return await cx_engine.analyze_feedback(text)
-            
-            # Run async analysis
-            result = asyncio.run(run_cx_analysis())
-            
-            return jsonify({
-                'status': 'success',
-                'text_analyzed': text,
-                'analysis': result,
-                'analysis_type': 'cx_business_intelligence',
-                'timestamp': datetime.utcnow().isoformat()
-            })
-        else:
-            # Fallback to legacy system for compatibility
-            from utils.api_key_manager import api_manager
-            
-            business_context = {
-                'priority': data.get('priority', 'medium'),
-                'optimize_cost': data.get('optimize_cost', False),
-                'expected_volume': data.get('expected_volume', 'low')
-            }
-            
-            analysis = api_manager.analyze_arabic_text(
-                text, 
-                service, 
-                task_type='arabic_analysis',
-                use_agent_committee=use_committee,
-                business_context=business_context if use_committee else None
-            )
-            
-            return jsonify({
-                'status': 'success',
-                'text_analyzed': text,
-                'analysis': analysis,
-                'analysis_type': 'legacy_cultural_analysis',
-                'test_parameters': {
-                    'use_committee': use_committee,
-                    'task_type': 'arabic_analysis',
-                    'business_context': business_context if use_committee else None
-                },
-                'timestamp': datetime.utcnow().isoformat()
-            })
+        # Use CX Analysis Engine for business intelligence
+        import asyncio
+        from utils.cx_analysis_engine import CXAnalysisEngine
+        
+        async def run_cx_analysis():
+            cx_engine = CXAnalysisEngine()
+            return await cx_engine.analyze_feedback(text)
+        
+        # Run async analysis
+        result = asyncio.run(run_cx_analysis())
+        
+        return jsonify({
+            'status': 'success',
+            'text_analyzed': text,
+            'analysis': result,
+            'analysis_type': 'cx_business_intelligence',
+            'timestamp': datetime.utcnow().isoformat()
+        })
         
     except Exception as e:
-        logger.error(f"CX analysis test failed: {str(e)}")
+        logger.error(f"CX analysis failed: {str(e)}")
         return jsonify({'error': f'Analysis failed: {str(e)}'}), 500
 
 @app.route('/api/committee-performance')
