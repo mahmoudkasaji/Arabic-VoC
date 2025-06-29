@@ -133,12 +133,16 @@ An Arabic-first multi-channel feedback processing platform built with Flask and 
 ## Recent Changes (June 2025)
 
 ### Major Architecture Updates
+- **June 29**: Complete navigation restructure to 5-tab architecture with UX/CX best practices
+- **June 29**: New templates: Analyst dashboard, AI testing lab, enhanced settings with language/AI configuration
+- **June 29**: Catalog-style integrations with filtering for sources and destinations
+- **June 29**: Role-based dashboard toggling (Executive/Analyst views) with dedicated analytics section
+- **June 29**: AI Demo integration moved to Analytics tab with interactive testing capabilities
 - **June 23**: Unified design system completed with 100% rendering validation across all pages
 - **June 23**: Comprehensive CSS custom properties implementation (15KB design system file)
 - **June 23**: Shared component templates (head.html, scripts.html) for consistent loading
 - **June 23**: Design system testing suite with automated validation for HTML/CSS integrity
 - **June 22**: Integrations redesign with data flow architecture (Sources → AI Processing → Destinations)
-- **June 22**: 4-tier navigation implementation (Surveys, Analytics, Integrations, Settings)
 - **June 22**: Executive dashboard with real-time KPIs and Chart.js visualization
 - **June 22**: Flask migration from FastAPI for optimal Replit compatibility
 - **June 22**: Dual AI Integration - OpenAI (GPT-4o) and Anthropic (Claude-3-Sonnet) with intelligent service selection
