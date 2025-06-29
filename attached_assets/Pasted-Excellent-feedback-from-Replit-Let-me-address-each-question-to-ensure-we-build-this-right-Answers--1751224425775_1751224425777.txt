@@ -1,0 +1,102 @@
+Excellent feedback from Replit! Let me address each question to ensure we build this right:
+Answers to Implementation Questions:
+1. Sentiment Drivers Specificity
+Capture EXACT phrases - this is crucial for actionability:
+python# GOOD - Exact phrases:
+"sentiment_drivers": [
+    "waited 3 hours for response",
+    "charged twice on my bill", 
+    "app crashed 4 times today",
+    "never received my order"
+]
+
+# BAD - Interpretive:
+"sentiment_drivers": [
+    "excessive wait time",
+    "billing issues",
+    "technical problems",
+    "delivery failure"
+]
+Why? Exact phrases help:
+
+Train support teams on specific trigger words
+Identify patterns across customers
+Measure improvement precisely ("3 hours" → "30 minutes")
+Build automated responses for common issues
+
+2. Churn Risk Calculation
+For the MVP, base it purely on sentiment language, but structure it to add context later:
+python# MVP Version - Language only:
+def calculate_churn_risk(text, csat_prediction):
+    high_risk_phrases = ["cancel", "never again", "switching to", "last chance", "unacceptable"]
+    medium_risk_phrases = ["disappointed", "frustrated", "considering options", "not happy"]
+    
+    if csat_prediction <= 2 and any(phrase in text.lower() for phrase in high_risk_phrases):
+        return "high"
+    elif csat_prediction <= 3:
+        return "medium"
+    else:
+        return "low"
+
+# Future version would add:
+# - customer_lifetime_value
+# - months_as_customer  
+# - previous_tickets
+# - product_tier
+3. Actionable vs Non-Actionable
+Actionable = Specific issue + Clear ownership + Fixable
+python# ACTIONABLE feedback has:
+# 1. Specific issue identified
+# 2. Clear department/team ownership
+# 3. Fixable within reasonable effort
+
+actionable_examples = {
+    "actionable": True,
+    "examples": [
+        "Checkout button returns 404 error",  # Specific tech issue
+        "Invoice #12345 charged twice",       # Specific billing issue
+        "Support agent John was rude",        # Specific person/training issue
+        "Shipping took 10 days not 2"        # Specific SLA violation
+    ]
+}
+
+non_actionable_examples = {
+    "actionable": False,
+    "examples": [
+        "Your service sucks",           # Too vague
+        "Not happy",                    # No specific issue
+        "Everything is terrible",       # No clear ownership
+        "Just fix it"                   # No identifiable problem
+    ]
+}
+Enhanced Prompt with These Clarifications:
+pythonSENTIMENT_ANALYSIS_PROMPT = """
+Analyze this customer feedback for business impact:
+
+Text: {text}
+
+Rate sentiment on CSAT scale (1-5):
+1 = Very Dissatisfied (will churn)
+2 = Dissatisfied (at risk)  
+3 = Neutral (passive)
+4 = Satisfied (stable)
+5 = Very Satisfied (promoter)
+
+Extract EXACT phrases from the text, not interpretations.
+
+Return JSON:
+{
+    "csat_prediction": 1-5,
+    "churn_risk": "high/medium/low",
+    "churn_indicators": ["exact phrases suggesting churn like 'cancel' or 'switching to'"],
+    "sentiment_drivers": ["exact customer phrases - e.g. 'waited 3 hours' not 'long wait'"],
+    "actionable": true/false,
+    "actionable_reason": "why this is/isn't actionable",
+    "requires_followup": true/false,
+    "urgency": "immediate/high/medium/low"
+}
+
+Actionable = Has specific issue + clear owner + fixable
+Requires followup = Customer expects response OR issue is critical
+"""
+This approach gives ops teams exactly what they need: WHO needs to fix WHAT by WHEN.

@@ -1,0 +1,120 @@
+Excellent implementation questions! Let me provide clear guidance for each:
+Answers to BusinessImpactAgent Questions:
+1. Risk Amount Calculation
+For MVP, use one-size-fits-all with clear assumptions, but structure for future segmentation:
+python# MVP Approach - Simple but clear
+RISK_CALCULATION = {
+    "assumptions": {
+        "average_customer_value": 500,  # Monthly
+        "average_contract_length": 12,  # Months
+        "referral_value": 250           # Per referral
+    },
+    "risk_multipliers": {
+        "high_severity_churn": 12,      # Full year value
+        "medium_severity_churn": 6,     # Half year value
+        "downgrade_risk": 3,            # Quarter value
+        "negative_wom": 0.5             # Referral loss
+    }
+}
+
+# Future Enhancement Structure:
+# customer_segments = {
+#     "enterprise": {"monthly_value": 5000, "churn_cost": 60000},
+#     "mid_market": {"monthly_value": 1000, "churn_cost": 12000},
+#     "smb": {"monthly_value": 200, "churn_cost": 2400}
+# }
+2. Support Hours Estimation
+Use severity-driven estimates for MVP simplicity:
+pythonSUPPORT_HOURS_MATRIX = {
+    "critical": {
+        "first_response": 0.5,
+        "investigation": 2.0,
+        "resolution": 3.0,
+        "follow_up": 0.5,
+        "total": 6.0
+    },
+    "high": {
+        "first_response": 0.5,
+        "investigation": 1.0,
+        "resolution": 1.5,
+        "follow_up": 0.5,
+        "total": 3.5
+    },
+    "medium": {
+        "total": 2.0
+    },
+    "low": {
+        "total": 0.5
+    }
+}
+
+# Include escalation multiplier
+# If escalation_likelihood > 0.7, multiply hours by 1.5
+3. NPS Impact Scale
+Use standard NPS methodology (-100 to +100) but show practical ranges:
+pythonNPS_IMPACT_GUIDE = {
+    "detractor_creation": -30,      # Satisfied → Detractor
+    "passive_to_detractor": -20,    # Passive → Detractor  
+    "promoter_to_passive": -15,     # Promoter → Passive
+    "passive_to_promoter": +20,     # Good resolution
+    "detractor_to_passive": +15,    # Service recovery
+    
+    "typical_range": {
+        "negative_experience": -30 to -10,
+        "neutral_experience": -5 to +5,
+        "positive_resolution": +10 to +30
+    }
+}
+Enhanced BusinessImpactAgent Prompt:
+pythonBUSINESS_IMPACT_PROMPT = """
+Calculate business impact of this customer feedback:
+
+Feedback: {text}
+CSAT Prediction: {csat_score}
+Primary Driver: {primary_driver}
+Severity: {severity}
+
+Assumptions for calculations:
+- Average customer value: $500/month
+- Support hour cost: $50/hour
+- NPS impact uses standard -100 to +100 scale
+
+Return JSON:
+{
+    "revenue_impact": {
+        "monthly_value_at_risk": 0-10000,
+        "risk_type": "churn/downgrade/negative_wom",
+        "risk_probability": 0.0-1.0,
+        "expected_loss": monthly_value * probability
+    },
+    "operational_impact": {
+        "estimated_support_hours": 0.5-10,
+        "escalation_probability": 0.0-1.0,
+        "total_support_cost": hours * 50
+    },
+    "brand_impact": {
+        "nps_change": -30 to +30,
+        "review_likelihood": 0.0-1.0,
+        "predicted_review_rating": 1-5,
+        "viral_risk": "high/medium/low"
+    },
+    "resolution_priority": "P1/P2/P3/P4",
+    "resolution_roi": {
+        "cost_to_resolve": support_cost + any_credits,
+        "value_preserved": expected_loss_prevented,
+        "roi_ratio": value_preserved / cost_to_resolve
+    }
+}
+
+Priority Matrix:
+P1: Critical severity + High revenue risk (>$5000)
+P2: High severity OR High revenue risk  
+P3: Medium severity + Medium revenue risk ($1000-5000)
+P4: Low severity + Low revenue risk (<$1000)
+"""
+This gives executives exactly what they need:
+
+How much money is at risk
+What it costs to fix
+ROI of taking action
+Clear prioritization

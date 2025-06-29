@@ -1,0 +1,81 @@
+Great questions from Replit! Let me clarify the vision for each agent to ensure we build exactly what will deliver business value:
+Answers to Replit's Questions:
+1. SentimentImpactAgent Output
+Yes, it should output BOTH, but with a clear relationship:
+python{
+    "sentiment_score": -0.8,  # Raw emotion (-1 to 1)
+    "csat_prediction": 2,     # Business metric (1-5)
+    "confidence": 0.85,       # How sure we are
+    "mapping_rationale": "Strong negative language ('terrible', 'never again') typically correlates with CSAT 1-2"
+}
+The key insight: sentiment is the INPUT, CSAT prediction is the BUSINESS OUTPUT. This agent learns the correlation between emotional language and actual satisfaction scores.
+2. DriverAnalysisAgent Focus
+EXACTLY! It should identify specific CX drivers, not generic topics:
+Good Drivers (Specific):
+
+"3-day response time"
+"billing error - double charge"
+"app crashes during checkout"
+"shipping delay - 7 days late"
+
+Bad Drivers (Generic):
+
+"customer service"
+"product issues"
+"delivery problems"
+
+The agent should extract the SPECIFIC issue that drove satisfaction up or down.
+3. BusinessImpactAgent KPIs
+Beyond CSAT, it should correlate to:
+Revenue Metrics:
+
+Customer Lifetime Value (CLV) impact
+Churn risk percentage
+Upsell/cross-sell probability
+Monthly Recurring Revenue (MRR) at risk
+
+Operational Metrics:
+
+Support ticket volume prediction
+Average Handle Time (AHT) impact
+Escalation probability
+Cost to serve increase
+
+Brand Metrics:
+
+Net Promoter Score (NPS) impact
+Online review likelihood (1-5 star prediction)
+Word-of-mouth impact (viral coefficient)
+Brand sentiment shift
+
+Example Output:
+python{
+    "kpi_impacts": {
+        "csat_change": -0.3,
+        "nps_impact": -8,
+        "churn_risk_increase": 0.15,  # 15% higher churn risk
+        "mrr_at_risk": 2500,          # This customer's value
+        "support_hours_needed": 2.5,   # To resolve
+        "escalation_probability": 0.7,
+        "review_risk": {
+            "likelihood": 0.8,
+            "predicted_rating": 2
+        }
+    },
+    "resolution_roi": {
+        "cost_to_fix": 125,    # Support time + credits
+        "value_preserved": 2500, # MRR saved
+        "roi_ratio": 20.0      # 20:1 return on fixing
+    }
+}
+Next Implementation Focus:
+The architecture should flow like this:
+Raw Feedback → SentimentImpactAgent → "This customer is angry (CSAT: 2)"
+     ↓
+DriverAnalysisAgent → "Because: billing charged twice + 3-day wait"
+     ↓
+BusinessImpactAgent → "Impact: $2,500 MRR at risk, 70% churn probability"
+     ↓
+Dashboard → "Fix billing bug: Save $312K/month across affected customers"
+This gives executives a clear path from feedback to financial impact, making the platform's ROI undeniable.
+Ready for the refined prompts that implement this vision!

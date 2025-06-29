@@ -351,46 +351,72 @@ def ai_services_status():
 
 @app.route('/api/test-ai-analysis', methods=['POST'])
 def test_ai_analysis():
-    """Test AI analysis with agent committee or specific service"""
+    """Test CX Analysis with business-focused intelligence"""
     try:
-        from utils.api_key_manager import api_manager
-        
         data = request.get_json()
-        test_text = data.get('text', 'الخدمة ممتازة جداً والموظفين محترفين')
-        service = data.get('service')  # Optional: specify service
-        use_committee = data.get('use_committee', True)  # Use agent committee by default
-        task_type = data.get('task_type', 'arabic_analysis')
+        text = data.get('text', '')
+        service = data.get('service', 'auto')
+        use_committee = data.get('use_committee', True)
+        task_type = data.get('task_type', 'cx_analysis')
         
-        # Business context for testing
-        business_context = {
-            'priority': data.get('priority', 'medium'),
-            'optimize_cost': data.get('optimize_cost', False),
-            'expected_volume': data.get('expected_volume', 'low')
-        }
+        if not text.strip():
+            return jsonify({
+                'error': 'Text is required'
+            }), 400
         
-        analysis = api_manager.analyze_arabic_text(
-            test_text, 
-            service, 
-            task_type=task_type,
-            use_agent_committee=use_committee,
-            business_context=business_context if use_committee else None
-        )
-        
-        return jsonify({
-            'status': 'success',
-            'text_analyzed': test_text,
-            'analysis': analysis,
-            'test_parameters': {
-                'use_committee': use_committee,
-                'task_type': task_type,
-                'business_context': business_context if use_committee else None
-            },
-            'timestamp': datetime.utcnow().isoformat()
-        })
+        # Use new CX Analysis Engine for business intelligence
+        if use_committee and task_type == 'cx_analysis':
+            import asyncio
+            from utils.cx_analysis_engine import CXAnalysisEngine
+            
+            async def run_cx_analysis():
+                cx_engine = CXAnalysisEngine()
+                return await cx_engine.analyze_feedback(text)
+            
+            # Run async analysis
+            result = asyncio.run(run_cx_analysis())
+            
+            return jsonify({
+                'status': 'success',
+                'text_analyzed': text,
+                'analysis': result,
+                'analysis_type': 'cx_business_intelligence',
+                'timestamp': datetime.utcnow().isoformat()
+            })
+        else:
+            # Fallback to legacy system for compatibility
+            from utils.api_key_manager import api_manager
+            
+            business_context = {
+                'priority': data.get('priority', 'medium'),
+                'optimize_cost': data.get('optimize_cost', False),
+                'expected_volume': data.get('expected_volume', 'low')
+            }
+            
+            analysis = api_manager.analyze_arabic_text(
+                text, 
+                service, 
+                task_type='arabic_analysis',
+                use_agent_committee=use_committee,
+                business_context=business_context if use_committee else None
+            )
+            
+            return jsonify({
+                'status': 'success',
+                'text_analyzed': text,
+                'analysis': analysis,
+                'analysis_type': 'legacy_cultural_analysis',
+                'test_parameters': {
+                    'use_committee': use_committee,
+                    'task_type': 'arabic_analysis',
+                    'business_context': business_context if use_committee else None
+                },
+                'timestamp': datetime.utcnow().isoformat()
+            })
         
     except Exception as e:
-        logger.error(f"Error in AI analysis test: {e}")
-        return jsonify({'error': f'AI analysis failed: {str(e)}'}), 500
+        logger.error(f"CX analysis test failed: {str(e)}")
+        return jsonify({'error': f'Analysis failed: {str(e)}'}), 500
 
 @app.route('/api/committee-performance')
 def committee_performance():

@@ -1,0 +1,92 @@
+1. Journey Stage Granularity
+Yes, let's break down "support" for more actionable insights:
+pythonJOURNEY_STAGES = {
+    "awareness": ["research", "discovery", "comparison"],
+    "purchase": ["evaluation", "checkout", "payment"],
+    "onboarding": ["account_setup", "first_use", "initial_training"],
+    "usage": ["daily_use", "feature_adoption", "value_realization"],
+    "support": [
+        "first_contact",      # Initial reach out
+        "diagnosis",          # Problem identification  
+        "resolution_attempt", # First fix attempt
+        "escalation",        # Escalated to higher tier
+        "resolution",        # Problem solved
+        "follow_up"          # Post-resolution check
+    ],
+    "renewal": ["renewal_notice", "negotiation", "payment", "expansion"]
+}
+This granularity helps because:
+
+"first_contact" issues → improve self-service/FAQs
+"escalation" issues → better L1 training needed
+"resolution" issues → fix root causes
+
+2. Quantifiable Impact
+Include BOTH numeric and countable events:
+pythonQUANTIFIABLE_IMPACT_EXAMPLES = {
+    "numeric": [
+        "$50 overcharge",
+        "7 day delay",
+        "45 minute wait",
+        "30% price increase"
+    ],
+    "countable": [
+        "3 failed login attempts",
+        "5 calls to resolve",
+        "4 different agents",
+        "2 weeks without response"
+    ],
+    "measurable_effort": [
+        "spent 2 hours trying",
+        "submitted 3 tickets",
+        "emailed 4 times",
+        "restarted 10 times"
+    ]
+}
+Enhanced DriverAnalysisAgent Prompt:
+pythonDRIVER_ANALYSIS_PROMPT = """
+Extract specific CX drivers from this feedback:
+
+Text: {text}
+
+Identify the PRIMARY issue impacting satisfaction:
+
+Categories:
+- Service failures (response time, resolution quality, agent competence)
+- Product issues (bugs, missing features, performance, reliability)
+- Process friction (billing errors, complex procedures, system failures)
+- Value perception (pricing concerns, competitor comparison, ROI questions)
+
+Journey Stages:
+- Awareness: research, discovery, comparison
+- Purchase: evaluation, checkout, payment
+- Onboarding: setup, first_use, training
+- Usage: daily_use, feature_adoption
+- Support: first_contact, diagnosis, resolution_attempt, escalation, resolution, follow_up
+- Renewal: renewal_notice, negotiation, expansion
+
+Return JSON:
+{
+    "primary_driver": "category from above",
+    "specific_issue": "exact problem in customer's words",
+    "impact_severity": "critical/high/medium/low",
+    "affected_journey_stage": "specific stage from above",
+    "quantifiable_impact": "numeric ($X, Y days) or countable (Z attempts/calls/hours)",
+    "friction_points": ["list of specific obstacles customer faced"],
+    "root_cause_hint": "potential underlying issue"
+}
+
+Severity Guide:
+- Critical: Service unusable, money lost, data compromised
+- High: Major workflow blocked, significant delays
+- Medium: Workaround exists but painful
+- Low: Minor annoyance, cosmetic issue
+"""
+This enhanced version:
+
+Provides more granular journey stages
+Clarifies what makes something "quantifiable"
+Adds friction points to identify process improvements
+Includes root cause hints for preventive action
+
+Ready for the BusinessImpactAgent prompt that will tie all this to revenue and KPIs!
