@@ -79,10 +79,10 @@ class TestIndividualAgents:
 ### Continuous Integration
 ```bash
 # Core test suite (fast)
-pytest tests/test_agent_orchestrator.py -m "not performance"
+pytest tests/test_specialized_agents.py -m "not performance"
 
 # Performance validation (slower)
-pytest tests/test_agent_performance.py -m performance
+pytest tests/test_enhanced_committee.py -m performance
 
 # Full system validation (comprehensive)
 pytest tests/ --tb=short --cov=utils --cov=api
