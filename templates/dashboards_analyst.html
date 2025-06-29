@@ -126,6 +126,39 @@
                     </div>
                 </div>
 
+                <!-- Impact Scoring Matrix -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h5 class="card-title mb-0">
+                                        <i class="fas fa-th me-2"></i>
+                                        مصفوفة تأثير المواضيع على المؤشرات الرئيسية
+                                    </h5>
+                                    <div class="btn-group btn-group-sm">
+                                        <button class="btn btn-outline-secondary" onclick="updateImpactMatrix('revenue')">الإيرادات</button>
+                                        <button class="btn btn-outline-secondary active" onclick="updateImpactMatrix('csat')">رضا العملاء</button>
+                                        <button class="btn btn-outline-secondary" onclick="updateImpactMatrix('churn')">مخاطر الفقدان</button>
+                                        <button class="btn btn-outline-secondary" onclick="updateImpactMatrix('nps')">صافي الترويج</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div id="impactMatrix" class="impact-matrix-container">
+                                    <!-- Matrix will be dynamically generated -->
+                                </div>
+                                <div class="mt-3">
+                                    <small class="text-muted">
+                                        <i class="fas fa-info-circle me-1"></i>
+                                        الألوان تمثل شدة التأثير: أحمر (تأثير عالي)، أصفر (تأثير متوسط)، أخضر (تأثير منخفض)
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Technical Analysis Charts -->
                 <div class="row">
                     <!-- Sentiment Analysis Over Time -->
@@ -259,6 +292,108 @@
 
     {% include 'components/scripts.html' %}
     
+    <style>
+        .impact-matrix-container {
+            overflow-x: auto;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+        }
+        
+        .impact-matrix {
+            display: grid;
+            grid-template-columns: 200px repeat(auto-fit, minmax(120px, 1fr));
+            gap: 2px;
+            background-color: #f8f9fa;
+            padding: 8px;
+            font-size: 0.9rem;
+        }
+        
+        .matrix-header {
+            background: linear-gradient(135deg, #6c757d, #495057);
+            color: white;
+            padding: 12px 8px;
+            font-weight: bold;
+            text-align: center;
+            border-radius: 4px;
+        }
+        
+        .matrix-row-header {
+            background: linear-gradient(135deg, #495057, #343a40);
+            color: white;
+            padding: 12px 8px;
+            font-weight: bold;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .matrix-cell {
+            background: white;
+            border-radius: 4px;
+            padding: 8px;
+            text-align: center;
+            border: 1px solid #e9ecef;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            position: relative;
+            min-height: 60px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .matrix-cell:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 10;
+        }
+        
+        .impact-score {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 2px;
+        }
+        
+        .impact-level {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+        
+        .impact-high { background: linear-gradient(135deg, #dc3545, #c82333); color: white; }
+        .impact-medium { background: linear-gradient(135deg, #ffc107, #e0a800); color: #212529; }
+        .impact-low { background: linear-gradient(135deg, #28a745, #1e7e34); color: white; }
+        .impact-minimal { background: linear-gradient(135deg, #f8f9fa, #e9ecef); color: #6c757d; }
+        
+        .trend-indicator {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            font-size: 0.7rem;
+        }
+        
+        .matrix-legend {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.85rem;
+        }
+        
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 3px;
+        }
+    </style>
+    
     <script>
         // Switch to Executive View
         function switchToExecutive() {
@@ -275,8 +410,168 @@
             alert('تصدير البيانات - هذه الميزة قيد التطوير');
         }
 
+        // Impact Matrix Data
+        const impactMatrixData = {
+            csat: {
+                topics: ['خدمة العملاء', 'جودة المنتج', 'سرعة التسليم', 'سهولة الاستخدام', 'الدعم الفني', 'الأسعار', 'الفوترة'],
+                scores: [
+                    [9.2, 8.7, 6.4, 7.8, 8.9, 5.2, 4.1],
+                    [8.8, 9.5, 5.9, 8.3, 7.6, 6.1, 3.8],
+                    [7.3, 8.1, 9.1, 6.7, 6.8, 4.9, 5.2],
+                    [8.5, 7.9, 7.2, 9.3, 8.1, 5.7, 4.6],
+                    [9.1, 6.8, 5.8, 7.5, 9.4, 4.3, 6.1],
+                    [6.2, 7.4, 6.9, 6.1, 5.9, 8.7, 8.2],
+                    [5.8, 6.3, 4.2, 5.4, 6.7, 7.9, 9.1]
+                ],
+                kpis: ['رضا العملاء', 'جودة الخدمة', 'سرعة الاستجابة', 'سهولة الاستخدام', 'الموثوقية', 'القيمة مقابل المال', 'عملية الدفع']
+            },
+            revenue: {
+                topics: ['خدمة العملاء', 'جودة المنتج', 'سرعة التسليم', 'سهولة الاستخدام', 'الدعم الفني', 'الأسعار', 'الفوترة'],
+                scores: [
+                    [7.8, 9.1, 8.3, 6.9, 7.2, 9.4, 6.1],
+                    [8.2, 9.3, 7.8, 7.4, 6.8, 8.9, 5.7],
+                    [6.5, 8.7, 9.2, 6.2, 6.1, 7.8, 7.3],
+                    [7.9, 8.4, 8.1, 8.6, 7.5, 8.1, 6.4],
+                    [8.1, 7.2, 6.9, 7.8, 8.9, 6.7, 7.8],
+                    [9.2, 8.6, 7.4, 7.1, 6.3, 9.1, 8.7],
+                    [6.8, 7.9, 6.2, 6.7, 7.4, 8.3, 9.3]
+                ],
+                kpis: ['المبيعات المباشرة', 'قيمة الطلب', 'معدل التكرار', 'الترقية للخطط', 'التوصيات', 'حساسية السعر', 'سرعة الدفع']
+            },
+            churn: {
+                topics: ['خدمة العملاء', 'جودة المنتج', 'سرعة التسليم', 'سهولة الاستخدام', 'الدعم الفني', 'الأسعار', 'الفوترة'],
+                scores: [
+                    [8.9, 7.6, 5.8, 6.7, 8.2, 7.1, 5.9],
+                    [8.1, 8.8, 6.2, 7.3, 7.8, 6.4, 5.2],
+                    [6.8, 7.9, 8.4, 5.9, 6.1, 5.7, 6.8],
+                    [7.5, 7.2, 6.6, 8.7, 7.9, 6.2, 5.1],
+                    [8.7, 6.4, 5.3, 6.8, 9.1, 5.8, 6.7],
+                    [7.2, 6.9, 6.1, 6.3, 6.5, 8.9, 7.4],
+                    [6.3, 5.8, 4.9, 5.6, 6.2, 7.6, 8.2]
+                ],
+                kpis: ['شكاوى الخدمة', 'عيوب المنتج', 'تأخير التسليم', 'صعوبة الاستخدام', 'ضعف الدعم', 'ارتفاع الأسعار', 'مشاكل الفوترة']
+            },
+            nps: {
+                topics: ['خدمة العملاء', 'جودة المنتج', 'سرعة التسليم', 'سهولة الاستخدام', 'الدعم الفني', 'الأسعار', 'الفوترة'],
+                scores: [
+                    [8.4, 8.9, 7.1, 8.2, 8.6, 6.8, 5.3],
+                    [8.7, 9.2, 6.8, 8.5, 7.9, 7.2, 5.9],
+                    [7.1, 8.3, 8.8, 7.6, 7.2, 6.4, 6.7],
+                    [8.3, 8.1, 7.8, 9.1, 8.4, 6.9, 5.8],
+                    [8.8, 7.4, 6.5, 7.9, 9.3, 6.1, 6.4],
+                    [6.9, 7.8, 7.2, 7.3, 6.7, 8.2, 7.6],
+                    [6.2, 6.9, 5.8, 6.4, 7.1, 7.5, 8.4]
+                ],
+                kpis: ['الرضا العام', 'جودة التجربة', 'كفاءة العملية', 'سهولة الوصول', 'فعالية الحلول', 'عدالة الأسعار', 'شفافية الفوترة']
+            }
+        };
+
+        // Update Impact Matrix
+        function updateImpactMatrix(kpiType) {
+            // Update active button
+            document.querySelectorAll('.btn-group .btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            const data = impactMatrixData[kpiType];
+            const container = document.getElementById('impactMatrix');
+            
+            let html = '<div class="impact-matrix">';
+            
+            // Header row
+            html += '<div class="matrix-header">المواضيع / المؤشرات</div>';
+            data.kpis.forEach(kpi => {
+                html += `<div class="matrix-header">${kpi}</div>`;
+            });
+            
+            // Data rows
+            data.topics.forEach((topic, topicIndex) => {
+                html += `<div class="matrix-row-header">${topic}</div>`;
+                data.scores[topicIndex].forEach((score, kpiIndex) => {
+                    const impactLevel = getImpactLevel(score);
+                    const trend = getTrendIndicator(score);
+                    html += `
+                        <div class="matrix-cell ${impactLevel.class}" 
+                             onclick="showImpactDetails('${topic}', '${data.kpis[kpiIndex]}', ${score})"
+                             title="تأثير ${topic} على ${data.kpis[kpiIndex]}: ${score}/10">
+                            <div class="impact-score">${score}</div>
+                            <div class="impact-level">${impactLevel.label}</div>
+                            <div class="trend-indicator">${trend}</div>
+                        </div>
+                    `;
+                });
+            });
+            
+            html += '</div>';
+            
+            // Add legend
+            html += `
+                <div class="matrix-legend">
+                    <div class="legend-item">
+                        <div class="legend-color impact-high"></div>
+                        <span>تأثير عالي (8.0+)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color impact-medium"></div>
+                        <span>تأثير متوسط (6.0-7.9)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color impact-low"></div>
+                        <span>تأثير منخفض (4.0-5.9)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color impact-minimal"></div>
+                        <span>تأثير محدود (<4.0)</span>
+                    </div>
+                </div>
+            `;
+            
+            container.innerHTML = html;
+        }
+
+        // Get Impact Level
+        function getImpactLevel(score) {
+            if (score >= 8.0) {
+                return { class: 'impact-high', label: 'عالي' };
+            } else if (score >= 6.0) {
+                return { class: 'impact-medium', label: 'متوسط' };
+            } else if (score >= 4.0) {
+                return { class: 'impact-low', label: 'منخفض' };
+            } else {
+                return { class: 'impact-minimal', label: 'محدود' };
+            }
+        }
+
+        // Get Trend Indicator
+        function getTrendIndicator(score) {
+            const random = Math.random();
+            if (score >= 8.0) {
+                return random > 0.7 ? '↗️' : '→';
+            } else if (score >= 6.0) {
+                return random > 0.5 ? '↗️' : random > 0.25 ? '→' : '↘️';
+            } else {
+                return random > 0.3 ? '↘️' : '→';
+            }
+        }
+
+        // Show Impact Details
+        function showImpactDetails(topic, kpi, score) {
+            const impactLevel = getImpactLevel(score);
+            const message = `
+                الموضوع: ${topic}
+                المؤشر: ${kpi}
+                درجة التأثير: ${score}/10 (${impactLevel.label})
+                
+                هذا يوضح مدى تأثير "${topic}" على "${kpi}" بناءً على تحليل البيانات التاريخية.
+            `;
+            alert(message);
+        }
+
         // Initialize Charts
         document.addEventListener('DOMContentLoaded', function() {
+            // Initialize Impact Matrix with CSAT view
+            updateImpactMatrix('csat');
             // Sentiment Trend Chart
             const sentimentCtx = document.getElementById('sentimentTrendChart').getContext('2d');
             new Chart(sentimentCtx, {
