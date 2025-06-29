@@ -159,18 +159,55 @@
 
                     <!-- Results Section -->
                     <div class="col-lg-6">
-                        <div class="card">
-                            <div class="card-header">
+                        <!-- Committee Consensus Panel -->
+                        <div class="card mb-3">
+                            <div class="card-header bg-primary text-white">
                                 <h5 class="card-title mb-0">
-                                    <i class="fas fa-chart-pie me-2"></i>
-                                    نتائج التحليل
+                                    <i class="fas fa-users me-2"></i>
+                                    تحليل اللجنة المتخصصة
                                 </h5>
                             </div>
                             <div class="card-body">
-                                <div id="analysisResults">
-                                    <div class="text-center text-muted py-5">
-                                        <i class="fas fa-flask fa-3x mb-3"></i>
-                                        <p>أدخل نصاً عربياً واضغط "تحليل النص" لرؤية النتائج</p>
+                                <div id="consensusResults">
+                                    <div class="text-center text-muted py-4">
+                                        <i class="fas fa-brain fa-2x mb-3"></i>
+                                        <p>في انتظار التحليل لعرض نتائج الإجماع</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Cultural Intelligence Panel -->
+                        <div class="card mb-3">
+                            <div class="card-header bg-success text-white">
+                                <h5 class="card-title mb-0">
+                                    <i class="fas fa-globe-asia me-2"></i>
+                                    الذكاء الثقافي العربي
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div id="culturalResults">
+                                    <div class="text-center text-muted py-4">
+                                        <i class="fas fa-language fa-2x mb-3"></i>
+                                        <p>سيتم عرض اكتشاف اللهجة والسياق الثقافي</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Business Intelligence Panel -->
+                        <div class="card">
+                            <div class="card-header bg-info text-white">
+                                <h5 class="card-title mb-0">
+                                    <i class="fas fa-chart-line me-2"></i>
+                                    رؤى الأعمال
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div id="businessResults">
+                                    <div class="text-center text-muted py-4">
+                                        <i class="fas fa-lightbulb fa-2x mb-3"></i>
+                                        <p>ستظهر التوصيات والإجراءات المقترحة</p>
                                     </div>
                                 </div>
                             </div>
@@ -262,132 +299,240 @@
             }
         }
 
-        // Display analysis results
+        // Display enhanced committee results
         function displayResults(result, originalText) {
-            const resultsDiv = document.getElementById('analysisResults');
-            
-            // Extract analysis data - handle both nested and direct formats
+            // Extract analysis data
             const analysis = result.analysis || result;
             
-            let html = '<div class="analysis-result">';
+            // Display Committee Consensus
+            displayConsensusResults(analysis, result);
             
-            // Service and Committee Info
-            if (result.analysis && result.analysis.service) {
+            // Display Cultural Intelligence
+            displayCulturalResults(analysis);
+            
+            // Display Business Intelligence
+            displayBusinessResults(analysis);
+        }
+
+        function displayConsensusResults(analysis, result) {
+            const consensusDiv = document.getElementById('consensusResults');
+            
+            // Extract committee decision data
+            const committee = result.analysis?.committee_decision || analysis.committee_decision;
+            const sentiment = analysis.sentiment;
+            const topics = analysis.topics || [];
+            
+            let html = '';
+            
+            // Consensus Score Header
+            if (committee) {
+                const consensusScore = Math.round(committee.decision_confidence * 100);
+                html += `
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <div class="text-center">
+                                <div class="display-4 text-primary">${consensusScore}%</div>
+                                <small class="text-muted">درجة الإجماع</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="text-center">
+                                <div class="display-4 text-success">${committee.strategies_used?.length || 3}</div>
+                                <small class="text-muted">استراتيجيات التحليل</small>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            // Sentiment-Topic Correlation
+            if (sentiment && topics.length > 0) {
+                html += `
+                    <div class="mb-4">
+                        <h6 class="mb-3">ترابط المشاعر والمواضيع</h6>
+                        <div class="card bg-light border-0">
+                            <div class="card-body">
+                                <div class="row align-items-center">
+                                    <div class="col-6">
+                                        <div class="text-center">
+                                            <span class="h4 ${sentiment.label === 'positive' ? 'text-success' : 
+                                                              sentiment.label === 'negative' ? 'text-danger' : 'text-warning'}">
+                                                ${sentiment.label === 'positive' ? 'إيجابي' : 
+                                                  sentiment.label === 'negative' ? 'سلبي' : 'محايد'}
+                                            </span>
+                                            <div class="small text-muted">${Math.round(sentiment.confidence * 100)}% ثقة</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="text-center">
+                                            <span class="badge bg-primary fs-6">${topics[0] || 'عام'}</span>
+                                            <div class="small text-muted">الموضوع الرئيسي</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            // Analysis Strategies Used
+            if (committee?.strategies_used) {
                 html += `
                     <div class="mb-3">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <small class="text-muted">
-                                <i class="fas fa-robot me-1"></i>
-                                الخدمة: ${result.analysis.service.toUpperCase()}
-                            </small>
-                            ${result.analysis.committee_decision ? `
-                                <small class="text-muted">
-                                    <i class="fas fa-users me-1"></i>
-                                    لجنة الذكاء الاصطناعي (${Math.round(result.analysis.committee_decision.decision_confidence * 100)}% ثقة)
-                                </small>
-                            ` : ''}
+                        <h6 class="mb-2">الاستراتيجيات المستخدمة</h6>
+                        <div class="d-flex flex-wrap gap-2">
+                `;
+                committee.strategies_used.forEach(strategy => {
+                    html += `<span class="badge bg-secondary">${getStrategyName(strategy)}</span>`;
+                });
+                html += `
                         </div>
                     </div>
                 `;
             }
             
-            // Sentiment Analysis
-            if (analysis.sentiment) {
-                const sentiment = analysis.sentiment;
-                const sentimentClass = sentiment.label === 'positive' ? 'sentiment-positive' : 
-                                     sentiment.label === 'negative' ? 'sentiment-negative' : 'sentiment-neutral';
-                
+            consensusDiv.innerHTML = html || '<p class="text-muted">لا توجد بيانات إجماع متاحة</p>';
+        }
+
+        function displayCulturalResults(analysis) {
+            const culturalDiv = document.getElementById('culturalResults');
+            
+            let html = '';
+            
+            // Dialect Detection
+            const dialect = analysis.cultural_context?.dialect || analysis.dialect_detected;
+            if (dialect) {
                 html += `
                     <div class="mb-4">
-                        <h6><i class="fas fa-heart me-2"></i>تحليل المشاعر</h6>
-                        <div class="card border-0 bg-light">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <span class="h5 ${sentimentClass}">
-                                        ${sentiment.label === 'positive' ? 'إيجابي' : 
-                                          sentiment.label === 'negative' ? 'سلبي' : 'محايد'}
-                                    </span>
-                                    <span class="badge bg-secondary">${Math.round(sentiment.confidence * 100)}% ثقة</span>
-                                </div>
-                                <div class="progress mt-2">
-                                    <div class="progress-bar ${sentiment.label === 'positive' ? 'bg-success' : 
-                                                                sentiment.label === 'negative' ? 'bg-danger' : 'bg-warning'}" 
-                                         style="width: ${sentiment.confidence * 100}%"></div>
-                                </div>
-                            </div>
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h6 class="mb-0">اللهجة المكتشفة</h6>
+                            <span class="badge bg-success">${getDialectName(dialect)}</span>
+                        </div>
+                        <div class="progress" style="height: 8px;">
+                            <div class="progress-bar bg-success" style="width: ${(analysis.cultural_context?.dialect_confidence || 0.8) * 100}%"></div>
                         </div>
                     </div>
                 `;
             }
-
-            // Topics Analysis
-            if (analysis.topics && analysis.topics.length > 0) {
+            
+            // Cultural Expressions
+            const expressions = analysis.cultural_context?.religious_expressions || [];
+            if (expressions.length > 0) {
                 html += `
                     <div class="mb-4">
-                        <h6><i class="fas fa-tags me-2"></i>المواضيع المكتشفة</h6>
-                        <div class="card border-0 bg-light">
-                            <div class="card-body">
+                        <h6 class="mb-2">التعبيرات الثقافية</h6>
+                        <div class="d-flex flex-wrap gap-2">
                 `;
-                analysis.topics.forEach(topic => {
-                    html += `<span class="topic-tag">${topic}</span>`;
+                expressions.forEach(expr => {
+                    html += `<span class="badge bg-info">${expr}</span>`;
                 });
                 html += `
-                            </div>
                         </div>
                     </div>
                 `;
             }
+            
+            // Formality Level
+            const formality = analysis.cultural_context?.formality_level || analysis.formality_level;
+            if (formality) {
+                const formalityPercent = typeof formality === 'number' ? formality * 100 : 70;
+                html += `
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h6 class="mb-0">مستوى الرسمية</h6>
+                            <span class="small text-muted">${Math.round(formalityPercent)}%</span>
+                        </div>
+                        <div class="progress" style="height: 8px;">
+                            <div class="progress-bar bg-info" style="width: ${formalityPercent}%"></div>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            culturalDiv.innerHTML = html || '<p class="text-muted">لا توجد بيانات ثقافية متاحة</p>';
+        }
 
+        function displayBusinessResults(analysis) {
+            const businessDiv = document.getElementById('businessResults');
+            
+            let html = '';
+            
+            // Business Impact Score
+            const impactScore = analysis.business_impact?.priority_score || 
+                              (analysis.sentiment?.confidence || 0.5) * 100;
+            html += `
+                <div class="mb-4">
+                    <div class="text-center">
+                        <div class="display-4 text-info">${Math.round(impactScore)}</div>
+                        <small class="text-muted">درجة التأثير على الأعمال</small>
+                    </div>
+                </div>
+            `;
+            
             // Action Items
-            if (analysis.action_items && analysis.action_items.length > 0) {
+            const actions = analysis.action_items || analysis.recommendations || [];
+            if (actions.length > 0) {
                 html += `
                     <div class="mb-4">
-                        <h6><i class="fas fa-tasks me-2"></i>الإجراءات المقترحة</h6>
-                        <div class="card border-0 bg-light">
-                            <div class="card-body">
-                                <ul class="list-unstyled mb-0">
+                        <h6 class="mb-3">الإجراءات المقترحة</h6>
+                        <div class="list-group list-group-flush">
                 `;
-                analysis.action_items.forEach(action => {
-                    html += `<li class="mb-2"><i class="fas fa-arrow-left me-2 text-primary"></i>${action}</li>`;
+                actions.slice(0, 3).forEach((action, index) => {
+                    html += `
+                        <div class="list-group-item border-0 px-0">
+                            <div class="d-flex align-items-start">
+                                <span class="badge bg-primary rounded-pill me-2">${index + 1}</span>
+                                <span class="small">${action}</span>
+                            </div>
+                        </div>
+                    `;
                 });
                 html += `
-                                </ul>
-                            </div>
                         </div>
                     </div>
                 `;
             }
-
-            // Cultural Context (new field from agent committee)
-            if (analysis.cultural_context) {
+            
+            // Topics with Business Categories
+            const topics = analysis.topics || [];
+            if (topics.length > 0) {
                 html += `
-                    <div class="mb-4">
-                        <h6><i class="fas fa-globe me-2"></i>السياق الثقافي</h6>
-                        <div class="card border-0 bg-light">
-                            <div class="card-body">
-                                <p class="mb-0">${analysis.cultural_context}</p>
-                            </div>
-                        </div>
-                    </div>
+                    <div class="mb-3">
+                        <h6 class="mb-2">الفئات التجارية</h6>
+                        <div class="d-flex flex-wrap gap-2">
                 `;
-            }
-
-            // AI Summary
-            if (analysis.summary) {
+                topics.slice(0, 4).forEach(topic => {
+                    html += `<span class="badge bg-outline-info">${topic}</span>`;
+                });
                 html += `
-                    <div class="mb-4">
-                        <h6><i class="fas fa-robot me-2"></i>ملخص الذكاء الاصطناعي</h6>
-                        <div class="card border-0 bg-light">
-                            <div class="card-body">
-                                <p class="mb-0">${analysis.summary}</p>
-                            </div>
                         </div>
                     </div>
                 `;
             }
+            
+            businessDiv.innerHTML = html || '<p class="text-muted">لا توجد رؤى أعمال متاحة</p>';
+        }
 
-            html += '</div>';
-            resultsDiv.innerHTML = html;
+        function getStrategyName(strategy) {
+            const strategies = {
+                'DIRECT': 'مباشر',
+                'CHAIN_OF_THOUGHT': 'تسلسل الأفكار', 
+                'FEW_SHOT': 'أمثلة قليلة',
+                'SELF_CONSISTENCY': 'اتساق ذاتي'
+            };
+            return strategies[strategy] || strategy;
+        }
+
+        function getDialectName(dialect) {
+            const dialects = {
+                'gulf': 'خليجي',
+                'egyptian': 'مصري',
+                'levantine': 'شامي',
+                'moroccan': 'مغربي',
+                'standard': 'فصحى'
+            };
+            return dialects[dialect] || dialect;
         }
 
         // Add to analysis history
@@ -439,12 +584,12 @@
             historyDiv.innerHTML = html;
         }
 
-        // Load example texts
+        // Load enhanced examples showcasing committee capabilities
         function loadExample(type) {
             const examples = {
-                positive: "الخدمة ممتازة جداً والموظفين محترفين ومتعاونين. أنصح بالتعامل مع هذه الشركة بكل ثقة.",
-                neutral: "الخدمة مقبولة بشكل عام، لكن يمكن تحسينها في بعض الجوانب مثل سرعة الاستجابة.",
-                negative: "أنا محبط جداً من الخدمة. الانتظار طويل والموظفين غير متعاونين. لن أتعامل معهم مرة أخرى."
+                positive: "ما شاء الله الخدمة زينة وايد والفريق محترم جداً. التطبيق يشتغل عدل والدعم الفني يرد بسرعة. ألف شكر لكم على الجهد المبذول.",
+                neutral: "السلام عليكم، أحتاج استفسار عن النظام الجديد لإدارة المخزون. الواجهة واضحة بس في بعض الميزات محتاجة توضيح أكثر لو سمحتم.",
+                negative: "والله زعلان من التجربة. النظام يعلق كتير والتحديث الأخير خرب كل شي. صار صعب نشتغل وهذا يأثر على شغلنا بشكل كبير."
             };
             
             document.getElementById('textInput').value = examples[type];
