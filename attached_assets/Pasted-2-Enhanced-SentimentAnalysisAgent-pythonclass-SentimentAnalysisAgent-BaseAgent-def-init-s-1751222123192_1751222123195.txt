@@ -1,0 +1,112 @@
+2. Enhanced SentimentAnalysisAgent
+pythonclass SentimentAnalysisAgent(BaseAgent):
+    def __init__(self):
+        super().__init__("sentiment")
+        self.setup_prompts()
+        self.setup_few_shot_examples()
+        
+    def setup_prompts(self):
+        # Original prompts as DIRECT strategy
+        self.prompts = {
+            "jais": {
+                PromptStrategy.DIRECT: """[Your original JAIS prompt]""",
+                
+                PromptStrategy.CHAIN_OF_THOUGHT: """
+أنت محلل متخصص في اللغة العربية. حلل هذا النص خطوة بخطوة:
+
+النص: {text}
+
+الخطوة ١: حدد اللهجة ومستوى الرسمية
+- ما هي علامات اللهجة الموجودة؟
+- هل النص رسمي أم غير رسمي؟
+
+الخطوة ٢: حلل المؤشرات العاطفية
+- اذكر المؤشرات الإيجابية
+- اذكر المؤشرات السلبية
+- حدد أي مشاعر متضاربة
+
+الخطوة ٣: قيّم السياق الثقافي
+- كيف تؤثر المعايير الثقافية على التفسير؟
+- هل هناك تعبيرات غير مباشرة؟
+
+الخطوة ٤: الحكم النهائي
+بناءً على تحليلك، قدم JSON:
+{
+    "reasoning": "تفسير موجز",
+    "sentiment": {{...}}
+}
+""",
+                
+                PromptStrategy.FEW_SHOT: """[Few-shot prompt with examples]""",
+            },
+            "anthropic": {
+                # Similar structure for Anthropic
+            },
+            "openai": {
+                # Similar structure for OpenAI
+            }
+        }
+        
+    def setup_few_shot_examples(self):
+        self.few_shot_examples = {
+            "gulf": [
+                {
+                    "text": "والله الخدمة وايد زينة ما شاء الله",
+                    "analysis": {"sentiment": "positive", "score": 0.9, "reasoning": "Gulf dialect with religious expressions showing strong satisfaction"}
+                }
+            ],
+            "egyptian": [
+                {
+                    "text": "الموضوع ده مش ولا بد خالص",
+                    "analysis": {"sentiment": "negative", "score": -0.8, "reasoning": "Egyptian colloquial expressing strong dissatisfaction"}
+                }
+            ],
+            "levantine": [
+                {
+                    "text": "يعني منيح بس في مجال للتحسين",
+                    "analysis": {"sentiment": "neutral", "score": 0.1, "reasoning": "Levantine hedging showing mild satisfaction"}
+                }
+            ]
+        }
+    
+    def analyze(self, text: str, context: Optional[Dict] = None) -> Dict:
+        # Select strategy based on text characteristics
+        strategy = self.select_prompt_strategy(text, context or {})
+        
+        # Select service based on your existing logic
+        service = self._select_service(text, context)
+        
+        # Get appropriate prompt
+        prompt_template = self.prompts[service][strategy]
+        
+        # Add few-shot examples if using that strategy
+        if strategy == PromptStrategy.FEW_SHOT:
+            dialect = self._detect_dialect(text)
+            examples = self.few_shot_examples.get(dialect, [])
+            prompt_template = self._inject_examples(prompt_template, examples)
+        
+        # Format prompt with confidence anchors
+        prompt = self._format_prompt_with_anchors(prompt_template, text, context)
+        
+        # Call appropriate service
+        result = self._call_service(service, prompt)
+        
+        # Validate and normalize output
+        return self._validate_output(result, strategy)
+    
+    def _format_prompt_with_anchors(self, template: str, text: str, context: Dict) -> str:
+        """Add dynamic scoring anchors"""
+        anchors = {
+            "-1.0": "سيئ جداً - لن أتعامل معكم مرة أخرى",
+            "-0.5": "سيئ - يحتاج تحسين كبير",
+            "0.0": "عادي - مثل الآخرين",
+            "0.5": "جيد - مع بعض الملاحظات",
+            "1.0": "ممتاز - ما شاء الله"
+        }
+        
+        # Add anchors to context
+        if "{anchors}" in template:
+            anchor_text = "\n".join([f"{score}: {desc}" for score, desc in anchors.items()])
+            template = template.replace("{anchors}", anchor_text)
+            
+        return template.format(text=text, **context)

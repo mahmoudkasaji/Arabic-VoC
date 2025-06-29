@@ -54,6 +54,8 @@ class SentimentAnalysisAgent(BaseAgent):
     def __init__(self, api_manager):
         super().__init__("SentimentAnalyst")
         self.api_manager = api_manager
+        self.setup_prompts()
+        self.setup_few_shot_examples()
         
         # Cultural sentiment markers for Arabic
         self.cultural_sentiment_patterns = {
@@ -65,28 +67,548 @@ class SentimentAnalysisAgent(BaseAgent):
             'neutral_inquiry': ['استفسار', 'سؤال', 'معلومات', 'توضيح']
         }
     
+    def setup_prompts(self):
+        """Setup advanced prompting strategies for each AI service"""
+        self.prompts = {
+            "jais": {
+                PromptStrategy.DIRECT: """
+                حلل مشاعر هذا النص العربي مع مراعاة السياق الثقافي والديني:
+                
+                النص: {text}
+                {dialect_note}
+                
+                أجب بصيغة JSON فقط:
+                {{
+                    "sentiment": {{
+                        "score": 0.0,
+                        "label": "إيجابي/سلبي/محايد", 
+                        "confidence": 0.0,
+                        "intensity": "ضعيف/متوسط/قوي"
+                    }},
+                    "emotional_dimensions": {{
+                        "satisfaction": 0.0,
+                        "frustration": 0.0,
+                        "gratitude": 0.0,
+                        "concern": 0.0
+                    }},
+                    "cultural_sentiment": {{
+                        "religious_tone": "موجود/غير موجود",
+                        "formality_level": "رسمي/غير رسمي/محايد",
+                        "cultural_appropriateness": 0.0
+                    }},
+                    "service": "jais",
+                    "analysis_method": "native_arabic_sentiment"
+                }}
+                """,
+                
+                PromptStrategy.CHAIN_OF_THOUGHT: """
+                أنت محلل متخصص في اللغة العربية. حلل هذا النص خطوة بخطوة:
+
+                النص: {text}
+
+                الخطوة ١: حدد اللهجة ومستوى الرسمية
+                - ما هي علامات اللهجة الموجودة؟
+                - هل النص رسمي أم غير رسمي؟
+
+                الخطوة ٢: حلل المؤشرات العاطفية
+                - اذكر المؤشرات الإيجابية
+                - اذكر المؤشرات السلبية
+                - حدد أي مشاعر متضاربة
+
+                الخطوة ٣: قيّم السياق الثقافي
+                - كيف تؤثر المعايير الثقافية على التفسير؟
+                - هل هناك تعبيرات غير مباشرة؟
+
+                الخطوة ٤: الحكم النهائي
+                بناءً على تحليلك، قدم JSON:
+                {{
+                    "reasoning": "تفسير موجز للتحليل",
+                    "sentiment": {{
+                        "score": 0.0,
+                        "label": "إيجابي/سلبي/محايد",
+                        "confidence": 0.0,
+                        "intensity": "ضعيف/متوسط/قوي"
+                    }},
+                    "emotional_dimensions": {{
+                        "satisfaction": 0.0,
+                        "frustration": 0.0,
+                        "gratitude": 0.0,
+                        "concern": 0.0
+                    }},
+                    "cultural_sentiment": {{
+                        "religious_tone": "موجود/غير موجود",
+                        "formality_level": "رسمي/غير رسمي/محايد",
+                        "cultural_appropriateness": 0.0
+                    }},
+                    "service": "jais",
+                    "analysis_method": "chain_of_thought_arabic"
+                }}
+                """,
+                
+                PromptStrategy.FEW_SHOT: """
+                حلل مشاعر هذا النص العربي مستعيناً بهذه الأمثلة:
+
+                {examples}
+
+                النص المطلوب تحليله: {text}
+
+                استخدم نفس صيغة JSON في الأمثلة:
+                {{
+                    "sentiment": {{
+                        "score": 0.0,
+                        "label": "إيجابي/سلبي/محايد",
+                        "confidence": 0.0,
+                        "intensity": "ضعيف/متوسط/قوي"
+                    }},
+                    "reasoning": "سبب التصنيف",
+                    "service": "jais",
+                    "analysis_method": "few_shot_arabic"
+                }}
+                """
+            },
+            
+            "anthropic": {
+                PromptStrategy.DIRECT: """
+                Analyze the sentiment of this Arabic text with deep cultural understanding. {cultural_note}
+                
+                Text: {text}
+                
+                Respond with JSON only:
+                {{
+                    "sentiment": {{
+                        "score": 0.0,
+                        "label": "positive/negative/neutral",
+                        "confidence": 0.0,
+                        "intensity": "weak/moderate/strong"
+                    }},
+                    "emotional_dimensions": {{
+                        "satisfaction": 0.0,
+                        "frustration": 0.0,
+                        "gratitude": 0.0,
+                        "concern": 0.0
+                    }},
+                    "cultural_sentiment": {{
+                        "religious_tone": "present/absent",
+                        "formality_level": "formal/informal/neutral",
+                        "cultural_appropriateness": 0.0
+                    }},
+                    "service": "anthropic",
+                    "analysis_method": "nuanced_cultural_sentiment"
+                }}
+                """,
+                
+                PromptStrategy.CHAIN_OF_THOUGHT: """
+                You are an expert Arabic sentiment analyst. Analyze this text step by step:
+
+                Text: {text}
+
+                Step 1: Identify dialectal and formality markers
+                - What dialect indicators are present?
+                - Is this formal or informal language?
+
+                Step 2: Analyze emotional indicators  
+                - List positive sentiment markers
+                - List negative sentiment markers
+                - Identify any conflicting emotions
+
+                Step 3: Evaluate cultural context
+                - How do cultural norms affect interpretation?
+                - Are there indirect expressions?
+
+                Step 4: Cultural sensitivity assessment
+                - Consider religious expressions
+                - Evaluate appropriateness of response tone
+
+                Step 5: Final judgment
+                Based on your analysis, provide JSON:
+                {{
+                    "reasoning": "Brief explanation of analysis",
+                    "sentiment": {{
+                        "score": 0.0,
+                        "label": "positive/negative/neutral",
+                        "confidence": 0.0,
+                        "intensity": "weak/moderate/strong"
+                    }},
+                    "cultural_sentiment": {{
+                        "religious_tone": "present/absent",
+                        "formality_level": "formal/informal/neutral",
+                        "cultural_appropriateness": 0.0
+                    }},
+                    "service": "anthropic",
+                    "analysis_method": "chain_of_thought_cultural"
+                }}
+                """,
+                
+                PromptStrategy.FEW_SHOT: """
+                Analyze the sentiment of this Arabic text using these examples as reference:
+
+                {examples}
+
+                Text to analyze: {text}
+
+                Use the same JSON format as the examples:
+                {{
+                    "sentiment": {{
+                        "score": 0.0,
+                        "label": "positive/negative/neutral",
+                        "confidence": 0.0,
+                        "intensity": "weak/moderate/strong"
+                    }},
+                    "reasoning": "Explanation for classification",
+                    "service": "anthropic",
+                    "analysis_method": "few_shot_cultural"
+                }}
+                """
+            },
+            
+            "openai": {
+                PromptStrategy.DIRECT: """
+                Analyze the sentiment of this Arabic text efficiently and accurately.
+                
+                Text: {text}
+                
+                Respond with JSON format:
+                {{
+                    "sentiment": {{
+                        "score": 0.0,
+                        "label": "positive/negative/neutral",
+                        "confidence": 0.0,
+                        "intensity": "weak/moderate/strong"
+                    }},
+                    "emotional_dimensions": {{
+                        "satisfaction": 0.0,
+                        "frustration": 0.0,
+                        "gratitude": 0.0,
+                        "concern": 0.0
+                    }},
+                    "cultural_sentiment": {{
+                        "religious_tone": "present/absent",
+                        "formality_level": "formal/informal/neutral",
+                        "cultural_appropriateness": 0.0
+                    }},
+                    "service": "openai",
+                    "analysis_method": "fast_sentiment_analysis"
+                }}
+                """,
+                
+                PromptStrategy.CHAIN_OF_THOUGHT: """
+                Analyze this Arabic text sentiment using step-by-step reasoning:
+
+                Text: {text}
+
+                Step 1: Language analysis
+                - Identify key sentiment words
+                - Note any cultural expressions
+
+                Step 2: Emotional assessment
+                - Evaluate positive vs negative indicators
+                - Consider emotional intensity
+
+                Step 3: Cultural context
+                - Account for Arabic communication patterns
+                - Consider indirect expressions
+
+                Step 4: Final scoring
+                Provide detailed JSON analysis:
+                {{
+                    "reasoning": "Step-by-step explanation",
+                    "sentiment": {{
+                        "score": 0.0,
+                        "label": "positive/negative/neutral",
+                        "confidence": 0.0,
+                        "intensity": "weak/moderate/strong"
+                    }},
+                    "service": "openai",
+                    "analysis_method": "chain_of_thought_fast"
+                }}
+                """,
+                
+                PromptStrategy.FEW_SHOT: """
+                Analyze Arabic text sentiment using these examples:
+
+                {examples}
+
+                Text: {text}
+
+                Follow the same JSON structure:
+                {{
+                    "sentiment": {{
+                        "score": 0.0,
+                        "label": "positive/negative/neutral",
+                        "confidence": 0.0,
+                        "intensity": "weak/moderate/strong"
+                    }},
+                    "reasoning": "Classification rationale",
+                    "service": "openai",
+                    "analysis_method": "few_shot_fast"
+                }}
+                """
+            }
+        }
+    
+    def setup_few_shot_examples(self):
+        """Setup dialect-specific examples for few-shot learning"""
+        self.few_shot_examples = {
+            "gulf": [
+                {
+                    "text": "والله الخدمة وايد زينة ما شاء الله",
+                    "analysis": {
+                        "sentiment": {"score": 0.9, "label": "positive", "confidence": 0.95, "intensity": "strong"},
+                        "reasoning": "Gulf dialect with religious expressions showing strong satisfaction"
+                    }
+                },
+                {
+                    "text": "يا ويلي شلون كذا؟ ما صار شي زين",
+                    "analysis": {
+                        "sentiment": {"score": -0.7, "label": "negative", "confidence": 0.85, "intensity": "moderate"},
+                        "reasoning": "Gulf dialect expressing disappointment and dissatisfaction"
+                    }
+                }
+            ],
+            "egyptian": [
+                {
+                    "text": "الموضوع ده مش ولا بد خالص",
+                    "analysis": {
+                        "sentiment": {"score": -0.8, "label": "negative", "confidence": 0.9, "intensity": "strong"},
+                        "reasoning": "Egyptian colloquial expressing strong dissatisfaction"
+                    }
+                },
+                {
+                    "text": "ده حلو قوي بجد ربنا يبارك",
+                    "analysis": {
+                        "sentiment": {"score": 0.85, "label": "positive", "confidence": 0.9, "intensity": "strong"},
+                        "reasoning": "Egyptian dialect with religious blessing showing strong approval"
+                    }
+                }
+            ],
+            "levantine": [
+                {
+                    "text": "يعني منيح بس في مجال للتحسين",
+                    "analysis": {
+                        "sentiment": {"score": 0.1, "label": "neutral", "confidence": 0.8, "intensity": "weak"},
+                        "reasoning": "Levantine hedging showing mild satisfaction with constructive criticism"
+                    }
+                },
+                {
+                    "text": "والله شغل ممتاز ما في أحسن من هيك",
+                    "analysis": {
+                        "sentiment": {"score": 0.95, "label": "positive", "confidence": 0.95, "intensity": "strong"},
+                        "reasoning": "Levantine with religious emphasis expressing exceptional satisfaction"
+                    }
+                }
+            ],
+            "moroccan": [
+                {
+                    "text": "واخا هاذي زوينة بزاف الله يعطيك الصحة",
+                    "analysis": {
+                        "sentiment": {"score": 0.8, "label": "positive", "confidence": 0.85, "intensity": "strong"},
+                        "reasoning": "Moroccan dialect with blessing showing strong appreciation"
+                    }
+                }
+            ]
+        }
+    
     async def analyze_sentiment(self, text: str, text_characteristics: Dict) -> Dict[str, Any]:
-        """Perform deep sentiment analysis with cultural intelligence"""
+        """Enhanced sentiment analysis with advanced prompting strategies"""
         
-        # Pre-analysis: Detect cultural patterns
+        # Pre-analysis: Detect cultural patterns and dialect
         cultural_context = self._detect_cultural_patterns(text)
         dialectal_info = text_characteristics.get('dialectal_analysis', {})
         
-        # Choose best model for sentiment analysis
+        # Select prompting strategy based on text complexity
+        strategy = self.select_prompt_strategy(text, {
+            'cultural_context': cultural_context,
+            'dialectal_info': dialectal_info
+        })
+        
+        # Choose best AI service for sentiment analysis
         best_service = self._select_sentiment_model(text_characteristics, dialectal_info)
         
         try:
-            if best_service == "jais":
-                return await self._analyze_with_jais(text, cultural_context, dialectal_info)
-            elif best_service == "anthropic":
-                return await self._analyze_with_anthropic(text, cultural_context, dialectal_info)
-            else:
-                return await self._analyze_with_openai(text, cultural_context, dialectal_info)
+            return await self._analyze_with_strategy(text, strategy, best_service, cultural_context, dialectal_info)
                 
         except Exception as e:
-            logger.error(f"Sentiment analysis failed with {best_service}: {e}")
+            logger.error(f"Sentiment analysis failed with {best_service} using {strategy.value}: {e}")
             # Fallback to simpler analysis
             return self._fallback_sentiment_analysis(text, cultural_context)
+    
+    async def _analyze_with_strategy(self, text: str, strategy: PromptStrategy, service: str, 
+                                   cultural_context: Dict, dialectal_info: Dict) -> Dict[str, Any]:
+        """Execute analysis using selected strategy and service"""
+        
+        # Get appropriate prompt template
+        prompt_template = self.prompts[service][strategy]
+        
+        # Prepare context for prompt formatting
+        context = {
+            'cultural_note': self._format_cultural_note(cultural_context),
+            'dialect_note': self._format_dialect_note(dialectal_info)
+        }
+        
+        # Add few-shot examples if using that strategy
+        if strategy == PromptStrategy.FEW_SHOT:
+            dialect = self._detect_primary_dialect(text)
+            examples = self._format_few_shot_examples(dialect, service)
+            context['examples'] = examples
+        
+        # Format prompt with confidence anchors
+        prompt = self._format_prompt_with_anchors(prompt_template, text, context)
+        
+        # Call appropriate AI service
+        if service == "jais":
+            return await self._call_jais_with_prompt(prompt)
+        elif service == "anthropic":
+            return await self._call_anthropic_with_prompt(prompt)
+        else:
+            return await self._call_openai_with_prompt(prompt)
+    
+    def _detect_primary_dialect(self, text: str) -> str:
+        """Detect the primary Arabic dialect in the text"""
+        
+        # Gulf dialect markers
+        gulf_markers = ['والله', 'وايد', 'زين', 'شلون', 'يا ويلي', 'ما شاء الله']
+        gulf_score = sum(1 for marker in gulf_markers if marker in text)
+        
+        # Egyptian dialect markers  
+        egyptian_markers = ['ده', 'دي', 'مش', 'ولا بد', 'قوي', 'خالص', 'ربنا']
+        egyptian_score = sum(1 for marker in egyptian_markers if marker in text)
+        
+        # Levantine dialect markers
+        levantine_markers = ['يعني', 'منيح', 'هيك', 'بدي', 'عم', 'شو', 'كتير']
+        levantine_score = sum(1 for marker in levantine_markers if marker in text)
+        
+        # Moroccan dialect markers
+        moroccan_markers = ['واخا', 'بزاف', 'زوين', 'فين', 'غير', 'الله يعطيك']
+        moroccan_score = sum(1 for marker in moroccan_markers if marker in text)
+        
+        # Determine primary dialect
+        scores = {
+            'gulf': gulf_score,
+            'egyptian': egyptian_score, 
+            'levantine': levantine_score,
+            'moroccan': moroccan_score
+        }
+        
+        primary_dialect = max(scores, key=scores.get)
+        return primary_dialect if scores[primary_dialect] > 0 else 'standard'
+    
+    def _format_few_shot_examples(self, dialect: str, service: str) -> str:
+        """Format few-shot examples for the detected dialect"""
+        
+        examples = self.few_shot_examples.get(dialect, self.few_shot_examples['gulf'])
+        
+        if service == "jais":
+            # Arabic format for JAIS
+            formatted = []
+            for example in examples[:2]:  # Limit to 2 examples
+                formatted.append(f"""
+مثال:
+النص: {example['text']}
+التحليل: {json.dumps(example['analysis'], ensure_ascii=False, indent=2)}
+""")
+            return "\n".join(formatted)
+        else:
+            # English format for Anthropic/OpenAI
+            formatted = []
+            for example in examples[:2]:
+                formatted.append(f"""
+Example:
+Text: {example['text']}
+Analysis: {json.dumps(example['analysis'], ensure_ascii=False, indent=2)}
+""")
+            return "\n".join(formatted)
+    
+    def _format_cultural_note(self, cultural_context: Dict) -> str:
+        """Format cultural context note for prompts"""
+        if cultural_context.get('has_cultural_markers'):
+            return "This text contains cultural/religious expressions."
+        return ""
+    
+    def _format_dialect_note(self, dialectal_info: Dict) -> str:
+        """Format dialect information note for prompts"""
+        if dialectal_info.get('has_dialectal_content'):
+            dialect = dialectal_info.get('primary_dialect', 'غير محددة')
+            return f"اللهجة المكتشفة: {dialect}"
+        return ""
+    
+    def _format_prompt_with_anchors(self, template: str, text: str, context: Dict) -> str:
+        """Add dynamic scoring anchors to improve consistency"""
+        
+        # Confidence anchors for sentiment scoring
+        anchors = {
+            "-1.0": "سيئ جداً - لن أتعامل معكم مرة أخرى",
+            "-0.5": "سيئ - يحتاج تحسين كبير", 
+            "0.0": "عادي - مثل الآخرين",
+            "0.5": "جيد - مع بعض الملاحظات",
+            "1.0": "ممتاز - ما شاء الله"
+        }
+        
+        # Add anchors if template supports them
+        if "{anchors}" in template:
+            anchor_text = "\n".join([f"{score}: {desc}" for score, desc in anchors.items()])
+            context['anchors'] = anchor_text
+        
+        # Format template with all context
+        return template.format(text=text, **context)
+    
+    async def _call_jais_with_prompt(self, prompt: str) -> Dict[str, Any]:
+        """Call JAIS with formatted prompt"""
+        client = self.api_manager.get_jais_client()
+        
+        response = client.chat.completions.create(
+            model="jais-30b-chat",
+            messages=[{"role": "user", "content": prompt}],
+            max_tokens=600,
+            temperature=0.2
+        )
+        
+        return json.loads(response.choices[0].message.content)
+    
+    async def _call_anthropic_with_prompt(self, prompt: str) -> Dict[str, Any]:
+        """Call Anthropic with formatted prompt"""
+        client = self.api_manager.get_anthropic_client()
+        
+        response = client.messages.create(
+            model="claude-3-sonnet-20240229",
+            max_tokens=600,
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0.2
+        )
+        
+        return json.loads(response.content[0].text)
+    
+    async def _call_openai_with_prompt(self, prompt: str) -> Dict[str, Any]:
+        """Call OpenAI with formatted prompt"""
+        client = self.api_manager.get_openai_client()
+        
+        response = client.chat.completions.create(
+            model="gpt-4o",
+            messages=[{"role": "user", "content": prompt}],
+            response_format={"type": "json_object"},
+            max_tokens=500,
+            temperature=0.2
+        )
+        
+        return json.loads(response.choices[0].message.content)
+    
+    def _validate_output(self, result: Dict, strategy: PromptStrategy) -> Dict[str, Any]:
+        """Validate and normalize analysis output"""
+        
+        # Ensure required fields exist
+        if 'sentiment' not in result:
+            result['sentiment'] = {"score": 0.0, "label": "neutral", "confidence": 0.5}
+        
+        # Add strategy metadata
+        result['prompt_strategy'] = strategy.value
+        result['enhanced_analysis'] = True
+        
+        # Normalize confidence scores
+        if 'sentiment' in result and 'confidence' in result['sentiment']:
+            confidence = result['sentiment']['confidence']
+            if confidence > 1.0:
+                result['sentiment']['confidence'] = confidence / 100.0
+        
+        return result
     
     def _detect_cultural_patterns(self, text: str) -> Dict[str, Any]:
         """Detect cultural sentiment patterns in Arabic text"""
