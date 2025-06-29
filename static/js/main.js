@@ -75,7 +75,7 @@ const API = {
 
         try {
             const response = await fetch(url, { ...defaultOptions, ...options });
-            
+
             if (!response.ok) {
                 const errorData = await response.json();
                 throw new Error(errorData.detail || 'حدث خطأ في الطلب');
@@ -131,16 +131,16 @@ const UI = {
      */
     showAlert(message, type = 'info', duration = 5000) {
         const alertContainer = document.getElementById('alert-container') || this.createAlertContainer();
-        
+
         const alert = document.createElement('div');
         alert.className = `alert alert-${type} fade-in`;
         alert.innerHTML = `
             <span>${message}</span>
             <button type="button" class="btn-close" onclick="this.parentElement.remove()">×</button>
         `;
-        
+
         alertContainer.appendChild(alert);
-        
+
         // Auto-remove after duration
         setTimeout(() => {
             if (alert.parentElement) {
@@ -202,7 +202,7 @@ const UI = {
     createFeedbackItem(feedback) {
         const sentimentClass = ArabicUtils.getSentimentClass(feedback.sentiment_score);
         const sentimentText = ArabicUtils.getSentimentText(feedback.sentiment_score);
-        
+
         return `
             <div class="feedback-item" data-id="${feedback.id}">
                 <div class="feedback-meta">
@@ -264,13 +264,13 @@ const FeedbackManager = {
 
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
-            
+
             const submitBtn = form.querySelector('button[type="submit"]');
             const originalText = submitBtn.textContent;
-            
+
             try {
                 UI.showLoading(submitBtn);
-                
+
                 const formData = new FormData(form);
                 const feedbackData = {
                     content: formData.get('content'),
@@ -282,15 +282,15 @@ const FeedbackManager = {
                 };
 
                 const result = await API.submitFeedback(feedbackData);
-                
+
                 UI.showAlert('تم إرسال التعليق بنجاح وسيتم معالجته قريباً', 'success');
                 form.reset();
-                
+
                 // Refresh feedback list if on the same page
                 if (typeof this.refreshList === 'function') {
                     this.refreshList();
                 }
-                
+
             } catch (error) {
                 console.error('Error submitting feedback:', error);
             } finally {
@@ -318,13 +318,13 @@ const FeedbackManager = {
             color: var(--text-muted);
             margin-top: 0.5rem;
         `;
-        
+
         textarea.parentNode.appendChild(counter);
-        
+
         const updateCounter = () => {
             const remaining = maxLength - textarea.value.length;
             counter.textContent = `${ArabicUtils.formatNumber(remaining)} حرف متبقي`;
-            
+
             if (remaining < 100) {
                 counter.style.color = 'var(--danger-color)';
             } else if (remaining < 500) {
@@ -333,7 +333,7 @@ const FeedbackManager = {
                 counter.style.color = 'var(--text-muted)';
             }
         };
-        
+
         textarea.addEventListener('input', updateCounter);
         updateCounter();
     },
@@ -347,9 +347,9 @@ const FeedbackManager = {
 
         try {
             UI.showLoading(container);
-            
+
             const feedbackList = await API.getFeedbackList(filters);
-            
+
             if (feedbackList.length === 0) {
                 container.innerHTML = `
                     <div class="text-center" style="padding: 2rem;">
@@ -358,11 +358,11 @@ const FeedbackManager = {
                 `;
                 return;
             }
-            
+
             container.innerHTML = feedbackList
                 .map(feedback => UI.createFeedbackItem(feedback))
                 .join('');
-                
+
         } catch (error) {
             container.innerHTML = `
                 <div class="alert alert-danger">
@@ -427,7 +427,7 @@ const FeedbackManager = {
                 </div>
             </div>
         `;
-        
+
         // Add modal styles
         modal.style.cssText = `
             position: fixed;
@@ -441,9 +441,9 @@ const FeedbackManager = {
             justify-content: center;
             z-index: 1000;
         `;
-        
+
         document.body.appendChild(modal);
-        
+
         // Close modal on outside click
         modal.addEventListener('click', (e) => {
             if (e.target === modal) {
@@ -607,7 +607,7 @@ const Navigation = {
     highlightActivePage() {
         const currentPath = window.location.pathname;
         const navLinks = document.querySelectorAll('.nav-link');
-        
+
         navLinks.forEach(link => {
             link.classList.remove('active');
             if (link.getAttribute('href') === currentPath) {
@@ -623,7 +623,7 @@ const Navigation = {
         // Auto-close mobile menu when link is clicked
         const navLinks = document.querySelectorAll('.navbar-nav .nav-link');
         const navbarCollapse = document.getElementById('navbarNav');
-        
+
         navLinks.forEach(link => {
             link.addEventListener('click', () => {
                 if (window.innerWidth < 992 && navbarCollapse.classList.contains('show')) {
@@ -702,14 +702,86 @@ const Navigation = {
     }
 };
 
+// Enhanced Navigation Management
+class NavigationManager {
+    constructor() {
+        this.initializeNavigation();
+        this.handleActiveStates();
+        this.initializeScrollEffects();
+    }
+
+    initializeNavigation() {
+        // Auto-close dropdowns when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.dropdown')) {
+                document.querySelectorAll('.dropdown-menu.show').forEach(menu => {
+                    menu.classList.remove('show');
+                });
+            }
+        });
+
+        // Prevent dropdown close on internal clicks
+        document.querySelectorAll('.dropdown-menu').forEach(menu => {
+            menu.addEventListener('click', (e) => {
+                e.stopPropagation();
+            });
+        });
+    }
+
+    handleActiveStates() {
+        const currentPath = window.location.pathname;
+
+        // Clear all active states
+        document.querySelectorAll('.nav-link, .dropdown-item').forEach(link => {
+            link.classList.remove('active');
+        });
+
+        // Set active state for current page
+        document.querySelectorAll('.dropdown-item').forEach(item => {
+            const href = item.getAttribute('href');
+            if (href && currentPath === href) {
+                item.classList.add('active');
+
+                // Highlight parent dropdown
+                const parentDropdown = item.closest('.dropdown');
+                if (parentDropdown) {
+                    parentDropdown.querySelector('.dropdown-toggle').classList.add('active');
+                }
+            }
+        });
+    }
+
+    initializeScrollEffects() {
+        const navbar = document.querySelector('.navbar');
+        let lastScrollY = window.scrollY;
+
+        window.addEventListener('scroll', () => {
+            const currentScrollY = window.scrollY;
+
+            if (currentScrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+
+            lastScrollY = currentScrollY;
+        });
+    }
+}
+
+// Initialize enhanced navigation
+document.addEventListener('DOMContentLoaded', () => {
+    new NavigationManager();
+});
+
 // Initialization on DOM load
 document.addEventListener('DOMContentLoaded', () => {
     // Initialize navigation enhancements
     Navigation.init();
-    
+
     // Initialize language management
     LanguageManager.initializeLanguage();
-    
+
     // Initialize feedback form if present
     FeedbackManager.initForm();
 
@@ -755,7 +827,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // Language Management System
 const LanguageManager = {
     currentLanguage: 'ar',
-    
+
     /**
      * Initialize language system
      */
@@ -764,24 +836,24 @@ const LanguageManager = {
         this.switchLanguage(savedLang);
         console.log('Language system initialized:', savedLang);
     },
-    
+
     /**
      * Switch between Arabic and English
      */
     switchLanguage(lang) {
         this.currentLanguage = lang;
         localStorage.setItem('preferred_language', lang);
-        
+
         // Update HTML direction and language
         document.documentElement.setAttribute('lang', lang);
         document.documentElement.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
-        
+
         // Update text content
         this.updatePageText(lang);
-        
+
         console.log('Switched to language:', lang);
     },
-    
+
     /**
      * Update page text based on language
      */
@@ -826,9 +898,9 @@ const LanguageManager = {
                 'dialect-help-text': 'You can write in any Arabic dialect - we understand them all'
             }
         };
-        
+
         const texts = translations[lang] || translations.ar;
-        
+
         Object.entries(texts).forEach(([key, value]) => {
             const element = document.getElementById(key);
             if (element) {
@@ -845,7 +917,7 @@ const LanguageManager = {
 function toggleLanguage() {
     const currentLang = LanguageManager.currentLanguage;
     const newLang = currentLang === 'ar' ? 'en' : 'ar';
-    
+
     console.log('Switching to:', newLang);
     LanguageManager.switchLanguage(newLang);
 }
