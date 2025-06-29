@@ -143,20 +143,23 @@ Rate sentiment on CSAT scale (1-5):
 
 Extract EXACT phrases from the text, not interpretations.
 
-Return JSON:
-{
-    "csat_prediction": 1-5,
-    "churn_risk": "high/medium/low",
-    "churn_indicators": ["exact phrases suggesting churn like 'cancel' or 'switching to'"],
-    "sentiment_drivers": ["exact customer phrases - e.g. 'waited 3 hours' not 'long wait'"],
-    "actionable": true/false,
-    "actionable_reason": "why this is/isn't actionable",
-    "requires_followup": true/false,
-    "urgency": "immediate/high/medium/low"
-}
+IMPORTANT: Return ONLY valid JSON with no additional text or explanation.
 
-Actionable = Has specific issue + clear owner + fixable
-Requires followup = Customer expects response OR issue is critical
+{{
+    "csat_prediction": 3,
+    "churn_risk": "medium",
+    "churn_indicators": ["exact phrases suggesting churn"],
+    "sentiment_drivers": ["exact customer phrases"],
+    "actionable": true,
+    "actionable_reason": "specific reason",
+    "requires_followup": false,
+    "urgency": "medium"
+}}
+
+Rules:
+- Actionable = Has specific issue + clear owner + fixable
+- Requires followup = Customer expects response OR issue is critical
+- Return complete JSON only
 """
     
     async def analyze(self, text: str) -> Dict[str, Any]:
@@ -179,6 +182,13 @@ Requires followup = Customer expects response OR issue is critical
                 raise ValueError("Empty response from AI")
             
             result_text = result_text.strip()
+            
+            # Extract JSON from code blocks if present
+            if result_text.startswith('```json'):
+                result_text = result_text.replace('```json', '').replace('```', '').strip()
+            elif result_text.startswith('```'):
+                result_text = result_text.replace('```', '').strip()
+            
             try:
                 result = json.loads(result_text)
             except json.JSONDecodeError as e:
@@ -241,29 +251,21 @@ Categories:
 - Value perception (pricing concerns, competitor comparison, ROI questions)
 
 Journey Stages:
-- Awareness: research, discovery, comparison
-- Purchase: evaluation, checkout, payment
-- Onboarding: setup, first_use, training
-- Usage: daily_use, feature_adoption
-- Support: first_contact, diagnosis, resolution_attempt, escalation, resolution, follow_up
-- Renewal: renewal_notice, negotiation, expansion
+- Awareness, Purchase, Onboarding, Usage, Support, Renewal
 
-Return JSON:
-{
-    "primary_driver": "category from above",
+IMPORTANT: Return ONLY valid JSON with no additional text.
+
+{{
+    "primary_driver": "service_failures",
     "specific_issue": "exact problem in customer's words",
-    "impact_severity": "critical/high/medium/low",
-    "affected_journey_stage": "specific stage from above",
-    "quantifiable_impact": "numeric ($X, Y days) or countable (Z attempts/calls/hours)",
-    "friction_points": ["list of specific obstacles customer faced"],
+    "impact_severity": "medium",
+    "affected_journey_stage": "support",
+    "quantifiable_impact": "2 hours",
+    "friction_points": ["specific obstacles"],
     "root_cause_hint": "potential underlying issue"
-}
+}}
 
-Severity Guide:
-- Critical: Service unusable, money lost, data compromised
-- High: Major workflow blocked, significant delays
-- Medium: Workaround exists but painful
-- Low: Minor annoyance, cosmetic issue
+Severity: critical/high/medium/low
 """
     
     async def analyze(self, text: str) -> Dict[str, Any]:
@@ -323,43 +325,35 @@ CSAT Prediction: {csat_score}
 Primary Driver: {primary_driver}
 Severity: {severity}
 
-Assumptions for calculations:
-- Average customer value: $500/month
-- Support hour cost: $50/hour
-- NPS impact uses standard -100 to +100 scale
+IMPORTANT: Return ONLY valid JSON with no additional text.
 
-Return JSON:
-{
-    "revenue_impact": {
-        "monthly_value_at_risk": 0-10000,
-        "risk_type": "churn/downgrade/negative_wom",
-        "risk_probability": 0.0-1.0,
-        "expected_loss": "monthly_value * probability"
-    },
-    "operational_impact": {
-        "estimated_support_hours": 0.5-10,
-        "escalation_probability": 0.0-1.0,
-        "total_support_cost": "hours * 50"
-    },
-    "brand_impact": {
-        "nps_change": -30 to +30,
-        "review_likelihood": 0.0-1.0,
-        "predicted_review_rating": 1-5,
-        "viral_risk": "high/medium/low"
-    },
-    "resolution_priority": "P1/P2/P3/P4",
-    "resolution_roi": {
-        "cost_to_resolve": "support_cost + any_credits",
-        "value_preserved": "expected_loss_prevented",
-        "roi_ratio": "value_preserved / cost_to_resolve"
-    }
-}
+{{
+    "revenue_impact": {{
+        "monthly_value_at_risk": 1000,
+        "risk_type": "churn",
+        "risk_probability": 0.5,
+        "expected_loss": 500.0
+    }},
+    "operational_impact": {{
+        "estimated_support_hours": 2.0,
+        "escalation_probability": 0.3,
+        "total_support_cost": 100
+    }},
+    "brand_impact": {{
+        "nps_change": -5,
+        "review_likelihood": 0.4,
+        "predicted_review_rating": 3,
+        "viral_risk": "medium"
+    }},
+    "resolution_priority": "P3",
+    "resolution_roi": {{
+        "cost_to_resolve": 100,
+        "value_preserved": 500.0,
+        "roi_ratio": 5.0
+    }}
+}}
 
-Priority Matrix:
-P1: Critical severity + High revenue risk (>$5000)
-P2: High severity OR High revenue risk  
-P3: Medium severity + Medium revenue risk ($1000-5000)
-P4: Low severity + Low revenue risk (<$1000)
+Priority: P1=Critical+High$ P2=High$ P3=Medium$ P4=Low$
 """
     
     async def assess_impact(self, text: str, sentiment_result: Dict, driver_result: Dict, 
