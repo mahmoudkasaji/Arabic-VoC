@@ -266,11 +266,34 @@
         function displayResults(result, originalText) {
             const resultsDiv = document.getElementById('analysisResults');
             
+            // Extract analysis data - handle both nested and direct formats
+            const analysis = result.analysis || result;
+            
             let html = '<div class="analysis-result">';
             
+            // Service and Committee Info
+            if (result.analysis && result.analysis.service) {
+                html += `
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <small class="text-muted">
+                                <i class="fas fa-robot me-1"></i>
+                                الخدمة: ${result.analysis.service.toUpperCase()}
+                            </small>
+                            ${result.analysis.committee_decision ? `
+                                <small class="text-muted">
+                                    <i class="fas fa-users me-1"></i>
+                                    لجنة الذكاء الاصطناعي (${Math.round(result.analysis.committee_decision.decision_confidence * 100)}% ثقة)
+                                </small>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+            }
+            
             // Sentiment Analysis
-            if (result.sentiment) {
-                const sentiment = result.sentiment;
+            if (analysis.sentiment) {
+                const sentiment = analysis.sentiment;
                 const sentimentClass = sentiment.label === 'positive' ? 'sentiment-positive' : 
                                      sentiment.label === 'negative' ? 'sentiment-negative' : 'sentiment-neutral';
                 
@@ -298,14 +321,14 @@
             }
 
             // Topics Analysis
-            if (result.topics && result.topics.length > 0) {
+            if (analysis.topics && analysis.topics.length > 0) {
                 html += `
                     <div class="mb-4">
                         <h6><i class="fas fa-tags me-2"></i>المواضيع المكتشفة</h6>
                         <div class="card border-0 bg-light">
                             <div class="card-body">
                 `;
-                result.topics.forEach(topic => {
+                analysis.topics.forEach(topic => {
                     html += `<span class="topic-tag">${topic}</span>`;
                 });
                 html += `
@@ -316,7 +339,7 @@
             }
 
             // Action Items
-            if (result.action_items && result.action_items.length > 0) {
+            if (analysis.action_items && analysis.action_items.length > 0) {
                 html += `
                     <div class="mb-4">
                         <h6><i class="fas fa-tasks me-2"></i>الإجراءات المقترحة</h6>
@@ -324,7 +347,7 @@
                             <div class="card-body">
                                 <ul class="list-unstyled mb-0">
                 `;
-                result.action_items.forEach(action => {
+                analysis.action_items.forEach(action => {
                     html += `<li class="mb-2"><i class="fas fa-arrow-left me-2 text-primary"></i>${action}</li>`;
                 });
                 html += `
@@ -335,14 +358,28 @@
                 `;
             }
 
+            // Cultural Context (new field from agent committee)
+            if (analysis.cultural_context) {
+                html += `
+                    <div class="mb-4">
+                        <h6><i class="fas fa-globe me-2"></i>السياق الثقافي</h6>
+                        <div class="card border-0 bg-light">
+                            <div class="card-body">
+                                <p class="mb-0">${analysis.cultural_context}</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
             // AI Summary
-            if (result.summary) {
+            if (analysis.summary) {
                 html += `
                     <div class="mb-4">
                         <h6><i class="fas fa-robot me-2"></i>ملخص الذكاء الاصطناعي</h6>
                         <div class="card border-0 bg-light">
                             <div class="card-body">
-                                <p class="mb-0">${result.summary}</p>
+                                <p class="mb-0">${analysis.summary}</p>
                             </div>
                         </div>
                     </div>
@@ -380,9 +417,10 @@
 
             let html = '';
             analysisHistory.forEach((item, index) => {
-                const sentimentIcon = item.result.sentiment ? 
-                    (item.result.sentiment.label === 'positive' ? 'fas fa-smile text-success' :
-                     item.result.sentiment.label === 'negative' ? 'fas fa-frown text-danger' : 'fas fa-meh text-warning') : 
+                const analysis = item.result.analysis || item.result;
+                const sentimentIcon = analysis.sentiment ? 
+                    (analysis.sentiment.label === 'positive' ? 'fas fa-smile text-success' :
+                     analysis.sentiment.label === 'negative' ? 'fas fa-frown text-danger' : 'fas fa-meh text-warning') : 
                     'fas fa-question text-muted';
 
                 html += `
