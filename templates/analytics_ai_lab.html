@@ -79,25 +79,21 @@
                                     </div>
                                 </div>
 
-                                <!-- Analysis Options -->
+                                <!-- Analysis Type Selection -->
                                 <div class="mb-3">
-                                    <label class="form-label">خيارات التحليل</label>
+                                    <label class="form-label">نوع التحليل</label>
                                     <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="sentimentAnalysis" checked>
-                                        <label class="form-check-label" for="sentimentAnalysis">
-                                            تحليل المشاعر
+                                        <input class="form-check-input" type="radio" name="analysisType" id="cxAnalysis" value="cx_analysis" checked>
+                                        <label class="form-check-label" for="cxAnalysis">
+                                            <strong>تحليل تجربة العميل (CX)</strong>
+                                            <small class="d-block text-muted">تحليل الأعمال المركز: درجة الرضا + المخاطر المالية + أولوية الحلول</small>
                                         </label>
                                     </div>
                                     <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="topicAnalysis" checked>
-                                        <label class="form-check-label" for="topicAnalysis">
-                                            تحليل المواضيع
-                                        </label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="actionItems" checked>
-                                        <label class="form-check-label" for="actionItems">
-                                            اقتراح الإجراءات
+                                        <input class="form-check-input" type="radio" name="analysisType" id="legacyAnalysis" value="arabic_analysis">
+                                        <label class="form-check-label" for="legacyAnalysis">
+                                            <strong>التحليل التقليدي</strong>
+                                            <small class="d-block text-muted">النظام السابق: التحليل الثقافي والموضوعي</small>
                                         </label>
                                     </div>
                                 </div>
@@ -273,7 +269,7 @@
                         text: text,
                         service: document.getElementById('aiModel').value,
                         use_committee: true,
-                        task_type: 'arabic_analysis'
+                        task_type: document.querySelector('input[name="analysisType"]:checked').value
                     })
                 });
 
@@ -299,19 +295,241 @@
             }
         }
 
-        // Display enhanced committee results
+        // Display analysis results based on type
         function displayResults(result, originalText) {
-            // Extract analysis data
             const analysis = result.analysis || result;
+            const analysisType = result.analysis_type || 'legacy_cultural_analysis';
             
-            // Display Committee Consensus
-            displayConsensusResults(analysis, result);
+            if (analysisType === 'cx_business_intelligence') {
+                // Display new CX business intelligence format
+                displayCXBusinessResults(analysis);
+            } else {
+                // Display legacy committee format
+                displayConsensusResults(analysis, result);
+                displayCulturalResults(analysis);
+                displayBusinessResults(analysis);
+            }
+        }
+
+        // Display CX Business Intelligence Results
+        function displayCXBusinessResults(analysis) {
+            // Display Executive Summary
+            displayExecutiveSummary(analysis.executive_summary);
             
-            // Display Cultural Intelligence
-            displayCulturalResults(analysis);
+            // Display Detailed Analysis
+            displayDetailedCXAnalysis(analysis);
             
-            // Display Business Intelligence
-            displayBusinessResults(analysis);
+            // Display Business Actions
+            displayBusinessActions(analysis.business_impact);
+        }
+
+        function displayExecutiveSummary(summary) {
+            const consensusDiv = document.getElementById('consensusResults');
+            
+            if (!summary) {
+                consensusDiv.innerHTML = '<p class="text-muted">لا توجد نتائج تنفيذية</p>';
+                return;
+            }
+
+            const csat = summary.customer_satisfaction?.predicted_csat || 3;
+            const churnRisk = summary.customer_satisfaction?.churn_risk || 'medium';
+            const revenueRisk = summary.financial_impact?.revenue_at_risk || 0;
+            const priority = summary.recommended_action?.priority || 'P4';
+
+            // Priority color mapping
+            const priorityColors = {
+                'P1': 'danger',
+                'P2': 'warning', 
+                'P3': 'info',
+                'P4': 'secondary'
+            };
+
+            const churnColors = {
+                'high': 'danger',
+                'medium': 'warning',
+                'low': 'success'
+            };
+
+            consensusDiv.innerHTML = `
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <div class="text-center">
+                            <div class="display-4 ${csat <= 2 ? 'text-danger' : csat >= 4 ? 'text-success' : 'text-warning'}">${csat}</div>
+                            <small class="text-muted">توقع درجة الرضا (CSAT)</small>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="text-center">
+                            <div class="display-4 text-${churnColors[churnRisk]}">${churnRisk === 'high' ? 'عالي' : churnRisk === 'medium' ? 'متوسط' : 'منخفض'}</div>
+                            <small class="text-muted">خطر فقدان العميل</small>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="text-center">
+                            <div class="display-4 text-primary">$${revenueRisk.toLocaleString()}</div>
+                            <small class="text-muted">المخاطر المالية</small>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="text-center">
+                            <div class="h2 text-${priorityColors[priority]}">${priority}</div>
+                            <small class="text-muted">أولوية الحل</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card bg-light border-0">
+                    <div class="card-body">
+                        <h6 class="card-title">المشكلة الأساسية</h6>
+                        <p class="mb-2"><strong>${summary.business_issue?.primary_problem || 'غير محدد'}</strong></p>
+                        <p class="text-muted mb-0">المرحلة المتأثرة: ${summary.business_issue?.affected_process || 'غير معروف'}</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        function displayDetailedCXAnalysis(analysis) {
+            const culturalDiv = document.getElementById('culturalResults');
+            
+            const sentiment = analysis.sentiment_analysis || {};
+            const drivers = analysis.driver_analysis || {};
+            
+            culturalDiv.innerHTML = `
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6 class="mb-3">تحليل المشاعر التجارية</h6>
+                        <div class="mb-3">
+                            <strong>مؤشرات فقدان العميل:</strong>
+                            <ul class="mt-2">
+                                ${(sentiment.churn_indicators || []).map(indicator => 
+                                    `<li class="text-danger">"${indicator}"</li>`
+                                ).join('') || '<li class="text-muted">لا توجد مؤشرات مباشرة</li>'}
+                            </ul>
+                        </div>
+                        <div class="mb-3">
+                            <strong>عوامل المشاعر:</strong>
+                            <ul class="mt-2">
+                                ${(sentiment.sentiment_drivers || []).map(driver => 
+                                    `<li>"${driver}"</li>`
+                                ).join('') || '<li class="text-muted">غير محددة</li>'}
+                            </ul>
+                        </div>
+                        <div class="alert ${sentiment.actionable ? 'alert-success' : 'alert-warning'} py-2">
+                            <small><strong>قابل للمعالجة:</strong> ${sentiment.actionable ? 'نعم' : 'لا'}</small><br>
+                            <small>${sentiment.actionable_reason || 'غير محدد'}</small>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h6 class="mb-3">تحليل المحركات</h6>
+                        <div class="mb-3">
+                            <strong>الفئة الأساسية:</strong>
+                            <span class="badge bg-primary ms-2">${drivers.primary_driver || 'غير محدد'}</span>
+                        </div>
+                        <div class="mb-3">
+                            <strong>شدة التأثير:</strong>
+                            <span class="badge ${drivers.impact_severity === 'critical' ? 'bg-danger' : 
+                                drivers.impact_severity === 'high' ? 'bg-warning' : 
+                                drivers.impact_severity === 'medium' ? 'bg-info' : 'bg-secondary'} ms-2">
+                                ${drivers.impact_severity || 'متوسط'}
+                            </span>
+                        </div>
+                        <div class="mb-3">
+                            <strong>التأثير القابل للقياس:</strong>
+                            <p class="mt-2 text-primary">${drivers.quantifiable_impact || 'غير محدد'}</p>
+                        </div>
+                        <div class="mb-3">
+                            <strong>نقاط الاحتكاك:</strong>
+                            <ul class="mt-2">
+                                ${(drivers.friction_points || []).map(point => 
+                                    `<li class="text-warning">${point}</li>`
+                                ).join('') || '<li class="text-muted">غير محددة</li>'}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function displayBusinessActions(businessImpact) {
+            const businessDiv = document.getElementById('businessResults');
+            
+            if (!businessImpact) {
+                businessDiv.innerHTML = '<p class="text-muted">لا توجد نتائج تجارية</p>';
+                return;
+            }
+
+            const revenue = businessImpact.revenue_impact || {};
+            const operations = businessImpact.operational_impact || {};
+            const brand = businessImpact.brand_impact || {};
+            const roi = businessImpact.resolution_roi || {};
+
+            businessDiv.innerHTML = `
+                <div class="row mb-4">
+                    <div class="col-md-4">
+                        <div class="card border-danger h-100">
+                            <div class="card-header bg-danger text-white">
+                                <h6 class="mb-0"><i class="fas fa-dollar-sign me-2"></i>التأثير المالي</h6>
+                            </div>
+                            <div class="card-body">
+                                <p><strong>قيمة المخاطر:</strong> $${(revenue.monthly_value_at_risk || 0).toLocaleString()}</p>
+                                <p><strong>نوع المخاطر:</strong> ${revenue.risk_type || 'غير محدد'}</p>
+                                <p><strong>احتمالية المخاطر:</strong> ${Math.round((revenue.risk_probability || 0) * 100)}%</p>
+                                <p><strong>الخسارة المتوقعة:</strong> $${Math.round(revenue.expected_loss || 0).toLocaleString()}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card border-warning h-100">
+                            <div class="card-header bg-warning text-dark">
+                                <h6 class="mb-0"><i class="fas fa-cogs me-2"></i>التأثير التشغيلي</h6>
+                            </div>
+                            <div class="card-body">
+                                <p><strong>ساعات الدعم:</strong> ${operations.estimated_support_hours || 0} ساعة</p>
+                                <p><strong>تكلفة الدعم:</strong> $${(operations.total_support_cost || 0).toLocaleString()}</p>
+                                <p><strong>احتمالية التصعيد:</strong> ${Math.round((operations.escalation_probability || 0) * 100)}%</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card border-info h-100">
+                            <div class="card-header bg-info text-white">
+                                <h6 class="mb-0"><i class="fas fa-star me-2"></i>تأثير العلامة التجارية</h6>
+                            </div>
+                            <div class="card-body">
+                                <p><strong>تغيير NPS:</strong> ${brand.nps_change || 0}</p>
+                                <p><strong>احتمالية المراجعة:</strong> ${Math.round((brand.review_likelihood || 0) * 100)}%</p>
+                                <p><strong>تقييم متوقع:</strong> ${brand.predicted_review_rating || 'غير محدد'}</p>
+                                <p><strong>مخاطر الانتشار:</strong> ${brand.viral_risk || 'متوسط'}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card bg-success text-white">
+                    <div class="card-header">
+                        <h6 class="mb-0"><i class="fas fa-chart-line me-2"></i>عائد الاستثمار المتوقع</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <p><strong>تكلفة الحل:</strong> $${Math.round(roi.cost_to_resolve || 0).toLocaleString()}</p>
+                            </div>
+                            <div class="col-md-4">
+                                <p><strong>القيمة المحفوظة:</strong> $${Math.round(roi.value_preserved || 0).toLocaleString()}</p>
+                            </div>
+                            <div class="col-md-4">
+                                <p><strong>نسبة العائد:</strong> ${(roi.roi_ratio || 0).toFixed(2)}x</p>
+                            </div>
+                        </div>
+                        <div class="progress mt-2">
+                            <div class="progress-bar bg-light" role="progressbar" 
+                                 style="width: ${Math.min((roi.roi_ratio || 0) * 20, 100)}%">
+                                ROI: ${Math.round((roi.roi_ratio || 0) * 100)}%
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
         }
 
         function displayConsensusResults(analysis, result) {

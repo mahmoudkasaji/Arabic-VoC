@@ -141,14 +141,13 @@ An Arabic-first multi-channel feedback processing platform built with Flask and 
 ## Recent Changes (June 2025)
 
 ### Major Architecture Updates
-- **June 29**: **Enhanced Committee Orchestration Completed** - VoCAnalysisCommittee with consensus mechanisms and self-consistency checking
-- **June 29**: **Advanced Prompting Strategies** - BaseAgent foundation with DIRECT, CHAIN_OF_THOUGHT, FEW_SHOT, and SELF_CONSISTENCY strategies
-- **June 29**: **Uncertainty Quantification System** - Two-pass analysis with confidence scoring and validation agreement metrics
-- **June 29**: **Hierarchical Topic Detection** - 7 main business categories with weighted subcategories and emerging trend detection
-- **June 29**: **Consensus Mechanisms** - Multi-strategy sentiment analysis with outlier detection and robust averaging
-- **June 29**: **Specialized Agent System Implemented** - Complete redesign with dedicated agents for sentiment, topical analysis, and recommendations
-- **June 29**: **Agent Architecture** - SentimentAnalysisAgent, TopicalAnalysisAgent, RecommendationAgent with clean separation of concerns
-- **June 29**: **Multi-Model Orchestration** - Intelligent routing between JAIS 30B, Anthropic Claude, and OpenAI GPT-4o based on content analysis
+- **June 29**: **CX Business Intelligence System Implemented** - Complete replacement of cultural analysis with business-focused customer experience intelligence
+- **June 29**: **3-Agent CX Architecture** - SentimentImpactAgent (CSAT prediction + churn risk), DriverAnalysisAgent (specific issue identification), BusinessImpactAgent (KPI correlation + ROI calculation)
+- **June 29**: **Business Metrics Integration** - Revenue risk calculation, operational cost estimation, NPS impact prediction, and resolution priority framework
+- **June 29**: **Executive Dashboard Format** - Business-focused analysis display with financial impact, operational metrics, and action prioritization (P1-P4)
+- **June 29**: **AI Lab Interface Updated** - New CX Analysis option with business intelligence display vs legacy cultural analysis mode
+- **June 29**: **Streamlined Prompting** - Business-focused prompts connecting sentiment directly to CSAT scores, revenue impact, and operational costs
+- **June 29**: **Legacy System Preserved** - Cultural intelligence system maintained for compatibility while new CX system takes priority
 - **June 29**: Complete navigation restructure to 5-tab architecture with UX/CX best practices
 - **June 29**: New templates: Analyst dashboard, AI testing lab, enhanced settings with language/AI configuration
 - **June 29**: Catalog-style integrations with filtering for sources and destinations
