@@ -1,4 +1,4 @@
-<!-- Enhanced Navigation Component with 4-Tier Architecture -->
+<!-- Enhanced Navigation Component with 5-Tab Architecture -->
 <nav class="navbar-custom">
     <div class="container-custom">
         <!-- Brand/Home -->
@@ -21,16 +21,105 @@
                         الاستطلاعات
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end">
-                        <li class="dropdown-header">إنشاء وإدارة</li>
-                        <li><a class="dropdown-item" href="/surveys/builder">
-                            <i class="fas fa-edit me-2"></i>منشئ الاستطلاعات
+                        <li><a class="dropdown-item" href="/surveys/create">
+                            <i class="fas fa-plus me-2"></i>إنشاء استطلاع جديد
                         </a></li>
                         <li><a class="dropdown-item" href="/surveys/manage">
                             <i class="fas fa-list me-2"></i>إدارة الاستطلاعات
                         </a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li class="dropdown-header">التعليقات</li>
-                        <li><a class="dropdown-item" href="/surveys/feedback">
+                        <li><a class="dropdown-item" href="/surveys/responses">
+                            <i class="fas fa-chart-bar me-2"></i>الردود والنتائج
+                        </a></li>
+                    </ul>
+                </li>
+
+                <!-- 2. Dashboards -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="dashboardsDropdown" role="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-tachometer-alt me-1"></i>
+                        لوحات القيادة
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="/dashboards/executive">
+                            <i class="fas fa-crown me-2"></i>العرض التنفيذي
+                        </a></li>
+                        <li><a class="dropdown-item" href="/dashboards/analyst">
+                            <i class="fas fa-chart-line me-2"></i>عرض المحلل
+                        </a></li>
+                    </ul>
+                </li>
+
+                <!-- 3. Integrations -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="integrationsDropdown" role="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-plug me-1"></i>
+                        التكاملات
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="/integrations/sources">
+                            <i class="fas fa-download me-2"></i>مصادر البيانات
+                        </a></li>
+                        <li><a class="dropdown-item" href="/integrations/destinations">
+                            <i class="fas fa-upload me-2"></i>وجهات البيانات
+                        </a></li>
+                    </ul>
+                </li>
+
+                <!-- 4. Analytics -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="analyticsDropdown" role="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-brain me-1"></i>
+                        التحليلات
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="/analytics/insights">
+                            <i class="fas fa-lightbulb me-2"></i>الرؤى المباشرة
+                        </a></li>
+                        <li><a class="dropdown-item" href="/analytics/reports">
+                            <i class="fas fa-file-export me-2"></i>التقارير والتصدير
+                        </a></li>
+                        <li><a class="dropdown-item" href="/analytics/ai-lab">
+                            <i class="fas fa-flask me-2"></i>مختبر الذكاء الاصطناعي
+                        </a></li>
+                    </ul>
+                </li>
+
+                <!-- 5. Settings -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="settingsDropdown" role="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-cog me-1"></i>
+                        الإعدادات
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="/settings/users">
+                            <i class="fas fa-users me-2"></i>إدارة المستخدمين
+                        </a></li>
+                        <li><a class="dropdown-item" href="/settings/system">
+                            <i class="fas fa-sliders-h me-2"></i>إعدادات النظام
+                        </a></li>
+                    </ul>
+                </li>
+            </ul>
+
+            <!-- User Menu -->
+            <ul class="navbar-nav">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-user-circle me-1"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="/login">
+                            <i class="fas fa-sign-in-alt me-2"></i>تسجيل الدخول
+                        </a></li>
+                        <li><a class="dropdown-item" href="/register">
+                            <i class="fas fa-user-plus me-2"></i>إنشاء حساب
+                        </a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
                             <i class="fas fa-comment me-2"></i>جمع التعليقات
                         </a></li>
                         <li><a class="dropdown-item" href="/surveys/responses">

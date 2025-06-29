@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    {% include 'components/head.html' %}
+    <title>{{ title }} - منصة صوت العميل العربية</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    {% include 'components/navigation.html' %}
+
+    <div class="container-fluid mt-4">
+        <div class="row">
+            <div class="col-12">
+                <!-- Page Header -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h1 class="h3 text-primary">
+                            <i class="fas fa-chart-line me-2"></i>
+                            عرض المحلل
+                        </h1>
+                        <p class="text-muted">تحليلات تفصيلية ومقاييس متقدمة للخبراء</p>
+                    </div>
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-outline-primary" onclick="refreshData()">
+                            <i class="fas fa-sync-alt me-1"></i>
+                            تحديث البيانات
+                        </button>
+                        <button type="button" class="btn btn-primary" onclick="exportData()">
+                            <i class="fas fa-download me-1"></i>
+                            تصدير البيانات
+                        </button>
+                    </div>
+                </div>
+
+                <!-- View Toggle -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="fw-bold">طريقة العرض:</span>
+                            <div class="btn-group" role="group">
+                                <input type="radio" class="btn-check" name="viewMode" id="executiveView" onclick="switchToExecutive()">
+                                <label class="btn btn-outline-secondary" for="executiveView">
+                                    <i class="fas fa-crown me-1"></i>العرض التنفيذي
+                                </label>
+                                <input type="radio" class="btn-check" name="viewMode" id="analystView" checked>
+                                <label class="btn btn-secondary" for="analystView">
+                                    <i class="fas fa-chart-line me-1"></i>عرض المحلل
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Advanced Metrics Grid -->
+                <div class="row mb-4">
+                    <!-- Statistical Analysis -->
+                    <div class="col-xl-3 col-md-6 mb-3">
+                        <div class="card border-info">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <h6 class="card-title text-info">معدل الثقة الإحصائي</h6>
+                                        <h3 class="mb-0">94.7%</h3>
+                                        <small class="text-muted">σ = 0.023</small>
+                                    </div>
+                                    <div class="text-info">
+                                        <i class="fas fa-calculator fa-2x"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sentiment Distribution -->
+                    <div class="col-xl-3 col-md-6 mb-3">
+                        <div class="card border-success">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <h6 class="card-title text-success">توزيع المشاعر</h6>
+                                        <h3 class="mb-0">68% إيجابي</h3>
+                                        <small class="text-muted">22% محايد، 10% سلبي</small>
+                                    </div>
+                                    <div class="text-success">
+                                        <i class="fas fa-chart-pie fa-2x"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- AI Processing Speed -->
+                    <div class="col-xl-3 col-md-6 mb-3">
+                        <div class="card border-warning">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <h6 class="card-title text-warning">سرعة المعالجة</h6>
+                                        <h3 class="mb-0">247ms</h3>
+                                        <small class="text-muted">متوسط وقت الاستجابة</small>
+                                    </div>
+                                    <div class="text-warning">
+                                        <i class="fas fa-tachometer-alt fa-2x"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Data Quality Score -->
+                    <div class="col-xl-3 col-md-6 mb-3">
+                        <div class="card border-danger">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <h6 class="card-title text-danger">جودة البيانات</h6>
+                                        <h3 class="mb-0">9.2/10</h3>
+                                        <small class="text-muted">نقاط النظافة والدقة</small>
+                                    </div>
+                                    <div class="text-danger">
+                                        <i class="fas fa-check-circle fa-2x"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Technical Analysis Charts -->
+                <div class="row">
+                    <!-- Sentiment Analysis Over Time -->
+                    <div class="col-lg-8 mb-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">
+                                    <i class="fas fa-chart-line me-2"></i>
+                                    تحليل المشاعر عبر الزمن
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="sentimentTrendChart" height="100"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Channel Performance -->
+                    <div class="col-lg-4 mb-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">
+                                    <i class="fas fa-signal me-2"></i>
+                                    أداء القنوات
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="channelPerformanceChart" height="150"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Advanced Data Tables -->
+                <div class="row">
+                    <!-- AI Model Performance -->
+                    <div class="col-lg-6 mb-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">
+                                    <i class="fas fa-brain me-2"></i>
+                                    أداء نماذج الذكاء الاصطناعي
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th>النموذج</th>
+                                                <th>الدقة</th>
+                                                <th>السرعة</th>
+                                                <th>الاستخدام</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>GPT-4o</td>
+                                                <td><span class="badge bg-success">96.2%</span></td>
+                                                <td>350ms</td>
+                                                <td>67%</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Claude-3</td>
+                                                <td><span class="badge bg-success">94.8%</span></td>
+                                                <td>280ms</td>
+                                                <td>28%</td>
+                                            </tr>
+                                            <tr>
+                                                <td>JAIS-30B</td>
+                                                <td><span class="badge bg-warning">89.1%</span></td>
+                                                <td>520ms</td>
+                                                <td>5%</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Error Analysis -->
+                    <div class="col-lg-6 mb-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">
+                                    <i class="fas fa-exclamation-triangle me-2"></i>
+                                    تحليل الأخطاء
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th>نوع الخطأ</th>
+                                                <th>التكرار</th>
+                                                <th>التأثير</th>
+                                                <th>الحالة</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>نص غير واضح</td>
+                                                <td>12</td>
+                                                <td><span class="badge bg-warning">متوسط</span></td>
+                                                <td><span class="badge bg-info">قيد المراجعة</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td>لهجة غير مدعومة</td>
+                                                <td>7</td>
+                                                <td><span class="badge bg-danger">عالي</span></td>
+                                                <td><span class="badge bg-success">محلول</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td>انقطاع الاتصال</td>
+                                                <td>3</td>
+                                                <td><span class="badge bg-warning">متوسط</span></td>
+                                                <td><span class="badge bg-success">محلول</span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% include 'components/scripts.html' %}
+    
+    <script>
+        // Switch to Executive View
+        function switchToExecutive() {
+            window.location.href = '/dashboards/executive';
+        }
+
+        // Refresh Data
+        function refreshData() {
+            location.reload();
+        }
+
+        // Export Data
+        function exportData() {
+            alert('تصدير البيانات - هذه الميزة قيد التطوير');
+        }
+
+        // Initialize Charts
+        document.addEventListener('DOMContentLoaded', function() {
+            // Sentiment Trend Chart
+            const sentimentCtx = document.getElementById('sentimentTrendChart').getContext('2d');
+            new Chart(sentimentCtx, {
+                type: 'line',
+                data: {
+                    labels: ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو'],
+                    datasets: [{
+                        label: 'إيجابي',
+                        data: [65, 68, 72, 70, 75, 68],
+                        borderColor: 'rgb(40, 167, 69)',
+                        backgroundColor: 'rgba(40, 167, 69, 0.1)',
+                        tension: 0.4
+                    }, {
+                        label: 'محايد',
+                        data: [25, 22, 20, 22, 18, 22],
+                        borderColor: 'rgb(255, 193, 7)',
+                        backgroundColor: 'rgba(255, 193, 7, 0.1)',
+                        tension: 0.4
+                    }, {
+                        label: 'سلبي',
+                        data: [10, 10, 8, 8, 7, 10],
+                        borderColor: 'rgb(220, 53, 69)',
+                        backgroundColor: 'rgba(220, 53, 69, 0.1)',
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100
+                        }
+                    }
+                }
+            });
+
+            // Channel Performance Chart
+            const channelCtx = document.getElementById('channelPerformanceChart').getContext('2d');
+            new Chart(channelCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['الموقع الإلكتروني', 'واتساب', 'البريد الإلكتروني', 'الهاتف', 'وسائل التواصل'],
+                    datasets: [{
+                        data: [35, 25, 20, 15, 5],
+                        backgroundColor: [
+                            'rgb(13, 110, 253)',
+                            'rgb(25, 135, 84)',
+                            'rgb(255, 193, 7)',
+                            'rgb(220, 53, 69)',
+                            'rgb(108, 117, 125)'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    {% include 'components/head.html' %}
+    <title>{{ title }} - منصة صوت العميل العربية</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    {% include 'components/navigation.html' %}
+
+    <div class="container-fluid mt-4">
+        <div class="row">
+            <div class="col-12">
+                <!-- Page Header -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h1 class="h3 text-primary">
+                            <i class="fas fa-lightbulb me-2"></i>
+                            الرؤى المباشرة
+                        </h1>
+                        <p class="text-muted">تحليلات فورية ورؤى ذكية من تعليقات العملاء</p>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-outline-primary" id="refreshBtn">
+                            <i class="fas fa-sync-alt me-1"></i>
+                            تحديث
+                        </button>
+                        <div class="dropdown">
+                            <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                <i class="fas fa-filter me-1"></i>
+                                فلترة
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="#" data-filter="today">اليوم</a></li>
+                                <li><a class="dropdown-item" href="#" data-filter="week">هذا الأسبوع</a></li>
+                                <li><a class="dropdown-item" href="#" data-filter="month">هذا الشهر</a></li>
+                                <li><a class="dropdown-item" href="#" data-filter="all">جميع البيانات</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Real-time Metrics -->
+                <div class="row mb-4">
+                    <div class="col-xl-3 col-md-6 mb-3">
+                        <div class="card bg-primary text-white">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <h6 class="card-title">التعليقات اليوم</h6>
+                                        <h3 class="mb-0" id="todayFeedback">247</h3>
+                                        <small class="text-light">+12% عن الأمس</small>
+                                    </div>
+                                    <div class="text-primary-light">
+                                        <i class="fas fa-comments fa-2x"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xl-3 col-md-6 mb-3">
+                        <div class="card bg-success text-white">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <h6 class="card-title">المشاعر الإيجابية</h6>
+                                        <h3 class="mb-0" id="positiveSentiment">73%</h3>
+                                        <small class="text-light">+5% تحسن</small>
+                                    </div>
+                                    <div class="text-success-light">
+                                        <i class="fas fa-smile fa-2x"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xl-3 col-md-6 mb-3">
+                        <div class="card bg-warning text-white">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <h6 class="card-title">المواضيع الرائجة</h6>
+                                        <h3 class="mb-0" id="trendingTopics">8</h3>
+                                        <small class="text-light">مواضيع جديدة</small>
+                                    </div>
+                                    <div class="text-warning-light">
+                                        <i class="fas fa-fire fa-2x"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xl-3 col-md-6 mb-3">
+                        <div class="card bg-info text-white">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <h6 class="card-title">وقت الاستجابة</h6>
+                                        <h3 class="mb-0" id="responseTime">1.2s</h3>
+                                        <small class="text-light">متوسط المعالجة</small>
+                                    </div>
+                                    <div class="text-info-light">
+                                        <i class="fas fa-clock fa-2x"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Live Insights Section -->
+                <div class="row">
+                    <div class="col-lg-8 mb-4">
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-chart-area me-2"></i>
+                                    الاتجاهات المباشرة
+                                </h5>
+                                <div class="text-success">
+                                    <i class="fas fa-circle blink me-1"></i>
+                                    مباشر
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="realTimeChart" height="100"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 mb-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-tags me-2"></i>
+                                    المواضيع الأكثر ذكراً
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <div class="d-flex justify-content-between mb-1">
+                                        <span>جودة الخدمة</span>
+                                        <strong>34%</strong>
+                                    </div>
+                                    <div class="progress">
+                                        <div class="progress-bar bg-primary" style="width: 34%"></div>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <div class="d-flex justify-content-between mb-1">
+                                        <span>سرعة التوصيل</span>
+                                        <strong>28%</strong>
+                                    </div>
+                                    <div class="progress">
+                                        <div class="progress-bar bg-success" style="width: 28%"></div>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <div class="d-flex justify-content-between mb-1">
+                                        <span>دعم العملاء</span>
+                                        <strong>22%</strong>
+                                    </div>
+                                    <div class="progress">
+                                        <div class="progress-bar bg-warning" style="width: 22%"></div>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <div class="d-flex justify-content-between mb-1">
+                                        <span>الأسعار</span>
+                                        <strong>16%</strong>
+                                    </div>
+                                    <div class="progress">
+                                        <div class="progress-bar bg-info" style="width: 16%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AI Insights Cards -->
+                <div class="row">
+                    <div class="col-lg-6 mb-4">
+                        <div class="card border-success">
+                            <div class="card-header bg-success text-white">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-robot me-2"></i>
+                                    رؤى الذكاء الاصطناعي
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="alert alert-success mb-3">
+                                    <i class="fas fa-check-circle me-2"></i>
+                                    <strong>تحسن ملحوظ:</strong> ارتفاع معدل الرضا بنسبة 8% هذا الأسبوع
+                                </div>
+                                <div class="alert alert-warning mb-3">
+                                    <i class="fas fa-exclamation-triangle me-2"></i>
+                                    <strong>تنبيه:</strong> زيادة الشكاوى حول أوقات الانتظار في قسم الدعم
+                                </div>
+                                <div class="alert alert-info mb-0">
+                                    <i class="fas fa-lightbulb me-2"></i>
+                                    <strong>اقتراح:</strong> تعزيز فريق دعم العملاء في فترات الذروة
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6 mb-4">
+                        <div class="card border-primary">
+                            <div class="card-header bg-primary text-white">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-star me-2"></i>
+                                    أبرز التعليقات
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3 p-3 bg-light rounded">
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span class="badge bg-success">إيجابي</span>
+                                        <small class="text-muted">منذ 5 دقائق</small>
+                                    </div>
+                                    <p class="mb-0">"خدمة ممتازة وموظفين محترفين جداً. أنصح بالتعامل معهم"</p>
+                                </div>
+                                <div class="mb-3 p-3 bg-light rounded">
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span class="badge bg-warning">محايد</span>
+                                        <small class="text-muted">منذ 12 دقيقة</small>
+                                    </div>
+                                    <p class="mb-0">"الخدمة جيدة لكن يحتاج تحسين في أوقات التوصيل"</p>
+                                </div>
+                                <div class="p-3 bg-light rounded">
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span class="badge bg-danger">سلبي</span>
+                                        <small class="text-muted">منذ 18 دقيقة</small>
+                                    </div>
+                                    <p class="mb-0">"انتظرت طويلاً للحصول على رد من خدمة العملاء"</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% include 'components/scripts.html' %}
+    
+    <script>
+        // Real-time data refresh
+        let refreshInterval;
+        
+        function startRealTimeUpdates() {
+            refreshInterval = setInterval(() => {
+                updateRealTimeMetrics();
+            }, 5000); // Update every 5 seconds
+        }
+
+        function updateRealTimeMetrics() {
+            // Simulate real-time data updates
+            document.getElementById('todayFeedback').textContent = Math.floor(Math.random() * 50) + 220;
+            document.getElementById('positiveSentiment').textContent = (Math.random() * 10 + 70).toFixed(1) + '%';
+            document.getElementById('trendingTopics').textContent = Math.floor(Math.random() * 5) + 6;
+            document.getElementById('responseTime').textContent = (Math.random() * 0.5 + 1).toFixed(1) + 's';
+        }
+
+        // Initialize real-time chart
+        document.addEventListener('DOMContentLoaded', function() {
+            const ctx = document.getElementById('realTimeChart').getContext('2d');
+            const chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'المشاعر الإيجابية',
+                        data: [],
+                        borderColor: 'rgb(40, 167, 69)',
+                        backgroundColor: 'rgba(40, 167, 69, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }, {
+                        label: 'المشاعر السلبية',
+                        data: [],
+                        borderColor: 'rgb(220, 53, 69)',
+                        backgroundColor: 'rgba(220, 53, 69, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: {
+                        duration: 750
+                    },
+                    scales: {
+                        x: {
+                            display: true,
+                            title: {
+                                display: true,
+                                text: 'الوقت'
+                            }
+                        },
+                        y: {
+                            display: true,
+                            title: {
+                                display: true,
+                                text: 'النسبة المئوية'
+                            },
+                            min: 0,
+                            max: 100
+                        }
+                    }
+                }
+            });
+
+            // Add real-time data points
+            function addDataPoint() {
+                const now = new Date();
+                const timeLabel = now.getHours() + ':' + String(now.getMinutes()).padStart(2, '0');
+                
+                if (chart.data.labels.length > 20) {
+                    chart.data.labels.shift();
+                    chart.data.datasets[0].data.shift();
+                    chart.data.datasets[1].data.shift();
+                }
+                
+                chart.data.labels.push(timeLabel);
+                chart.data.datasets[0].data.push(Math.random() * 20 + 60); // Positive 60-80%
+                chart.data.datasets[1].data.push(Math.random() * 15 + 5);  // Negative 5-20%
+                
+                chart.update('none');
+            }
+
+            // Add initial data points
+            for (let i = 0; i < 10; i++) {
+                setTimeout(() => addDataPoint(), i * 100);
+            }
+
+            // Continue adding data points every 3 seconds
+            setInterval(addDataPoint, 3000);
+
+            // Start real-time updates
+            startRealTimeUpdates();
+
+            // Event listeners
+            document.getElementById('refreshBtn').addEventListener('click', function() {
+                location.reload();
+            });
+
+            // Filter dropdown handlers
+            document.querySelectorAll('[data-filter]').forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const filter = this.getAttribute('data-filter');
+                    console.log('Filter applied:', filter);
+                    // Implement filtering logic here
+                });
+            });
+        });
+
+        // CSS for blinking indicator
+        const style = document.createElement('style');
+        style.textContent = `
+            .blink {
+                animation: blink 1s infinite;
+            }
+            @keyframes blink {
+                0%, 50% { opacity: 1; }
+                51%, 100% { opacity: 0.3; }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

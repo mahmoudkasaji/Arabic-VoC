@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    {% include 'components/head.html' %}
+    <title>{{ title }} - منصة صوت العميل العربية</title>
+    <style>
+        .analysis-result {
+            transition: all 0.3s ease;
+        }
+        .loading-spinner {
+            display: none;
+        }
+        .sentiment-positive { color: #28a745; }
+        .sentiment-negative { color: #dc3545; }
+        .sentiment-neutral { color: #ffc107; }
+        .confidence-high { background-color: #d4edda; }
+        .confidence-medium { background-color: #fff3cd; }
+        .confidence-low { background-color: #f8d7da; }
+        .topic-tag {
+            display: inline-block;
+            margin: 2px;
+            padding: 4px 8px;
+            background-color: #e9ecef;
+            border-radius: 12px;
+            font-size: 0.875rem;
+        }
+    </style>
+</head>
+<body>
+    {% include 'components/navigation.html' %}
+
+    <div class="container-fluid mt-4">
+        <div class="row">
+            <div class="col-12">
+                <!-- Page Header -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h1 class="h3 text-primary">
+                            <i class="fas fa-flask me-2"></i>
+                            مختبر الذكاء الاصطناعي
+                        </h1>
+                        <p class="text-muted">اختبار وتحليل النصوص العربية باستخدام الذكاء الاصطناعي</p>
+                    </div>
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-outline-primary" onclick="clearAll()">
+                            <i class="fas fa-trash me-1"></i>
+                            مسح الكل
+                        </button>
+                        <button type="button" class="btn btn-primary" onclick="loadSample()">
+                            <i class="fas fa-lightbulb me-1"></i>
+                            نص تجريبي
+                        </button>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <!-- Input Section -->
+                    <div class="col-lg-6 mb-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">
+                                    <i class="fas fa-edit me-2"></i>
+                                    إدخال النص للتحليل
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <!-- Text Input -->
+                                <div class="mb-3">
+                                    <label for="textInput" class="form-label">النص العربي</label>
+                                    <textarea 
+                                        id="textInput" 
+                                        class="form-control" 
+                                        rows="8" 
+                                        placeholder="اكتب هنا النص العربي الذي تريد تحليله..."
+                                        style="font-family: 'Cairo', sans-serif; font-size: 1.1rem;"
+                                    ></textarea>
+                                    <div class="form-text">
+                                        <span id="charCount">0</span> حرف
+                                    </div>
+                                </div>
+
+                                <!-- Analysis Options -->
+                                <div class="mb-3">
+                                    <label class="form-label">خيارات التحليل</label>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="sentimentAnalysis" checked>
+                                        <label class="form-check-label" for="sentimentAnalysis">
+                                            تحليل المشاعر
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="topicAnalysis" checked>
+                                        <label class="form-check-label" for="topicAnalysis">
+                                            تحليل المواضيع
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="actionItems" checked>
+                                        <label class="form-check-label" for="actionItems">
+                                            اقتراح الإجراءات
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <!-- AI Model Selection -->
+                                <div class="mb-3">
+                                    <label for="aiModel" class="form-label">نموذج الذكاء الاصطناعي</label>
+                                    <select id="aiModel" class="form-select">
+                                        <option value="auto">اختيار تلقائي (موصى به)</option>
+                                        <option value="gpt-4o">OpenAI GPT-4o</option>
+                                        <option value="claude-3-sonnet">Anthropic Claude 3 Sonnet</option>
+                                        <option value="jais-30b">JAIS 30B (عربي أصلي)</option>
+                                    </select>
+                                </div>
+
+                                <!-- Analyze Button -->
+                                <button 
+                                    id="analyzeBtn" 
+                                    class="btn btn-primary btn-lg w-100" 
+                                    onclick="analyzeText()"
+                                >
+                                    <i class="fas fa-brain me-2"></i>
+                                    تحليل النص
+                                </button>
+
+                                <!-- Loading Spinner -->
+                                <div id="loadingSpinner" class="text-center mt-3 loading-spinner">
+                                    <div class="spinner-border text-primary" role="status">
+                                        <span class="visually-hidden">جاري التحليل...</span>
+                                    </div>
+                                    <p class="mt-2 text-muted">جاري تحليل النص...</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Quick Examples -->
+                        <div class="card mt-3">
+                            <div class="card-header">
+                                <h6 class="card-title mb-0">
+                                    <i class="fas fa-star me-2"></i>
+                                    أمثلة سريعة
+                                </h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="d-grid gap-2">
+                                    <button class="btn btn-outline-success btn-sm" onclick="loadExample('positive')">
+                                        تعليق إيجابي
+                                    </button>
+                                    <button class="btn btn-outline-warning btn-sm" onclick="loadExample('neutral')">
+                                        تعليق محايد
+                                    </button>
+                                    <button class="btn btn-outline-danger btn-sm" onclick="loadExample('negative')">
+                                        تعليق سلبي
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Results Section -->
+                    <div class="col-lg-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">
+                                    <i class="fas fa-chart-pie me-2"></i>
+                                    نتائج التحليل
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div id="analysisResults">
+                                    <div class="text-center text-muted py-5">
+                                        <i class="fas fa-flask fa-3x mb-3"></i>
+                                        <p>أدخل نصاً عربياً واضغط "تحليل النص" لرؤية النتائج</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Analysis History -->
+                        <div class="card mt-3">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h6 class="card-title mb-0">
+                                    <i class="fas fa-history me-2"></i>
+                                    سجل التحليلات
+                                </h6>
+                                <button class="btn btn-sm btn-outline-secondary" onclick="clearHistory()">
+                                    مسح السجل
+                                </button>
+                            </div>
+                            <div class="card-body">
+                                <div id="analysisHistory">
+                                    <p class="text-muted text-center">لا يوجد تحليلات سابقة</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% include 'components/scripts.html' %}
+    
+    <script>
+        let analysisHistory = [];
+
+        // Character counter
+        document.getElementById('textInput').addEventListener('input', function() {
+            const count = this.value.length;
+            document.getElementById('charCount').textContent = count;
+        });
+
+        // Analyze text function
+        async function analyzeText() {
+            const text = document.getElementById('textInput').value.trim();
+            if (!text) {
+                alert('يرجى إدخال نص للتحليل');
+                return;
+            }
+
+            const analyzeBtn = document.getElementById('analyzeBtn');
+            const loadingSpinner = document.getElementById('loadingSpinner');
+            const resultsDiv = document.getElementById('analysisResults');
+
+            // Show loading state
+            analyzeBtn.disabled = true;
+            loadingSpinner.style.display = 'block';
+
+            try {
+                const response = await fetch('/api/test-ai-analysis', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        text: text,
+                        service: document.getElementById('aiModel').value,
+                        use_committee: true,
+                        task_type: 'arabic_analysis'
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('خطأ في التحليل');
+                }
+
+                const result = await response.json();
+                displayResults(result, text);
+                addToHistory(text, result);
+
+            } catch (error) {
+                console.error('Analysis error:', error);
+                resultsDiv.innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-circle me-2"></i>
+                        حدث خطأ أثناء التحليل: ${error.message}
+                    </div>
+                `;
+            } finally {
+                analyzeBtn.disabled = false;
+                loadingSpinner.style.display = 'none';
+            }
+        }
+
+        // Display analysis results
+        function displayResults(result, originalText) {
+            const resultsDiv = document.getElementById('analysisResults');
+            
+            let html = '<div class="analysis-result">';
+            
+            // Sentiment Analysis
+            if (result.sentiment) {
+                const sentiment = result.sentiment;
+                const sentimentClass = sentiment.label === 'positive' ? 'sentiment-positive' : 
+                                     sentiment.label === 'negative' ? 'sentiment-negative' : 'sentiment-neutral';
+                
+                html += `
+                    <div class="mb-4">
+                        <h6><i class="fas fa-heart me-2"></i>تحليل المشاعر</h6>
+                        <div class="card border-0 bg-light">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="h5 ${sentimentClass}">
+                                        ${sentiment.label === 'positive' ? 'إيجابي' : 
+                                          sentiment.label === 'negative' ? 'سلبي' : 'محايد'}
+                                    </span>
+                                    <span class="badge bg-secondary">${Math.round(sentiment.confidence * 100)}% ثقة</span>
+                                </div>
+                                <div class="progress mt-2">
+                                    <div class="progress-bar ${sentiment.label === 'positive' ? 'bg-success' : 
+                                                                sentiment.label === 'negative' ? 'bg-danger' : 'bg-warning'}" 
+                                         style="width: ${sentiment.confidence * 100}%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Topics Analysis
+            if (result.topics && result.topics.length > 0) {
+                html += `
+                    <div class="mb-4">
+                        <h6><i class="fas fa-tags me-2"></i>المواضيع المكتشفة</h6>
+                        <div class="card border-0 bg-light">
+                            <div class="card-body">
+                `;
+                result.topics.forEach(topic => {
+                    html += `<span class="topic-tag">${topic}</span>`;
+                });
+                html += `
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Action Items
+            if (result.action_items && result.action_items.length > 0) {
+                html += `
+                    <div class="mb-4">
+                        <h6><i class="fas fa-tasks me-2"></i>الإجراءات المقترحة</h6>
+                        <div class="card border-0 bg-light">
+                            <div class="card-body">
+                                <ul class="list-unstyled mb-0">
+                `;
+                result.action_items.forEach(action => {
+                    html += `<li class="mb-2"><i class="fas fa-arrow-left me-2 text-primary"></i>${action}</li>`;
+                });
+                html += `
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // AI Summary
+            if (result.summary) {
+                html += `
+                    <div class="mb-4">
+                        <h6><i class="fas fa-robot me-2"></i>ملخص الذكاء الاصطناعي</h6>
+                        <div class="card border-0 bg-light">
+                            <div class="card-body">
+                                <p class="mb-0">${result.summary}</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            html += '</div>';
+            resultsDiv.innerHTML = html;
+        }
+
+        // Add to analysis history
+        function addToHistory(text, result) {
+            const timestamp = new Date().toLocaleString('ar-SA');
+            analysisHistory.unshift({
+                text: text.substring(0, 50) + (text.length > 50 ? '...' : ''),
+                result: result,
+                timestamp: timestamp
+            });
+
+            if (analysisHistory.length > 10) {
+                analysisHistory = analysisHistory.slice(0, 10);
+            }
+
+            updateHistoryDisplay();
+        }
+
+        // Update history display
+        function updateHistoryDisplay() {
+            const historyDiv = document.getElementById('analysisHistory');
+            
+            if (analysisHistory.length === 0) {
+                historyDiv.innerHTML = '<p class="text-muted text-center">لا يوجد تحليلات سابقة</p>';
+                return;
+            }
+
+            let html = '';
+            analysisHistory.forEach((item, index) => {
+                const sentimentIcon = item.result.sentiment ? 
+                    (item.result.sentiment.label === 'positive' ? 'fas fa-smile text-success' :
+                     item.result.sentiment.label === 'negative' ? 'fas fa-frown text-danger' : 'fas fa-meh text-warning') : 
+                    'fas fa-question text-muted';
+
+                html += `
+                    <div class="border-bottom py-2 ${index < analysisHistory.length - 1 ? 'mb-2' : ''}">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div class="flex-grow-1">
+                                <small class="text-muted d-block">${item.timestamp}</small>
+                                <p class="mb-1 small">${item.text}</p>
+                            </div>
+                            <i class="${sentimentIcon}"></i>
+                        </div>
+                    </div>
+                `;
+            });
+
+            historyDiv.innerHTML = html;
+        }
+
+        // Load example texts
+        function loadExample(type) {
+            const examples = {
+                positive: "الخدمة ممتازة جداً والموظفين محترفين ومتعاونين. أنصح بالتعامل مع هذه الشركة بكل ثقة.",
+                neutral: "الخدمة مقبولة بشكل عام، لكن يمكن تحسينها في بعض الجوانب مثل سرعة الاستجابة.",
+                negative: "أنا محبط جداً من الخدمة. الانتظار طويل والموظفين غير متعاونين. لن أتعامل معهم مرة أخرى."
+            };
+            
+            document.getElementById('textInput').value = examples[type];
+            document.getElementById('charCount').textContent = examples[type].length;
+        }
+
+        // Load sample text
+        function loadSample() {
+            loadExample('positive');
+        }
+
+        // Clear all
+        function clearAll() {
+            document.getElementById('textInput').value = '';
+            document.getElementById('charCount').textContent = '0';
+            document.getElementById('analysisResults').innerHTML = `
+                <div class="text-center text-muted py-5">
+                    <i class="fas fa-flask fa-3x mb-3"></i>
+                    <p>أدخل نصاً عربياً واضغط "تحليل النص" لرؤية النتائج</p>
+                </div>
+            `;
+        }
+
+        // Clear history
+        function clearHistory() {
+            analysisHistory = [];
+            updateHistoryDisplay();
+        }
+
+        // Enter key to analyze
+        document.getElementById('textInput').addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.key === 'Enter') {
+                analyzeText();
+            }
+        });
+    </script>
+</body>
+</html>

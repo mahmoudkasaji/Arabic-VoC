@@ -170,21 +170,14 @@ def executive_dashboard_page():
     return render_template('executive_dashboard.html',
                          title='لوحة القيادة التنفيذية')
 
-# New navigation routes
-@app.route('/surveys/builder')
+# Updated navigation routes - Surveys
+@app.route('/surveys/create')
+@app.route('/surveys/builder')  # Keep old route for compatibility
 @app.route('/survey-builder')  # Keep old route for compatibility
-def survey_builder_new():
-    """Survey builder page"""
+def survey_create_page():
+    """Survey creation page with templates"""
     return render_template('survey_builder.html', 
-                         title='منشئ الاستطلاعات')
-
-@app.route('/surveys/feedback')
-@app.route('/feedback')  # Keep old route for compatibility  
-def feedback_new():
-    """Feedback submission page"""
-    return render_template('feedback.html', 
-                         title='إرسال تعليق',
-                         channels=list(FeedbackChannel))
+                         title='إنشاء استطلاع جديد')
 
 @app.route('/surveys/manage')
 def surveys_manage_page():
@@ -208,25 +201,40 @@ def survey_distribution_access():
 def survey_responses_page():
     """Survey responses management page"""
     return render_template('survey_responses.html', 
-                         title='إدارة الردود')
+                         title='الردود والنتائج')
 
-@app.route('/analytics/detailed')
-def analytics_detailed_page():
-    """Detailed analytics page"""
-    return render_template('analytics_detailed.html', 
-                         title='التحليلات التفصيلية')
+# Updated navigation routes - Dashboards
+@app.route('/dashboards/executive')
+@app.route('/executive-dashboard')  # Keep old route for compatibility
+def dashboards_executive():
+    """Executive dashboard page"""
+    return render_template('executive_dashboard.html',
+                         title='العرض التنفيذي')
 
-@app.route('/analytics/arabic')
-def analytics_arabic_page():
-    """Arabic-specific insights page"""
-    return render_template('analytics_arabic.html', 
-                         title='الرؤى العربية')
+@app.route('/dashboards/analyst')
+def dashboards_analyst():
+    """Analyst dashboard page"""
+    return render_template('dashboards_analyst.html', 
+                         title='عرض المحلل')
+
+# Updated navigation routes - Analytics
+@app.route('/analytics/insights')
+def analytics_insights():
+    """Real-time insights page"""
+    return render_template('analytics_insights.html', 
+                         title='الرؤى المباشرة')
 
 @app.route('/analytics/reports')
 def analytics_reports_page():
     """Reports and export page"""
     return render_template('analytics_reports.html', 
                          title='التقارير والتصدير')
+
+@app.route('/analytics/ai-lab')
+def analytics_ai_lab():
+    """AI Testing Lab page"""
+    return render_template('analytics_ai_lab.html', 
+                         title='مختبر الذكاء الاصطناعي')
 
 @app.route('/integrations')
 def integrations_redirect():
@@ -251,29 +259,34 @@ def integrations_ai_page():
     return render_template('integrations_ai.html', 
                          title='إدارة الذكاء الاصطناعي')
 
-@app.route('/settings/account')
-def settings_account_page():
-    """Account management page"""
-    return render_template('settings_account.html', 
-                         title='إدارة الحساب')
+# Updated navigation routes - Settings
+@app.route('/settings/users')
+def settings_users_page():
+    """User management page"""
+    return render_template('settings_users.html', 
+                         title='إدارة المستخدمين')
 
 @app.route('/settings/system')
 def settings_system_page():
-    """System configuration page"""
+    """System configuration page - includes language, AI keys, preferences"""
     return render_template('settings_system.html', 
                          title='إعدادات النظام')
 
+# Keep old routes for compatibility
+@app.route('/settings/account')
+def settings_account_page():
+    """Account management page - redirect to users"""
+    return redirect(url_for('settings_users_page'))
+
 @app.route('/settings/security')
 def settings_security_page():
-    """Security and privacy page"""
-    return render_template('settings_security.html', 
-                         title='الأمان والخصوصية')
+    """Security page - redirect to system"""
+    return redirect(url_for('settings_system_page'))
 
 @app.route('/settings/admin')
 def settings_admin_page():
-    """Platform administration page"""
-    return render_template('settings_admin.html', 
-                         title='إدارة المنصة')
+    """Admin page - redirect to users"""
+    return redirect(url_for('settings_users_page'))
 
 @app.route('/login')
 def login_page():
