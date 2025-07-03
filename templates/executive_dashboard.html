@@ -352,8 +352,53 @@
                         <div class="tab-pane fade show active" id="trends" role="tabpanel">
                             <div class="row mt-3">
                                 <div class="col-lg-8">
-                                    <div class="chart-container">
-                                        <canvas id="trendChart"></canvas>
+                                    <div class="metrics-display bg-white p-4 rounded">
+                                        <h6 class="text-primary mb-3">اتجاه رضا العملاء - آخر 6 أشهر</h6>
+                                        <div class="row">
+                                            <div class="col-2 text-center">
+                                                <div class="metric-month">
+                                                    <div class="h5 text-success">78%</div>
+                                                    <small>يونيو</small>
+                                                </div>
+                                            </div>
+                                            <div class="col-2 text-center">
+                                                <div class="metric-month">
+                                                    <div class="h5 text-success">75%</div>
+                                                    <small>مايو</small>
+                                                </div>
+                                            </div>
+                                            <div class="col-2 text-center">
+                                                <div class="metric-month">
+                                                    <div class="h5 text-info">70%</div>
+                                                    <small>أبريل</small>
+                                                </div>
+                                            </div>
+                                            <div class="col-2 text-center">
+                                                <div class="metric-month">
+                                                    <div class="h5 text-info">72%</div>
+                                                    <small>مارس</small>
+                                                </div>
+                                            </div>
+                                            <div class="col-2 text-center">
+                                                <div class="metric-month">
+                                                    <div class="h5 text-warning">68%</div>
+                                                    <small>فبراير</small>
+                                                </div>
+                                            </div>
+                                            <div class="col-2 text-center">
+                                                <div class="metric-month">
+                                                    <div class="h5 text-warning">65%</div>
+                                                    <small>يناير</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="progress mt-3" style="height: 8px;">
+                                            <div class="progress-bar bg-success" style="width: 78%"></div>
+                                        </div>
+                                        <div class="d-flex justify-content-between mt-2">
+                                            <small class="text-muted">نمو 13% خلال 6 أشهر</small>
+                                            <small class="text-success"><i class="fas fa-arrow-up"></i> اتجاه إيجابي</small>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-lg-4">
@@ -380,8 +425,44 @@
                         <div class="tab-pane fade" id="channels" role="tabpanel">
                             <div class="row mt-3">
                                 <div class="col-lg-6">
-                                    <div class="chart-container">
-                                        <canvas id="channelChart"></canvas>
+                                    <div class="channel-performance bg-white p-4 rounded">
+                                        <h6 class="text-primary mb-3">أداء القنوات</h6>
+                                        <div class="channel-item mb-3">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <span><i class="fab fa-whatsapp text-success me-2"></i>واتساب</span>
+                                                <span class="fw-bold">35%</span>
+                                            </div>
+                                            <div class="progress mt-1" style="height: 6px;">
+                                                <div class="progress-bar bg-success" style="width: 35%"></div>
+                                            </div>
+                                        </div>
+                                        <div class="channel-item mb-3">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <span><i class="fas fa-envelope text-primary me-2"></i>البريد الإلكتروني</span>
+                                                <span class="fw-bold">28%</span>
+                                            </div>
+                                            <div class="progress mt-1" style="height: 6px;">
+                                                <div class="progress-bar bg-primary" style="width: 28%"></div>
+                                            </div>
+                                        </div>
+                                        <div class="channel-item mb-3">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <span><i class="fas fa-phone text-info me-2"></i>الهاتف</span>
+                                                <span class="fw-bold">22%</span>
+                                            </div>
+                                            <div class="progress mt-1" style="height: 6px;">
+                                                <div class="progress-bar bg-info" style="width: 22%"></div>
+                                            </div>
+                                        </div>
+                                        <div class="channel-item">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <span><i class="fas fa-globe text-secondary me-2"></i>الموقع الإلكتروني</span>
+                                                <span class="fw-bold">15%</span>
+                                            </div>
+                                            <div class="progress mt-1" style="height: 6px;">
+                                                <div class="progress-bar bg-secondary" style="width: 15%"></div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-lg-6">
@@ -627,17 +708,14 @@
 
     <!-- Scripts -->
     {% include 'components/scripts.html' %}
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+
     <script>
         class ExecutiveDashboard {
             constructor() {
-                this.charts = {};
                 this.lastUpdate = new Date();
                 
-                this.initializeCharts();
                 this.loadInitialData();
                 this.startAutoRefresh();
-                this.setupTabListeners();
             }
 
             async loadInitialData() {
@@ -675,9 +753,7 @@
                     // Update Sentiment
                     if (data.sentiment) this.updateSentiment(data.sentiment);
                     
-                    // Update Charts
-                    if (data.trends) this.updateTrendChart(data.trends);
-                    if (data.channels) this.updateChannelChart(data.channels);
+                    // Charts removed - using static displays
                     
                     // Update last refresh timestamp
                     this.updateLastRefresh();
@@ -740,357 +816,7 @@
                 }
             }
 
-            initializeCharts() {
-                if (typeof Chart !== 'undefined') {
-                    this.initializeTrendChart();
-                    this.initializeChannelChart();
-                    this.initializeSentimentChart();
-                    this.initializePriorityHeatmapChart();
-                } else {
-                    console.warn('Chart.js not available');
-                }
-            }
-
-            initializeTrendChart() {
-                const ctx = document.getElementById('trendChart');
-                if (!ctx) {
-                    console.error('Trend chart canvas not found');
-                    return;
-                }
-                console.log('Initializing trend chart...');
-                
-                this.charts.trend = new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو'],
-                        datasets: [{
-                            label: 'رضا العملاء',
-                            data: [65, 68, 72, 70, 75, 78],
-                            borderColor: '#2E8B57',
-                            backgroundColor: 'rgba(46, 139, 87, 0.1)',
-                            fill: true,
-                            tension: 0.4
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: {
-                                display: false
-                            }
-                        },
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                max: 100,
-                                ticks: {
-                                    callback: function(value) {
-                                        return value + '%';
-                                    }
-                                }
-                            }
-                        }
-                    }
-                });
-                
-                console.log('Trend chart created successfully');
-                // Force resize to ensure proper rendering
-                setTimeout(() => {
-                    if (this.charts.trend) {
-                        this.charts.trend.resize();
-                        this.charts.trend.update();
-                    }
-                }, 100);
-            }
-
-            initializeChannelChart() {
-                try {
-                    const ctx = document.getElementById('channelChart');
-                    if (!ctx) {
-                        console.warn('Channel chart canvas not found');
-                        return;
-                    }
-                    
-                    this.charts.channel = new Chart(ctx, {
-                        type: 'doughnut',
-                        data: {
-                            labels: ['واتساب', 'البريد الإلكتروني', 'الهاتف', 'الموقع الإلكتروني'],
-                            datasets: [{
-                                data: [30, 25, 20, 25],
-                                backgroundColor: [
-                                    '#2E8B57', '#17a2b8', '#ffc107', '#dc3545', 
-                                    '#6f42c1', '#20c997', '#fd7e14', '#e83e8c'
-                                ]
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            plugins: {
-                                legend: {
-                                    position: 'bottom'
-                                }
-                            }
-                        }
-                    });
-                } catch (error) {
-                    console.error('Error initializing channel chart:', error);
-                }
-                
-                console.log('Channel chart created successfully');
-                // Force resize to ensure proper rendering
-                setTimeout(() => {
-                    if (this.charts.channel) {
-                        this.charts.channel.resize();
-                        this.charts.channel.update();
-                    }
-                }, 100);
-            }
-
-            initializeSentimentChart() {
-                const ctx = document.getElementById('sentimentChart');
-                if (!ctx) return;
-                
-                // Sample sentiment over time data
-                const sentimentLabels = ['الأسبوع 1', 'الأسبوع 2', 'الأسبوع 3', 'الأسبوع 4'];
-                const positiveData = [65, 68, 72, 70];
-                const neutralData = [25, 22, 18, 20];
-                const negativeData = [10, 10, 10, 10];
-                
-                try {
-                    this.charts.sentiment = new Chart(ctx, {
-                        type: 'line',
-                        data: {
-                            labels: sentimentLabels,
-                            datasets: [{
-                                label: 'إيجابي',
-                                data: positiveData,
-                                borderColor: '#28a745',
-                                backgroundColor: 'rgba(40, 167, 69, 0.1)',
-                                tension: 0.3
-                            }, {
-                                label: 'محايد',
-                                data: neutralData,
-                                borderColor: '#ffc107',
-                                backgroundColor: 'rgba(255, 193, 7, 0.1)',
-                                tension: 0.3
-                            }, {
-                                label: 'سلبي',
-                                data: negativeData,
-                                borderColor: '#dc3545',
-                                backgroundColor: 'rgba(220, 53, 69, 0.1)',
-                                tension: 0.3
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            plugins: {
-                                title: {
-                                    display: true,
-                                    text: 'تحليل المشاعر عبر الزمن',
-                                    font: { size: 16, weight: 'bold' },
-                                    color: '#2E8B57'
-                                },
-                                legend: {
-                                    position: 'bottom'
-                                }
-                            },
-                            scales: {
-                                y: {
-                                    beginAtZero: true,
-                                    max: 100,
-                                    ticks: {
-                                        callback: function(value) {
-                                            return value + '%';
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    });
-                } catch (error) {
-                    console.error('Error initializing sentiment chart:', error);
-                }
-            }
-
-            updateTrendChart(trends) {
-                try {
-                    if (this.charts.trend && trends && trends.labels && trends.values) {
-                        this.charts.trend.data.labels = trends.labels;
-                        this.charts.trend.data.datasets[0].data = trends.values;
-                        this.charts.trend.update();
-                        console.log('Trend chart updated successfully');
-                    } else {
-                        console.log('Trend chart not ready or missing data');
-                    }
-                } catch (error) {
-                    console.error('Error updating trend chart:', error);
-                }
-            }
-
-            updateChannelChart(channels) {
-                try {
-                    if (this.charts.channel && channels && channels.labels && channels.values) {
-                        this.charts.channel.data.labels = channels.labels;
-                        this.charts.channel.data.datasets[0].data = channels.values;
-                        this.charts.channel.update();
-                        console.log('Channel chart updated successfully');
-                    } else {
-                        console.log('Channel chart not ready or missing data');
-                    }
-                } catch (error) {
-                    console.error('Error updating channel chart:', error);
-                }
-            }
-
-            initializePriorityHeatmapChart() {
-                const ctx = document.getElementById('priorityHeatmapChart');
-                if (!ctx) return;
-                
-                // Financial impact priority heatmap data
-                const heatmapData = [
-                    {x: 'مشكلة الدفع', y: 'P1 - حرج', v: 85000, issue: 'Payment System Failure'},
-                    {x: 'بطء الاستجابة', y: 'P2 - عالي', v: 25000, issue: 'Response Time Issues'},
-                    {x: 'واجهة المستخدم', y: 'P3 - متوسط', v: 8000, issue: 'UI/UX Improvements'},
-                    {x: 'تحسين العمليات', y: 'P4 - منخفض', v: 3500, issue: 'Process Optimization'},
-                    {x: 'مشاكل التوصيل', y: 'P1 - حرج', v: 65000, issue: 'Delivery Issues'},
-                    {x: 'دعم العملاء', y: 'P2 - عالي', v: 18000, issue: 'Customer Support'},
-                    {x: 'تحديث النظام', y: 'P3 - متوسط', v: 12000, issue: 'System Updates'},
-                    {x: 'تدريب الموظفين', y: 'P4 - منخفض', v: 5000, issue: 'Staff Training'}
-                ];
-                
-                this.charts.priorityHeatmap = new Chart(ctx, {
-                    type: 'scatter',
-                    data: {
-                        datasets: [{
-                            label: 'التأثير المالي (ر.س)',
-                            data: heatmapData,
-                            backgroundColor: function(context) {
-                                const value = context.parsed.v;
-                                if (value > 50000) return 'rgba(220, 53, 69, 0.8)'; // P1 - Red
-                                if (value > 20000) return 'rgba(255, 193, 7, 0.8)'; // P2 - Yellow
-                                if (value > 10000) return 'rgba(23, 162, 184, 0.8)'; // P3 - Blue
-                                return 'rgba(40, 167, 69, 0.8)'; // P4 - Green
-                            },
-                            borderColor: function(context) {
-                                const value = context.parsed.v;
-                                if (value > 50000) return 'rgb(220, 53, 69)';
-                                if (value > 20000) return 'rgb(255, 193, 7)';
-                                if (value > 10000) return 'rgb(23, 162, 184)';
-                                return 'rgb(40, 167, 69)';
-                            },
-                            borderWidth: 2,
-                            pointRadius: function(context) {
-                                return Math.sqrt(context.parsed.v / 1000) + 8;
-                            }
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            title: {
-                                display: true,
-                                text: 'مصفوفة الأولوية والتأثير المالي',
-                                font: { size: 16, weight: 'bold' },
-                                color: '#2E8B57'
-                            },
-                            legend: {
-                                display: true,
-                                position: 'bottom',
-                                labels: {
-                                    generateLabels: function() {
-                                        return [
-                                            { text: 'P1 - حرج (> 50,000 ر.س)', fillStyle: 'rgba(220, 53, 69, 0.8)', strokeStyle: 'rgb(220, 53, 69)' },
-                                            { text: 'P2 - عالي (20,000-50,000 ر.س)', fillStyle: 'rgba(255, 193, 7, 0.8)', strokeStyle: 'rgb(255, 193, 7)' },
-                                            { text: 'P3 - متوسط (10,000-20,000 ر.س)', fillStyle: 'rgba(23, 162, 184, 0.8)', strokeStyle: 'rgb(23, 162, 184)' },
-                                            { text: 'P4 - منخفض (< 10,000 ر.س)', fillStyle: 'rgba(40, 167, 69, 0.8)', strokeStyle: 'rgb(40, 167, 69)' }
-                                        ];
-                                    }
-                                }
-                            },
-                            tooltip: {
-                                callbacks: {
-                                    title: function(context) {
-                                        return context[0].raw.x;
-                                    },
-                                    label: function(context) {
-                                        const point = context.raw;
-                                        return [
-                                            `الأولوية: ${point.y}`,
-                                            `التأثير المالي: ${point.v.toLocaleString()} ر.س`,
-                                            `نوع القضية: ${point.x}`
-                                        ];
-                                    }
-                                }
-                            }
-                        },
-                        scales: {
-                            x: {
-                                type: 'category',
-                                labels: ['مشكلة الدفع', 'بطء الاستجابة', 'واجهة المستخدم', 'تحسين العمليات', 'مشاكل التوصيل', 'دعم العملاء', 'تحديث النظام', 'تدريب الموظفين'],
-                                title: {
-                                    display: true,
-                                    text: 'نوع القضية',
-                                    font: { size: 14, weight: 'bold' }
-                                },
-                                ticks: {
-                                    maxRotation: 45,
-                                    minRotation: 0
-                                }
-                            },
-                            y: {
-                                type: 'category',
-                                labels: ['P4 - منخفض', 'P3 - متوسط', 'P2 - عالي', 'P1 - حرج'],
-                                title: {
-                                    display: true,
-                                    text: 'مستوى الأولوية',
-                                    font: { size: 14, weight: 'bold' }
-                                }
-                            }
-                        }
-                    }
-                });
-            }
-
-            updateLastRefresh() {
-                try {
-                    const now = new Date();
-                    const timeString = now.toLocaleTimeString('ar-SA');
-                    const element = document.getElementById('lastUpdate');
-                    if (element) {
-                        element.textContent = timeString;
-                    }
-                } catch (error) {
-                    console.error('Error updating last refresh:', error);
-                }
-            }
-
-            startAutoRefresh() {
-                setInterval(() => {
-                    this.loadInitialData();
-                }, 30000); // Refresh every 30 seconds
-            }
-
-            setupTabListeners() {
-                // Add event listeners for tab switching to resize charts
-                const tabTriggerList = document.querySelectorAll('[data-bs-toggle="tab"]');
-                tabTriggerList.forEach(tabTrigger => {
-                    tabTrigger.addEventListener('shown.bs.tab', (event) => {
-                        // Resize all charts when tab is shown
-                        setTimeout(() => {
-                            Object.values(this.charts).forEach(chart => {
-                                if (chart && typeof chart.resize === 'function') {
-                                    chart.resize();
-                                    chart.update();
-                                }
-                            });
-                        }, 100);
-                    });
-                });
-            }
+            // Charts removed - using clean visual displays instead
 
             showErrorState() {
                 console.log('Showing error state...');
@@ -1111,21 +837,8 @@
 
         // Initialize dashboard when DOM is loaded
         document.addEventListener('DOMContentLoaded', () => {
-            console.log('DOM loaded, checking Chart.js...');
-            if (typeof Chart !== 'undefined') {
-                console.log('Chart.js found, initializing dashboard...');
-                new ExecutiveDashboard();
-            } else {
-                console.error('Chart.js not loaded. Retrying...');
-                setTimeout(() => {
-                    if (typeof Chart !== 'undefined') {
-                        console.log('Chart.js loaded on retry, initializing dashboard...');
-                        new ExecutiveDashboard();
-                    } else {
-                        console.error('Chart.js still not available after retry');
-                    }
-                }, 2000);
-            }
+            console.log('DOM loaded, initializing dashboard...');
+            new ExecutiveDashboard();
         });
     </script>
 </body>
