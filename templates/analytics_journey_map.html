@@ -287,27 +287,7 @@
             font-size: 13px;
         }
 
-        .trend-container {
-            text-align: center;
-        }
 
-        .trend-indicator {
-            margin-top: 10px;
-        }
-
-        .trend-arrow {
-            font-size: 20px;
-            margin-right: 8px;
-        }
-
-        .trend-change {
-            font-size: 13px;
-            font-weight: 500;
-        }
-
-        .trend-change.improving { color: #28a745; }
-        .trend-change.declining { color: #dc3545; }
-        .trend-change.stable { color: #666; }
 
         .voice-container {
             padding: 10px;
@@ -547,30 +527,19 @@
                 </div>
                 <div class="modal-body">
                     <div class="row">
-                        <!-- Column 1: Top Themes -->
-                        <div class="col-md-4">
-                            <h6 class="modal-section-title">Top Feedback Themes</h6>
+                        <!-- Column 1: Topical Analysis -->
+                        <div class="col-md-6">
+                            <h6 class="modal-section-title">Topical Analysis</h6>
                             <div id="topThemes" class="themes-container">
                                 <!-- Themes will be populated by JavaScript -->
                             </div>
                         </div>
                         
-                        <!-- Column 2: Trend Analysis -->
-                        <div class="col-md-4">
-                            <h6 class="modal-section-title">30-Day Trend</h6>
-                            <div id="trendAnalysis" class="trend-container">
-                                <canvas id="trendChart" width="200" height="100"></canvas>
-                                <div id="trendIndicator" class="trend-indicator">
-                                    <!-- Trend data will be populated by JavaScript -->
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Column 3: Customer Voice -->
-                        <div class="col-md-4">
-                            <h6 class="modal-section-title">Sample Feedback</h6>
+                        <!-- Column 2: Verbatim Quotes -->
+                        <div class="col-md-6">
+                            <h6 class="modal-section-title">Verbatim Quotes</h6>
                             <div id="customerVoice" class="voice-container">
-                                <!-- Customer quote will be populated by JavaScript -->
+                                <!-- Customer quotes will be populated by JavaScript -->
                             </div>
                         </div>
                     </div>
@@ -637,11 +606,20 @@
                             { text: "Confusing kiosk interface", percentage: 31 },
                             { text: "Long wait times", percentage: 22 }
                         ],
-                        trend: { direction: "down", change: -5.2, arrow: "↘️" },
-                        quote: {
-                            text: "The check-in process was incredibly slow and the staff seemed overwhelmed",
-                            context: "Premium customer, mobile check-in"
-                        }
+                        quotes: [
+                            {
+                                text: "The check-in process was incredibly slow and the staff seemed overwhelmed",
+                                context: "Premium customer, mobile check-in"
+                            },
+                            {
+                                text: "Kiosk interface was confusing - took me 15 minutes to complete what should be a 2-minute process",
+                                context: "Business traveler, terminal kiosk"
+                            },
+                            {
+                                text: "Long queues at check-in despite having multiple counters. Very frustrating experience",
+                                context: "Family traveler, counter service"
+                            }
+                        ]
                     },
                     'booking_on_time_flights': {
                         themes: [
@@ -649,11 +627,20 @@
                             { text: "Limited seat selection", percentage: 28 },
                             { text: "Complex pricing structure", percentage: 20 }
                         ],
-                        trend: { direction: "up", change: 3.1, arrow: "↗️" },
-                        quote: {
-                            text: "The booking system kept crashing during peak times",
-                            context: "Business traveler, online booking"
-                        }
+                        quotes: [
+                            {
+                                text: "The booking system kept crashing during peak times",
+                                context: "Business traveler, online booking"
+                            },
+                            {
+                                text: "Very limited seat options available, especially for families",
+                                context: "Family customer, advance booking"
+                            },
+                            {
+                                text: "Pricing is so confusing - hidden fees everywhere",
+                                context: "Leisure traveler, price comparison"
+                            }
+                        ]
                     },
                     'lounge_on_time_flights': {
                         themes: [
@@ -661,11 +648,20 @@
                             { text: "Limited food options", percentage: 35 },
                             { text: "WiFi connectivity issues", percentage: 20 }
                         ],
-                        trend: { direction: "stable", change: 0.3, arrow: "➡️" },
-                        quote: {
-                            text: "The lounge was overcrowded and lacked comfortable seating",
-                            context: "Gold member, morning flight"
-                        }
+                        quotes: [
+                            {
+                                text: "The lounge was overcrowded and lacked comfortable seating",
+                                context: "Gold member, morning flight"
+                            },
+                            {
+                                text: "Food selection was disappointing for a premium lounge",
+                                context: "Platinum member, international flight"
+                            },
+                            {
+                                text: "WiFi was extremely slow, couldn't get any work done",
+                                context: "Business customer, work priority"
+                            }
+                        ]
                     },
                     'boarding_on_time_flights': {
                         themes: [
@@ -673,11 +669,20 @@
                             { text: "Overhead bin space issues", percentage: 32 },
                             { text: "Gate announcement clarity", percentage: 20 }
                         ],
-                        trend: { direction: "up", change: 2.7, arrow: "↗️" },
-                        quote: {
-                            text: "Boarding was chaotic with multiple queue changes",
-                            context: "Economy passenger, evening flight"
-                        }
+                        quotes: [
+                            {
+                                text: "Boarding was chaotic with multiple queue changes",
+                                context: "Economy passenger, evening flight"
+                            },
+                            {
+                                text: "No overhead bin space left when I boarded, had to gate-check my carry-on",
+                                context: "Group C boarding, domestic flight"
+                            },
+                            {
+                                text: "Couldn't hear gate announcements clearly - very poor sound system",
+                                context: "Senior traveler, accessibility needs"
+                            }
+                        ]
                     }
                 };
             }
@@ -776,8 +781,7 @@
                 
                 if (drilldownInfo) {
                     this.renderThemes(drilldownInfo.themes);
-                    this.renderTrend(drilldownInfo.trend);
-                    this.renderCustomerVoice(drilldownInfo.quote);
+                    this.renderCustomerVoices(drilldownInfo.quotes);
                 } else {
                     // Default content for cells without specific drill-down data
                     this.renderDefaultContent(data);
@@ -804,73 +808,21 @@
                 container.innerHTML = html;
             }
 
-            renderTrend(trend) {
-                const container = document.getElementById('trendIndicator');
-                const changeClass = trend.direction === 'up' ? 'improving' : 
-                                   trend.direction === 'down' ? 'declining' : 'stable';
-                const changeText = trend.change > 0 ? `Up ${trend.change} points` : 
-                                  trend.change < 0 ? `Down ${Math.abs(trend.change)} points` : 
-                                  'No significant change';
-                
-                container.innerHTML = `
-                    <div class="trend-arrow">${trend.arrow}</div>
-                    <div class="trend-change ${changeClass}">${changeText} from last month</div>
-                `;
-                
-                // Simple trend chart with Chart.js
-                this.renderTrendChart();
-            }
-
-            renderTrendChart() {
-                const ctx = document.getElementById('trendChart').getContext('2d');
-                
-                // Generate sample trend data
-                const data = [];
-                const labels = [];
-                for (let i = 29; i >= 0; i--) {
-                    const date = new Date();
-                    date.setDate(date.getDate() - i);
-                    labels.push('');
-                    data.push(50 + Math.random() * 20 - 10);
-                }
-                
-                new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            data: data,
-                            borderColor: '#007bff',
-                            backgroundColor: 'rgba(0, 123, 255, 0.1)',
-                            borderWidth: 2,
-                            fill: true,
-                            tension: 0.4,
-                            pointRadius: 0
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: { display: false }
-                        },
-                        scales: {
-                            x: { display: false },
-                            y: { display: false }
-                        },
-                        elements: {
-                            point: { radius: 0 }
-                        }
-                    }
-                });
-            }
-
-            renderCustomerVoice(quote) {
+            renderCustomerVoices(quotes) {
                 const container = document.getElementById('customerVoice');
-                container.innerHTML = `
-                    <div class="customer-quote">"${quote.text}"</div>
-                    <div class="customer-context">${quote.context}</div>
-                `;
+                let html = '';
+                
+                quotes.forEach(quote => {
+                    html += `
+                        <div class="customer-quote">"${quote.text}"</div>
+                        <div class="customer-context">${quote.context}</div>
+                        <hr style="margin: 15px 0; border-color: #e9ecef;">
+                    `;
+                });
+                
+                // Remove the last hr tag
+                html = html.replace(/<hr[^>]*>$/, '');
+                container.innerHTML = html;
             }
 
             renderDefaultContent(data) {
@@ -881,15 +833,23 @@
                     { text: "Staff interaction", percentage: 20 }
                 ];
                 
-                const defaultTrend = { direction: "stable", change: 0, arrow: "➡️" };
-                const defaultQuote = {
-                    text: "Overall experience was as expected",
-                    context: "Regular customer feedback"
-                };
+                const defaultQuotes = [
+                    {
+                        text: "Overall experience was as expected",
+                        context: "Regular customer feedback"
+                    },
+                    {
+                        text: "Service was adequate but could be improved",
+                        context: "Frequent traveler feedback"
+                    },
+                    {
+                        text: "Standard service level, nothing exceptional",
+                        context: "Business customer feedback"
+                    }
+                ];
                 
                 this.renderThemes(defaultThemes);
-                this.renderTrend(defaultTrend);
-                this.renderCustomerVoice(defaultQuote);
+                this.renderCustomerVoices(defaultQuotes);
             }
             
 
