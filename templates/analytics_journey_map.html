@@ -260,6 +260,76 @@
             border-left: 3px solid #dc3545;
         }
 
+        /* Modal Styling */
+        .modal-section-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .themes-container .theme-item {
+            margin-bottom: 10px;
+            padding: 8px;
+            background: #f8f9fa;
+            border-radius: 4px;
+        }
+
+        .theme-percentage {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .theme-text {
+            color: #666;
+            font-size: 13px;
+        }
+
+        .trend-container {
+            text-align: center;
+        }
+
+        .trend-indicator {
+            margin-top: 10px;
+        }
+
+        .trend-arrow {
+            font-size: 20px;
+            margin-right: 8px;
+        }
+
+        .trend-change {
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .trend-change.improving { color: #28a745; }
+        .trend-change.declining { color: #dc3545; }
+        .trend-change.stable { color: #666; }
+
+        .voice-container {
+            padding: 10px;
+        }
+
+        .customer-quote {
+            font-style: italic;
+            color: #444;
+            font-size: 14px;
+            line-height: 1.4;
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 6px;
+            border-left: 3px solid #007bff;
+            margin-bottom: 10px;
+        }
+
+        .customer-context {
+            font-size: 11px;
+            color: #666;
+        }
+
         /* Cell background colors based on NPS */
         .cell-positive { background-color: #E8F5E8; }
         .cell-neutral { background-color: #FFF8E1; }
@@ -467,35 +537,41 @@
         </div>
     </div>
 
-    <!-- Drill-down Modal -->
+    <!-- Enhanced Drill-down Modal -->
     <div class="modal fade" id="drilldownModal" tabindex="-1" aria-labelledby="drilldownModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-xl">
+        <div class="modal-dialog modal-lg" style="max-width: 60vw;">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="drilldownModalLabel">تفاصيل المرحلة</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="إغلاق"></button>
+                    <h5 class="modal-title" id="drilldownModalLabel">Check-in • On-time Flights • Score: 62.1</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <ul class="nav nav-tabs" id="drilldownTabs" role="tablist">
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link active" id="channels-tab" data-bs-toggle="tab" data-bs-target="#channels" type="button" role="tab">توزيع القنوات</button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="themes-tab" data-bs-toggle="tab" data-bs-target="#themes" type="button" role="tab">المواضيع الرئيسية</button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="trends-tab" data-bs-toggle="tab" data-bs-target="#trends" type="button" role="tab">تحليل الاتجاهات</button>
-                        </li>
-                    </ul>
-                    <div class="tab-content" id="drilldownTabContent">
-                        <div class="tab-pane fade show active" id="channels" role="tabpanel">
-                            <canvas id="channelsChart" width="400" height="200"></canvas>
+                    <div class="row">
+                        <!-- Column 1: Top Themes -->
+                        <div class="col-md-4">
+                            <h6 class="modal-section-title">Top Feedback Themes</h6>
+                            <div id="topThemes" class="themes-container">
+                                <!-- Themes will be populated by JavaScript -->
+                            </div>
                         </div>
-                        <div class="tab-pane fade" id="themes" role="tabpanel">
-                            <div id="themesContent" class="arabic-text"></div>
+                        
+                        <!-- Column 2: Trend Analysis -->
+                        <div class="col-md-4">
+                            <h6 class="modal-section-title">30-Day Trend</h6>
+                            <div id="trendAnalysis" class="trend-container">
+                                <canvas id="trendChart" width="200" height="100"></canvas>
+                                <div id="trendIndicator" class="trend-indicator">
+                                    <!-- Trend data will be populated by JavaScript -->
+                                </div>
+                            </div>
                         </div>
-                        <div class="tab-pane fade" id="trends" role="tabpanel">
-                            <canvas id="trendsChart" width="400" height="200"></canvas>
+                        
+                        <!-- Column 3: Customer Voice -->
+                        <div class="col-md-4">
+                            <h6 class="modal-section-title">Sample Feedback</h6>
+                            <div id="customerVoice" class="voice-container">
+                                <!-- Customer quote will be populated by JavaScript -->
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -551,6 +627,58 @@
                     'baggage': 'Baggage Claim',
                     'connections': 'Connections',
                     'loyalty': 'Loyalty Rewards'
+                };
+
+                // Drill-down data for modal
+                this.drillDownData = {
+                    'checkin_on_time_flights': {
+                        themes: [
+                            { text: "Slow check-in process", percentage: 47 },
+                            { text: "Confusing kiosk interface", percentage: 31 },
+                            { text: "Long wait times", percentage: 22 }
+                        ],
+                        trend: { direction: "down", change: -5.2, arrow: "↘️" },
+                        quote: {
+                            text: "The check-in process was incredibly slow and the staff seemed overwhelmed",
+                            context: "Premium customer, mobile check-in"
+                        }
+                    },
+                    'booking_on_time_flights': {
+                        themes: [
+                            { text: "Website performance issues", percentage: 52 },
+                            { text: "Limited seat selection", percentage: 28 },
+                            { text: "Complex pricing structure", percentage: 20 }
+                        ],
+                        trend: { direction: "up", change: 3.1, arrow: "↗️" },
+                        quote: {
+                            text: "The booking system kept crashing during peak times",
+                            context: "Business traveler, online booking"
+                        }
+                    },
+                    'lounge_on_time_flights': {
+                        themes: [
+                            { text: "Crowded lounge space", percentage: 45 },
+                            { text: "Limited food options", percentage: 35 },
+                            { text: "WiFi connectivity issues", percentage: 20 }
+                        ],
+                        trend: { direction: "stable", change: 0.3, arrow: "➡️" },
+                        quote: {
+                            text: "The lounge was overcrowded and lacked comfortable seating",
+                            context: "Gold member, morning flight"
+                        }
+                    },
+                    'boarding_on_time_flights': {
+                        themes: [
+                            { text: "Disorganized boarding process", percentage: 48 },
+                            { text: "Overhead bin space issues", percentage: 32 },
+                            { text: "Gate announcement clarity", percentage: 20 }
+                        ],
+                        trend: { direction: "up", change: 2.7, arrow: "↗️" },
+                        quote: {
+                            text: "Boarding was chaotic with multiple queue changes",
+                            context: "Economy passenger, evening flight"
+                        }
+                    }
                 };
             }
             
@@ -639,10 +767,129 @@
             }
             
             openDrilldown(segment, stage, data) {
-                // Simple drill-down for airline dashboard
-                const total = data.positive + data.neutral + data.negative;
-                const message = `${this.segmentLabels[segment]} - ${this.stageLabels[stage]}\n\nNPS: ${data.nps}\nTotal Responses: ${total}\nPositive: ${data.positive}\nNeutral: ${data.neutral}\nNegative: ${data.negative}`;
-                alert(message);
+                const drilldownKey = `${stage}_${segment}`;
+                const drilldownInfo = this.drillDownData[drilldownKey];
+                
+                // Update modal title
+                const modalTitle = document.getElementById('drilldownModalLabel');
+                modalTitle.textContent = `${this.stageLabels[stage]} • ${this.segmentLabels[segment]} • Score: ${data.nps}`;
+                
+                if (drilldownInfo) {
+                    this.renderThemes(drilldownInfo.themes);
+                    this.renderTrend(drilldownInfo.trend);
+                    this.renderCustomerVoice(drilldownInfo.quote);
+                } else {
+                    // Default content for cells without specific drill-down data
+                    this.renderDefaultContent(data);
+                }
+                
+                // Show modal
+                const modal = new bootstrap.Modal(document.getElementById('drilldownModal'));
+                modal.show();
+            }
+
+            renderThemes(themes) {
+                const container = document.getElementById('topThemes');
+                let html = '';
+                
+                themes.forEach(theme => {
+                    html += `
+                        <div class="theme-item">
+                            <div class="theme-percentage">${theme.percentage}%</div>
+                            <div class="theme-text">${theme.text}</div>
+                        </div>
+                    `;
+                });
+                
+                container.innerHTML = html;
+            }
+
+            renderTrend(trend) {
+                const container = document.getElementById('trendIndicator');
+                const changeClass = trend.direction === 'up' ? 'improving' : 
+                                   trend.direction === 'down' ? 'declining' : 'stable';
+                const changeText = trend.change > 0 ? `Up ${trend.change} points` : 
+                                  trend.change < 0 ? `Down ${Math.abs(trend.change)} points` : 
+                                  'No significant change';
+                
+                container.innerHTML = `
+                    <div class="trend-arrow">${trend.arrow}</div>
+                    <div class="trend-change ${changeClass}">${changeText} from last month</div>
+                `;
+                
+                // Simple trend chart with Chart.js
+                this.renderTrendChart();
+            }
+
+            renderTrendChart() {
+                const ctx = document.getElementById('trendChart').getContext('2d');
+                
+                // Generate sample trend data
+                const data = [];
+                const labels = [];
+                for (let i = 29; i >= 0; i--) {
+                    const date = new Date();
+                    date.setDate(date.getDate() - i);
+                    labels.push('');
+                    data.push(50 + Math.random() * 20 - 10);
+                }
+                
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            data: data,
+                            borderColor: '#007bff',
+                            backgroundColor: 'rgba(0, 123, 255, 0.1)',
+                            borderWidth: 2,
+                            fill: true,
+                            tension: 0.4,
+                            pointRadius: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false }
+                        },
+                        scales: {
+                            x: { display: false },
+                            y: { display: false }
+                        },
+                        elements: {
+                            point: { radius: 0 }
+                        }
+                    }
+                });
+            }
+
+            renderCustomerVoice(quote) {
+                const container = document.getElementById('customerVoice');
+                container.innerHTML = `
+                    <div class="customer-quote">"${quote.text}"</div>
+                    <div class="customer-context">${quote.context}</div>
+                `;
+            }
+
+            renderDefaultContent(data) {
+                // Default themes for cells without specific data
+                const defaultThemes = [
+                    { text: "Service quality feedback", percentage: 45 },
+                    { text: "Process efficiency", percentage: 35 },
+                    { text: "Staff interaction", percentage: 20 }
+                ];
+                
+                const defaultTrend = { direction: "stable", change: 0, arrow: "➡️" };
+                const defaultQuote = {
+                    text: "Overall experience was as expected",
+                    context: "Regular customer feedback"
+                };
+                
+                this.renderThemes(defaultThemes);
+                this.renderTrend(defaultTrend);
+                this.renderCustomerVoice(defaultQuote);
             }
             
 
