@@ -743,7 +743,11 @@
 
             initializeTrendChart() {
                 const ctx = document.getElementById('trendChart');
-                if (!ctx) return;
+                if (!ctx) {
+                    console.error('Trend chart canvas not found');
+                    return;
+                }
+                console.log('Initializing trend chart...');
                 
                 this.charts.trend = new Chart(ctx, {
                     type: 'line',
@@ -1047,13 +1051,20 @@
 
         // Initialize dashboard when DOM is loaded
         document.addEventListener('DOMContentLoaded', () => {
+            console.log('DOM loaded, checking Chart.js...');
             if (typeof Chart !== 'undefined') {
+                console.log('Chart.js found, initializing dashboard...');
                 new ExecutiveDashboard();
             } else {
                 console.error('Chart.js not loaded. Retrying...');
                 setTimeout(() => {
-                    new ExecutiveDashboard();
-                }, 1000);
+                    if (typeof Chart !== 'undefined') {
+                        console.log('Chart.js loaded on retry, initializing dashboard...');
+                        new ExecutiveDashboard();
+                    } else {
+                        console.error('Chart.js still not available after retry');
+                    }
+                }, 2000);
             }
         });
     </script>
