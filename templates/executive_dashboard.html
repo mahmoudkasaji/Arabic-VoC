@@ -752,10 +752,10 @@
                 this.charts.trend = new Chart(ctx, {
                     type: 'line',
                     data: {
-                        labels: [],
+                        labels: ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو'],
                         datasets: [{
                             label: 'رضا العملاء',
-                            data: [],
+                            data: [65, 68, 72, 70, 75, 78],
                             borderColor: '#2E8B57',
                             backgroundColor: 'rgba(46, 139, 87, 0.1)',
                             fill: true,
@@ -796,9 +796,9 @@
                     this.charts.channel = new Chart(ctx, {
                         type: 'doughnut',
                         data: {
-                            labels: [],
+                            labels: ['واتساب', 'البريد الإلكتروني', 'الهاتف', 'الموقع الإلكتروني'],
                             datasets: [{
-                                data: [],
+                                data: [30, 25, 20, 25],
                                 backgroundColor: [
                                     '#2E8B57', '#17a2b8', '#ffc107', '#dc3545', 
                                     '#6f42c1', '#20c997', '#fd7e14', '#e83e8c'
@@ -888,18 +888,32 @@
             }
 
             updateTrendChart(trends) {
-                if (this.charts.trend && trends.labels && trends.values) {
-                    this.charts.trend.data.labels = trends.labels;
-                    this.charts.trend.data.datasets[0].data = trends.values;
-                    this.charts.trend.update();
+                try {
+                    if (this.charts.trend && trends && trends.labels && trends.values) {
+                        this.charts.trend.data.labels = trends.labels;
+                        this.charts.trend.data.datasets[0].data = trends.values;
+                        this.charts.trend.update();
+                        console.log('Trend chart updated successfully');
+                    } else {
+                        console.log('Trend chart not ready or missing data');
+                    }
+                } catch (error) {
+                    console.error('Error updating trend chart:', error);
                 }
             }
 
             updateChannelChart(channels) {
-                if (this.charts.channel && channels.labels && channels.values) {
-                    this.charts.channel.data.labels = channels.labels;
-                    this.charts.channel.data.datasets[0].data = channels.values;
-                    this.charts.channel.update();
+                try {
+                    if (this.charts.channel && channels && channels.labels && channels.values) {
+                        this.charts.channel.data.labels = channels.labels;
+                        this.charts.channel.data.datasets[0].data = channels.values;
+                        this.charts.channel.update();
+                        console.log('Channel chart updated successfully');
+                    } else {
+                        console.log('Channel chart not ready or missing data');
+                    }
+                } catch (error) {
+                    console.error('Error updating channel chart:', error);
                 }
             }
 
