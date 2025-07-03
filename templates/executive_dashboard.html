@@ -816,7 +816,23 @@
                 }
             }
 
-            // Charts removed - using clean visual displays instead
+            startAutoRefresh() {
+                setInterval(() => {
+                    this.loadInitialData();
+                }, 30000); // Refresh every 30 seconds
+            }
+
+            updateLastRefresh() {
+                try {
+                    this.lastUpdate = new Date();
+                    const refreshElement = document.getElementById('lastRefresh');
+                    if (refreshElement) {
+                        refreshElement.textContent = this.lastUpdate.toLocaleTimeString('ar-SA');
+                    }
+                } catch (error) {
+                    console.error('Error updating last refresh:', error);
+                }
+            }
 
             showErrorState() {
                 console.log('Showing error state...');
