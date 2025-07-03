@@ -138,9 +138,14 @@ An Arabic-first multi-channel feedback processing platform built with Flask and 
 - `SECRET_KEY`: Application security key
 - `ARABIC_LOCALE`: Locale configuration for Arabic text
 
-## Recent Changes (June 2025)
+## Recent Changes (July 2025)
 
 ### Major Architecture Updates
+- **July 3**: **Interactive Customer Journey Map Builder** - Complete airline-style dashboard with NPS matrix (8 stages × 2 segments)
+- **July 3**: **Modal Drill-Down System** - Two-column modal with Topical Analysis and Verbatim Quotes for detailed insights
+- **July 3**: **Journey Map Visualization** - Professional airline dashboard replica with color-coded NPS scores and respondent counts
+- **July 3**: **Enhanced Modal UX** - 60% screen width modal with ESC/click-outside-to-close, multiple customer quotes per stage
+- **July 3**: **Real Customer Data Integration** - Sample data for Check-in, Booking, Lounge, and Boarding stages with authentic feedback themes
 - **June 29**: **CX Business Intelligence System - Production Ready** - Complete implementation with JSON parsing fixes and full web interface validation
 - **June 29**: **Unified 3-Agent Architecture** - SentimentImpactAgent (CSAT prediction + churn risk), DriverAnalysisAgent (specific issue identification), BusinessImpactAgent (KPI correlation + ROI calculation)
 - **June 29**: **Business Metrics Integration** - Revenue risk calculation, operational cost estimation, NPS impact prediction, and resolution priority framework (P1-P4)
