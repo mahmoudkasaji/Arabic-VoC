@@ -162,27 +162,45 @@
 
         .matrix-cell {
             border-radius: 4px;
-            padding: 8px;
-            text-align: left;
+            padding: 12px;
+            text-align: center;
             transition: all 0.3s ease;
             cursor: pointer;
             position: relative;
-            height: 120px;
+            height: 140px;
             border: 1px solid #e0e0e0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
 
         .matrix-cell:hover {
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
 
-        /* NPS Container */
-        .nps-container {
+        /* Cell Layout Structure */
+        .cell-top {
+            flex: 0 0 auto;
             text-align: center;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
         
-        .nps-score {
-            font-size: 36px;
+        .cell-middle {
+            flex: 1 1 auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 4px;
+        }
+        
+        .cell-bottom {
+            flex: 0 0 auto;
+            margin-top: 8px;
+        }
+        
+        /* NPS Number and Label */
+        .nps-number {
+            font-size: 32px;
             font-weight: bold;
             color: #2c3e50;
             line-height: 1;
@@ -196,60 +214,35 @@
             margin-top: 2px;
         }
         
-        /* Sentiment Summary */
-        .sentiment-summary {
-            margin: 8px 0;
-        }
-        
-        .sentiment-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 4px;
+        /* Sentiment Lines */
+        .sentiment-line {
             font-size: 11px;
-        }
-        
-        .sentiment-label {
-            font-weight: 500;
-            color: #444;
-            min-width: 55px;
-        }
-        
-        .sentiment-percent {
-            font-weight: bold;
-            color: #333;
-            min-width: 35px;
-            text-align: right;
-        }
-        
-        .sentiment-count {
-            color: #666;
-            font-size: 10px;
-            min-width: 75px;
-            text-align: right;
+            color: #555;
+            line-height: 1.3;
+            text-align: center;
         }
         
         /* Progress Bar */
-        .progress-bar-container {
-            margin-top: 8px;
-        }
-        
-        .progress-bar {
+        .progress-bar-full {
             height: 8px;
             background: #e9ecef;
             border-radius: 4px;
             overflow: hidden;
             display: flex;
+            width: 100%;
+        }
+        
+        .progress-segment {
+            height: 100%;
+            transition: width 0.3s ease;
         }
         
         .progress-positive {
             background: #28a745;
-            transition: width 0.3s ease;
         }
         
         .progress-negative {
             background: #dc3545;
-            transition: width 0.3s ease;
         }
 
         /* Cell background colors based on NPS */
@@ -594,26 +587,18 @@
                 const negativePercent = Math.round((data.negative / total) * 100);
                 
                 return `
-                    <div class="nps-container">
-                        <div class="nps-score">${data.nps}</div>
+                    <div class="cell-top">
+                        <div class="nps-number">${data.nps}</div>
                         <div class="nps-label">NPS</div>
                     </div>
-                    <div class="sentiment-summary">
-                        <div class="sentiment-row">
-                            <span class="sentiment-label">Positive</span>
-                            <span class="sentiment-percent">${positivePercent}%</span>
-                            <span class="sentiment-count">${data.positive} respondents</span>
-                        </div>
-                        <div class="sentiment-row">
-                            <span class="sentiment-label">Negative</span>
-                            <span class="sentiment-percent">${negativePercent}%</span>
-                            <span class="sentiment-count">${data.negative} respondents</span>
-                        </div>
+                    <div class="cell-middle">
+                        <div class="sentiment-line">respondents ${data.positive} | ${positivePercent}% Positive</div>
+                        <div class="sentiment-line">respondents ${data.negative} | ${negativePercent}% Negative</div>
                     </div>
-                    <div class="progress-bar-container">
-                        <div class="progress-bar">
-                            <div class="progress-positive" style="width: ${positivePercent}%"></div>
-                            <div class="progress-negative" style="width: ${negativePercent}%"></div>
+                    <div class="cell-bottom">
+                        <div class="progress-bar-full">
+                            <div class="progress-segment progress-positive" style="width: ${positivePercent}%"></div>
+                            <div class="progress-segment progress-negative" style="width: ${negativePercent}%"></div>
                         </div>
                     </div>
                 `;
