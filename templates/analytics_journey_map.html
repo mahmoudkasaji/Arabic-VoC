@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    {% include 'components/head.html' %}
+    <title>خريطة رحلة العميل - منصة صوت العميل العربية</title>
+    
+    <style>
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+
+        /* Journey Map Header */
+        .journey-header {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .journey-title {
+            color: var(--primary-color);
+            font-weight: 700;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .journey-subtitle {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        /* Control Panel */
+        .control-panel {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .control-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .control-group label {
+            font-weight: 600;
+            color: var(--text-color);
+            margin-bottom: 0;
+        }
+
+        .btn-export {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-export:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        /* Journey Matrix */
+        .journey-matrix {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            overflow-x: auto;
+        }
+
+        .matrix-table {
+            width: 100%;
+            min-width: 1200px;
+            border-collapse: separate;
+            border-spacing: 8px;
+        }
+
+        .matrix-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: white;
+            font-weight: 700;
+            text-align: center;
+            padding: 1rem;
+            border-radius: 12px;
+            font-size: 0.95rem;
+        }
+
+        .segment-header {
+            background: linear-gradient(135deg, var(--secondary-color) 0%, var(--secondary-dark) 100%);
+            color: white;
+            font-weight: 700;
+            text-align: center;
+            padding: 1rem;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            min-width: 160px;
+        }
+
+        .matrix-cell {
+            background: white;
+            border: 2px solid #e3e8ef;
+            border-radius: 12px;
+            padding: 1rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            min-height: 120px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .matrix-cell:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            border-color: var(--primary-color);
+        }
+
+        .cell-sentiment {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .cell-effort {
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .cell-channel {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .cell-trend {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .cell-responses {
+            font-size: 0.8rem;
+            color: #666;
+            font-weight: 600;
+        }
+
+        /* Color coding for sentiment scores */
+        .sentiment-excellent { color: #28a745; }
+        .sentiment-good { color: #ffc107; }
+        .sentiment-attention { color: #fd7e14; }
+        .sentiment-critical { color: #dc3545; }
+
+        .cell-excellent { border-color: #28a745; background: linear-gradient(135deg, #d4edda 0%, #f8f9fa 100%); }
+        .cell-good { border-color: #ffc107; background: linear-gradient(135deg, #fff3cd 0%, #f8f9fa 100%); }
+        .cell-attention { border-color: #fd7e14; background: linear-gradient(135deg, #ffebd9 0%, #f8f9fa 100%); }
+        .cell-critical { border-color: #dc3545; background: linear-gradient(135deg, #f8d7da 0%, #f8f9fa 100%); }
+
+        /* Loading state */
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 200px;
+            font-size: 1.2rem;
+            color: var(--primary-color);
+        }
+
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--primary-color);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 2s linear infinite;
+            margin-left: 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Modal for drill-down */
+        .modal-content {
+            border-radius: 15px;
+            border: none;
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: white;
+            border-radius: 15px 15px 0 0;
+        }
+
+        .modal-title {
+            font-weight: 700;
+        }
+
+        .nav-tabs .nav-link {
+            border: none;
+            border-radius: 8px 8px 0 0;
+            margin-left: 0.25rem;
+            color: var(--text-color);
+            font-weight: 600;
+        }
+
+        .nav-tabs .nav-link.active {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .tab-content {
+            padding: 1.5rem;
+        }
+
+        /* Responsive design */
+        @media (max-width: 1200px) {
+            .matrix-table {
+                min-width: 1000px;
+            }
+            
+            .matrix-header, .segment-header {
+                font-size: 0.85rem;
+                padding: 0.75rem;
+            }
+            
+            .matrix-cell {
+                min-height: 100px;
+                padding: 0.75rem;
+            }
+            
+            .cell-sentiment {
+                font-size: 1.5rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .control-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .control-group {
+                justify-content: center;
+            }
+            
+            .journey-title {
+                font-size: 2rem;
+            }
+        }
+
+        /* Tooltip styles */
+        .tooltip-inner {
+            background: rgba(0,0,0,0.9);
+            color: white;
+            border-radius: 8px;
+            padding: 0.75rem;
+            font-size: 0.9rem;
+            max-width: 300px;
+            text-align: right;
+        }
+
+        .arabic-text {
+            font-family: 'Amiri', 'Scheherazade New', serif;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+
+<body>
+    {% include 'components/navigation.html' %}
+
+    <div class="container-fluid px-4 py-3">
+        <!-- Journey Map Header -->
+        <div class="journey-header">
+            <h1 class="journey-title">خريطة رحلة العميل</h1>
+            <p class="journey-subtitle">تحليل تفاعلي لتجربة العملاء عبر مراحل الرحلة المختلفة مع رؤى صوت العميل العربية</p>
+        </div>
+
+        <!-- Control Panel -->
+        <div class="control-panel">
+            <div class="control-row">
+                <div class="control-group">
+                    <label for="languageToggle">اللغة:</label>
+                    <select id="languageToggle" class="form-select form-select-sm">
+                        <option value="ar">العربية</option>
+                        <option value="en">English</option>
+                    </select>
+                </div>
+                
+                <div class="control-group">
+                    <label for="dateRange">الفترة الزمنية:</label>
+                    <select id="dateRange" class="form-select form-select-sm">
+                        <option value="30">آخر 30 يوم</option>
+                        <option value="7">آخر 7 أيام</option>
+                        <option value="90">آخر 3 أشهر</option>
+                        <option value="365">آخر سنة</option>
+                    </select>
+                </div>
+                
+                <div class="control-group">
+                    <label for="autoRefresh">التحديث التلقائي:</label>
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="autoRefresh" checked>
+                    </div>
+                </div>
+                
+                <div class="control-group">
+                    <button class="btn btn-export" onclick="exportJourneyMap()">
+                        <i class="fas fa-download me-2"></i>تصدير
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Journey Matrix -->
+        <div class="journey-matrix">
+            <div id="matrixLoading" class="loading">
+                <span>جاري تحميل بيانات خريطة الرحلة...</span>
+                <div class="loading-spinner"></div>
+            </div>
+            
+            <table id="journeyTable" class="matrix-table" style="display: none;">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th class="matrix-header">الوعي<br><small>Discovery & Awareness</small></th>
+                        <th class="matrix-header">التقييم<br><small>Evaluation & Trial</small></th>
+                        <th class="matrix-header">الشراء<br><small>Purchase & Signup</small></th>
+                        <th class="matrix-header">التأهيل<br><small>Onboarding & Setup</small></th>
+                        <th class="matrix-header">الاستخدام المنتظم<br><small>Regular Usage</small></th>
+                        <th class="matrix-header">الدعم<br><small>Support & Help</small></th>
+                        <th class="matrix-header">التوصية<br><small>Advocacy & Loyalty</small></th>
+                    </tr>
+                </thead>
+                <tbody id="matrixBody">
+                    <!-- Matrix cells will be populated by JavaScript -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Drill-down Modal -->
+    <div class="modal fade" id="drilldownModal" tabindex="-1" aria-labelledby="drilldownModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="drilldownModalLabel">تفاصيل المرحلة</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="إغلاق"></button>
+                </div>
+                <div class="modal-body">
+                    <ul class="nav nav-tabs" id="drilldownTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="channels-tab" data-bs-toggle="tab" data-bs-target="#channels" type="button" role="tab">توزيع القنوات</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="themes-tab" data-bs-toggle="tab" data-bs-target="#themes" type="button" role="tab">المواضيع الرئيسية</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="trends-tab" data-bs-toggle="tab" data-bs-target="#trends" type="button" role="tab">تحليل الاتجاهات</button>
+                        </li>
+                    </ul>
+                    <div class="tab-content" id="drilldownTabContent">
+                        <div class="tab-pane fade show active" id="channels" role="tabpanel">
+                            <canvas id="channelsChart" width="400" height="200"></canvas>
+                        </div>
+                        <div class="tab-pane fade" id="themes" role="tabpanel">
+                            <div id="themesContent" class="arabic-text"></div>
+                        </div>
+                        <div class="tab-pane fade" id="trends" role="tabpanel">
+                            <canvas id="trendsChart" width="400" height="200"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% include 'components/scripts.html' %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <script>
+        class JourneyMapManager {
+            constructor() {
+                this.journeyData = null;
+                this.currentSegment = null;
+                this.currentStage = null;
+                this.autoRefreshInterval = null;
+                
+                this.segmentLabels = {
+                    'self_service_champions': 'أبطال الخدمة الذاتية',
+                    'relationship_builders': 'بناة العلاقات',
+                    'digital_adopters': 'المتبنون الرقميون',
+                    'omnichannel_navigators': 'الملاحون متعددو القنوات',
+                    'validation_seekers': 'باحثو التأكيد'
+                };
+                
+                this.channelIcons = {
+                    'web': '🌐',
+                    'mobile': '📱',
+                    'phone': '📞',
+                    'whatsapp': '💬',
+                    'email': '📧',
+                    'social': '👥'
+                };
+                
+                this.channelLabels = {
+                    'web': 'الموقع الإلكتروني',
+                    'mobile': 'التطبيق المحمول',
+                    'phone': 'الهاتف',
+                    'whatsapp': 'واتساب',
+                    'email': 'البريد الإلكتروني',
+                    'social': 'وسائل التواصل'
+                };
+            }
+            
+            async init() {
+                await this.loadJourneyData();
+                this.renderMatrix();
+                this.setupEventListeners();
+                this.startAutoRefresh();
+            }
+            
+            async loadJourneyData() {
+                try {
+                    const response = await fetch('/api/journey-map/data');
+                    const result = await response.json();
+                    
+                    if (result.status === 'success') {
+                        this.journeyData = result.journey_data;
+                        document.getElementById('matrixLoading').style.display = 'none';
+                        document.getElementById('journeyTable').style.display = 'table';
+                    } else {
+                        throw new Error(result.error || 'فشل في تحميل البيانات');
+                    }
+                } catch (error) {
+                    console.error('Error loading journey data:', error);
+                    this.showError('حدث خطأ في تحميل بيانات خريطة الرحلة');
+                }
+            }
+            
+            renderMatrix() {
+                const tbody = document.getElementById('matrixBody');
+                tbody.innerHTML = '';
+                
+                Object.keys(this.segmentLabels).forEach(segment => {
+                    const row = document.createElement('tr');
+                    
+                    // Segment header
+                    const segmentCell = document.createElement('td');
+                    segmentCell.className = 'segment-header';
+                    segmentCell.textContent = this.segmentLabels[segment];
+                    row.appendChild(segmentCell);
+                    
+                    // Journey stage cells
+                    ['awareness', 'evaluation', 'purchase', 'onboarding', 'regular_use', 'support', 'advocacy'].forEach(stage => {
+                        const cell = document.createElement('td');
+                        cell.className = 'matrix-cell';
+                        
+                        if (this.journeyData[segment] && this.journeyData[segment][stage]) {
+                            const data = this.journeyData[segment][stage];
+                            cell.innerHTML = this.createCellContent(data);
+                            cell.className += ' ' + this.getSentimentClass(data.sentiment);
+                            
+                            // Add click event
+                            cell.addEventListener('click', () => this.openDrilldown(segment, stage, data));
+                            
+                            // Add tooltip
+                            cell.setAttribute('data-bs-toggle', 'tooltip');
+                            cell.setAttribute('title', this.createTooltipContent(data));
+                        }
+                        
+                        row.appendChild(cell);
+                    });
+                    
+                    tbody.appendChild(row);
+                });
+                
+                // Initialize Bootstrap tooltips
+                const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+                tooltipTriggerList.map(function (tooltipTriggerEl) {
+                    return new bootstrap.Tooltip(tooltipTriggerEl);
+                });
+            }
+            
+            createCellContent(data) {
+                const trendIcon = data.trend === 'up' ? '↗️' : data.trend === 'down' ? '↘️' : '➡️';
+                const effortStars = '⭐'.repeat(data.effort);
+                
+                return `
+                    <div class="cell-sentiment sentiment-${this.getSentimentCategory(data.sentiment)}">${data.sentiment}</div>
+                    <div class="cell-effort">${effortStars}</div>
+                    <div class="cell-channel">${this.channelIcons[data.primaryChannel] || '📊'}</div>
+                    <div class="cell-trend">${trendIcon}</div>
+                    <div class="cell-responses">${data.responseCount} استجابة</div>
+                `;
+            }
+            
+            createTooltipContent(data) {
+                return `
+                    النقاط: ${data.sentiment}/10
+                    الجهد: ${data.effort}/5 نجوم
+                    القناة الرئيسية: ${this.channelLabels[data.primaryChannel] || data.primaryChannel}
+                    عدد الاستجابات: ${data.responseCount}
+                    الثقة: ${(data.confidence * 100).toFixed(1)}%
+                    المواضيع الرئيسية: ${data.themes.slice(0, 3).join('، ')}
+                `;
+            }
+            
+            getSentimentClass(sentiment) {
+                if (sentiment >= 8) return 'cell-excellent';
+                if (sentiment >= 6) return 'cell-good';
+                if (sentiment >= 4) return 'cell-attention';
+                return 'cell-critical';
+            }
+            
+            getSentimentCategory(sentiment) {
+                if (sentiment >= 8) return 'excellent';
+                if (sentiment >= 6) return 'good';
+                if (sentiment >= 4) return 'attention';
+                return 'critical';
+            }
+            
+            openDrilldown(segment, stage, data) {
+                this.currentSegment = segment;
+                this.currentStage = stage;
+                
+                document.getElementById('drilldownModalLabel').textContent = 
+                    `${this.segmentLabels[segment]} - ${this.getStageLabel(stage)}`;
+                
+                // Show modal
+                const modal = new bootstrap.Modal(document.getElementById('drilldownModal'));
+                modal.show();
+                
+                // Render charts and content
+                setTimeout(() => {
+                    this.renderChannelsChart(data);
+                    this.renderThemesContent(data);
+                    this.renderTrendsChart(data);
+                }, 300);
+            }
+            
+            renderChannelsChart(data) {
+                const ctx = document.getElementById('channelsChart').getContext('2d');
+                
+                new Chart(ctx, {
+                    type: 'horizontalBar',
+                    data: {
+                        labels: Object.keys(data.channels).map(ch => this.channelLabels[ch]),
+                        datasets: [{
+                            label: 'عدد الاستجابات',
+                            data: Object.values(data.channels),
+                            backgroundColor: [
+                                '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'
+                            ]
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            x: {
+                                beginAtZero: true
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        }
+                    }
+                });
+            }
+            
+            renderThemesContent(data) {
+                const container = document.getElementById('themesContent');
+                let html = '<h5>المواضيع الرئيسية:</h5><ul>';
+                
+                data.themes.forEach((theme, index) => {
+                    html += `<li class="mb-2"><strong>${theme}</strong></li>`;
+                });
+                
+                html += '</ul>';
+                html += `<div class="mt-3"><strong>مستوى الثقة:</strong> ${(data.confidence * 100).toFixed(1)}%</div>`;
+                
+                container.innerHTML = html;
+            }
+            
+            renderTrendsChart(data) {
+                const ctx = document.getElementById('trendsChart').getContext('2d');
+                
+                // Generate sample trend data
+                const labels = [];
+                const values = [];
+                for (let i = 29; i >= 0; i--) {
+                    const date = new Date();
+                    date.setDate(date.getDate() - i);
+                    labels.push(date.toLocaleDateString('ar-SA'));
+                    values.push(data.sentiment + (Math.random() - 0.5) * 2);
+                }
+                
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'النقاط',
+                            data: values,
+                            borderColor: '#36A2EB',
+                            backgroundColor: 'rgba(54, 162, 235, 0.1)',
+                            fill: true,
+                            tension: 0.4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: 10
+                            }
+                        }
+                    }
+                });
+            }
+            
+            getStageLabel(stage) {
+                const labels = {
+                    'awareness': 'الوعي',
+                    'evaluation': 'التقييم',
+                    'purchase': 'الشراء',
+                    'onboarding': 'التأهيل',
+                    'regular_use': 'الاستخدام المنتظم',
+                    'support': 'الدعم',
+                    'advocacy': 'التوصية'
+                };
+                return labels[stage] || stage;
+            }
+            
+            setupEventListeners() {
+                // Auto-refresh toggle
+                document.getElementById('autoRefresh').addEventListener('change', (e) => {
+                    if (e.target.checked) {
+                        this.startAutoRefresh();
+                    } else {
+                        this.stopAutoRefresh();
+                    }
+                });
+                
+                // Date range change
+                document.getElementById('dateRange').addEventListener('change', () => {
+                    this.loadJourneyData();
+                });
+            }
+            
+            startAutoRefresh() {
+                this.stopAutoRefresh();
+                this.autoRefreshInterval = setInterval(() => {
+                    this.loadJourneyData();
+                }, 30000); // Refresh every 30 seconds
+            }
+            
+            stopAutoRefresh() {
+                if (this.autoRefreshInterval) {
+                    clearInterval(this.autoRefreshInterval);
+                    this.autoRefreshInterval = null;
+                }
+            }
+            
+            showError(message) {
+                document.getElementById('matrixLoading').innerHTML = 
+                    `<div class="alert alert-danger">${message}</div>`;
+            }
+        }
+        
+        // Export function
+        function exportJourneyMap() {
+            // This would implement PDF/Excel export functionality
+            alert('سيتم تنفيذ وظيفة التصدير قريباً');
+        }
+        
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            const journeyMap = new JourneyMapManager();
+            journeyMap.init();
+        });
+    </script>
+</body>
+</html>
