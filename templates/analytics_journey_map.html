@@ -86,9 +86,20 @@
 
         .matrix-table {
             width: 100%;
-            min-width: 1200px;
+            min-width: 1400px;
             border-collapse: separate;
             border-spacing: 8px;
+            table-layout: fixed;
+        }
+
+        .matrix-table td, .matrix-table th {
+            width: 140px;
+            vertical-align: middle;
+        }
+
+        .matrix-table th:first-child,
+        .matrix-table td:first-child {
+            width: 180px;
         }
 
         .matrix-header {
@@ -121,10 +132,17 @@
             transition: all 0.3s ease;
             cursor: pointer;
             position: relative;
-            min-height: 120px;
+            height: 140px;
+            display: table-cell;
+            vertical-align: middle;
+        }
+
+        .matrix-cell-content {
             display: flex;
             flex-direction: column;
             justify-content: center;
+            align-items: center;
+            height: 100%;
         }
 
         .matrix-cell:hover {
@@ -504,11 +522,13 @@
                 const effortStars = '⭐'.repeat(data.effort);
                 
                 return `
-                    <div class="cell-sentiment sentiment-${this.getSentimentCategory(data.sentiment)}">${data.sentiment}</div>
-                    <div class="cell-effort">${effortStars}</div>
-                    <div class="cell-channel">${this.channelIcons[data.primaryChannel] || '📊'}</div>
-                    <div class="cell-trend">${trendIcon}</div>
-                    <div class="cell-responses">${data.responseCount} استجابة</div>
+                    <div class="matrix-cell-content">
+                        <div class="cell-sentiment sentiment-${this.getSentimentCategory(data.sentiment)}">${data.sentiment}</div>
+                        <div class="cell-effort">${effortStars}</div>
+                        <div class="cell-channel">${this.channelIcons[data.primaryChannel] || '📊'}</div>
+                        <div class="cell-trend">${trendIcon}</div>
+                        <div class="cell-responses">${data.responseCount} استجابة</div>
+                    </div>
                 `;
             }
             
@@ -560,7 +580,7 @@
                 const ctx = document.getElementById('channelsChart').getContext('2d');
                 
                 new Chart(ctx, {
-                    type: 'horizontalBar',
+                    type: 'bar',
                     data: {
                         labels: Object.keys(data.channels).map(ch => this.channelLabels[ch]),
                         datasets: [{
@@ -572,6 +592,7 @@
                         }]
                     },
                     options: {
+                        indexAxis: 'y',
                         responsive: true,
                         scales: {
                             x: {
