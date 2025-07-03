@@ -175,61 +175,81 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
 
-        /* NPS Score styling */
+        /* NPS Container */
+        .nps-container {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        
         .nps-score {
-            font-size: 28px;
+            font-size: 36px;
             font-weight: bold;
-            color: #333;
-            margin-bottom: 8px;
+            color: #2c3e50;
             line-height: 1;
         }
-
-        /* Sentiment bars container */
-        .sentiment-bars {
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-        }
-
-        .sentiment-bar {
-            height: 16px;
-            border-radius: 2px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 6px;
-            font-size: 10px;
-            color: white;
-            font-weight: bold;
-        }
-
-        .sentiment-bar-positive {
-            background-color: #4CAF50;
-        }
-
-        .sentiment-bar-neutral {
-            background-color: #FFC107;
-        }
-
-        .sentiment-bar-negative {
-            background-color: #F44336;
-        }
-
-        .bar-label {
-            font-size: 10px;
-            color: white;
-        }
-
-        .bar-percentage {
+        
+        .nps-label {
             font-size: 11px;
-            font-weight: bold;
-            color: white;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 2px;
         }
-
-        .bar-count {
+        
+        /* Sentiment Summary */
+        .sentiment-summary {
+            margin: 8px 0;
+        }
+        
+        .sentiment-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 4px;
+            font-size: 11px;
+        }
+        
+        .sentiment-label {
+            font-weight: 500;
+            color: #444;
+            min-width: 55px;
+        }
+        
+        .sentiment-percent {
+            font-weight: bold;
+            color: #333;
+            min-width: 35px;
+            text-align: right;
+        }
+        
+        .sentiment-count {
+            color: #666;
             font-size: 10px;
-            color: #999;
-            margin-top: 1px;
+            min-width: 75px;
+            text-align: right;
+        }
+        
+        /* Progress Bar */
+        .progress-bar-container {
+            margin-top: 8px;
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+            display: flex;
+        }
+        
+        .progress-positive {
+            background: #28a745;
+            transition: width 0.3s ease;
+        }
+        
+        .progress-negative {
+            background: #dc3545;
+            transition: width 0.3s ease;
         }
 
         /* Cell background colors based on NPS */
@@ -571,29 +591,30 @@
             createAirlineCellContent(data) {
                 const total = data.positive + data.neutral + data.negative;
                 const positivePercent = Math.round((data.positive / total) * 100);
-                const neutralPercent = Math.round((data.neutral / total) * 100);
                 const negativePercent = Math.round((data.negative / total) * 100);
                 
                 return `
-                    <div class="nps-score">${data.nps}</div>
-                    <div class="sentiment-bars">
-                        <div class="sentiment-bar sentiment-bar-positive">
-                            <span class="bar-label">Positive</span>
-                            <span class="bar-percentage">${positivePercent}%</span>
+                    <div class="nps-container">
+                        <div class="nps-score">${data.nps}</div>
+                        <div class="nps-label">NPS</div>
+                    </div>
+                    <div class="sentiment-summary">
+                        <div class="sentiment-row">
+                            <span class="sentiment-label">Positive</span>
+                            <span class="sentiment-percent">${positivePercent}%</span>
+                            <span class="sentiment-count">${data.positive} respondents</span>
                         </div>
-                        <div style="font-size: 10px; color: #999; margin-top: 1px;">${data.positive}</div>
-                        
-                        <div class="sentiment-bar sentiment-bar-neutral">
-                            <span class="bar-label">Neutral</span>
-                            <span class="bar-percentage">${neutralPercent}%</span>
+                        <div class="sentiment-row">
+                            <span class="sentiment-label">Negative</span>
+                            <span class="sentiment-percent">${negativePercent}%</span>
+                            <span class="sentiment-count">${data.negative} respondents</span>
                         </div>
-                        <div style="font-size: 10px; color: #999; margin-top: 1px;">${data.neutral}</div>
-                        
-                        <div class="sentiment-bar sentiment-bar-negative">
-                            <span class="bar-label">Negative</span>
-                            <span class="bar-percentage">${negativePercent}%</span>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar">
+                            <div class="progress-positive" style="width: ${positivePercent}%"></div>
+                            <div class="progress-negative" style="width: ${negativePercent}%"></div>
                         </div>
-                        <div style="font-size: 10px; color: #999; margin-top: 1px;">${data.negative}</div>
                     </div>
                 `;
             }
