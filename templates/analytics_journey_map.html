@@ -128,8 +128,8 @@
         }
 
         .matrix-table td, .matrix-table th {
-            width: 140px;
-            height: 120px;
+            width: 160px;
+            height: 160px;
             vertical-align: top;
             border: none;
         }
@@ -167,7 +167,7 @@
             transition: all 0.3s ease;
             cursor: pointer;
             position: relative;
-            height: 140px;
+            height: 160px;
             border: 1px solid #e0e0e0;
             vertical-align: top;
         }
@@ -176,65 +176,88 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
 
-        /* Cell Layout Structure */
-        .cell-top {
+        /* NPS Header */
+        .nps-header {
             text-align: center;
-            margin-bottom: 12px;
+            margin-bottom: 15px;
         }
         
-        .cell-middle {
-            margin-bottom: 12px;
-        }
-        
-        .cell-bottom {
-            margin-top: auto;
-        }
-        
-        /* NPS Number and Label */
         .nps-number {
-            font-size: 32px;
+            font-size: 36px;
             font-weight: bold;
             color: #2c3e50;
             line-height: 1;
         }
         
-        .nps-label {
-            font-size: 11px;
-            color: #666;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-top: 2px;
-        }
-        
-        /* Sentiment Lines */
-        .sentiment-line {
-            font-size: 11px;
-            color: #555;
-            line-height: 1.3;
-            text-align: center;
-        }
-        
-        /* Progress Bar */
-        .progress-bar-full {
-            height: 8px;
-            background: #e9ecef;
-            border-radius: 4px;
-            overflow: hidden;
+        /* Sentiment Container */
+        .sentiment-container {
             display: flex;
-            width: 100%;
+            flex-direction: column;
+            gap: 8px;
         }
         
-        .progress-segment {
+        .sentiment-section {
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 6px;
+            padding: 8px;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        .sentiment-header {
+            font-size: 12px;
+            font-weight: 600;
+            color: #444;
+            margin-bottom: 4px;
+        }
+        
+        .sentiment-stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+        
+        .sentiment-percentage {
+            font-size: 18px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .sentiment-records {
+            font-size: 10px;
+            color: #666;
+        }
+        
+        /* Individual Progress Bars */
+        .progress-bar-individual {
+            height: 6px;
+            background: #e9ecef;
+            border-radius: 3px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .progress-fill {
             height: 100%;
+            border-radius: 3px;
             transition: width 0.3s ease;
         }
         
-        .progress-positive {
+        .positive-bar .progress-fill {
             background: #28a745;
         }
         
-        .progress-negative {
+        .negative-bar .progress-fill {
             background: #dc3545;
+        }
+        
+        /* Section specific styling */
+        .positive-section {
+            border-left: 3px solid #28a745;
+        }
+        
+        .negative-section {
+            border-left: 3px solid #dc3545;
         }
 
         /* Cell background colors based on NPS */
@@ -579,18 +602,31 @@
                 const negativePercent = Math.round((data.negative / total) * 100);
                 
                 return `
-                    <div class="cell-top">
+                    <div class="nps-header">
                         <div class="nps-number">${data.nps}</div>
-                        <div class="nps-label">NPS</div>
                     </div>
-                    <div class="cell-middle">
-                        <div class="sentiment-line">respondents ${data.positive} | ${positivePercent}% Positive</div>
-                        <div class="sentiment-line">respondents ${data.negative} | ${negativePercent}% Negative</div>
-                    </div>
-                    <div class="cell-bottom">
-                        <div class="progress-bar-full">
-                            <div class="progress-segment progress-positive" style="width: ${positivePercent}%"></div>
-                            <div class="progress-segment progress-negative" style="width: ${negativePercent}%"></div>
+                    
+                    <div class="sentiment-container">
+                        <div class="sentiment-section positive-section">
+                            <div class="sentiment-header">Positive</div>
+                            <div class="sentiment-stats">
+                                <span class="sentiment-percentage">${positivePercent}%</span>
+                                <span class="sentiment-records">${data.positive} records</span>
+                            </div>
+                            <div class="progress-bar-individual positive-bar">
+                                <div class="progress-fill" style="width: ${positivePercent}%"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="sentiment-section negative-section">
+                            <div class="sentiment-header">Negative</div>
+                            <div class="sentiment-stats">
+                                <span class="sentiment-percentage">${negativePercent}%</span>
+                                <span class="sentiment-records">${data.negative} records</span>
+                            </div>
+                            <div class="progress-bar-individual negative-bar">
+                                <div class="progress-fill" style="width: ${negativePercent}%"></div>
+                            </div>
                         </div>
                     </div>
                 `;
