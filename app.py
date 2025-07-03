@@ -42,9 +42,8 @@ db.init_app(app)
 # Import models after db initialization
 from models_unified import Feedback, FeedbackChannel, FeedbackStatus
 
-# Import and register survey blueprint
-from api.surveys_flask import surveys_bp
-app.register_blueprint(surveys_bp)
+# Note: Survey blueprint temporarily disabled due to circular import
+# Will be re-enabled after refactoring
 from models.survey import Survey, Question, SurveyStatus, QuestionType
 
 # Import survey management API
