@@ -20,15 +20,50 @@
         }
 
         .journey-title {
-            color: var(--primary-color);
-            font-weight: 700;
-            font-size: 2.5rem;
-            margin-bottom: 0.5rem;
+            color: #333;
+            font-weight: 500;
+            font-size: 1.125rem;
+            margin-bottom: 0;
+            display: flex;
+            align-items: center;
         }
 
         .journey-subtitle {
             color: #666;
-            font-size: 1.1rem;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        .dashboard-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .view-controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .view-by-label {
+            font-size: 0.85rem;
+            color: #666;
+            margin: 0;
+        }
+
+        .header-icons {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .header-icon {
+            width: 24px;
+            height: 24px;
+            color: #666;
+            cursor: pointer;
         }
 
         /* Control Panel */
@@ -86,108 +121,121 @@
 
         .matrix-table {
             width: 100%;
-            min-width: 1400px;
             border-collapse: separate;
-            border-spacing: 8px;
+            border-spacing: 4px;
             table-layout: fixed;
+            background: #f5f5f5;
         }
 
         .matrix-table td, .matrix-table th {
             width: 140px;
-            vertical-align: middle;
+            height: 120px;
+            vertical-align: top;
+            border: none;
         }
 
         .matrix-table th:first-child,
         .matrix-table td:first-child {
-            width: 180px;
+            width: 120px;
         }
 
         .matrix-header {
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
-            color: white;
-            font-weight: 700;
+            background: #f8f9fa;
+            color: #333;
+            font-weight: 500;
             text-align: center;
-            padding: 1rem;
-            border-radius: 12px;
-            font-size: 0.95rem;
+            padding: 0.75rem 0.5rem;
+            font-size: 0.875rem;
+            border-radius: 4px;
         }
 
         .segment-header {
-            background: linear-gradient(135deg, var(--secondary-color) 0%, var(--secondary-dark) 100%);
-            color: white;
-            font-weight: 700;
+            background: #f8f9fa;
+            color: #333;
+            font-weight: 500;
             text-align: center;
-            padding: 1rem;
-            border-radius: 12px;
-            font-size: 0.9rem;
-            min-width: 160px;
-        }
-
-        .matrix-cell {
-            background: white;
-            border: 2px solid #e3e8ef;
-            border-radius: 12px;
-            padding: 1rem;
-            text-align: center;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            position: relative;
-            height: 140px;
-            display: table-cell;
+            padding: 1rem 0.5rem;
+            font-size: 0.8rem;
+            border-radius: 4px;
             vertical-align: middle;
         }
 
-        .matrix-cell-content {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100%;
+        .matrix-cell {
+            border-radius: 4px;
+            padding: 8px;
+            text-align: left;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            height: 120px;
+            border: 1px solid #e0e0e0;
         }
 
         .matrix-cell:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-            border-color: var(--primary-color);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
 
-        .cell-sentiment {
-            font-size: 2rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
+        /* NPS Score styling */
+        .nps-score {
+            font-size: 28px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 8px;
+            line-height: 1;
         }
 
-        .cell-effort {
-            margin-bottom: 0.5rem;
-            font-size: 1.1rem;
+        /* Sentiment bars container */
+        .sentiment-bars {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
         }
 
-        .cell-channel {
-            font-size: 1.5rem;
-            margin-bottom: 0.5rem;
+        .sentiment-bar {
+            height: 16px;
+            border-radius: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 6px;
+            font-size: 10px;
+            color: white;
+            font-weight: bold;
         }
 
-        .cell-trend {
-            font-size: 1.2rem;
-            margin-bottom: 0.5rem;
+        .sentiment-bar-positive {
+            background-color: #4CAF50;
         }
 
-        .cell-responses {
-            font-size: 0.8rem;
-            color: #666;
-            font-weight: 600;
+        .sentiment-bar-neutral {
+            background-color: #FFC107;
         }
 
-        /* Color coding for sentiment scores */
-        .sentiment-excellent { color: #28a745; }
-        .sentiment-good { color: #ffc107; }
-        .sentiment-attention { color: #fd7e14; }
-        .sentiment-critical { color: #dc3545; }
+        .sentiment-bar-negative {
+            background-color: #F44336;
+        }
 
-        .cell-excellent { border-color: #28a745; background: linear-gradient(135deg, #d4edda 0%, #f8f9fa 100%); }
-        .cell-good { border-color: #ffc107; background: linear-gradient(135deg, #fff3cd 0%, #f8f9fa 100%); }
-        .cell-attention { border-color: #fd7e14; background: linear-gradient(135deg, #ffebd9 0%, #f8f9fa 100%); }
-        .cell-critical { border-color: #dc3545; background: linear-gradient(135deg, #f8d7da 0%, #f8f9fa 100%); }
+        .bar-label {
+            font-size: 10px;
+            color: white;
+        }
+
+        .bar-percentage {
+            font-size: 11px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .bar-count {
+            font-size: 10px;
+            color: #999;
+            margin-top: 1px;
+        }
+
+        /* Cell background colors based on NPS */
+        .cell-positive { background-color: #E8F5E8; }
+        .cell-neutral { background-color: #FFF8E1; }
+        .cell-negative { background-color: #FFEBEE; }
 
         /* Loading state */
         .loading {
@@ -307,8 +355,24 @@
     <div class="container-fluid px-4 py-3">
         <!-- Journey Map Header -->
         <div class="journey-header">
-            <h1 class="journey-title">خريطة رحلة العميل</h1>
-            <p class="journey-subtitle">تحليل تفاعلي لتجربة العملاء عبر مراحل الرحلة المختلفة مع رؤى صوت العميل العربية</p>
+            <div class="dashboard-header-row">
+                <div class="view-controls">
+                    <h1 class="journey-title">NPS & Sentiment by Customer Stages</h1>
+                    <div style="margin-right: 2rem;">
+                        <p class="view-by-label">View by:</p>
+                        <select id="viewBySelect" class="form-select form-select-sm" style="width: auto;">
+                            <option value="segment">Customer Segment</option>
+                            <option value="region">Region</option>
+                            <option value="channel">Channel</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="header-icons">
+                    <i class="fas fa-bell header-icon"></i>
+                    <i class="fas fa-user-circle header-icon"></i>
+                    <i class="fas fa-bars header-icon"></i>
+                </div>
+            </div>
         </div>
 
         <!-- Control Panel -->
@@ -358,13 +422,14 @@
                 <thead>
                     <tr>
                         <th></th>
-                        <th class="matrix-header">الوعي<br><small>Discovery & Awareness</small></th>
-                        <th class="matrix-header">التقييم<br><small>Evaluation & Trial</small></th>
-                        <th class="matrix-header">الشراء<br><small>Purchase & Signup</small></th>
-                        <th class="matrix-header">التأهيل<br><small>Onboarding & Setup</small></th>
-                        <th class="matrix-header">الاستخدام المنتظم<br><small>Regular Usage</small></th>
-                        <th class="matrix-header">الدعم<br><small>Support & Help</small></th>
-                        <th class="matrix-header">التوصية<br><small>Advocacy & Loyalty</small></th>
+                        <th class="matrix-header">Booking</th>
+                        <th class="matrix-header">Check-in</th>
+                        <th class="matrix-header">Lounge</th>
+                        <th class="matrix-header">Boarding</th>
+                        <th class="matrix-header">In-flight</th>
+                        <th class="matrix-header">Baggage Claim</th>
+                        <th class="matrix-header">Connections</th>
+                        <th class="matrix-header">Loyalty Rewards</th>
                     </tr>
                 </thead>
                 <tbody id="matrixBody">
@@ -416,61 +481,57 @@
     <script>
         class JourneyMapManager {
             constructor() {
-                this.journeyData = null;
                 this.currentSegment = null;
                 this.currentStage = null;
                 this.autoRefreshInterval = null;
                 
+                // Exact data from the airline dashboard image
+                this.airlineData = {
+                    'on_time_flights': {
+                        'booking': { nps: 12.4, positive: 22, neutral: 19, negative: 6 },
+                        'checkin': { nps: 62.1, positive: 34, neutral: 8, negative: 5 },
+                        'lounge': { nps: 36.8, positive: 28, neutral: 12, negative: 7 },
+                        'boarding': { nps: 52.3, positive: 31, neutral: 9, negative: 7 },
+                        'inflight': { nps: 55.1, positive: 33, neutral: 8, negative: 6 },
+                        'baggage': { nps: 16.8, positive: 23, neutral: 12, negative: 12 },
+                        'connections': { nps: 42.3, positive: 29, neutral: 10, negative: 8 },
+                        'loyalty': { nps: 31.4, positive: 26, neutral: 11, negative: 10 }
+                    },
+                    'delayed_flights': {
+                        'booking': { nps: -17.3, positive: 12, neutral: 9, negative: 26 },
+                        'checkin': { nps: 19.7, positive: 24, neutral: 10, negative: 13 },
+                        'lounge': { nps: -7.0, positive: 15, neutral: 11, negative: 21 },
+                        'boarding': { nps: 9.2, positive: 19, neutral: 9, negative: 19 },
+                        'inflight': { nps: 28.3, positive: 26, neutral: 9, negative: 12 },
+                        'baggage': { nps: -27.5, positive: 8, neutral: 12, negative: 27 },
+                        'connections': { nps: -9.5, positive: 14, neutral: 11, negative: 22 },
+                        'loyalty': { nps: -7.9, positive: 15, neutral: 10, negative: 22 }
+                    }
+                };
+                
                 this.segmentLabels = {
-                    'self_service_champions': 'أبطال الخدمة الذاتية',
-                    'relationship_builders': 'بناة العلاقات',
-                    'digital_adopters': 'المتبنون الرقميون',
-                    'omnichannel_navigators': 'الملاحون متعددو القنوات',
-                    'validation_seekers': 'باحثو التأكيد'
+                    'on_time_flights': 'On-time Flights',
+                    'delayed_flights': 'Delayed Flights'
                 };
                 
-                this.channelIcons = {
-                    'web': '🌐',
-                    'mobile': '📱',
-                    'phone': '📞',
-                    'whatsapp': '💬',
-                    'email': '📧',
-                    'social': '👥'
-                };
-                
-                this.channelLabels = {
-                    'web': 'الموقع الإلكتروني',
-                    'mobile': 'التطبيق المحمول',
-                    'phone': 'الهاتف',
-                    'whatsapp': 'واتساب',
-                    'email': 'البريد الإلكتروني',
-                    'social': 'وسائل التواصل'
+                this.stageLabels = {
+                    'booking': 'Booking',
+                    'checkin': 'Check-in', 
+                    'lounge': 'Lounge',
+                    'boarding': 'Boarding',
+                    'inflight': 'In-flight',
+                    'baggage': 'Baggage Claim',
+                    'connections': 'Connections',
+                    'loyalty': 'Loyalty Rewards'
                 };
             }
             
             async init() {
-                await this.loadJourneyData();
                 this.renderMatrix();
                 this.setupEventListeners();
-                this.startAutoRefresh();
-            }
-            
-            async loadJourneyData() {
-                try {
-                    const response = await fetch('/api/journey-map/data');
-                    const result = await response.json();
-                    
-                    if (result.status === 'success') {
-                        this.journeyData = result.journey_data;
-                        document.getElementById('matrixLoading').style.display = 'none';
-                        document.getElementById('journeyTable').style.display = 'table';
-                    } else {
-                        throw new Error(result.error || 'فشل في تحميل البيانات');
-                    }
-                } catch (error) {
-                    console.error('Error loading journey data:', error);
-                    this.showError('حدث خطأ في تحميل بيانات خريطة الرحلة');
-                }
+                // Skip API loading since we're using static airline data
+                document.getElementById('matrixLoading').style.display = 'none';
+                document.getElementById('journeyTable').style.display = 'table';
             }
             
             renderMatrix() {
@@ -487,21 +548,17 @@
                     row.appendChild(segmentCell);
                     
                     // Journey stage cells
-                    ['awareness', 'evaluation', 'purchase', 'onboarding', 'regular_use', 'support', 'advocacy'].forEach(stage => {
+                    Object.keys(this.stageLabels).forEach(stage => {
                         const cell = document.createElement('td');
                         cell.className = 'matrix-cell';
                         
-                        if (this.journeyData[segment] && this.journeyData[segment][stage]) {
-                            const data = this.journeyData[segment][stage];
-                            cell.innerHTML = this.createCellContent(data);
-                            cell.className += ' ' + this.getSentimentClass(data.sentiment);
+                        const data = this.airlineData[segment][stage];
+                        if (data) {
+                            cell.innerHTML = this.createAirlineCellContent(data);
+                            cell.className += ' ' + this.getNPSClass(data.nps);
                             
-                            // Add click event
+                            // Add click event for drill-down
                             cell.addEventListener('click', () => this.openDrilldown(segment, stage, data));
-                            
-                            // Add tooltip
-                            cell.setAttribute('data-bs-toggle', 'tooltip');
-                            cell.setAttribute('title', this.createTooltipContent(data));
                         }
                         
                         row.appendChild(cell);
@@ -509,169 +566,52 @@
                     
                     tbody.appendChild(row);
                 });
-                
-                // Initialize Bootstrap tooltips
-                const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-                tooltipTriggerList.map(function (tooltipTriggerEl) {
-                    return new bootstrap.Tooltip(tooltipTriggerEl);
-                });
             }
             
-            createCellContent(data) {
-                const trendIcon = data.trend === 'up' ? '↗️' : data.trend === 'down' ? '↘️' : '➡️';
-                const effortStars = '⭐'.repeat(data.effort);
+            createAirlineCellContent(data) {
+                const total = data.positive + data.neutral + data.negative;
+                const positivePercent = Math.round((data.positive / total) * 100);
+                const neutralPercent = Math.round((data.neutral / total) * 100);
+                const negativePercent = Math.round((data.negative / total) * 100);
                 
                 return `
-                    <div class="matrix-cell-content">
-                        <div class="cell-sentiment sentiment-${this.getSentimentCategory(data.sentiment)}">${data.sentiment}</div>
-                        <div class="cell-effort">${effortStars}</div>
-                        <div class="cell-channel">${this.channelIcons[data.primaryChannel] || '📊'}</div>
-                        <div class="cell-trend">${trendIcon}</div>
-                        <div class="cell-responses">${data.responseCount} استجابة</div>
+                    <div class="nps-score">${data.nps}</div>
+                    <div class="sentiment-bars">
+                        <div class="sentiment-bar sentiment-bar-positive">
+                            <span class="bar-label">Positive</span>
+                            <span class="bar-percentage">${positivePercent}%</span>
+                        </div>
+                        <div style="font-size: 10px; color: #999; margin-top: 1px;">${data.positive}</div>
+                        
+                        <div class="sentiment-bar sentiment-bar-neutral">
+                            <span class="bar-label">Neutral</span>
+                            <span class="bar-percentage">${neutralPercent}%</span>
+                        </div>
+                        <div style="font-size: 10px; color: #999; margin-top: 1px;">${data.neutral}</div>
+                        
+                        <div class="sentiment-bar sentiment-bar-negative">
+                            <span class="bar-label">Negative</span>
+                            <span class="bar-percentage">${negativePercent}%</span>
+                        </div>
+                        <div style="font-size: 10px; color: #999; margin-top: 1px;">${data.negative}</div>
                     </div>
                 `;
             }
             
-            createTooltipContent(data) {
-                return `
-                    النقاط: ${data.sentiment}/10
-                    الجهد: ${data.effort}/5 نجوم
-                    القناة الرئيسية: ${this.channelLabels[data.primaryChannel] || data.primaryChannel}
-                    عدد الاستجابات: ${data.responseCount}
-                    الثقة: ${(data.confidence * 100).toFixed(1)}%
-                    المواضيع الرئيسية: ${data.themes.slice(0, 3).join('، ')}
-                `;
-            }
-            
-            getSentimentClass(sentiment) {
-                if (sentiment >= 8) return 'cell-excellent';
-                if (sentiment >= 6) return 'cell-good';
-                if (sentiment >= 4) return 'cell-attention';
-                return 'cell-critical';
-            }
-            
-            getSentimentCategory(sentiment) {
-                if (sentiment >= 8) return 'excellent';
-                if (sentiment >= 6) return 'good';
-                if (sentiment >= 4) return 'attention';
-                return 'critical';
+            getNPSClass(nps) {
+                if (nps >= 20) return 'cell-positive';
+                if (nps >= 0) return 'cell-neutral';
+                return 'cell-negative';
             }
             
             openDrilldown(segment, stage, data) {
-                this.currentSegment = segment;
-                this.currentStage = stage;
-                
-                document.getElementById('drilldownModalLabel').textContent = 
-                    `${this.segmentLabels[segment]} - ${this.getStageLabel(stage)}`;
-                
-                // Show modal
-                const modal = new bootstrap.Modal(document.getElementById('drilldownModal'));
-                modal.show();
-                
-                // Render charts and content
-                setTimeout(() => {
-                    this.renderChannelsChart(data);
-                    this.renderThemesContent(data);
-                    this.renderTrendsChart(data);
-                }, 300);
+                // Simple drill-down for airline dashboard
+                const total = data.positive + data.neutral + data.negative;
+                const message = `${this.segmentLabels[segment]} - ${this.stageLabels[stage]}\n\nNPS: ${data.nps}\nTotal Responses: ${total}\nPositive: ${data.positive}\nNeutral: ${data.neutral}\nNegative: ${data.negative}`;
+                alert(message);
             }
             
-            renderChannelsChart(data) {
-                const ctx = document.getElementById('channelsChart').getContext('2d');
-                
-                new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: Object.keys(data.channels).map(ch => this.channelLabels[ch]),
-                        datasets: [{
-                            label: 'عدد الاستجابات',
-                            data: Object.values(data.channels),
-                            backgroundColor: [
-                                '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'
-                            ]
-                        }]
-                    },
-                    options: {
-                        indexAxis: 'y',
-                        responsive: true,
-                        scales: {
-                            x: {
-                                beginAtZero: true
-                            }
-                        },
-                        plugins: {
-                            legend: {
-                                display: false
-                            }
-                        }
-                    }
-                });
-            }
-            
-            renderThemesContent(data) {
-                const container = document.getElementById('themesContent');
-                let html = '<h5>المواضيع الرئيسية:</h5><ul>';
-                
-                data.themes.forEach((theme, index) => {
-                    html += `<li class="mb-2"><strong>${theme}</strong></li>`;
-                });
-                
-                html += '</ul>';
-                html += `<div class="mt-3"><strong>مستوى الثقة:</strong> ${(data.confidence * 100).toFixed(1)}%</div>`;
-                
-                container.innerHTML = html;
-            }
-            
-            renderTrendsChart(data) {
-                const ctx = document.getElementById('trendsChart').getContext('2d');
-                
-                // Generate sample trend data
-                const labels = [];
-                const values = [];
-                for (let i = 29; i >= 0; i--) {
-                    const date = new Date();
-                    date.setDate(date.getDate() - i);
-                    labels.push(date.toLocaleDateString('ar-SA'));
-                    values.push(data.sentiment + (Math.random() - 0.5) * 2);
-                }
-                
-                new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            label: 'النقاط',
-                            data: values,
-                            borderColor: '#36A2EB',
-                            backgroundColor: 'rgba(54, 162, 235, 0.1)',
-                            fill: true,
-                            tension: 0.4
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                max: 10
-                            }
-                        }
-                    }
-                });
-            }
-            
-            getStageLabel(stage) {
-                const labels = {
-                    'awareness': 'الوعي',
-                    'evaluation': 'التقييم',
-                    'purchase': 'الشراء',
-                    'onboarding': 'التأهيل',
-                    'regular_use': 'الاستخدام المنتظم',
-                    'support': 'الدعم',
-                    'advocacy': 'التوصية'
-                };
-                return labels[stage] || stage;
-            }
+
             
             setupEventListeners() {
                 // Auto-refresh toggle
