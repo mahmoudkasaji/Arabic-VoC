@@ -1,0 +1,191 @@
+# Replit Prompt: Arabic VoC Customer Journey Map Builder
+
+Create an interactive Customer Experience Journey Map for the Arabic VoC platform with hybrid drill-down capabilities:
+
+## PRIMARY VIEW: Journey Stages × Customer Segments Matrix
+
+### 1. Matrix Structure
+**Columns (Journey Stages):**
+- Awareness (الوعي) - Discovery and brand awareness
+- Evaluation (التقييم) - Comparison and trial
+- Purchase (الشراء) - Signup and payment
+- Onboarding (التأهيل) - First use and setup
+- Regular Use (الاستخدام المنتظم) - Daily/weekly usage
+- Support (الدعم) - Help and assistance
+- Advocacy (التوصية) - Referrals and loyalty
+
+**Rows (Customer Segments):**
+- Self-Service Champions (أبطال الخدمة الذاتية) - Prefer FAQ, chatbots, efficiency
+- Relationship Builders (بناة العلاقات) - Want human contact, personal recognition
+- Digital Adopters (المتبنون الرقميون) - Comfortable with new tech, modern interfaces
+- Omnichannel Navigators (الملاحون متعددو القنوات) - Switch channels seamlessly
+- Validation Seekers (باحثو التأكيد) - Need confirmation, multiple touchpoints
+
+### 2. Cell Content & Visualization
+Each matrix cell should display:
+- **Sentiment Score**: Large number (1-10) with color coding
+- **Effort Score**: 1-5 star rating (⭐⭐⭐⭐⭐)
+- **Primary Channel Icon**: 📱 📧 💬 📞 🌐
+- **Trend Arrow**: ↗️ ↘️ ➡️ (improving/declining/stable)
+- **Response Count**: Small number showing data volume
+
+**Color Coding System:**
+- Green (🟢): Scores 8-10 (Excellent)
+- Yellow (🟡): Scores 6-7 (Good)  
+- Orange (🟠): Scores 4-5 (Needs Attention)
+- Red (🔴): Scores 1-3 (Critical)
+
+### 3. Interactive Features
+**Click Actions:**
+- **Single Click**: Show detailed metrics popup
+- **Double Click**: Drill down to secondary view
+- **Right Click**: Context menu with actions
+
+**Hover Effects:**
+- Show tooltip with:
+  - Exact scores and percentages
+  - Top 3 feedback themes
+  - Last updated timestamp
+  - Sample customer quote (in Arabic)
+
+### 4. Secondary Views (Drill-down)
+When double-clicking a cell, show modal with tabs:
+
+**Tab 1: Channel Breakdown**
+- Horizontal bar chart showing sentiment by channel
+- Channels: Web Form, Email, Phone, WhatsApp, In-app, Social Media
+
+**Tab 2: Feedback Themes**
+- Word cloud of Arabic keywords
+- Top 5 themes with frequency counts
+- Sentiment distribution per theme
+
+**Tab 3: Trend Analysis**
+- Line chart showing 30-day trend
+- Comparison with previous period
+- Seasonal patterns (Ramadan, holidays)
+
+### 5. Arabic/RTL Implementation
+**Language Support:**
+- Full RTL layout when Arabic is selected
+- Arabic number formatting (٠١٢٣٤٥٦٧٨٩)
+- Proper Arabic typography (font: 'Amiri', 'Scheherazade New', serif)
+- Cultural color considerations (avoid red/green only)
+
+**UI Elements:**
+- Navigation on right side for RTL
+- Form inputs right-aligned
+- Chart legends in Arabic
+- Date formats: Hijri and Gregorian options
+
+### 6. Control Panel
+**Top Bar Controls:**
+- Language toggle (العربية / English)
+- Date range picker (last 30 days default)
+- Segment filter (show/hide specific segments)
+- Export options (PDF, Excel, PNG)
+- Real-time toggle (auto-refresh on/off)
+
+**Side Panel Filters:**
+- Channel filters (checkboxes)
+- Sentiment range slider
+- Minimum response count filter
+- Geographic region filter (Gulf, Levant, North Africa)
+
+### 7. Sample Data Structure
+```javascript
+const sampleData = {
+  "self_service_champions": {
+    "awareness": {
+      sentiment: 8.1,
+      effort: 2,
+      primaryChannel: "web",
+      trend: "up",
+      responseCount: 234,
+      themes: ["بحث سريع", "معلومات واضحة", "عدم الحاجة للمساعدة"]
+    },
+    "evaluation": {
+      sentiment: 7.8,
+      effort: 2,
+      primaryChannel: "mobile",
+      trend: "stable",
+      responseCount: 189,
+      themes: ["مقارنة سهلة", "أدوات مفيدة", "شفافية الأسعار"]
+    }
+    // ... more stages
+  },
+  "relationship_builders": {
+    "awareness": {
+      sentiment: 6.9,
+      effort: 4,
+      primaryChannel: "phone",
+      trend: "down",
+      responseCount: 145,
+      themes: ["حاجة للتوضيح", "تفضيل المحادثة", "بناء الثقة"]
+    },
+    "support": {
+      sentiment: 9.2,
+      effort: 3,
+      primaryChannel: "phone",
+      trend: "up",
+      responseCount: 298,
+      themes: ["خدمة شخصية", "حل سريع", "موظف مفيد"]
+    }
+    // ... more stages
+  }
+  // ... more segments
+};
+```
+
+### 8. Technical Implementation
+**Framework:** Pure HTML/CSS/JavaScript (no external frameworks)
+**Charts:** Chart.js for visualizations
+**Storage:** localStorage for user preferences
+**Responsive:** Mobile-first design
+**Performance:** Lazy loading for drill-down content
+
+### 9. Export Features
+**PDF Export:**
+- Arabic font support (embed fonts)
+- RTL layout preserved
+- Executive summary page
+- Detailed metrics appendix
+
+**Excel Export:**
+- RTL cell formatting
+- Arabic text preserved
+- Conditional formatting for scores
+- Separate sheets for raw data
+
+### 10. Integration Points
+**Data Sources:**
+- Survey responses API
+- Sentiment analysis results
+- Channel attribution data
+- Real-time feedback stream
+
+**Webhooks:**
+- Real-time updates when new feedback arrives
+- Automated report generation triggers
+- Alert system for score thresholds
+
+## Key Features to Implement:
+
+1. **Responsive matrix layout** that works on mobile
+2. **Smooth animations** for hover/click interactions
+3. **Progressive loading** for better performance
+4. **Accessibility** features for screen readers
+5. **Print-friendly** CSS for report generation
+6. **Error handling** for missing data
+7. **Loading states** for async operations
+8. **Keyboard navigation** support
+
+## Success Criteria:
+- Matrix loads in under 3 seconds
+- All Arabic text displays correctly
+- Drill-down modals open smoothly
+- Export functions work perfectly
+- Mobile experience is fully functional
+- RTL layout is consistent throughout
+
+Build this as a single HTML file with embedded CSS and JavaScript. Include realistic sample data that demonstrates the power of this approach for Arabic VoC analysis. Make it production-ready with proper error handling and user experience considerations.
