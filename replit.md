@@ -141,6 +141,15 @@ A multi-channel feedback processing platform with Arabic language support, built
 ## Recent Changes (July 2025)
 
 ### Major Architecture Updates
+- **July 21**: **Analyst Dashboard Journey Map Integration** - Enhanced analyst workflow with embedded customer journey mapping
+  - Added "خريطة رحلة العميل" (Customer Journey Map) as new tab in analyst dashboard navigation
+  - Created embedded iframe integration displaying full NPS matrix within analyst workflow
+  - Built comprehensive journey insights section with lowest/highest NPS score analysis
+  - Added interactive quick actions: worst stage analysis, best practices identification, segment comparison
+  - Implemented refresh functionality and seamless full-screen view integration
+  - Enhanced journey map route with embed parameter support for iframe integration
+  - Created priority-based action recommendations with P1-P4 classification for journey stages
+  - Streamlined analyst workflow allowing journey map access without leaving main workspace
 - **July 21**: **Platform Rebranding and Homepage Simplification** - Renamed from "Arabic Voice of Customer Platform" to "Voice of Customer Platform" across all codebase
   - Updated homepage, navigation, templates, config, and documentation files  
   - Changed Arabic title from "منصة صوت العميل العربية" to "منصة صوت العميل"
