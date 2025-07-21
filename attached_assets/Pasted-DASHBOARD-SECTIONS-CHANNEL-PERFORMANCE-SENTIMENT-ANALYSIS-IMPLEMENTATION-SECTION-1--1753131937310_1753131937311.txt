@@ -1,0 +1,84 @@
+DASHBOARD SECTIONS: CHANNEL PERFORMANCE & SENTIMENT ANALYSIS IMPLEMENTATION
+
+SECTION 1: أداء القنوات (Channel Performance) - LEFT PANEL
+
+1. MAIN VISUALIZATION - Horizontal Bar Chart:
+   Data to display:
+   - الموقع الإلكتروني (Website): 847 responses (35%) - Green indicator
+   - التطبيق الجوال (Mobile App): 623 responses (26%) - Green indicator  
+   - واتساب (WhatsApp): 541 responses (22%) - Yellow indicator
+   - البريد الإلكتروني (Email): 298 responses (12%) - Yellow indicator
+   - الرسائل النصية (SMS): 123 responses (5%) - Red indicator
+
+2. KPI CARDS (Top row):
+   - أعلى أداء: "التطبيق الجوال - 78% معدل إكمال"
+   - أكثر استخداماً: "الموقع الإلكتروني - 847 رد"
+   - يحتاج تحسين: "الرسائل النصية - 12% إكمال"
+
+3. CHANNEL HEALTH INDICATORS:
+   - Green: >70% completion rate
+   - Yellow: 40-70% completion rate  
+   - Red: <40% completion rate
+
+4. MINI TREND CHARTS:
+   - Small sparklines showing 7-day trend for each channel
+   - "الاتجاه الأسبوعي" label with up/down arrows
+
+SECTION 2: تحليل المشاعر عبر الزمن (Sentiment Over Time) - RIGHT PANEL
+
+1. MAIN TIME-SERIES CHART:
+   30-day sentiment data:
+   - إيجابي (Positive): Fluctuating between 65-72% (trending up)
+   - محايد (Neutral): Stable around 20-25%
+   - سلبي (Negative): Declining from 15% to 8% (good trend)
+
+2. CURRENT SENTIMENT SUMMARY:
+   Large display:
+   - "68% إيجابي" (68% Positive) - Green
+   - "24% محايد" (24% Neutral) - Gray  
+   - "8% سلبي" (8% Negative) - Red
+   - "تحسن 12% عن الشهر الماضي" (12% improvement vs last month)
+
+3. DIALECT-SPECIFIC INSIGHTS:
+   Mini breakdown:
+   - خليجي: 74% إيجابي
+   - مصري: 71% إيجابي  
+   - شامي: 69% إيجابي
+   - مغربي: 63% إيجابي
+
+4. CRITICAL ALERTS PANEL:
+   - "تنبيه: انخفاض مفاجئ في رضا خدمة التوصيل أمس"
+   - "إيجابي: تحسن كبير في تقييمات التطبيق هذا الأسبوع"
+
+5. INTERACTIVE CONTROLS:
+   - Time selector: "آخر 7 أيام | شهر | 3 شهور"
+   - Survey filter: "جميع الاستطلاعات | رضا العملاء | تقييم المنتج"
+   - Export button: "تصدير تقرير المشاعر"
+
+ARABIC CX DATA EXAMPLES:
+
+Sample positive responses:
+- "الخدمة ممتازة والموظفين متعاونين جداً، شكراً لكم"
+- "التطبيق صار أسرع وأسهل في الاستخدام، أحسنتم"  
+- "تجربة رائعة من البداية للنهاية، أنصح الجميع"
+
+Sample negative responses:
+- "الانتظار طويل جداً، والموقع بطيء"
+- "خدمة العملاء مش مفيدة، محدش يرد على الشكاوى"
+- "الأسعار غالية مقارنة بالجودة المقدمة"
+
+SENTIMENT ANALYSIS FEATURES:
+- Emotion detection: فرح، رضا، إحباط، غضب، قلق
+- Theme extraction: الخدمة، السعر، الجودة، السرعة، الموظفين
+- Cultural context: Understanding formal vs informal language
+- Urgency scoring: Critical issues requiring immediate attention
+
+DESIGN REQUIREMENTS:
+- Consistent with analyst dashboard color scheme
+- Arabic RTL layout with proper text alignment  
+- Interactive hover states showing detailed data
+- Loading states for real-time data updates
+- Responsive design for mobile executive access
+- Export functionality for both sections
+
+GOAL: Provide executives with immediate understanding of customer sentiment trends and channel effectiveness for strategic CX decision-making.

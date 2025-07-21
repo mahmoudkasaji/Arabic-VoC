@@ -259,10 +259,10 @@
                                     </h5>
                                     <div class="d-flex gap-2 align-items-center">
                                         <div class="btn-group btn-group-sm">
-                                            <button class="btn btn-outline-secondary" onclick="updateImpactMatrix('revenue')">الإيرادات</button>
-                                            <button class="btn btn-outline-secondary active" onclick="updateImpactMatrix('csat')">رضا العملاء</button>
-                                            <button class="btn btn-outline-secondary" onclick="updateImpactMatrix('churn')">مخاطر الفقدان</button>
-                                            <button class="btn btn-outline-secondary" onclick="updateImpactMatrix('nps')">صافي الترويج</button>
+                                            <button class="btn btn-outline-secondary" onclick="updateImpactMatrix('revenue', this)">الإيرادات</button>
+                                            <button class="btn btn-outline-secondary active" onclick="updateImpactMatrix('csat', this)">رضا العملاء</button>
+                                            <button class="btn btn-outline-secondary" onclick="updateImpactMatrix('churn', this)">مخاطر الفقدان</button>
+                                            <button class="btn btn-outline-secondary" onclick="updateImpactMatrix('nps', this)">صافي الترويج</button>
                                         </div>
                                         <button class="btn btn-outline-info btn-sm" onclick="exportSection('matrix')" data-bs-toggle="tooltip" title="تصدير المصفوفة">
                                             <i class="fas fa-download"></i>
@@ -416,34 +416,334 @@
                     </div>
                 </div>
 
-                <!-- Technical Analysis Charts -->
+                <!-- Enhanced Technical Analysis Charts -->
                 <div class="row">
-                    <!-- Sentiment Analysis Over Time -->
-                    <div class="col-lg-8 mb-4">
+                    <!-- Channel Performance - LEFT PANEL -->
+                    <div class="col-lg-4 mb-4">
                         <div class="card">
                             <div class="card-header">
-                                <h5 class="card-title mb-0">
-                                    <i class="fas fa-chart-line me-2"></i>
-                                    تحليل المشاعر عبر الزمن
-                                </h5>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h5 class="card-title mb-0">
+                                        <i class="fas fa-signal me-2"></i>
+                                        أداء القنوات
+                                    </h5>
+                                    <button class="btn btn-outline-info btn-sm" onclick="exportSection('channels')" data-bs-toggle="tooltip" title="تصدير تقرير القنوات">
+                                        <i class="fas fa-download"></i>
+                                    </button>
+                                </div>
                             </div>
                             <div class="card-body">
-                                <canvas id="sentimentTrendChart" height="100"></canvas>
+                                <!-- KPI Cards -->
+                                <div class="row mb-3">
+                                    <div class="col-12">
+                                        <div class="alert alert-success py-2 mb-2">
+                                            <small class="fw-bold">أعلى أداء:</small><br>
+                                            <small>التطبيق الجوال - 78% معدل إكمال</small>
+                                        </div>
+                                        <div class="alert alert-info py-2 mb-2">
+                                            <small class="fw-bold">أكثر استخداماً:</small><br>
+                                            <small>الموقع الإلكتروني - 847 رد</small>
+                                        </div>
+                                        <div class="alert alert-warning py-2">
+                                            <small class="fw-bold">يحتاج تحسين:</small><br>
+                                            <small>الرسائل النصية - 12% إكمال</small>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Channel Performance Chart -->
+                                <div class="channel-performance-container">
+                                    <h6 class="text-muted mb-3">توزيع الردود والأداء</h6>
+                                    
+                                    <!-- Website -->
+                                    <div class="channel-item mb-3" onclick="showChannelDetails('website')">
+                                        <div class="d-flex justify-content-between align-items-center mb-1">
+                                            <div class="d-flex align-items-center">
+                                                <div class="channel-indicator bg-success me-2"></div>
+                                                <span class="fw-bold">الموقع الإلكتروني</span>
+                                                <small class="text-muted ms-2">847 ردود</small>
+                                            </div>
+                                            <div class="d-flex align-items-center">
+                                                <span class="badge bg-success me-2">35%</span>
+                                                <i class="fas fa-chart-line text-success"></i>
+                                            </div>
+                                        </div>
+                                        <div class="progress" style="height: 6px;">
+                                            <div class="progress-bar bg-success" style="width: 35%"></div>
+                                        </div>
+                                        <div class="d-flex justify-content-between mt-1">
+                                            <small class="text-muted">معدل الإكمال: 65%</small>
+                                            <small class="text-success">الاتجاه الأسبوعي ↗️</small>
+                                        </div>
+                                    </div>
+
+                                    <!-- Mobile App -->
+                                    <div class="channel-item mb-3" onclick="showChannelDetails('mobile')">
+                                        <div class="d-flex justify-content-between align-items-center mb-1">
+                                            <div class="d-flex align-items-center">
+                                                <div class="channel-indicator bg-success me-2"></div>
+                                                <span class="fw-bold">التطبيق الجوال</span>
+                                                <small class="text-muted ms-2">623 ردود</small>
+                                            </div>
+                                            <div class="d-flex align-items-center">
+                                                <span class="badge bg-success me-2">26%</span>
+                                                <i class="fas fa-chart-line text-success"></i>
+                                            </div>
+                                        </div>
+                                        <div class="progress" style="height: 6px;">
+                                            <div class="progress-bar bg-success" style="width: 26%"></div>
+                                        </div>
+                                        <div class="d-flex justify-content-between mt-1">
+                                            <small class="text-muted">معدل الإكمال: 78%</small>
+                                            <small class="text-success">الاتجاه الأسبوعي ↗️</small>
+                                        </div>
+                                    </div>
+
+                                    <!-- WhatsApp -->
+                                    <div class="channel-item mb-3" onclick="showChannelDetails('whatsapp')">
+                                        <div class="d-flex justify-content-between align-items-center mb-1">
+                                            <div class="d-flex align-items-center">
+                                                <div class="channel-indicator bg-warning me-2"></div>
+                                                <span class="fw-bold">واتساب</span>
+                                                <small class="text-muted ms-2">541 ردود</small>
+                                            </div>
+                                            <div class="d-flex align-items-center">
+                                                <span class="badge bg-warning me-2">22%</span>
+                                                <i class="fas fa-chart-line text-warning"></i>
+                                            </div>
+                                        </div>
+                                        <div class="progress" style="height: 6px;">
+                                            <div class="progress-bar bg-warning" style="width: 22%"></div>
+                                        </div>
+                                        <div class="d-flex justify-content-between mt-1">
+                                            <small class="text-muted">معدل الإكمال: 54%</small>
+                                            <small class="text-warning">الاتجاه الأسبوعي →</small>
+                                        </div>
+                                    </div>
+
+                                    <!-- Email -->
+                                    <div class="channel-item mb-3" onclick="showChannelDetails('email')">
+                                        <div class="d-flex justify-content-between align-items-center mb-1">
+                                            <div class="d-flex align-items-center">
+                                                <div class="channel-indicator bg-warning me-2"></div>
+                                                <span class="fw-bold">البريد الإلكتروني</span>
+                                                <small class="text-muted ms-2">298 ردود</small>
+                                            </div>
+                                            <div class="d-flex align-items-center">
+                                                <span class="badge bg-warning me-2">12%</span>
+                                                <i class="fas fa-chart-line text-warning"></i>
+                                            </div>
+                                        </div>
+                                        <div class="progress" style="height: 6px;">
+                                            <div class="progress-bar bg-warning" style="width: 12%"></div>
+                                        </div>
+                                        <div class="d-flex justify-content-between mt-1">
+                                            <small class="text-muted">معدل الإكمال: 47%</small>
+                                            <small class="text-danger">الاتجاه الأسبوعي ↘️</small>
+                                        </div>
+                                    </div>
+
+                                    <!-- SMS -->
+                                    <div class="channel-item mb-3" onclick="showChannelDetails('sms')">
+                                        <div class="d-flex justify-content-between align-items-center mb-1">
+                                            <div class="d-flex align-items-center">
+                                                <div class="channel-indicator bg-danger me-2"></div>
+                                                <span class="fw-bold">الرسائل النصية</span>
+                                                <small class="text-muted ms-2">123 ردود</small>
+                                            </div>
+                                            <div class="d-flex align-items-center">
+                                                <span class="badge bg-danger me-2">5%</span>
+                                                <i class="fas fa-chart-line text-danger"></i>
+                                            </div>
+                                        </div>
+                                        <div class="progress" style="height: 6px;">
+                                            <div class="progress-bar bg-danger" style="width: 5%"></div>
+                                        </div>
+                                        <div class="d-flex justify-content-between mt-1">
+                                            <small class="text-muted">معدل الإكمال: 12%</small>
+                                            <small class="text-danger">الاتجاه الأسبوعي ↘️</small>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Health Indicators Legend -->
+                                <div class="mt-3 pt-3 border-top">
+                                    <small class="text-muted d-block mb-2">مؤشرات صحة القنوات:</small>
+                                    <div class="d-flex gap-3 flex-wrap">
+                                        <div class="d-flex align-items-center">
+                                            <div class="channel-indicator bg-success me-1"></div>
+                                            <small>>70%</small>
+                                        </div>
+                                        <div class="d-flex align-items-center">
+                                            <div class="channel-indicator bg-warning me-1"></div>
+                                            <small>40-70%</small>
+                                        </div>
+                                        <div class="d-flex align-items-center">
+                                            <div class="channel-indicator bg-danger me-1"></div>
+                                            <small><40%</small>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Channel Performance -->
-                    <div class="col-lg-4 mb-4">
+                    <!-- Sentiment Analysis Over Time - RIGHT PANEL -->
+                    <div class="col-lg-8 mb-4">
                         <div class="card">
                             <div class="card-header">
-                                <h5 class="card-title mb-0">
-                                    <i class="fas fa-signal me-2"></i>
-                                    أداء القنوات
-                                </h5>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h5 class="card-title mb-0">
+                                        <i class="fas fa-chart-line me-2"></i>
+                                        تحليل المشاعر عبر الزمن
+                                    </h5>
+                                    <div class="d-flex gap-2">
+                                        <div class="btn-group btn-group-sm">
+                                            <button class="btn btn-outline-secondary active" onclick="updateSentimentPeriod('week')">آخر 7 أيام</button>
+                                            <button class="btn btn-outline-secondary" onclick="updateSentimentPeriod('month')">شهر</button>
+                                            <button class="btn btn-outline-secondary" onclick="updateSentimentPeriod('quarter')">3 شهور</button>
+                                        </div>
+                                        <button class="btn btn-outline-info btn-sm" onclick="exportSection('sentiment')" data-bs-toggle="tooltip" title="تصدير تقرير المشاعر">
+                                            <i class="fas fa-download"></i>
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                             <div class="card-body">
-                                <canvas id="channelPerformanceChart" height="150"></canvas>
+                                <!-- Current Sentiment Summary -->
+                                <div class="row mb-4">
+                                    <div class="col-md-8">
+                                        <div class="sentiment-summary">
+                                            <div class="row text-center">
+                                                <div class="col-4">
+                                                    <div class="sentiment-card positive">
+                                                        <div class="sentiment-number">68%</div>
+                                                        <div class="sentiment-label">إيجابي</div>
+                                                        <div class="sentiment-trend">+3.2%</div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-4">
+                                                    <div class="sentiment-card neutral">
+                                                        <div class="sentiment-number">24%</div>
+                                                        <div class="sentiment-label">محايد</div>
+                                                        <div class="sentiment-trend">-1.1%</div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-4">
+                                                    <div class="sentiment-card negative">
+                                                        <div class="sentiment-number">8%</div>
+                                                        <div class="sentiment-label">سلبي</div>
+                                                        <div class="sentiment-trend">-2.1%</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="text-center mt-3">
+                                                <span class="badge bg-success">تحسن 12% عن الشهر الماضي</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Dialect-Specific Insights -->
+                                    <div class="col-md-4">
+                                        <h6 class="text-muted mb-3">تحليل اللهجات</h6>
+                                        <div class="dialect-insights">
+                                            <div class="dialect-item">
+                                                <div class="d-flex justify-content-between">
+                                                    <span>خليجي</span>
+                                                    <span class="text-success fw-bold">74%</span>
+                                                </div>
+                                                <div class="progress mt-1" style="height: 4px;">
+                                                    <div class="progress-bar bg-success" style="width: 74%"></div>
+                                                </div>
+                                            </div>
+                                            <div class="dialect-item">
+                                                <div class="d-flex justify-content-between">
+                                                    <span>مصري</span>
+                                                    <span class="text-success fw-bold">71%</span>
+                                                </div>
+                                                <div class="progress mt-1" style="height: 4px;">
+                                                    <div class="progress-bar bg-success" style="width: 71%"></div>
+                                                </div>
+                                            </div>
+                                            <div class="dialect-item">
+                                                <div class="d-flex justify-content-between">
+                                                    <span>شامي</span>
+                                                    <span class="text-success fw-bold">69%</span>
+                                                </div>
+                                                <div class="progress mt-1" style="height: 4px;">
+                                                    <div class="progress-bar bg-success" style="width: 69%"></div>
+                                                </div>
+                                            </div>
+                                            <div class="dialect-item">
+                                                <div class="d-flex justify-content-between">
+                                                    <span>مغربي</span>
+                                                    <span class="text-warning fw-bold">63%</span>
+                                                </div>
+                                                <div class="progress mt-1" style="height: 4px;">
+                                                    <div class="progress-bar bg-warning" style="width: 63%"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Sentiment Trend Chart -->
+                                <div class="chart-container">
+                                    <canvas id="sentimentTrendChart" height="80"></canvas>
+                                </div>
+
+                                <!-- Critical Alerts Panel -->
+                                <div class="row mt-4">
+                                    <div class="col-12">
+                                        <h6 class="text-muted mb-3">تنبيهات مهمة</h6>
+                                        <div class="alerts-container">
+                                            <div class="alert alert-warning py-2 mb-2">
+                                                <div class="d-flex align-items-center">
+                                                    <i class="fas fa-exclamation-triangle me-2"></i>
+                                                    <div>
+                                                        <small class="fw-bold">تنبيه:</small>
+                                                        <small>انخفاض مفاجئ في رضا خدمة التوصيل أمس (-15%)</small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="alert alert-success py-2">
+                                                <div class="d-flex align-items-center">
+                                                    <i class="fas fa-check-circle me-2"></i>
+                                                    <div>
+                                                        <small class="fw-bold">إيجابي:</small>
+                                                        <small>تحسن كبير في تقييمات التطبيق هذا الأسبوع (+22%)</small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Sample Responses -->
+                                <div class="row mt-3">
+                                    <div class="col-md-6">
+                                        <h6 class="text-success mb-2">عينة من الردود الإيجابية</h6>
+                                        <div class="sample-responses">
+                                            <blockquote class="blockquote-sm bg-light p-2 mb-2">
+                                                <small>"الخدمة ممتازة والموظفين متعاونين جداً، شكراً لكم"</small>
+                                            </blockquote>
+                                            <blockquote class="blockquote-sm bg-light p-2">
+                                                <small>"التطبيق صار أسرع وأسهل في الاستخدام، أحسنتم"</small>
+                                            </blockquote>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h6 class="text-danger mb-2">عينة من الردود السلبية</h6>
+                                        <div class="sample-responses">
+                                            <blockquote class="blockquote-sm bg-light p-2 mb-2">
+                                                <small>"الانتظار طويل جداً، والموقع بطيء"</small>
+                                            </blockquote>
+                                            <blockquote class="blockquote-sm bg-light p-2">
+                                                <small>"خدمة العملاء مش مفيدة، محدش يرد على الشكاوى"</small>
+                                            </blockquote>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -724,12 +1024,24 @@
         };
 
         // Update Impact Matrix
-        function updateImpactMatrix(kpiType) {
+        function updateImpactMatrix(kpiType, targetButton) {
             // Update active button
             document.querySelectorAll('.btn-group .btn').forEach(btn => {
                 btn.classList.remove('active');
             });
-            event.target.classList.add('active');
+            if (targetButton) {
+                targetButton.classList.add('active');
+            } else {
+                // Find the button by kpiType and make it active
+                const buttons = document.querySelectorAll('.btn-group .btn');
+                buttons.forEach(btn => {
+                    if (btn.textContent.trim().includes(kpiType === 'csat' ? 'رضا العملاء' : 
+                                                      kpiType === 'revenue' ? 'الإيرادات' :
+                                                      kpiType === 'churn' ? 'مخاطر الفقدان' : 'صافي الترويج')) {
+                        btn.classList.add('active');
+                    }
+                });
+            }
 
             const data = impactMatrixData[kpiType];
             const container = document.getElementById('impactMatrix');
@@ -826,74 +1138,94 @@
         }
 
         // Initialize Charts
+        let sentimentChart;
+        
+        function initializeSentimentChart() {
+            const sentimentCtx = document.getElementById('sentimentTrendChart');
+            if (!sentimentCtx) return;
+            
+            // Destroy existing chart if it exists
+            if (sentimentChart) {
+                sentimentChart.destroy();
+            }
+            
+            sentimentChart = new Chart(sentimentCtx.getContext('2d'), {
+                type: 'line',
+                data: {
+                    labels: ['1 يوليو', '8 يوليو', '15 يوليو', '22 يوليو', '29 يوليو', '5 أغسطس', '12 أغسطس'],
+                    datasets: [{
+                        label: 'إيجابي',
+                        data: [65, 68, 72, 70, 75, 68, 71],
+                        borderColor: 'rgb(40, 167, 69)',
+                        backgroundColor: 'rgba(40, 167, 69, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }, {
+                        label: 'محايد',
+                        data: [25, 22, 20, 22, 18, 24, 21],
+                        borderColor: 'rgb(255, 193, 7)',
+                        backgroundColor: 'rgba(255, 193, 7, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }, {
+                        label: 'سلبي',
+                        data: [10, 10, 8, 8, 7, 8, 8],
+                        borderColor: 'rgb(220, 53, 69)',
+                        backgroundColor: 'rgba(220, 53, 69, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        intersect: false,
+                        mode: 'index'
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            rtl: true,
+                            textDirection: 'rtl'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.dataset.label + ': ' + context.parsed.y + '%';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            ticks: {
+                                font: {
+                                    family: 'Cairo, sans-serif'
+                                }
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        
         document.addEventListener('DOMContentLoaded', function() {
             // Initialize Impact Matrix with CSAT view
             updateImpactMatrix('csat');
-            // Sentiment Trend Chart
-            const sentimentCtx = document.getElementById('sentimentTrendChart').getContext('2d');
-            new Chart(sentimentCtx, {
-                type: 'line',
-                data: {
-                    labels: ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو'],
-                    datasets: [{
-                        label: 'إيجابي',
-                        data: [65, 68, 72, 70, 75, 68],
-                        borderColor: 'rgb(40, 167, 69)',
-                        backgroundColor: 'rgba(40, 167, 69, 0.1)',
-                        tension: 0.4
-                    }, {
-                        label: 'محايد',
-                        data: [25, 22, 20, 22, 18, 22],
-                        borderColor: 'rgb(255, 193, 7)',
-                        backgroundColor: 'rgba(255, 193, 7, 0.1)',
-                        tension: 0.4
-                    }, {
-                        label: 'سلبي',
-                        data: [10, 10, 8, 8, 7, 10],
-                        borderColor: 'rgb(220, 53, 69)',
-                        backgroundColor: 'rgba(220, 53, 69, 0.1)',
-                        tension: 0.4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            max: 100
-                        }
-                    }
-                }
-            });
-
-            // Channel Performance Chart
-            const channelCtx = document.getElementById('channelPerformanceChart').getContext('2d');
-            new Chart(channelCtx, {
-                type: 'doughnut',
-                data: {
-                    labels: ['الموقع الإلكتروني', 'واتساب', 'البريد الإلكتروني', 'الهاتف', 'وسائل التواصل'],
-                    datasets: [{
-                        data: [35, 25, 20, 15, 5],
-                        backgroundColor: [
-                            'rgb(13, 110, 253)',
-                            'rgb(25, 135, 84)',
-                            'rgb(255, 193, 7)',
-                            'rgb(220, 53, 69)',
-                            'rgb(108, 117, 125)'
-                        ]
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'bottom'
-                        }
-                    }
-                }
-            });
+            
+            // Initialize Sentiment Chart
+            initializeSentimentChart();
         });
 
         // Enhanced Analytics Functions
@@ -1158,6 +1490,169 @@
             applyQuickFilter('all');
         }
 
+        // Channel Performance Functions
+        function showChannelDetails(channelType) {
+            const channelData = {
+                website: {
+                    name: 'الموقع الإلكتروني',
+                    responses: 847,
+                    completion: '65%',
+                    trend: 'صاعد',
+                    details: {
+                        'متوسط وقت الإكمال': '3.2 دقيقة',
+                        'معدل الارتداد': '23%',
+                        'الأجهزة الأكثر استخداماً': 'الكمبيوتر (78%)',
+                        'أوقات الذروة': '2-4 مساءً'
+                    },
+                    issues: ['بطء التحميل في الصفحات الفرعية', 'صعوبة في التنقل على الجوال']
+                },
+                mobile: {
+                    name: 'التطبيق الجوال',
+                    responses: 623,
+                    completion: '78%',
+                    trend: 'صاعد',
+                    details: {
+                        'متوسط وقت الإكمال': '2.1 دقيقة',
+                        'نظام التشغيل الأكثر': 'iOS (54%)',
+                        'إصدار التطبيق': 'v3.2.1',
+                        'تقييم المتجر': '4.6/5'
+                    },
+                    issues: ['بعض الأخطاء في النسخة الجديدة', 'بطء في تحديث البيانات']
+                },
+                whatsapp: {
+                    name: 'واتساب',
+                    responses: 541,
+                    completion: '54%',
+                    trend: 'مستقر',
+                    details: {
+                        'متوسط وقت الرد': '8.5 دقيقة',
+                        'أوقات النشاط': '10 صباحاً - 8 مساءً',
+                        'معدل القراءة': '92%',
+                        'معدل الرد': '54%'
+                    },
+                    issues: ['تأخير في الردود المساء', 'بعض الرسائل لا تصل']
+                },
+                email: {
+                    name: 'البريد الإلكتروني',
+                    responses: 298,
+                    completion: '47%',
+                    trend: 'هابط',
+                    details: {
+                        'معدل الفتح': '68%',
+                        'معدل النقر': '12%',
+                        'مقدمي الخدمة': 'Gmail (45%), Outlook (32%)',
+                        'أفضل وقت إرسال': 'الثلاثاء 10 صباحاً'
+                    },
+                    issues: ['ارتفاع معدل الرسائل المرفوضة', 'انخفاض معدل الاستجابة']
+                },
+                sms: {
+                    name: 'الرسائل النصية',
+                    responses: 123,
+                    completion: '12%',
+                    trend: 'هابط',
+                    details: {
+                        'معدل التسليم': '89%',
+                        'معدل القراءة': '45%',
+                        'متوسط وقت القراءة': '15 دقيقة',
+                        'تكلفة الرسالة': '0.25 ريال'
+                    },
+                    issues: ['انخفاض حاد في معدل الاستجابة', 'مشاكل في التسليم لبعض الشبكات']
+                }
+            };
+
+            const data = channelData[channelType];
+            const detailsItems = Object.entries(data.details).map(([key, value]) => 
+                `<div class="d-flex justify-content-between mb-2">
+                    <span>${key}:</span>
+                    <strong>${value}</strong>
+                </div>`
+            ).join('');
+
+            const issuesItems = data.issues.map(issue => 
+                `<li class="text-danger">${issue}</li>`
+            ).join('');
+
+            const modal = document.createElement('div');
+            modal.className = 'modal fade';
+            modal.innerHTML = `
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">تفاصيل ${data.name}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>الإحصائيات الرئيسية</h6>
+                                    <div class="mb-3">
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span>عدد الردود:</span>
+                                            <strong>${data.responses}</strong>
+                                        </div>
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span>معدل الإكمال:</span>
+                                            <strong>${data.completion}</strong>
+                                        </div>
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span>الاتجاه:</span>
+                                            <strong class="${data.trend === 'صاعد' ? 'text-success' : data.trend === 'هابط' ? 'text-danger' : 'text-warning'}">${data.trend}</strong>
+                                        </div>
+                                    </div>
+                                    <h6>تفاصيل إضافية</h6>
+                                    ${detailsItems}
+                                </div>
+                                <div class="col-md-6">
+                                    <h6>المشاكل والتحديات</h6>
+                                    <ul class="list-unstyled">
+                                        ${issuesItems}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-primary" onclick="exportChannelReport('${channelType}')">
+                                <i class="fas fa-download me-1"></i>تصدير تقرير
+                            </button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.body.appendChild(modal);
+            const modalInstance = new bootstrap.Modal(modal);
+            modalInstance.show();
+
+            modal.addEventListener('hidden.bs.modal', () => {
+                document.body.removeChild(modal);
+            });
+        }
+
+        function exportChannelReport(channelType) {
+            alert(`تصدير تقرير ${channelType} - سيتم تحميل ملف مفصل قريباً`);
+        }
+
+        // Sentiment Analysis Functions
+        function updateSentimentPeriod(period) {
+            // Update active button
+            document.querySelectorAll('.btn-group .btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            // Update chart data based on period
+            console.log('Updating sentiment data for period:', period);
+            
+            // This would normally fetch new data from the server
+            // For now, we'll just show a loading state
+            const chartCanvas = document.getElementById('sentimentTrendChart');
+            if (chartCanvas) {
+                // Redraw chart with new data
+                initializeSentimentChart();
+            }
+        }
+
         // Initialize tooltips
         document.addEventListener('DOMContentLoaded', function() {
             var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
@@ -1198,6 +1693,132 @@
             border-bottom-left-radius: 0.25rem;
             border-bottom-right-radius: 0.25rem;
             margin-bottom: 0;
+        }
+        
+        /* Channel Performance Styles */
+        .channel-performance-container {
+            padding: 0;
+        }
+        
+        .channel-item {
+            padding: 12px;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            background: #fff;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .channel-item:hover {
+            background: #f8f9fa;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transform: translateY(-1px);
+        }
+        
+        .channel-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+        
+        /* Sentiment Analysis Styles */
+        .sentiment-summary {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .sentiment-card {
+            padding: 15px;
+            border-radius: 8px;
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .sentiment-card.positive {
+            border-left: 4px solid #28a745;
+        }
+        
+        .sentiment-card.neutral {
+            border-left: 4px solid #6c757d;
+        }
+        
+        .sentiment-card.negative {
+            border-left: 4px solid #dc3545;
+        }
+        
+        .sentiment-number {
+            font-size: 2rem;
+            font-weight: bold;
+            line-height: 1;
+        }
+        
+        .sentiment-label {
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin-top: 4px;
+        }
+        
+        .sentiment-trend {
+            font-size: 0.8rem;
+            margin-top: 4px;
+            font-weight: 600;
+        }
+        
+        .sentiment-card.positive .sentiment-number {
+            color: #28a745;
+        }
+        
+        .sentiment-card.positive .sentiment-trend {
+            color: #28a745;
+        }
+        
+        .sentiment-card.neutral .sentiment-number {
+            color: #6c757d;
+        }
+        
+        .sentiment-card.neutral .sentiment-trend {
+            color: #ffc107;
+        }
+        
+        .sentiment-card.negative .sentiment-number {
+            color: #dc3545;
+        }
+        
+        .sentiment-card.negative .sentiment-trend {
+            color: #dc3545;
+        }
+        
+        .dialect-insights {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .dialect-item {
+            margin-bottom: 12px;
+        }
+        
+        .dialect-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .sample-responses .blockquote-sm {
+            border-left: 3px solid #dee2e6;
+            font-style: italic;
+            border-radius: 4px;
+        }
+        
+        .alerts-container .alert {
+            border-radius: 6px;
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin: 20px 0;
         }
     </style>
 </body>
