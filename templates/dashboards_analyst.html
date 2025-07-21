@@ -744,27 +744,207 @@
                                     <canvas id="sentimentTrendChart" height="80"></canvas>
                                 </div>
 
-                                <!-- Critical Alerts Panel -->
+                                <!-- Actionable Issues Alert System -->
                                 <div class="row mt-4">
-                                    <div class="col-12">
-                                        <h6 class="text-muted mb-3">تنبيهات مهمة</h6>
-                                        <div class="alerts-container">
-                                            <div class="alert alert-warning py-2 mb-2">
-                                                <div class="d-flex align-items-center">
-                                                    <i class="fas fa-exclamation-triangle me-2"></i>
-                                                    <div>
-                                                        <small class="fw-bold">تنبيه:</small>
-                                                        <small>انخفاض مفاجئ في رضا خدمة التوصيل أمس (-15%)</small>
+                                    <!-- Critical Issues Panel -->
+                                    <div class="col-md-7">
+                                        <div class="d-flex justify-content-between align-items-center mb-3">
+                                            <h6 class="text-danger mb-0 fw-bold">
+                                                <i class="fas fa-exclamation-triangle me-2"></i>
+                                                قضايا عاجلة تحتاج تدخل فوري
+                                            </h6>
+                                            <span class="badge bg-danger">3 قضايا نشطة</span>
+                                        </div>
+                                        <div class="critical-issues-container">
+                                            <!-- Critical Issue 1 -->
+                                            <div class="issue-card critical mb-3">
+                                                <div class="issue-header">
+                                                    <div class="d-flex align-items-start gap-3">
+                                                        <div class="issue-priority critical">🔴</div>
+                                                        <div class="flex-grow-1">
+                                                            <div class="issue-title">تأخير التوصيل في دبي - 15 شكوى اليوم</div>
+                                                            <div class="issue-details mt-2">
+                                                                <div class="issue-action">
+                                                                    <i class="fas fa-arrow-right me-1 text-primary"></i>
+                                                                    <span class="text-primary">إجراء مقترح:</span> تواصل مع فريق التوصيل
+                                                                </div>
+                                                                <div class="issue-impact">
+                                                                    <i class="fas fa-chart-line me-1 text-danger"></i>
+                                                                    <span class="text-danger">تأثير محتمل:</span> انخفاض رضا بنسبة 8%
+                                                                </div>
+                                                            </div>
+                                                            <div class="issue-actions mt-2">
+                                                                <button class="btn btn-danger btn-sm" onclick="escalateIssue('delivery_dubai')">
+                                                                    <i class="fas fa-bell me-1"></i>إرسال تنبيه للفريق
+                                                                </button>
+                                                                <button class="btn btn-outline-primary btn-sm" onclick="createTicket('delivery_dubai')">
+                                                                    <i class="fas fa-ticket-alt me-1"></i>إنشاء تذكرة متابعة
+                                                                </button>
+                                                                <button class="btn btn-outline-info btn-sm" onclick="showIssueDetails('delivery_dubai')">
+                                                                    <i class="fas fa-eye me-1"></i>عرض التفاصيل
+                                                                </button>
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="alert alert-success py-2">
-                                                <div class="d-flex align-items-center">
-                                                    <i class="fas fa-check-circle me-2"></i>
-                                                    <div>
-                                                        <small class="fw-bold">إيجابي:</small>
-                                                        <small>تحسن كبير في تقييمات التطبيق هذا الأسبوع (+22%)</small>
+
+                                            <!-- High Priority Issue -->
+                                            <div class="issue-card high mb-3">
+                                                <div class="issue-header">
+                                                    <div class="d-flex align-items-start gap-3">
+                                                        <div class="issue-priority high">🟡</div>
+                                                        <div class="flex-grow-1">
+                                                            <div class="issue-title">بطء التطبيق على iPhone - 8 تقارير</div>
+                                                            <div class="issue-details mt-2">
+                                                                <div class="issue-action">
+                                                                    <i class="fas fa-arrow-right me-1 text-primary"></i>
+                                                                    <span class="text-primary">إجراء مقترح:</span> تنسيق مع فريق التطبيق
+                                                                </div>
+                                                                <div class="issue-timeline">
+                                                                    <i class="fas fa-clock me-1 text-warning"></i>
+                                                                    <span class="text-warning">وقت الحل المتوقع:</span> 24 ساعة
+                                                                </div>
+                                                            </div>
+                                                            <div class="issue-actions mt-2">
+                                                                <button class="btn btn-warning btn-sm" onclick="escalateIssue('app_ios_performance')">
+                                                                    <i class="fas fa-bell me-1"></i>إرسال تنبيه للفريق
+                                                                </button>
+                                                                <button class="btn btn-outline-primary btn-sm" onclick="createTicket('app_ios_performance')">
+                                                                    <i class="fas fa-ticket-alt me-1"></i>إنشاء تذكرة متابعة
+                                                                </button>
+                                                                <button class="btn btn-outline-info btn-sm" onclick="showIssueDetails('app_ios_performance')">
+                                                                    <i class="fas fa-eye me-1"></i>عرض التفاصيل
+                                                                </button>
+                                                            </div>
+                                                        </div>
                                                     </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Medium Priority Issue -->
+                                            <div class="issue-card medium mb-3">
+                                                <div class="issue-header">
+                                                    <div class="d-flex align-items-start gap-3">
+                                                        <div class="issue-priority medium">🟠</div>
+                                                        <div class="flex-grow-1">
+                                                            <div class="issue-title">صعوبة في عملية الدفع - 5 شكاوى</div>
+                                                            <div class="issue-details mt-2">
+                                                                <div class="issue-action">
+                                                                    <i class="fas fa-arrow-right me-1 text-primary"></i>
+                                                                    <span class="text-primary">إجراء مقترح:</span> مراجعة نظام المدفوعات
+                                                                </div>
+                                                                <div class="issue-timeline">
+                                                                    <i class="fas fa-users me-1 text-info"></i>
+                                                                    <span class="text-info">مسؤول:</span> فريق المدفوعات
+                                                                </div>
+                                                            </div>
+                                                            <div class="issue-actions mt-2">
+                                                                <button class="btn btn-info btn-sm" onclick="escalateIssue('payment_issues')">
+                                                                    <i class="fas fa-bell me-1"></i>إرسال تنبيه للفريق
+                                                                </button>
+                                                                <button class="btn btn-outline-primary btn-sm" onclick="createTicket('payment_issues')">
+                                                                    <i class="fas fa-ticket-alt me-1"></i>إنشاء تذكرة متابعة
+                                                                </button>
+                                                                <button class="btn btn-outline-info btn-sm" onclick="showIssueDetails('payment_issues')">
+                                                                    <i class="fas fa-eye me-1"></i>عرض التفاصيل
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Positive Trends Highlighting -->
+                                    <div class="col-md-5">
+                                        <div class="d-flex justify-content-between align-items-center mb-3">
+                                            <h6 class="text-success mb-0 fw-bold">
+                                                <i class="fas fa-trending-up me-2"></i>
+                                                اتجاهات إيجابية - استغل الفرصة
+                                            </h6>
+                                            <span class="badge bg-success">2 فرص نشطة</span>
+                                        </div>
+                                        <div class="positive-trends-container">
+                                            <!-- Positive Trend 1 -->
+                                            <div class="trend-card positive mb-3">
+                                                <div class="trend-header">
+                                                    <div class="d-flex align-items-start gap-3">
+                                                        <div class="trend-indicator positive">💚</div>
+                                                        <div class="flex-grow-1">
+                                                            <div class="trend-title">ارتفاع رضا العملاء عن المنتج الجديد +23%</div>
+                                                            <div class="trend-details mt-2">
+                                                                <div class="trend-action">
+                                                                    <i class="fas fa-arrow-right me-1 text-success"></i>
+                                                                    <span class="text-success">إجراء مقترح:</span> زيادة التسويق للمنتج
+                                                                </div>
+                                                                <div class="trend-opportunity">
+                                                                    <i class="fas fa-chart-line me-1 text-primary"></i>
+                                                                    <span class="text-primary">فرصة:</span> زيادة المبيعات بنسبة 15%
+                                                                </div>
+                                                            </div>
+                                                            <div class="trend-actions mt-2">
+                                                                <button class="btn btn-success btn-sm" onclick="leverageOpportunity('new_product_success')">
+                                                                    <i class="fas fa-rocket me-1"></i>استغل الفرصة
+                                                                </button>
+                                                                <button class="btn btn-outline-success btn-sm" onclick="shareSuccessStory('new_product_success')">
+                                                                    <i class="fas fa-share me-1"></i>شارك النجاح
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Positive Trend 2 -->
+                                            <div class="trend-card positive mb-3">
+                                                <div class="trend-header">
+                                                    <div class="d-flex align-items-start gap-3">
+                                                        <div class="trend-indicator positive">💚</div>
+                                                        <div class="flex-grow-1">
+                                                            <div class="trend-title">تحسن تقييمات خدمة العملاء +15%</div>
+                                                            <div class="trend-details mt-2">
+                                                                <div class="trend-action">
+                                                                    <i class="fas fa-arrow-right me-1 text-success"></i>
+                                                                    <span class="text-success">إجراء مقترح:</span> مشاركة قصص النجاح
+                                                                </div>
+                                                                <div class="trend-insight">
+                                                                    <i class="fas fa-lightbulb me-1 text-warning"></i>
+                                                                    <span class="text-warning">رؤية:</span> تدريب باقي الفرق على أفضل الممارسات
+                                                                </div>
+                                                            </div>
+                                                            <div class="trend-actions mt-2">
+                                                                <button class="btn btn-success btn-sm" onclick="leverageOpportunity('customer_service_improvement')">
+                                                                    <i class="fas fa-rocket me-1"></i>استغل الفرصة
+                                                                </button>
+                                                                <button class="btn btn-outline-success btn-sm" onclick="shareSuccessStory('customer_service_improvement')">
+                                                                    <i class="fas fa-share me-1"></i>شارك النجاح
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Escalation System Summary -->
+                                            <div class="escalation-summary mt-3 p-3 bg-light rounded">
+                                                <h6 class="text-muted mb-2">
+                                                    <i class="fas fa-cogs me-2"></i>نظام التصعيد التلقائي
+                                                </h6>
+                                                <div class="escalation-rules">
+                                                    <small class="d-block mb-1">
+                                                        <i class="fas fa-circle text-danger me-1"></i>
+                                                        تصعيد تلقائي عند >10 شكاوى في 24 ساعة
+                                                    </small>
+                                                    <small class="d-block mb-1">
+                                                        <i class="fas fa-circle text-warning me-1"></i>
+                                                        تخصيص تلقائي للفرق المسؤولة
+                                                    </small>
+                                                    <small class="d-block">
+                                                        <i class="fas fa-circle text-success me-1"></i>
+                                                        متابعة حتى الحل النهائي
+                                                    </small>
                                                 </div>
                                             </div>
                                         </div>
@@ -1769,6 +1949,305 @@
             }
         }
 
+        // Actionable Issues Alert System Functions
+        function escalateIssue(issueId) {
+            const issueActions = {
+                delivery_dubai: {
+                    title: 'تصعيد مشكلة التوصيل في دبي',
+                    message: 'تم إرسال تنبيه عاجل لفريق التوصيل في دبي. الفريق سيتواصل خلال 30 دقيقة.',
+                    team: 'فريق التوصيل - دبي',
+                    priority: 'عاجل',
+                    eta: '30 دقيقة'
+                },
+                app_ios_performance: {
+                    title: 'تصعيد مشكلة بطء التطبيق iOS',
+                    message: 'تم إرسال تذكرة للتطوير. فريق التطبيق سيبدأ التحقيق فوراً.',
+                    team: 'فريق تطوير التطبيق',
+                    priority: 'عالي',
+                    eta: '24 ساعة'
+                },
+                payment_issues: {
+                    title: 'تصعيد مشاكل المدفوعات',
+                    message: 'تم إشعار فريق المدفوعات لمراجعة النظام والعمليات المتأثرة.',
+                    team: 'فريق المدفوعات',
+                    priority: 'متوسط',
+                    eta: '48 ساعة'
+                }
+            };
+
+            const action = issueActions[issueId];
+            if (action) {
+                showEscalationConfirmation(action);
+            }
+        }
+
+        function createTicket(issueId) {
+            const ticketData = {
+                delivery_dubai: {
+                    title: 'تذكرة متابعة - تأخير التوصيل في دبي',
+                    description: '15 شكوى من العملاء حول تأخير التوصيل في منطقة دبي اليوم',
+                    assignedTo: 'مدير التوصيل - دبي',
+                    priority: 'عاجل',
+                    ticketId: 'TKT-' + Date.now()
+                },
+                app_ios_performance: {
+                    title: 'تذكرة متابعة - بطء التطبيق iOS',
+                    description: '8 تقارير من المستخدمين حول بطء في أداء التطبيق على أجهزة iPhone',
+                    assignedTo: 'فريق تطوير التطبيق',
+                    priority: 'عالي',
+                    ticketId: 'TKT-' + Date.now()
+                },
+                payment_issues: {
+                    title: 'تذكرة متابعة - مشاكل المدفوعات',
+                    description: '5 شكاوى حول صعوبات في إتمام عمليات الدفع عبر الموقع',
+                    assignedTo: 'فريق المدفوعات',
+                    priority: 'متوسط',
+                    ticketId: 'TKT-' + Date.now()
+                }
+            };
+
+            const ticket = ticketData[issueId];
+            if (ticket) {
+                showTicketCreated(ticket);
+            }
+        }
+
+        function showIssueDetails(issueId) {
+            const issueDetails = {
+                delivery_dubai: {
+                    title: 'تفاصيل مشكلة التوصيل في دبي',
+                    complaints: [
+                        'تأخير 3 ساعات في منطقة الخليج التجاري',
+                        'عدم وصول الطلب في موعده المحدد - مدينة دبي للإنترنت',
+                        'تأخير في التسليم - منطقة جميرا',
+                        'الطلب متأخر 4 ساعات - منطقة ديرة'
+                    ],
+                    impact: 'انخفاض محتمل في رضا العملاء بنسبة 8%',
+                    affectedCustomers: 15,
+                    timeRange: 'آخر 6 ساعات',
+                    suggestedActions: [
+                        'التواصل الفوري مع فريق التوصيل',
+                        'إعادة توزيع الطلبات على المناطق المجاورة',
+                        'إرسال تعويض للعملاء المتأثرين'
+                    ]
+                },
+                app_ios_performance: {
+                    title: 'تفاصيل مشكلة بطء التطبيق iOS',
+                    complaints: [
+                        'التطبيق يستغرق وقت طويل للتحميل',
+                        'تأخير في عرض الصفحات',
+                        'انقطاع مفاجئ أثناء الاستخدام',
+                        'بطء في الاستجابة للنقرات'
+                    ],
+                    impact: 'انخفاض في استخدام التطبيق بنسبة 12%',
+                    affectedDevices: 'iPhone 12, iPhone 13, iPhone 14',
+                    appVersion: 'v3.2.1',
+                    timeRange: 'آخر 24 ساعة',
+                    suggestedActions: [
+                        'فحص الكود للتحسينات الممكنة',
+                        'تحليل استهلاك الذاكرة',
+                        'إصدار تحديث عاجل إذا لزم الأمر'
+                    ]
+                },
+                payment_issues: {
+                    title: 'تفاصيل مشاكل المدفوعات',
+                    complaints: [
+                        'فشل في معالجة الدفع بالبطاقة الائتمانية',
+                        'رسالة خطأ عند استخدام محفظة أبل',
+                        'تأخير في تأكيد الدفع',
+                        'صفحة الدفع لا تحمل بشكل صحيح'
+                    ],
+                    impact: 'فقدان محتمل للمبيعات بقيمة 12,000 درهم',
+                    paymentMethods: 'بطاقات ائتمانية، محفظة أبل',
+                    timeRange: 'آخر 48 ساعة',
+                    suggestedActions: [
+                        'فحص اتصال بوابة الدفع',
+                        'مراجعة إعدادات الأمان',
+                        'اختبار جميع طرق الدفع'
+                    ]
+                }
+            };
+
+            const details = issueDetails[issueId];
+            if (details) {
+                showIssueModal(details);
+            }
+        }
+
+        function leverageOpportunity(opportunityId) {
+            const opportunities = {
+                new_product_success: {
+                    title: 'استغلال نجاح المنتج الجديد',
+                    action: 'زيادة الحملة التسويقية للمنتج الجديد',
+                    expectedOutcome: 'زيادة المبيعات بنسبة 15-20%',
+                    budget: '50,000 درهم للحملة التسويقية',
+                    timeline: '2-3 أسابيع'
+                },
+                customer_service_improvement: {
+                    title: 'استغلال تحسن خدمة العملاء',
+                    action: 'نشر قصص النجاح وتدريب الفرق الأخرى',
+                    expectedOutcome: 'تحسن شامل في رضا العملاء',
+                    budget: '20,000 درهم للتدريب',
+                    timeline: '1-2 أسبوع'
+                }
+            };
+
+            const opportunity = opportunities[opportunityId];
+            if (opportunity) {
+                showOpportunityModal(opportunity);
+            }
+        }
+
+        function shareSuccessStory(storyId) {
+            const successStories = {
+                new_product_success: 'تم مشاركة نجاح المنتج الجديد مع فريق التسويق والمبيعات',
+                customer_service_improvement: 'تم توثيق أفضل الممارسات ومشاركتها مع جميع فرق خدمة العملاء'
+            };
+
+            const message = successStories[storyId];
+            if (message) {
+                alert('✅ ' + message);
+            }
+        }
+
+        // Modal Helper Functions
+        function showEscalationConfirmation(action) {
+            const modal = document.createElement('div');
+            modal.className = 'modal fade';
+            modal.innerHTML = `
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">${action.title}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="alert alert-info">
+                                <strong>📋 التفاصيل:</strong><br>
+                                الفريق: ${action.team}<br>
+                                الأولوية: ${action.priority}<br>
+                                الزمن المتوقع للرد: ${action.eta}
+                            </div>
+                            <p>${action.message}</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-success">تم الإرسال بنجاح</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            const modalInstance = new bootstrap.Modal(modal);
+            modalInstance.show();
+            modal.addEventListener('hidden.bs.modal', () => document.body.removeChild(modal));
+        }
+
+        function showTicketCreated(ticket) {
+            const modal = document.createElement('div');
+            modal.className = 'modal fade';
+            modal.innerHTML = `
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">تم إنشاء تذكرة متابعة</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="alert alert-success">
+                                <strong>🎫 رقم التذكرة:</strong> ${ticket.ticketId}
+                            </div>
+                            <p><strong>العنوان:</strong> ${ticket.title}</p>
+                            <p><strong>الوصف:</strong> ${ticket.description}</p>
+                            <p><strong>مُخصص لـ:</strong> ${ticket.assignedTo}</p>
+                            <p><strong>الأولوية:</strong> ${ticket.priority}</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">فهمت</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            const modalInstance = new bootstrap.Modal(modal);
+            modalInstance.show();
+            modal.addEventListener('hidden.bs.modal', () => document.body.removeChild(modal));
+        }
+
+        function showIssueModal(details) {
+            const complaintsHtml = details.complaints.map(complaint => `<li>${complaint}</li>`).join('');
+            const actionsHtml = details.suggestedActions.map(action => `<li class="text-primary">${action}</li>`).join('');
+
+            const modal = document.createElement('div');
+            modal.className = 'modal fade';
+            modal.innerHTML = `
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">${details.title}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>الشكاوى المسجلة:</h6>
+                                    <ul class="list-unstyled">
+                                        ${complaintsHtml}
+                                    </ul>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6>الإجراءات المقترحة:</h6>
+                                    <ul class="list-unstyled">
+                                        ${actionsHtml}
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="alert alert-warning mt-3">
+                                <strong>تأثير محتمل:</strong> ${details.impact}
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            const modalInstance = new bootstrap.Modal(modal);
+            modalInstance.show();
+            modal.addEventListener('hidden.bs.modal', () => document.body.removeChild(modal));
+        }
+
+        function showOpportunityModal(opportunity) {
+            const modal = document.createElement('div');
+            modal.className = 'modal fade';
+            modal.innerHTML = `
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">${opportunity.title}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p><strong>الإجراء:</strong> ${opportunity.action}</p>
+                            <p><strong>النتيجة المتوقعة:</strong> ${opportunity.expectedOutcome}</p>
+                            <p><strong>الميزانية المطلوبة:</strong> ${opportunity.budget}</p>
+                            <p><strong>الجدول الزمني:</strong> ${opportunity.timeline}</p>
+                            <div class="alert alert-success">
+                                <strong>💡 تم تسجيل الفرصة وسيتم التواصل مع الفرق المختصة</strong>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-success" data-bs-dismiss="modal">تم</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            const modalInstance = new bootstrap.Modal(modal);
+            modalInstance.show();
+            modal.addEventListener('hidden.bs.modal', () => document.body.removeChild(modal));
+        }
+
         // Initialize tooltips
         document.addEventListener('DOMContentLoaded', function() {
             var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
@@ -1985,6 +2464,112 @@
         
         .metric-trend i {
             font-size: 0.8rem;
+        }
+        
+        /* Actionable Issues Alert System Styles */
+        .critical-issues-container {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        
+        .positive-trends-container {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        
+        .issue-card {
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 15px;
+            background: white;
+            transition: all 0.2s ease;
+        }
+        
+        .issue-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transform: translateY(-1px);
+        }
+        
+        .issue-card.critical {
+            border-left: 4px solid #dc3545;
+            background: linear-gradient(135deg, #fff5f5, #ffffff);
+        }
+        
+        .issue-card.high {
+            border-left: 4px solid #ffc107;
+            background: linear-gradient(135deg, #fffbf0, #ffffff);
+        }
+        
+        .issue-card.medium {
+            border-left: 4px solid #fd7e14;
+            background: linear-gradient(135deg, #fff8f0, #ffffff);
+        }
+        
+        .trend-card.positive {
+            border: 1px solid #28a745;
+            border-radius: 8px;
+            padding: 15px;
+            background: linear-gradient(135deg, #f0fff4, #ffffff);
+            transition: all 0.2s ease;
+        }
+        
+        .trend-card.positive:hover {
+            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.2);
+            transform: translateY(-1px);
+        }
+        
+        .issue-priority, .trend-indicator {
+            font-size: 1.2rem;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+        
+        .issue-title, .trend-title {
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 0.95rem;
+            line-height: 1.3;
+        }
+        
+        .issue-details, .trend-details {
+            font-size: 0.85rem;
+            line-height: 1.4;
+        }
+        
+        .issue-action, .trend-action {
+            margin-bottom: 4px;
+        }
+        
+        .issue-impact, .issue-timeline, .trend-opportunity, .trend-insight {
+            margin-bottom: 4px;
+        }
+        
+        .issue-actions, .trend-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        
+        .issue-actions .btn, .trend-actions .btn {
+            font-size: 0.75rem;
+            padding: 4px 8px;
+        }
+        
+        .escalation-summary {
+            border: 1px solid #e3f2fd;
+        }
+        
+        .escalation-rules small {
+            font-size: 0.75rem;
+            line-height: 1.3;
+        }
+        
+        .escalation-rules .fas.fa-circle {
+            font-size: 0.5rem;
         }
     </style>
 </body>
