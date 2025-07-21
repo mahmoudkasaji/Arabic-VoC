@@ -1,7 +1,13 @@
 #!/usr/bin/env python3
 """
-Comprehensive User Acceptance Testing (UAT) for Actions Required Workflow Tab
-Testing all components: navigation, priorities, templates, tracking, performance, knowledge base
+Comprehensive User Acceptance Testing (UAT) for July 21, 2025 Platform Enhancements
+Testing all major components implemented today:
+- Survey Design System Implementation
+- Survey Builder Progressive Disclosure Enhancement
+- Executive Dashboard Mobile Optimization
+- Analyst Dashboard Comprehensive Overhaul (with Journey Map Integration)
+- Navigation & User Management Enhancements
+- Homepage & Platform Rebranding
 """
 
 import requests
@@ -11,7 +17,7 @@ import re
 import json
 from urllib.parse import urljoin
 
-class WorkflowUAT:
+class ComprehensivePlatformUAT:
     def __init__(self, base_url="http://localhost:5000"):
         self.base_url = base_url
         self.session = requests.Session()
@@ -61,13 +67,13 @@ class WorkflowUAT:
                      "dashboardTabs container found")
         
         if tab_container:
-            # Test all three tabs exist
+            # Test all four tabs exist (including Journey Map)
             tab_buttons = tab_container.find_all('button', {'class': re.compile(r'nav-link')})
-            self.log_test("Navigation - Tab Count", len(tab_buttons) == 3,
+            self.log_test("Navigation - Tab Count", len(tab_buttons) == 4,
                          f"Found {len(tab_buttons)} tabs")
             
-            # Test tab labels and order
-            expected_tabs = ['التحليلات والمقاييس', 'الإجراءات المطلوبة', 'الرؤى الذكية']
+            # Test tab labels and order (updated for July 21 changes)
+            expected_tabs = ['التحليلات والمقاييس', 'خريطة رحلة العميل', 'الإجراءات المطلوبة', 'الرؤى الذكية']
             actual_tabs = [btn.get_text().strip() for btn in tab_buttons]
             
             for i, expected in enumerate(expected_tabs):
@@ -371,7 +377,113 @@ class WorkflowUAT:
             'results': self.test_results
         }
 
+    def test_survey_design_system(self, response):
+        """Test July 21: Survey Design System Implementation"""
+        soup = BeautifulSoup(response.content, 'html.parser')
+        
+        # Test for design system CSS
+        css_links = soup.find_all('link', {'rel': 'stylesheet'})
+        design_system_loaded = any('survey-design-system.css' in link.get('href', '') for link in css_links)
+        self.log_test("Design System - CSS Loaded", design_system_loaded,
+                     "survey-design-system.css found in head")
+        
+        # Test standardized button classes
+        buttons = soup.find_all('button')
+        has_design_system_buttons = any('btn-primary' in btn.get('class', []) or 
+                                       'btn-secondary' in btn.get('class', []) or
+                                       'btn-outline' in ' '.join(btn.get('class', [])) for btn in buttons)
+        self.log_test("Design System - Button Classes", has_design_system_buttons,
+                     f"Found {len(buttons)} buttons with design system classes")
+
+    def test_journey_map_integration(self, response):
+        """Test July 21: Journey Map Integration in Analyst Dashboard"""
+        soup = BeautifulSoup(response.content, 'html.parser')
+        
+        # Test journey map tab exists
+        journey_tab = soup.find('button', {'id': 'journey-tab'})
+        self.log_test("Journey Map - Tab Present", journey_tab is not None,
+                     "Journey map tab found in navigation")
+        
+        # Test journey map content section
+        journey_content = soup.find('div', {'id': 'journey'})
+        self.log_test("Journey Map - Content Section", journey_content is not None,
+                     "Journey map content section exists")
+        
+        # Test iframe integration
+        if journey_content:
+            iframe = journey_content.find('iframe', {'id': 'journeyMapFrame'})
+            self.log_test("Journey Map - Iframe Integration", iframe is not None,
+                         "Journey map iframe found for embedding")
+
+    def test_executive_dashboard_enhancements(self):
+        """Test July 21: Executive Dashboard Mobile Optimization"""
+        try:
+            response = self.session.get(f"{self.base_url}/dashboards/executive")
+            soup = BeautifulSoup(response.content, 'html.parser')
+            
+            # Test responsive viewport meta tag
+            viewport = soup.find('meta', {'name': 'viewport'})
+            self.log_test("Mobile - Viewport Meta", viewport is not None,
+                         "Viewport meta tag for mobile responsiveness")
+            
+            # Test for export functionality
+            export_buttons = soup.find_all('button', string=re.compile(r'تصدير|export', re.IGNORECASE))
+            self.log_test("Executive - Export Buttons", len(export_buttons) > 0,
+                         f"Found {len(export_buttons)} export buttons")
+                         
+        except Exception as e:
+            self.log_test("Executive Dashboard - Enhancement Test", False, str(e))
+
+    def test_platform_rebranding(self):
+        """Test July 21: Platform Rebranding Changes"""
+        try:
+            response = self.session.get(f"{self.base_url}/")
+            soup = BeautifulSoup(response.content, 'html.parser')
+            
+            # Test updated title
+            title = soup.find('title')
+            if title:
+                title_text = title.get_text()
+                has_new_branding = "صوت العميل" in title_text
+                self.log_test("Rebranding - Title Updated", has_new_branding,
+                             f"Title: {title_text}")
+                         
+        except Exception as e:
+            self.log_test("Rebranding - Platform Test", False, str(e))
+
 if __name__ == "__main__":
-    # Run comprehensive UAT
-    uat = WorkflowUAT()
-    results = uat.run_comprehensive_uat()
+    print("🔄 Starting Comprehensive Platform Enhancement UAT (July 21, 2025)...")
+    print("=" * 80)
+    
+    # Initialize test suite
+    uat = ComprehensivePlatformUAT()
+    
+    try:
+        # Run comprehensive UAT with July 21st enhancements
+        response = uat.test_page_load()
+        if response:
+            # Run existing tests
+            results = uat.run_comprehensive_uat()
+            
+            # Run new July 21st enhancement tests
+            print("\n🆕 JULY 21ST ENHANCEMENT TESTS")
+            print("-" * 40)
+            uat.test_survey_design_system(response)
+            uat.test_journey_map_integration(response)
+        
+        # Additional tests requiring separate requests
+        uat.test_executive_dashboard_enhancements()
+        uat.test_platform_rebranding()
+        
+        # Generate final comprehensive report
+        uat.generate_report()
+        
+    except KeyboardInterrupt:
+        print("\n⏹️  Testing interrupted by user")
+    except Exception as e:
+        print(f"\n❌ Critical error during testing: {e}")
+        import traceback
+        traceback.print_exc()
+    
+    print("\n✅ Comprehensive Platform Enhancement UAT Complete!")
+    print("=" * 80)
