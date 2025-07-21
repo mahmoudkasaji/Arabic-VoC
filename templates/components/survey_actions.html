@@ -1,0 +1,359 @@
+<!-- Survey Action Bar - Consistent action buttons across survey pages -->
+<div class="survey-actions-bar" id="surveyActions">
+    <div class="container-fluid">
+        <div class="row align-items-center">
+            <!-- Primary Actions (Left side in RTL) -->
+            <div class="col-md-6">
+                <div class="primary-actions">
+                    <!-- Save Button -->
+                    <button type="button" class="btn btn-primary-action" id="saveBtn" onclick="SurveyActions.save()">
+                        <i class="fas fa-save me-2"></i>
+                        <span class="btn-text">حفظ</span>
+                        <span class="btn-status" id="saveStatus"></span>
+                    </button>
+                    
+                    <!-- Publish/Share Button -->
+                    <button type="button" class="btn btn-success-action" id="publishBtn" onclick="SurveyActions.publish()">
+                        <i class="fas fa-share-alt me-2"></i>
+                        <span class="btn-text">نشر</span>
+                    </button>
+                    
+                    <!-- Preview Button -->
+                    <button type="button" class="btn btn-info-action" id="previewBtn" onclick="SurveyActions.preview()">
+                        <i class="fas fa-eye me-2"></i>
+                        <span class="btn-text">معاينة</span>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Secondary Actions (Right side in RTL) -->
+            <div class="col-md-6 text-start">
+                <div class="secondary-actions">
+                    <!-- Help Button -->
+                    <button type="button" class="btn btn-outline-info" id="helpBtn" onclick="SurveyActions.help()">
+                        <i class="fas fa-question-circle me-2"></i>مساعدة
+                    </button>
+                    
+                    <!-- Settings/Options -->
+                    <div class="dropdown d-inline-block">
+                        <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="optionsDropdown" 
+                                data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-cog me-2"></i>خيارات
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="optionsDropdown">
+                            <li><a class="dropdown-item" href="#" onclick="SurveyActions.duplicate()">
+                                <i class="fas fa-copy me-2"></i>نسخ الاستطلاع
+                            </a></li>
+                            <li><a class="dropdown-item" href="#" onclick="SurveyActions.export()">
+                                <i class="fas fa-download me-2"></i>تصدير
+                            </a></li>
+                            <li><a class="dropdown-item" href="#" onclick="SurveyActions.settings()">
+                                <i class="fas fa-sliders-h me-2"></i>إعدادات متقدمة
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-danger" href="#" onclick="SurveyActions.delete()">
+                                <i class="fas fa-trash me-2"></i>حذف الاستطلاع
+                            </a></li>
+                        </ul>
+                    </div>
+                    
+                    <!-- Cancel/Back Button -->
+                    <button type="button" class="btn btn-outline-secondary" id="cancelBtn" onclick="SurveyActions.cancel()">
+                        <i class="fas fa-times me-2"></i>إلغاء
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Progress Indicator (for multi-step processes) -->
+        <div class="progress-container" id="progressContainer" style="display: none;">
+            <div class="progress-bar-custom">
+                <div class="progress-fill" id="progressFill" style="width: 0%;"></div>
+            </div>
+            <div class="progress-text" id="progressText">الخطوة 1 من 3</div>
+        </div>
+    </div>
+</div>
+
+<!-- Survey Actions Styles -->
+<style>
+.survey-actions-bar {
+    background: #ffffff;
+    border-top: 2px solid #e9ecef;
+    border-bottom: 1px solid #dee2e6;
+    padding: 1rem 0;
+    margin: 2rem 0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.primary-actions {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+}
+
+.secondary-actions {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+/* Action Button Styles */
+.btn-primary-action {
+    background: #2E8B57;
+    border: none;
+    color: white;
+    padding: 0.6rem 1.2rem;
+    border-radius: 0.375rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.btn-primary-action:hover {
+    background: #236B47;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(46, 139, 87, 0.3);
+}
+
+.btn-success-action {
+    background: #28a745;
+    border: none;
+    color: white;
+    padding: 0.6rem 1.2rem;
+    border-radius: 0.375rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-success-action:hover {
+    background: #218838;
+    transform: translateY(-1px);
+}
+
+.btn-info-action {
+    background: #17a2b8;
+    border: none;
+    color: white;
+    padding: 0.6rem 1.2rem;
+    border-radius: 0.375rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-info-action:hover {
+    background: #138496;
+    transform: translateY(-1px);
+}
+
+.btn-status {
+    font-size: 0.8rem;
+    margin-right: 0.5rem;
+    opacity: 0.8;
+}
+
+.btn-status.saving {
+    color: #ffc107;
+}
+
+.btn-status.saved {
+    color: #28a745;
+}
+
+.btn-status.error {
+    color: #dc3545;
+}
+
+/* Progress Indicator */
+.progress-container {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #e9ecef;
+}
+
+.progress-bar-custom {
+    width: 100%;
+    height: 6px;
+    background: #e9ecef;
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 0.5rem;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #2E8B57, #28a745);
+    transition: width 0.3s ease;
+    border-radius: 3px;
+}
+
+.progress-text {
+    font-size: 0.9rem;
+    color: #6c757d;
+    text-align: center;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .survey-actions-bar {
+        padding: 0.75rem 0;
+    }
+    
+    .primary-actions {
+        flex-direction: column;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+    }
+    
+    .secondary-actions {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        justify-content: center;
+    }
+    
+    .primary-actions .btn,
+    .secondary-actions .btn {
+        min-width: 120px;
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+    }
+    
+    .btn-text {
+        display: inline;
+    }
+}
+
+@media (max-width: 576px) {
+    .primary-actions .btn,
+    .secondary-actions .btn {
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+}
+
+/* RTL Support */
+[dir="rtl"] .secondary-actions {
+    justify-content: flex-end;
+}
+
+[dir="rtl"] .btn .fas {
+    margin-left: 0.5rem;
+    margin-right: 0;
+}
+</style>
+
+<!-- Survey Actions JavaScript -->
+<script>
+// Survey Actions Controller
+window.SurveyActions = {
+    // Save function
+    save: function() {
+        const saveBtn = document.getElementById('saveBtn');
+        const saveStatus = document.getElementById('saveStatus');
+        
+        // Show saving state
+        saveStatus.textContent = '...جاري الحفظ';
+        saveStatus.className = 'btn-status saving';
+        saveBtn.disabled = true;
+        
+        // Simulate save operation (replace with actual save logic)
+        setTimeout(() => {
+            saveStatus.textContent = 'تم الحفظ ✓';
+            saveStatus.className = 'btn-status saved';
+            saveBtn.disabled = false;
+            
+            // Hide status after 2 seconds
+            setTimeout(() => {
+                saveStatus.textContent = '';
+                saveStatus.className = 'btn-status';
+            }, 2000);
+        }, 1000);
+    },
+    
+    // Publish function
+    publish: function() {
+        // Implementation for publishing survey
+        alert('سيتم تنفيذ وظيفة النشر قريباً');
+    },
+    
+    // Preview function
+    preview: function() {
+        // Open preview in new window/tab
+        window.open('/surveys/preview', '_blank');
+    },
+    
+    // Help function
+    help: function() {
+        // Open help modal or redirect to help page
+        alert('سيتم عرض المساعدة قريباً');
+    },
+    
+    // Cancel function
+    cancel: function() {
+        if (confirm('هل أنت متأكد من إلغاء التغييرات؟')) {
+            history.back();
+        }
+    },
+    
+    // Duplicate survey
+    duplicate: function() {
+        alert('سيتم نسخ الاستطلاع قريباً');
+    },
+    
+    // Export survey
+    export: function() {
+        alert('سيتم تصدير الاستطلاع قريباً');
+    },
+    
+    // Survey settings
+    settings: function() {
+        alert('سيتم عرض الإعدادات المتقدمة قريباً');
+    },
+    
+    // Delete survey
+    delete: function() {
+        if (confirm('هل أنت متأكد من حذف هذا الاستطلاع؟ لا يمكن التراجع عن هذا الإجراء.')) {
+            alert('سيتم حذف الاستطلاع قريباً');
+        }
+    },
+    
+    // Update progress (for multi-step processes)
+    updateProgress: function(step, totalSteps, description = '') {
+        const progressContainer = document.getElementById('progressContainer');
+        const progressFill = document.getElementById('progressFill');
+        const progressText = document.getElementById('progressText');
+        
+        if (totalSteps > 1) {
+            progressContainer.style.display = 'block';
+            const percentage = (step / totalSteps) * 100;
+            progressFill.style.width = percentage + '%';
+            
+            let text = `الخطوة ${step} من ${totalSteps}`;
+            if (description) {
+                text += ` - ${description}`;
+            }
+            progressText.textContent = text;
+        } else {
+            progressContainer.style.display = 'none';
+        }
+    }
+};
+
+// Auto-save functionality (optional)
+let autoSaveTimer;
+function enableAutoSave(intervalSeconds = 30) {
+    autoSaveTimer = setInterval(() => {
+        SurveyActions.save();
+    }, intervalSeconds * 1000);
+}
+
+function disableAutoSave() {
+    if (autoSaveTimer) {
+        clearInterval(autoSaveTimer);
+    }
+}
+</script>

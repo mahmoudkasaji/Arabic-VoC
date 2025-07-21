@@ -1,0 +1,213 @@
+<!-- Survey Feature Header - Consistent across all survey pages -->
+<div class="survey-header-section">
+    <div class="container-fluid">
+        <!-- Platform Branding -->
+        <div class="survey-brand-bar">
+            <a href="/" class="survey-brand-link">
+                <i class="fas fa-home me-2"></i>
+                <span class="brand-main">منصة صوت العميل العربية</span>
+                <span class="brand-divider">|</span>
+                <span class="brand-section">الاستطلاعات</span>
+            </a>
+        </div>
+        
+        <!-- Breadcrumb Navigation -->
+        <nav aria-label="breadcrumb" class="survey-breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="/"><i class="fas fa-home me-1"></i>الرئيسية</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="/surveys">الاستطلاعات</a>
+                </li>
+                <!-- Dynamic breadcrumb items will be inserted here -->
+                <li class="breadcrumb-item active" id="currentPageBreadcrumb" aria-current="page">
+                    <!-- Current page name -->
+                </li>
+            </ol>
+        </nav>
+        
+        <!-- Page Title and Description -->
+        <div class="survey-page-header">
+            <h1 class="page-title" id="surveyPageTitle">
+                <!-- Page title will be set dynamically -->
+            </h1>
+            <p class="page-description" id="surveyPageDescription">
+                <!-- Page description will be set dynamically -->
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- Survey Header Styles -->
+<style>
+.survey-header-section {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-bottom: 2px solid #dee2e6;
+    padding: 1rem 0 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.survey-brand-bar {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #dee2e6;
+    margin-bottom: 1rem;
+}
+
+.survey-brand-link {
+    text-decoration: none;
+    color: #2E8B57;
+    font-weight: 600;
+    font-size: 1.1rem;
+    transition: color 0.3s ease;
+}
+
+.survey-brand-link:hover {
+    color: #236B47;
+}
+
+.brand-main {
+    font-family: 'Amiri', serif;
+    font-weight: 700;
+}
+
+.brand-divider {
+    color: #6c757d;
+    margin: 0 0.5rem;
+}
+
+.brand-section {
+    color: #495057;
+    font-weight: 500;
+}
+
+.survey-breadcrumb {
+    margin-bottom: 1rem;
+}
+
+.breadcrumb {
+    background: none;
+    padding: 0;
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+    content: "‹";
+    color: #6c757d;
+    font-weight: bold;
+    margin: 0 0.5rem;
+}
+
+.breadcrumb-item a {
+    color: #2E8B57;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.breadcrumb-item a:hover {
+    color: #236B47;
+}
+
+.breadcrumb-item.active {
+    color: #495057;
+    font-weight: 500;
+}
+
+.survey-page-header {
+    padding-top: 0.5rem;
+}
+
+.page-title {
+    font-family: 'Amiri', serif;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+    font-size: 2rem;
+}
+
+.page-description {
+    color: #6c757d;
+    margin-bottom: 0;
+    font-size: 1rem;
+}
+
+/* RTL Support */
+[dir="rtl"] .breadcrumb-item + .breadcrumb-item::before {
+    content: "›";
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .survey-brand-link {
+        font-size: 1rem;
+    }
+    
+    .brand-divider,
+    .brand-section {
+        display: none;
+    }
+    
+    .page-title {
+        font-size: 1.5rem;
+    }
+    
+    .breadcrumb {
+        font-size: 0.8rem;
+    }
+}
+</style>
+
+<!-- Survey Navigation JavaScript -->
+<script>
+// Survey Navigation Helper Functions
+window.SurveyNavigation = {
+    // Initialize page with title, description, and breadcrumb
+    setPage: function(title, description, breadcrumbItems = []) {
+        // Set page title and description
+        document.getElementById('surveyPageTitle').textContent = title;
+        document.getElementById('surveyPageDescription').textContent = description;
+        document.getElementById('currentPageBreadcrumb').textContent = title;
+        
+        // Update browser title
+        document.title = title + ' - منصة صوت العميل العربية';
+        
+        // Add additional breadcrumb items if provided
+        if (breadcrumbItems.length > 0) {
+            const breadcrumb = document.querySelector('.breadcrumb');
+            const currentItem = document.getElementById('currentPageBreadcrumb');
+            
+            // Insert additional items before current page
+            breadcrumbItems.forEach(item => {
+                const li = document.createElement('li');
+                li.className = 'breadcrumb-item';
+                
+                if (item.url) {
+                    const a = document.createElement('a');
+                    a.href = item.url;
+                    a.textContent = item.title;
+                    li.appendChild(a);
+                } else {
+                    li.textContent = item.title;
+                }
+                
+                breadcrumb.insertBefore(li, currentItem);
+            });
+        }
+    },
+    
+    // Set active page indicator in main navigation
+    setActiveNav: function(section) {
+        // Remove active class from all nav items
+        document.querySelectorAll('.navbar-nav .nav-link').forEach(link => {
+            link.classList.remove('active');
+        });
+        
+        // Add active class to current section
+        const activeLink = document.querySelector(`[href*="${section}"]`);
+        if (activeLink) {
+            activeLink.classList.add('active');
+        }
+    }
+};
+</script>
