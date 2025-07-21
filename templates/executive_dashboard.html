@@ -223,11 +223,157 @@
         .status-warning { border-left-color: #ffc107; }
         .status-poor { border-left-color: #dc3545; }
 
-        /* Responsive */
+        /* Executive Navigation Styles */
+        .executive-nav {
+            border-bottom: 3px solid #f8f9fa;
+        }
+
+        .executive-nav .nav-link {
+            font-weight: 600;
+            color: #495057;
+            border: none;
+            border-bottom: 3px solid transparent;
+            border-radius: 0;
+            padding: 1rem 1.5rem;
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .executive-nav .nav-link:hover {
+            color: var(--primary-color);
+            border-bottom-color: rgba(46, 139, 87, 0.3);
+            background: rgba(46, 139, 87, 0.05);
+        }
+
+        .executive-nav .nav-link.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+            background: white;
+        }
+
+        .executive-nav .badge {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+        }
+
+        /* Export Button Styles */
+        .export-buttons {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-export {
+            min-width: 120px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-export.loading::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            animation: loading-shimmer 1.5s infinite;
+        }
+
+        @keyframes loading-shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        /* Critical Alerts Styling */
+        .alert-critical {
+            border-left: 4px solid #dc3545;
+            background: #f8d7da;
+        }
+
+        .alert-warning {
+            border-left: 4px solid #ffc107;
+            background: #fff3cd;
+        }
+
+        /* Responsive Design */
         @media (max-width: 768px) {
-            .dashboard-title { font-size: 2rem; }
-            .kpi-value { font-size: 2rem; }
-            .chart-container { height: 250px; }
+            .dashboard-title { 
+                font-size: 2rem; 
+            }
+            
+            .kpi-value { 
+                font-size: 2rem; 
+            }
+            
+            .chart-container { 
+                height: 250px; 
+            }
+
+            /* Mobile Navigation */
+            .executive-nav {
+                flex-direction: column;
+                border-bottom: none;
+            }
+
+            .executive-nav .nav-item {
+                width: 100%;
+            }
+
+            .executive-nav .nav-link {
+                width: 100%;
+                min-height: 50px;
+                padding: 0.75rem 1rem;
+                border-bottom: 1px solid #dee2e6;
+                border-radius: 0;
+                justify-content: flex-start;
+            }
+
+            .executive-nav .nav-link.active {
+                border-left: 4px solid var(--primary-color);
+                border-bottom-color: #dee2e6;
+                background: rgba(46, 139, 87, 0.1);
+            }
+
+            /* Mobile Export Buttons */
+            .export-buttons {
+                flex-direction: column;
+            }
+
+            .btn-export {
+                width: 100%;
+                min-width: auto;
+                margin-bottom: 0.5rem;
+            }
+
+            /* Mobile KPI Cards */
+            .kpi-card {
+                margin-bottom: 1rem;
+            }
+
+            .kpi-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .dashboard-header {
+                padding: 1rem;
+            }
+            
+            .dashboard-title {
+                font-size: 1.75rem;
+            }
+
+            .executive-nav .nav-link {
+                font-size: 0.9rem;
+                padding: 0.5rem;
+            }
         }
     </style>
 </head>
@@ -317,104 +463,237 @@
                         </div>
                     </div>
                     
-                    <!-- Analytics Navigation Tabs -->
-                    <ul class="nav nav-tabs" id="analyticsTab" role="tablist">
+                    <!-- Consolidated Executive Navigation -->
+                    <ul class="nav nav-tabs executive-nav" id="executiveTab" role="tablist">
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link active" id="trends-tab" data-bs-toggle="tab" data-bs-target="#trends" type="button" role="tab">
-                                <i class="fas fa-chart-line me-2"></i>اتجاهات الأداء
+                            <button class="nav-link active" id="executive-summary-tab" data-bs-toggle="tab" data-bs-target="#executive-summary" type="button" role="tab">
+                                <i class="fas fa-tachometer-alt me-2"></i>
+                                الملخص التنفيذي
+                                <span class="badge bg-danger ms-2">3</span>
                             </button>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="channels-tab" data-bs-toggle="tab" data-bs-target="#channels" type="button" role="tab">
-                                <i class="fas fa-chart-pie me-2"></i>توزيع القنوات
+                            <button class="nav-link" id="customer-intelligence-tab" data-bs-toggle="tab" data-bs-target="#customer-intelligence" type="button" role="tab">
+                                <i class="fas fa-brain me-2"></i>
+                                ذكاء العملاء
+                                <span class="badge bg-warning ms-2">7</span>
                             </button>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="sentiment-tab" data-bs-toggle="tab" data-bs-target="#sentiment" type="button" role="tab">
-                                <i class="fas fa-heart me-2"></i>تحليل المشاعر
-                            </button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="financial-tab" data-bs-toggle="tab" data-bs-target="#financial" type="button" role="tab">
-                                <i class="fas fa-dollar-sign me-2"></i>التأثير المالي
-                            </button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="reports-tab" data-bs-toggle="tab" data-bs-target="#reports" type="button" role="tab">
-                                <i class="fas fa-file-alt me-2"></i>التقارير
+                            <button class="nav-link" id="detailed-reports-tab" data-bs-toggle="tab" data-bs-target="#detailed-reports" type="button" role="tab">
+                                <i class="fas fa-file-chart-line me-2"></i>
+                                التقارير التفصيلية
                             </button>
                         </li>
                     </ul>
                     
                     <!-- Tab Content -->
-                    <div class="tab-content" id="analyticsTabContent">
-                        <!-- Trends Tab -->
-                        <div class="tab-pane fade show active" id="trends" role="tabpanel">
+                    <div class="tab-content" id="executiveTabContent">
+                        <!-- Executive Summary Tab -->
+                        <div class="tab-pane fade show active" id="executive-summary" role="tabpanel">
                             <div class="row mt-3">
+                                <!-- Critical Alerts -->
+                                <div class="col-12 mb-4">
+                                    <h6 class="text-danger mb-3">
+                                        <i class="fas fa-exclamation-triangle me-2"></i>
+                                        التنبيهات العاجلة (3)
+                                    </h6>
+                                    <div class="alert alert-critical mb-2">
+                                        <i class="fas fa-times-circle text-danger me-2"></i>
+                                        <strong>انخفاض مفاجئ في الرضا:</strong> رضا العملاء انخفض 15% خلال 24 ساعة (من 78% إلى 63%)
+                                    </div>
+                                    <div class="alert alert-critical mb-2">
+                                        <i class="fas fa-bug text-danger me-2"></i>
+                                        <strong>مشكلة تقنية:</strong> 47% من العملاء يبلغون عن صعوبات في عملية الدفع منذ 6 ساعات
+                                    </div>
+                                    <div class="alert alert-warning mb-2">
+                                        <i class="fas fa-clock text-warning me-2"></i>
+                                        <strong>تأخير في الاستجابة:</strong> متوسط وقت الاستجابة ارتفع إلى 4.2 ساعة (الهدف: 2 ساعة)
+                                    </div>
+                                </div>
+
+                                <!-- Key Performance Summary -->
                                 <div class="col-lg-8">
                                     <div class="metrics-display bg-white p-4 rounded">
-                                        <h6 class="text-primary mb-3">اتجاه رضا العملاء - آخر 6 أشهر</h6>
+                                        <h6 class="text-primary mb-3">ملخص الأداء - آخر 7 أيام</h6>
                                         <div class="row">
-                                            <div class="col-2 text-center">
-                                                <div class="metric-month">
-                                                    <div class="h5 text-success">78%</div>
-                                                    <small>يونيو</small>
+                                            <div class="col-3 text-center border-end">
+                                                <div class="h4 text-danger">63%</div>
+                                                <small class="text-muted">رضا العملاء</small>
+                                                <div class="text-danger mt-1">
+                                                    <i class="fas fa-arrow-down"></i> -15%
                                                 </div>
                                             </div>
-                                            <div class="col-2 text-center">
-                                                <div class="metric-month">
-                                                    <div class="h5 text-success">75%</div>
-                                                    <small>مايو</small>
+                                            <div class="col-3 text-center border-end">
+                                                <div class="h4 text-warning">2,847</div>
+                                                <small class="text-muted">الاستجابات</small>
+                                                <div class="text-warning mt-1">
+                                                    <i class="fas fa-minus"></i> -3%
                                                 </div>
                                             </div>
-                                            <div class="col-2 text-center">
-                                                <div class="metric-month">
-                                                    <div class="h5 text-info">70%</div>
-                                                    <small>أبريل</small>
+                                            <div class="col-3 text-center border-end">
+                                                <div class="h4 text-danger">-2.1</div>
+                                                <small class="text-muted">مؤشر المشاعر</small>
+                                                <div class="text-danger mt-1">
+                                                    <i class="fas fa-arrow-down"></i> سلبي
                                                 </div>
                                             </div>
-                                            <div class="col-2 text-center">
-                                                <div class="metric-month">
-                                                    <div class="h5 text-info">72%</div>
-                                                    <small>مارس</small>
+                                            <div class="col-3 text-center">
+                                                <div class="h4 text-danger">4.2h</div>
+                                                <small class="text-muted">وقت الاستجابة</small>
+                                                <div class="text-danger mt-1">
+                                                    <i class="fas fa-arrow-up"></i> +110%
                                                 </div>
                                             </div>
-                                            <div class="col-2 text-center">
-                                                <div class="metric-month">
-                                                    <div class="h5 text-warning">68%</div>
-                                                    <small>فبراير</small>
-                                                </div>
-                                            </div>
-                                            <div class="col-2 text-center">
-                                                <div class="metric-month">
-                                                    <div class="h5 text-warning">65%</div>
-                                                    <small>يناير</small>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="progress mt-3" style="height: 8px;">
-                                            <div class="progress-bar bg-success" style="width: 78%"></div>
-                                        </div>
-                                        <div class="d-flex justify-content-between mt-2">
-                                            <small class="text-muted">نمو 13% خلال 6 أشهر</small>
-                                            <small class="text-success"><i class="fas fa-arrow-up"></i> اتجاه إيجابي</small>
                                         </div>
                                     </div>
                                 </div>
+
+                                <!-- Quick Actions -->
                                 <div class="col-lg-4">
-                                    <div class="trend-insights p-3">
-                                        <h6>رؤى الاتجاهات</h6>
-                                        <div class="insight-item mb-2">
-                                            <i class="fas fa-arrow-up text-success me-2"></i>
-                                            <span>تحسن 12% في رضا العملاء</span>
+                                    <div class="bg-light p-3 rounded">
+                                        <h6 class="mb-3">إجراءات عاجلة مطلوبة</h6>
+                                        <button class="btn btn-danger btn-sm w-100 mb-2">
+                                            <i class="fas fa-phone me-2"></i>اتصال طوارئ - فريق التقنية
+                                        </button>
+                                        <button class="btn btn-warning btn-sm w-100 mb-2">
+                                            <i class="fas fa-envelope me-2"></i>إشعار العملاء المتأثرين
+                                        </button>
+                                        <button class="btn btn-info btn-sm w-100">
+                                            <i class="fas fa-chart-line me-2"></i>تحليل تفصيلي للمشكلة
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Customer Intelligence Tab -->
+                        <div class="tab-pane fade" id="customer-intelligence" role="tabpanel">
+                            <div class="row mt-3">
+                                <!-- Sentiment Analysis -->
+                                <div class="col-lg-6 mb-4">
+                                    <div class="bg-white p-4 rounded">
+                                        <h6 class="text-primary mb-3">تحليل المشاعر العربية</h6>
+                                        <div class="sentiment-breakdown">
+                                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                                <span>إيجابي</span>
+                                                <span class="text-success">23%</span>
+                                            </div>
+                                            <div class="progress mb-3" style="height: 6px;">
+                                                <div class="progress-bar bg-success" style="width: 23%"></div>
+                                            </div>
+                                            
+                                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                                <span>محايد</span>
+                                                <span class="text-warning">30%</span>
+                                            </div>
+                                            <div class="progress mb-3" style="height: 6px;">
+                                                <div class="progress-bar bg-warning" style="width: 30%"></div>
+                                            </div>
+                                            
+                                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                                <span>سلبي</span>
+                                                <span class="text-danger">47%</span>
+                                            </div>
+                                            <div class="progress mb-3" style="height: 6px;">
+                                                <div class="progress-bar bg-danger" style="width: 47%"></div>
+                                            </div>
                                         </div>
-                                        <div class="insight-item mb-2">
-                                            <i class="fas fa-chart-line text-info me-2"></i>
-                                            <span>نمو ثابت خلال 30 يوم</span>
+                                    </div>
+                                </div>
+
+                                <!-- Top Issues -->
+                                <div class="col-lg-6 mb-4">
+                                    <div class="bg-white p-4 rounded">
+                                        <h6 class="text-primary mb-3">القضايا الأكثر شيوعاً</h6>
+                                        <div class="issue-item d-flex justify-content-between mb-2">
+                                            <span>مشاكل الدفع الإلكتروني</span>
+                                            <span class="badge bg-danger">47%</span>
                                         </div>
-                                        <div class="insight-item">
-                                            <i class="fas fa-star text-warning me-2"></i>
-                                            <span>أعلى نقطة: 85% رضا</span>
+                                        <div class="issue-item d-flex justify-content-between mb-2">
+                                            <span>بطء في الاستجابة</span>
+                                            <span class="badge bg-warning">31%</span>
+                                        </div>
+                                        <div class="issue-item d-flex justify-content-between mb-2">
+                                            <span>صعوبة في التنقل</span>
+                                            <span class="badge bg-info">18%</span>
+                                        </div>
+                                        <div class="issue-item d-flex justify-content-between mb-2">
+                                            <span>نقص في المعلومات</span>
+                                            <span class="badge bg-secondary">12%</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Detailed Reports Tab -->
+                        <div class="tab-pane fade" id="detailed-reports" role="tabpanel">
+                            <div class="row mt-3">
+                                <!-- Export Options -->
+                                <div class="col-12 mb-4">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <h6 class="text-primary mb-0">تصدير التقارير</h6>
+                                        <div class="export-buttons">
+                                            <button class="btn btn-outline-primary btn-export" id="exportPDF">
+                                                <i class="fas fa-file-pdf me-2"></i>PDF
+                                            </button>
+                                            <button class="btn btn-outline-success btn-export" id="exportExcel">
+                                                <i class="fas fa-file-excel me-2"></i>Excel
+                                            </button>
+                                            <button class="btn btn-outline-info btn-export" id="exportCSV">
+                                                <i class="fas fa-file-csv me-2"></i>CSV
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Detailed Metrics Table -->
+                                <div class="col-12">
+                                    <div class="bg-white p-4 rounded">
+                                        <h6 class="text-primary mb-3">تفاصيل البيانات</h6>
+                                        <div class="table-responsive">
+                                            <table class="table table-striped">
+                                                <thead>
+                                                    <tr>
+                                                        <th>القناة</th>
+                                                        <th>عدد الاستجابات</th>
+                                                        <th>متوسط الرضا</th>
+                                                        <th>المشاعر السائدة</th>
+                                                        <th>الاتجاه</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>الموقع الإلكتروني</td>
+                                                        <td>1,247</td>
+                                                        <td><span class="text-danger">2.1/5</span></td>
+                                                        <td><span class="badge bg-danger">سلبي</span></td>
+                                                        <td><i class="fas fa-arrow-down text-danger"></i></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>التطبيق المحمول</td>
+                                                        <td>853</td>
+                                                        <td><span class="text-warning">3.2/5</span></td>
+                                                        <td><span class="badge bg-warning">محايد</span></td>
+                                                        <td><i class="fas fa-minus text-warning"></i></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>خدمة العملاء</td>
+                                                        <td>621</td>
+                                                        <td><span class="text-success">4.1/5</span></td>
+                                                        <td><span class="badge bg-success">إيجابي</span></td>
+                                                        <td><i class="fas fa-arrow-up text-success"></i></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>وسائل التواصل</td>
+                                                        <td>126</td>
+                                                        <td><span class="text-info">3.8/5</span></td>
+                                                        <td><span class="badge bg-info">إيجابي</span></td>
+                                                        <td><i class="fas fa-arrow-up text-success"></i></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
                                         </div>
                                     </div>
                                 </div>
@@ -851,10 +1130,179 @@
             }
         }
 
-        // Initialize dashboard when DOM is loaded
+        // Enhanced Export Functionality
+        class ExportManager {
+            constructor() {
+                this.initializeExportButtons();
+            }
+
+            initializeExportButtons() {
+                const exportPDF = document.getElementById('exportPDF');
+                const exportExcel = document.getElementById('exportExcel');
+                const exportCSV = document.getElementById('exportCSV');
+
+                if (exportPDF) {
+                    exportPDF.addEventListener('click', () => this.exportData('pdf'));
+                }
+                if (exportExcel) {
+                    exportExcel.addEventListener('click', () => this.exportData('excel'));
+                }
+                if (exportCSV) {
+                    exportCSV.addEventListener('click', () => this.exportData('csv'));
+                }
+            }
+
+            async exportData(format) {
+                const button = document.getElementById(`export${format.toUpperCase()}`);
+                if (!button) return;
+
+                // Add loading state
+                button.classList.add('loading');
+                button.disabled = true;
+                const originalText = button.innerHTML;
+                button.innerHTML = `<i class="fas fa-spinner fa-spin me-2"></i>جاري التصدير...`;
+
+                try {
+                    const response = await fetch(`/api/executive-dashboard/export?format=${format}`, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        }
+                    });
+
+                    if (response.ok) {
+                        const blob = await response.blob();
+                        const url = window.URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.style.display = 'none';
+                        a.href = url;
+                        a.download = `executive-dashboard-${new Date().toISOString().split('T')[0]}.${format}`;
+                        document.body.appendChild(a);
+                        a.click();
+                        window.URL.revokeObjectURL(url);
+                        document.body.removeChild(a);
+                    } else {
+                        throw new Error('Export failed');
+                    }
+                } catch (error) {
+                    console.error('Export error:', error);
+                    alert('فشل في تصدير البيانات. يرجى المحاولة مرة أخرى.');
+                } finally {
+                    // Remove loading state
+                    button.classList.remove('loading');
+                    button.disabled = false;
+                    button.innerHTML = originalText;
+                }
+            }
+        }
+
+        // Mobile Navigation Handler
+        class MobileNavigationManager {
+            constructor() {
+                this.initializeMobileNav();
+                this.handleWindowResize();
+            }
+
+            initializeMobileNav() {
+                // Handle mobile tab navigation
+                const navTabs = document.querySelectorAll('.executive-nav .nav-link');
+                navTabs.forEach(tab => {
+                    tab.addEventListener('click', (e) => {
+                        if (window.innerWidth <= 768) {
+                            // Auto-scroll to content on mobile after tab switch
+                            setTimeout(() => {
+                                const tabContent = document.getElementById('executiveTabContent');
+                                if (tabContent) {
+                                    tabContent.scrollIntoView({ 
+                                        behavior: 'smooth', 
+                                        block: 'start' 
+                                    });
+                                }
+                            }, 150);
+                        }
+                    });
+                });
+            }
+
+            handleWindowResize() {
+                window.addEventListener('resize', () => {
+                    // Update touch targets on orientation change
+                    this.updateTouchTargets();
+                });
+            }
+
+            updateTouchTargets() {
+                const navLinks = document.querySelectorAll('.executive-nav .nav-link');
+                navLinks.forEach(link => {
+                    if (window.innerWidth <= 768) {
+                        link.style.minHeight = '50px';
+                        link.style.padding = '0.75rem 1rem';
+                    } else {
+                        link.style.minHeight = '44px';
+                        link.style.padding = '1rem 1.5rem';
+                    }
+                });
+            }
+        }
+
+        // Badge Update System
+        class BadgeManager {
+            constructor() {
+                this.updateBadgeCounts();
+                this.startBadgeRefresh();
+            }
+
+            async updateBadgeCounts() {
+                try {
+                    const response = await fetch('/api/executive-dashboard/alerts');
+                    if (response.ok) {
+                        const data = await response.json();
+                        this.updateTabBadges(data);
+                    }
+                } catch (error) {
+                    console.log('Badge update failed:', error);
+                }
+            }
+
+            updateTabBadges(data) {
+                // Update Executive Summary badge (critical alerts)
+                const summaryBadge = document.querySelector('#executive-summary-tab .badge');
+                if (summaryBadge && data.critical) {
+                    summaryBadge.textContent = data.critical;
+                    summaryBadge.className = data.critical > 0 ? 'badge bg-danger ms-2' : 'badge bg-success ms-2';
+                }
+
+                // Update Customer Intelligence badge (warnings)
+                const intelligenceBadge = document.querySelector('#customer-intelligence-tab .badge');
+                if (intelligenceBadge && data.warnings) {
+                    intelligenceBadge.textContent = data.warnings;
+                    intelligenceBadge.className = data.warnings > 0 ? 'badge bg-warning ms-2' : 'badge bg-success ms-2';
+                }
+            }
+
+            startBadgeRefresh() {
+                setInterval(() => {
+                    this.updateBadgeCounts();
+                }, 60000); // Update badges every minute
+            }
+        }
+
+        // Initialize all systems when DOM is loaded
         document.addEventListener('DOMContentLoaded', () => {
-            console.log('DOM loaded, initializing dashboard...');
+            console.log('DOM loaded, initializing enhanced dashboard...');
+            
+            // Initialize all managers
             new ExecutiveDashboard();
+            new ExportManager();
+            new MobileNavigationManager();
+            new BadgeManager();
+
+            // Set active navigation
+            if (typeof StandardNavigation !== 'undefined') {
+                StandardNavigation.setActiveNav('analytics');
+            }
+
+            console.log('✓ Executive dashboard initialization complete');
         });
     </script>
 </body>
