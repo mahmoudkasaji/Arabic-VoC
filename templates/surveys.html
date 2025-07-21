@@ -2,6 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
     {% include 'components/head.html' %}
+    {% include 'components/standard_buttons.html' %}
     <title>إدارة الاستطلاعات - منصة صوت العميل العربية</title>
     
     <style>
@@ -129,9 +130,7 @@
     </style>
 </head>
 <body>
-    {% include 'components/navigation.html' %}
-    {% include 'components/survey_header.html' %}
-    {% include 'components/survey_actions.html' %}
+    {% include 'components/standard_header.html' %}
 
     <!-- Main Content -->
     <div class="container mt-4">
@@ -139,16 +138,16 @@
             <div class="col-12">
                 <!-- Quick Actions Row -->
                 <div class="d-flex justify-content-between align-items-center mb-4">
-                    <div class="d-flex gap-2">
-                        <a href="/surveys/builder" class="survey-btn survey-btn-primary survey-btn-md">
+                    <div class="survey-action-buttons">
+                        <a href="/surveys/builder" class="btn-primary-standard btn-md-standard">
                             <i class="fas fa-plus"></i>
                             إنشاء استطلاع جديد
                         </a>
-                        <a href="/surveys/templates" class="survey-btn survey-btn-outline survey-btn-md">
+                        <a href="/surveys/templates" class="btn-secondary-standard btn-md-standard">
                             <i class="fas fa-clone"></i>
                             استخدام قالب
                         </a>
-                        <a href="/surveys/design-system" class="survey-btn survey-btn-ghost survey-btn-md">
+                        <a href="/surveys/design-system" class="btn-secondary-standard btn-sm-standard">
                             <i class="fas fa-palette"></i>
                             نظام التصميم
                         </a>
@@ -353,13 +352,16 @@
     {% include 'components/scripts.html' %}
     
     <script>
-        // Initialize survey navigation
+        // Initialize standardized navigation
         document.addEventListener('DOMContentLoaded', function() {
-            SurveyNavigation.setPage(
-                'إدارة الاستطلاعات',
-                'عرض وإدارة جميع الاستطلاعات الخاصة بك'
-            );
-            SurveyNavigation.setActiveNav('surveys');
+            if (typeof StandardNavigation !== 'undefined') {
+                StandardNavigation.setActiveNav('surveys', 'manage');
+                StandardNavigation.setBreadcrumb([
+                    { title: 'الرئيسية', url: '/' },
+                    { title: 'الاستطلاعات', url: '/surveys' },
+                    { title: 'إدارة الاستطلاعات' }
+                ]);
+            }
         });
 
         // Survey filtering

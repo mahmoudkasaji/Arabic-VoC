@@ -3,6 +3,7 @@
 <html lang="ar" dir="rtl">
 <head>
     {% include 'components/head.html' %}
+    {% include 'components/standard_buttons.html' %}
     <title>منشئ الاستطلاعات - منصة صوت العميل العربية</title>
     
     <!-- Enhanced Drag Styles -->
@@ -753,9 +754,7 @@
     </style>
 </head>
 <body>
-    {% include 'components/navigation.html' %}
-    {% include 'components/survey_header.html' %}
-    {% include 'components/survey_actions.html' %}
+    {% include 'components/standard_header.html' %}
 
 
     <div class="builder-container">
@@ -967,15 +966,15 @@
         // Initialize survey builder when page loads
         let surveyBuilder;
         document.addEventListener('DOMContentLoaded', function() {
-            // Initialize survey navigation
-            SurveyNavigation.setPage(
-                'منشئ الاستطلاعات',
-                'أنشئ استطلاعات تفاعلية متقدمة باستخدام أدوات السحب والإفلات',
-                [
-                    { title: 'إنشاء', url: '/surveys/builder' }
-                ]
-            );
-            SurveyNavigation.setActiveNav('surveys');
+            // Initialize standardized navigation
+            if (typeof StandardNavigation !== 'undefined') {
+                StandardNavigation.setActiveNav('surveys', 'create');
+                StandardNavigation.setBreadcrumb([
+                    { title: 'الرئيسية', url: '/' },
+                    { title: 'الاستطلاعات', url: '/surveys' },
+                    { title: 'إنشاء استطلاع جديد' }
+                ]);
+            }
             
             console.log('DOM loaded, initializing survey builder...');
             surveyBuilder = new SurveyBuilder();

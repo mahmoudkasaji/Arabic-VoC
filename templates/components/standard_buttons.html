@@ -1,0 +1,266 @@
+<!-- Standardized Button Styles for Arabic VoC Platform -->
+<!-- All survey pages must use these consistent button classes -->
+
+<style>
+/* Base Button Styling */
+.btn-standard {
+    font-family: 'Cairo', sans-serif;
+    font-weight: 600;
+    font-size: 0.875rem;
+    line-height: 1.25;
+    text-decoration: none;
+    white-space: nowrap;
+    
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    
+    padding: 0.625rem 1.25rem;
+    border: 1px solid transparent;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    /* Prevent text selection */
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+/* Primary Button - Blue background, white Arabic text */
+.btn-primary-standard {
+    background-color: var(--survey-primary);
+    color: white;
+    border-color: var(--survey-primary);
+}
+
+.btn-primary-standard:hover:not(:disabled) {
+    background-color: var(--survey-primary-hover);
+    border-color: var(--survey-primary-hover);
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(46, 139, 87, 0.3);
+}
+
+.btn-primary-standard:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(46, 139, 87, 0.2);
+}
+
+.btn-primary-standard:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px var(--survey-primary-light);
+}
+
+/* Secondary Button - White background, blue border, blue Arabic text */
+.btn-secondary-standard {
+    background-color: white;
+    color: var(--survey-primary);
+    border-color: var(--survey-primary);
+}
+
+.btn-secondary-standard:hover:not(:disabled) {
+    background-color: var(--survey-primary-light);
+    border-color: var(--survey-primary-hover);
+    color: var(--survey-primary-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(46, 139, 87, 0.15);
+}
+
+.btn-secondary-standard:active:not(:disabled) {
+    transform: translateY(0);
+    background-color: var(--survey-primary-light);
+}
+
+.btn-secondary-standard:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px var(--survey-primary-light);
+}
+
+/* Destructive Button - Red background, white Arabic text */
+.btn-destructive-standard {
+    background-color: var(--survey-status-error);
+    color: white;
+    border-color: var(--survey-status-error);
+}
+
+.btn-destructive-standard:hover:not(:disabled) {
+    background-color: #c82333;
+    border-color: #c82333;
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+}
+
+.btn-destructive-standard:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(220, 53, 69, 0.2);
+}
+
+.btn-destructive-standard:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px var(--survey-status-error-bg);
+}
+
+/* Button Sizes */
+.btn-sm-standard {
+    padding: 0.375rem 1rem;
+    font-size: 0.75rem;
+    border-radius: 0.25rem;
+}
+
+.btn-md-standard {
+    padding: 0.625rem 1.25rem;
+    font-size: 0.875rem;
+    border-radius: 0.375rem;
+}
+
+.btn-lg-standard {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    border-radius: 0.5rem;
+}
+
+.btn-xl-standard {
+    padding: 1rem 2rem;
+    font-size: 1.125rem;
+    border-radius: 0.5rem;
+    font-weight: 700;
+}
+
+/* Button States */
+.btn-standard:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+.btn-standard.loading {
+    opacity: 0.8;
+    cursor: wait;
+}
+
+.btn-standard.loading i {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Icon Spacing in Buttons */
+.btn-standard i {
+    margin-left: 0.25rem; /* For RTL */
+}
+
+.btn-standard i:first-child {
+    margin-left: 0;
+    margin-right: 0.25rem;
+}
+
+.btn-standard i:last-child {
+    margin-right: 0;
+    margin-left: 0.25rem;
+}
+
+/* Button Groups */
+.btn-group-standard {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.btn-group-standard .btn-standard {
+    flex: 1;
+    min-width: 0;
+}
+
+/* Responsive Button Adjustments */
+@media (max-width: 768px) {
+    .btn-group-standard {
+        flex-direction: column;
+    }
+    
+    .btn-group-standard .btn-standard {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .btn-xl-standard {
+        padding: 0.875rem 1.5rem;
+        font-size: 1rem;
+    }
+    
+    .btn-lg-standard {
+        padding: 0.75rem 1.25rem;
+        font-size: 0.875rem;
+    }
+}
+
+/* Special Cases for Arabic Text */
+[dir="rtl"] .btn-standard {
+    direction: rtl;
+    text-align: center;
+}
+
+[dir="rtl"] .btn-standard i {
+    margin-right: 0.5rem;
+    margin-left: 0;
+}
+
+[dir="rtl"] .btn-standard i:last-child {
+    margin-right: 0;
+    margin-left: 0.5rem;
+}
+</style>
+
+<!-- Utility Classes for Common Button Combinations -->
+<style>
+/* Start Now Button (Homepage) */
+.btn-start-now {
+    background: linear-gradient(135deg, var(--survey-primary), var(--survey-accent));
+    color: white;
+    border: none;
+    padding: 1rem 2.5rem;
+    font-size: 1.125rem;
+    font-weight: 700;
+    border-radius: 2rem;
+    box-shadow: 0 4px 15px rgba(46, 139, 87, 0.3);
+    transform: translateY(0);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-start-now:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(46, 139, 87, 0.4);
+    color: white;
+}
+
+.btn-start-now:active {
+    transform: translateY(-1px);
+}
+
+/* Action Button Groups */
+.survey-action-buttons {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+@media (max-width: 576px) {
+    .survey-action-buttons {
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .survey-action-buttons .btn-standard {
+        width: 100%;
+        justify-content: center;
+    }
+}
+</style>

@@ -2,6 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
     {% include 'components/head.html' %}
+    {% include 'components/standard_buttons.html' %}
     <title>منصة صوت العميل العربية - الصفحة الرئيسية</title>
     
     <style>
@@ -98,7 +99,7 @@
     </style>
 </head>
 <body>
-    {% include 'components/navigation.html' %}
+    {% include 'components/standard_header.html' %}
 
     <!-- Hero Section -->
     <section class="hero-section">
@@ -113,13 +114,13 @@
                         احصل على رؤى عميقة من تعليقات عملائك في الوقت الفعلي.
                     </p>
                     <div class="d-flex gap-3 flex-wrap">
-                        <a href="/dashboard/realtime" class="btn-primary-custom btn-lg-custom">
-                            <i class="fas fa-chart-line me-2"></i>
-                            اعرض لوحة التحليلات
+                        <a href="/surveys" class="btn-start-now">
+                            <i class="fas fa-play me-2"></i>
+                            ابدأ الآن
                         </a>
-                        <a href="/feedback" class="btn-outline-custom btn-lg-custom">
-                            <i class="fas fa-comment-dots me-2"></i>
-                            أرسل تعليقك
+                        <a href="/dashboard/realtime" class="btn-secondary-standard btn-lg-standard">
+                            <i class="fas fa-chart-line me-2"></i>
+                            لوحة التحليلات
                         </a>
                     </div>
                 </div>
@@ -373,6 +374,14 @@
 
         // Update stats every 5 seconds for demo
         setInterval(animateStats, 5000);
+        
+        // Initialize navigation for homepage
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof StandardNavigation !== 'undefined') {
+                StandardNavigation.setActiveNav('home');
+                // No breadcrumb needed for homepage
+            }
+        });
     </script>
 </body>
 </html>
