@@ -2,10 +2,11 @@
 <html lang="ar" dir="rtl">
 <head>
     {% include 'components/head.html' %}
+    {% include 'components/standard_buttons.html' %}
     <title>عرض توزيع الاستطلاعات - منصة صوت العميل العربية</title>
 </head>
 <body>
-    {% include 'components/navigation.html' %}
+    {% include 'components/standard_header.html' %}
     
     <div class="container-custom">
         <div class="page-header">
@@ -498,6 +499,20 @@
             button.innerHTML = originalText;
             button.disabled = false;
         }
+    </script>
+    
+    <script>
+        // Initialize standardized navigation
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof StandardNavigation !== 'undefined') {
+                StandardNavigation.setActiveNav('surveys');
+                StandardNavigation.setBreadcrumb([
+                    { title: 'الرئيسية', url: '/' },
+                    { title: 'الاستطلاعات', url: '/surveys' },
+                    { title: 'توزيع الاستطلاعات' }
+                ]);
+            }
+        });
     </script>
 </body>
 </html>
