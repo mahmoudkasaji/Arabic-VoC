@@ -1360,111 +1360,331 @@
                 </div>
                     </div>
                     
-                    <!-- Insights Tab -->
+                    <!-- Insights Tab with Predictive CX Analytics -->
                     <div class="tab-pane fade" id="insights" role="tabpanel" aria-labelledby="insights-tab">
-                        <!-- Smart Insights Panel -->
+                        <!-- Predictive CX Insights Header -->
                         <div class="row mb-4">
                             <div class="col-12">
-                                <div class="card border-info">
-                                    <div class="card-header bg-info text-white">
-                                        <h5 class="card-title mb-0 d-flex align-items-center">
-                                            <i class="fas fa-lightbulb me-2"></i>
-                                            الرؤى الذكية
-                                            <span class="badge bg-light text-info ms-2">جديد</span>
+                                <div class="card border-primary">
+                                    <div class="card-header bg-primary text-white">
+                                        <h4 class="card-title mb-0">
+                                            <i class="fas fa-crystal-ball me-2"></i>
+                                            الرؤى التنبؤية لتجربة العملاء
+                                            <span class="badge bg-light text-primary ms-2">ذكاء اصطناعي متطور</span>
+                                        </h4>
+                                        <p class="card-text mb-0 mt-2 opacity-75">
+                                            تحليلات استباقية لمنع المشاكل قبل حدوثها وتحسين تجربة العملاء
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- First Row: Satisfaction Prediction & Early Warning -->
+                        <div class="row mb-4">
+                            <!-- Satisfaction Prediction Model -->
+                            <div class="col-lg-6 mb-4">
+                                <div class="card border-success h-100">
+                                    <div class="card-header bg-success text-white">
+                                        <h5 class="card-title mb-0">
+                                            <i class="fas fa-chart-line me-2"></i>
+                                            توقعات رضا العملاء - الأسبوع القادم
+                                            <span class="badge bg-light text-success ms-2">نموذج تنبؤي</span>
                                         </h5>
                                     </div>
                                     <div class="card-body">
-                                        <div class="row">
-                                            <!-- Significant Changes -->
-                                            <div class="col-md-4">
-                                                <h6 class="text-warning">
-                                                    <i class="fas fa-trending-up me-1"></i>
-                                                    تغيرات مهمة
-                                                </h6>
-                                                <div class="list-group list-group-flush">
-                                                    <div class="list-group-item border-0 px-0">
-                                                        <div class="d-flex justify-content-between">
-                                                            <small>معدل الرضا</small>
-                                                            <small class="text-success">+5.2%</small>
+                                        <!-- Prediction Score -->
+                                        <div class="text-center mb-4">
+                                            <div class="prediction-gauge mb-3 position-relative">
+                                                <div class="progress-circle mx-auto" style="width: 150px; height: 150px; position: relative;">
+                                                    <svg width="150" height="150" class="position-absolute">
+                                                        <circle cx="75" cy="75" r="65" stroke="#e9ecef" stroke-width="8" fill="transparent"/>
+                                                        <circle cx="75" cy="75" r="65" stroke="#28a745" stroke-width="8" fill="transparent" 
+                                                               stroke-dasharray="408" stroke-dashoffset="135" transform="rotate(-90 75 75)" 
+                                                               style="transition: stroke-dashoffset 0.5s ease-in-out"/>
+                                                    </svg>
+                                                    <div class="position-absolute top-50 start-50 translate-middle text-center">
+                                                        <h2 class="text-success mb-0">67%</h2>
+                                                        <small class="text-muted">احتمال ارتفاع</small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="d-flex justify-content-center align-items-center gap-2 flex-wrap">
+                                                <i class="fas fa-chart-line text-success"></i>
+                                                <span class="fw-bold text-success">احتمال ارتفاع الرضا: 67%</span>
+                                                <span class="badge bg-success">ثقة عالية</span>
+                                            </div>
+                                        </div>
+
+                                        <!-- Influencing Factors -->
+                                        <h6 class="fw-bold mb-3">
+                                            <i class="fas fa-search me-2"></i>
+                                            العوامل المؤثرة:
+                                        </h6>
+                                        <div class="factors-list">
+                                            <div class="factor-item mb-3 p-3 bg-light rounded">
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="factor-impact bg-success text-white rounded-pill px-2 py-1 me-3">
+                                                            <small>+12%</small>
                                                         </div>
-                                                        <div class="progress mt-1" style="height: 4px;">
-                                                            <div class="progress-bar bg-success" style="width: 75%"></div>
+                                                        <div>
+                                                            <strong>تحسين سرعة التطبيق</strong>
+                                                            <br><small class="text-muted">تحديث الخوادم وتحسين الأداء</small>
                                                         </div>
                                                     </div>
-                                                    <div class="list-group-item border-0 px-0">
-                                                        <div class="d-flex justify-content-between">
-                                                            <small>الشكاوى التقنية</small>
-                                                            <small class="text-danger">+12.1%</small>
+                                                    <div class="confidence-bar text-center">
+                                                        <div class="progress mb-1" style="width: 60px; height: 6px;">
+                                                            <div class="progress-bar bg-success" style="width: 85%"></div>
                                                         </div>
-                                                        <div class="progress mt-1" style="height: 4px;">
-                                                            <div class="progress-bar bg-danger" style="width: 85%"></div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="list-group-item border-0 px-0">
-                                                        <div class="d-flex justify-content-between">
-                                                            <small>سرعة الاستجابة</small>
-                                                            <small class="text-success">-8.3%</small>
-                                                        </div>
-                                                        <div class="progress mt-1" style="height: 4px;">
-                                                            <div class="progress-bar bg-success" style="width: 60%"></div>
-                                                        </div>
+                                                        <small class="text-muted">85% ثقة</small>
                                                     </div>
                                                 </div>
                                             </div>
                                             
-                                            <!-- Anomalies Detection -->
-                                            <div class="col-md-4">
-                                                <h6 class="text-danger">
-                                                    <i class="fas fa-exclamation-triangle me-1"></i>
-                                                    شذوذ مكتشف
-                                                </h6>
-                                                <div class="alert alert-warning py-2">
+                                            <div class="factor-item mb-3 p-3 bg-light rounded">
+                                                <div class="d-flex justify-content-between align-items-center">
                                                     <div class="d-flex align-items-center">
-                                                        <i class="fas fa-clock me-2"></i>
+                                                        <div class="factor-impact bg-info text-white rounded-pill px-2 py-1 me-3">
+                                                            <small>+8%</small>
+                                                        </div>
                                                         <div>
-                                                            <small class="fw-bold">ذروة شكاوى مسائية</small><br>
-                                                            <small class="text-muted">زيادة 340% في الفترة 8-10 مساءً</small>
+                                                            <strong>إطلاق ميزة جديدة</strong>
+                                                            <br><small class="text-muted">ميزة الدفع السريع</small>
                                                         </div>
                                                     </div>
-                                                </div>
-                                                <div class="alert alert-info py-2">
-                                                    <div class="d-flex align-items-center">
-                                                        <i class="fas fa-map-marker-alt me-2"></i>
-                                                        <div>
-                                                            <small class="fw-bold">تركز إقليمي للمشاكل</small><br>
-                                                            <small class="text-muted">85% من مشاكل التوصيل في الرياض</small>
+                                                    <div class="confidence-bar text-center">
+                                                        <div class="progress mb-1" style="width: 60px; height: 6px;">
+                                                            <div class="progress-bar bg-info" style="width: 72%"></div>
                                                         </div>
+                                                        <small class="text-muted">72% ثقة</small>
                                                     </div>
                                                 </div>
                                             </div>
                                             
-                                            <!-- Suggested Actions -->
-                                            <div class="col-md-4">
-                                                <h6 class="text-success">
-                                                    <i class="fas fa-tasks me-1"></i>
-                                                    إجراءات مقترحة
-                                                </h6>
-                                                <div class="list-group list-group-flush">
-                                                    <div class="list-group-item border-0 px-0 d-flex justify-content-between align-items-center">
-                                                        <div>
-                                                            <small class="fw-bold">تعزيز الدعم التقني</small><br>
-                                                            <small class="text-muted">أولوية عالية</small>
+                                            <div class="factor-item mb-3 p-3 bg-light rounded">
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="factor-impact bg-warning text-dark rounded-pill px-2 py-1 me-3">
+                                                            <small>+5%</small>
                                                         </div>
-                                                        <span class="badge bg-danger">P1</span>
+                                                        <div>
+                                                            <strong>موسم العطل</strong>
+                                                            <br><small class="text-muted">تأثير إيجابي موسمي</small>
+                                                        </div>
                                                     </div>
-                                                    <div class="list-group-item border-0 px-0 d-flex justify-content-between align-items-center">
-                                                        <div>
-                                                            <small class="fw-bold">مراجعة خدمة التوصيل</small><br>
-                                                            <small class="text-muted">أولوية متوسطة</small>
+                                                    <div class="confidence-bar text-center">
+                                                        <div class="progress mb-1" style="width: 60px; height: 6px;">
+                                                            <div class="progress-bar bg-warning" style="width: 68%"></div>
                                                         </div>
-                                                        <span class="badge bg-warning">P2</span>
+                                                        <small class="text-muted">68% ثقة</small>
                                                     </div>
-                                                    <div class="list-group-item border-0 px-0 d-flex justify-content-between align-items-center">
-                                                        <div>
-                                                            <small class="fw-bold">تحسين واجهة التطبيق</small><br>
-                                                            <small class="text-muted">أولوية منخفضة</small>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Recommended Actions -->
+                                        <div class="mt-4">
+                                            <h6 class="fw-bold text-primary">
+                                                <i class="fas fa-lightbulb me-2"></i>
+                                                الإجراءات المقترحة:
+                                            </h6>
+                                            <ul class="list-unstyled">
+                                                <li class="mb-2">
+                                                    <i class="fas fa-arrow-right text-primary me-2"></i>
+                                                    <small>مراقبة أداء التطبيق بشكل مستمر</small>
+                                                </li>
+                                                <li class="mb-2">
+                                                    <i class="fas fa-arrow-right text-primary me-2"></i>
+                                                    <small>تسويق الميزة الجديدة بقوة</small>
+                                                </li>
+                                                <li>
+                                                    <i class="fas fa-arrow-right text-primary me-2"></i>
+                                                    <small>الاستعداد لذروة موسم العطل</small>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Early Warning System -->
+                            <div class="col-lg-6 mb-4">
+                                <div class="card border-warning h-100">
+                                    <div class="card-header bg-warning text-dark">
+                                        <h5 class="card-title mb-0">
+                                            <i class="fas fa-exclamation-triangle me-2"></i>
+                                            تنبيهات مبكرة - مشاكل محتملة
+                                            <span class="badge bg-dark text-warning ms-2">إنذار مبكر</span>
+                                        </h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <!-- Medium Risk Alert -->
+                                        <div class="alert alert-warning border-start border-warning border-4 mb-3">
+                                            <div class="d-flex align-items-start">
+                                                <div class="me-3">
+                                                    <i class="fas fa-exclamation-triangle text-warning fa-lg"></i>
+                                                </div>
+                                                <div class="flex-grow-1">
+                                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                                        <h6 class="mb-1 text-warning fw-bold">⚠️ خطر متوسط</h6>
+                                                        <span class="badge bg-warning text-dark">درجة الثقة: 78%</span>
+                                                    </div>
+                                                    <p class="mb-2 fw-bold">ارتفاع شكاوى الدفع - اتجاه صاعد</p>
+                                                    <small class="text-muted">
+                                                        <i class="fas fa-chart-line me-1"></i>
+                                                        زيادة 15% في شكاوى عملية الدفع خلال الأسبوعين الماضيين
+                                                    </small>
+                                                    <div class="mt-2">
+                                                        <div class="progress mb-1" style="height: 4px;">
+                                                            <div class="progress-bar bg-warning" style="width: 78%"></div>
                                                         </div>
-                                                        <span class="badge bg-info">P3</span>
+                                                        <div class="d-flex justify-content-between">
+                                                            <small class="text-muted">التوقع خلال 7 أيام</small>
+                                                            <small class="text-warning fw-bold">+25% زيادة محتملة</small>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- High Risk Alert -->
+                                        <div class="alert alert-danger border-start border-danger border-4 mb-3">
+                                            <div class="d-flex align-items-start">
+                                                <div class="me-3">
+                                                    <i class="fas fa-times-circle text-danger fa-lg"></i>
+                                                </div>
+                                                <div class="flex-grow-1">
+                                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                                        <h6 class="mb-1 text-danger fw-bold">⚠️ خطر عالي</h6>
+                                                        <span class="badge bg-danger">درجة الثقة: 91%</span>
+                                                    </div>
+                                                    <p class="mb-2 fw-bold">انخفاض استخدام الميزة الجديدة - 23%</p>
+                                                    <small class="text-muted">
+                                                        <i class="fas fa-chart-line-down me-1"></i>
+                                                        الميزة الجديدة لا تحقق المعدل المتوقع للاستخدام
+                                                    </small>
+                                                    <div class="mt-2">
+                                                        <div class="progress mb-1" style="height: 4px;">
+                                                            <div class="progress-bar bg-danger" style="width: 91%"></div>
+                                                        </div>
+                                                        <div class="d-flex justify-content-between">
+                                                            <small class="text-muted">المعدل الحالي مقابل المتوقع</small>
+                                                            <small class="text-danger fw-bold">23% أقل من المتوقع</small>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Action Buttons -->
+                                        <div class="d-grid gap-2">
+                                            <button class="btn btn-warning" onclick="investigatePaymentIssues()">
+                                                <i class="fas fa-search me-2"></i>
+                                                تحقق من مشاكل الدفع
+                                            </button>
+                                            <button class="btn btn-danger" onclick="analyzeFeatureAdoption()">
+                                                <i class="fas fa-chart-bar me-2"></i>
+                                                تحليل اعتماد الميزة
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Second Row: Opportunity Detection & Trend Predictions -->
+                        <div class="row mb-4">
+                            <!-- Opportunity Detection -->
+                            <div class="col-lg-6 mb-4">
+                                <div class="card border-info h-100">
+                                    <div class="card-header bg-info text-white">
+                                        <h5 class="card-title mb-0">
+                                            <i class="fas fa-lightbulb me-2"></i>
+                                            فرص تحسين تجربة العميل
+                                            <span class="badge bg-light text-info ms-2">كشف الفرص</span>
+                                        </h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <!-- Opportunity 1 -->
+                                        <div class="opportunity-item mb-4 p-3 bg-light rounded">
+                                            <div class="d-flex align-items-start">
+                                                <div class="me-3">
+                                                    <i class="fas fa-lightbulb text-success fa-2x"></i>
+                                                </div>
+                                                <div class="flex-grow-1">
+                                                    <h6 class="text-success fw-bold mb-2">💡 فرصة توسع السوق</h6>
+                                                    <p class="mb-2">العملاء المصريون راضون جداً عن الخدمة الجديدة - توسع السوق</p>
+                                                    <div class="row text-center mb-3">
+                                                        <div class="col-4">
+                                                            <div class="metric-box">
+                                                                <h5 class="text-success mb-0">9.2</h5>
+                                                                <small class="text-muted">رضا العملاء</small>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-4">
+                                                            <div class="metric-box">
+                                                                <h5 class="text-info mb-0">+34%</h5>
+                                                                <small class="text-muted">نمو الاستخدام</small>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-4">
+                                                            <div class="metric-box">
+                                                                <h5 class="text-warning mb-0">89%</h5>
+                                                                <small class="text-muted">ثقة التوقع</small>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="d-flex justify-content-between align-items-center">
+                                                        <small class="text-muted">
+                                                            <i class="fas fa-calendar me-1"></i>
+                                                            فترة الفرصة: 3 أشهر
+                                                        </small>
+                                                        <button class="btn btn-sm btn-success" onclick="exploreMarketOpportunity('egypt')">
+                                                            استكشف الفرصة
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Opportunity 2 -->
+                                        <div class="opportunity-item mb-4 p-3 bg-light rounded">
+                                            <div class="d-flex align-items-start">
+                                                <div class="me-3">
+                                                    <i class="fas fa-lightbulb text-primary fa-2x"></i>
+                                                </div>
+                                                <div class="flex-grow-1">
+                                                    <h6 class="text-primary fw-bold mb-2">💡 فرصة تطوير خدمة</h6>
+                                                    <p class="mb-2">زيادة الاهتمام بالدفع الرقمي - طور الخدمة</p>
+                                                    <div class="row text-center mb-3">
+                                                        <div class="col-4">
+                                                            <div class="metric-box">
+                                                                <h5 class="text-primary mb-0">+67%</h5>
+                                                                <small class="text-muted">طلب الدفع الرقمي</small>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-4">
+                                                            <div class="metric-box">
+                                                                <h5 class="text-success mb-0">12k</h5>
+                                                                <small class="text-muted">عميل مهتم</small>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-4">
+                                                            <div class="metric-box">
+                                                                <h5 class="text-warning mb-0">92%</h5>
+                                                                <small class="text-muted">ثقة التوقع</small>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="d-flex justify-content-between align-items-center">
+                                                        <small class="text-muted">
+                                                            <i class="fas fa-calendar me-1"></i>
+                                                            التوقيت المثالي: الآن
+                                                        </small>
+                                                        <button class="btn btn-sm btn-primary" onclick="developDigitalPayment()">
+                                                            خطط للتطوير
+                                                        </button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1472,8 +1692,147 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <!-- Trend Predictions -->
+                            <div class="col-lg-6 mb-4">
+                                <div class="card border-secondary h-100">
+                                    <div class="card-header bg-secondary text-white">
+                                        <h5 class="card-title mb-0">
+                                            <i class="fas fa-chart-area me-2"></i>
+                                            توقعات الاتجاهات
+                                            <span class="badge bg-light text-secondary ms-2">تنبؤ طويل المدى</span>
+                                        </h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <!-- Prediction Tabs -->
+                                        <ul class="nav nav-tabs nav-fill mb-3" id="predictionTabs" role="tablist">
+                                            <li class="nav-item" role="presentation">
+                                                <button class="nav-link active" id="monthly-tab" data-bs-toggle="tab" data-bs-target="#monthly-predictions" type="button">
+                                                    شهري
+                                                </button>
+                                            </li>
+                                            <li class="nav-item" role="presentation">
+                                                <button class="nav-link" id="quarterly-tab" data-bs-toggle="tab" data-bs-target="#quarterly-predictions" type="button">
+                                                    ربع سنوي
+                                                </button>
+                                            </li>
+                                        </ul>
+
+                                        <!-- Prediction Tab Content -->
+                                        <div class="tab-content" id="predictionTabsContent">
+                                            <!-- Monthly Predictions -->
+                                            <div class="tab-pane fade show active" id="monthly-predictions">
+                                                <div class="prediction-metric mb-3 p-3 border rounded">
+                                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                                        <h6 class="mb-0">📈 توقعات الحجم</h6>
+                                                        <span class="badge bg-primary">الشهر القادم</span>
+                                                    </div>
+                                                    <div class="row text-center">
+                                                        <div class="col-6">
+                                                            <h4 class="text-primary mb-0">+18%</h4>
+                                                            <small class="text-muted">زيادة متوقعة</small>
+                                                        </div>
+                                                        <div class="col-6">
+                                                            <h4 class="text-success mb-0">85%</h4>
+                                                            <small class="text-muted">ثقة التوقع</small>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="prediction-metric mb-3 p-3 border rounded">
+                                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                                        <h6 class="mb-0">🔍 اتجاه نتيجة الرضا</h6>
+                                                        <span class="badge bg-success">تحسن متوقع</span>
+                                                    </div>
+                                                    <div class="row text-center">
+                                                        <div class="col-6">
+                                                            <h4 class="text-success mb-0">8.5</h4>
+                                                            <small class="text-muted">النتيجة المتوقعة</small>
+                                                        </div>
+                                                        <div class="col-6">
+                                                            <h4 class="text-primary mb-0">91%</h4>
+                                                            <small class="text-muted">ثقة التوقع</small>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="prediction-metric mb-3 p-3 border rounded">
+                                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                                        <h6 class="mb-0">تفضيل القنوات</h6>
+                                                        <span class="badge bg-info">تحول رقمي</span>
+                                                    </div>
+                                                    <div class="channel-predictions">
+                                                        <div class="d-flex justify-content-between align-items-center mb-1">
+                                                            <small>التطبيق المحمول</small>
+                                                            <span class="text-success fw-bold">+12%</span>
+                                                        </div>
+                                                        <div class="d-flex justify-content-between align-items-center mb-1">
+                                                            <small>الموقع الإلكتروني</small>
+                                                            <span class="text-info fw-bold">+5%</span>
+                                                        </div>
+                                                        <div class="d-flex justify-content-between align-items-center">
+                                                            <small>الهاتف</small>
+                                                            <span class="text-danger fw-bold">-8%</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Quarterly Predictions -->
+                                            <div class="tab-pane fade" id="quarterly-predictions">
+                                                <div class="prediction-metric mb-3 p-3 border rounded">
+                                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                                        <h6 class="mb-0">العوامل الموسمية</h6>
+                                                        <span class="badge bg-warning text-dark">Q4 2024</span>
+                                                    </div>
+                                                    <div class="seasonal-factors">
+                                                        <div class="factor-item mb-2">
+                                                            <div class="d-flex justify-content-between">
+                                                                <small>موسم العطل</small>
+                                                                <span class="text-success">+25% حجم</span>
+                                                            </div>
+                                                            <div class="progress mt-1" style="height: 4px;">
+                                                                <div class="progress-bar bg-success" style="width: 75%"></div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="factor-item mb-2">
+                                                            <div class="d-flex justify-content-between">
+                                                                <small>التسوق الإلكتروني</small>
+                                                                <span class="text-primary">+40% استخدام</span>
+                                                            </div>
+                                                            <div class="progress mt-1" style="height: 4px;">
+                                                                <div class="progress-bar bg-primary" style="width: 85%"></div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="factor-item">
+                                                            <div class="d-flex justify-content-between">
+                                                                <small>دعم العملاء</small>
+                                                                <span class="text-warning">+60% طلبات</span>
+                                                            </div>
+                                                            <div class="progress mt-1" style="height: 4px;">
+                                                                <div class="progress-bar bg-warning" style="width: 90%"></div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Model Information -->
+                                        <div class="mt-3 p-2 bg-light rounded">
+                                            <small class="text-muted">
+                                                <i class="fas fa-info-circle me-1"></i>
+                                                التوقعات مبنية على نماذج الذكاء الاصطناعي وتحليل البيانات التاريخية
+                                                <br>
+                                                آخر تحديث للنموذج: منذ 2 ساعة
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
+
                 </div>
             </div>
         </div>
@@ -2583,6 +2942,145 @@
         }
 
         // Modal Helper Functions
+        // Predictive CX Insights Functions
+        function investigatePaymentIssues() {
+            showModal('تحليل مشاكل الدفع', `
+                <div class="alert alert-warning">
+                    <h6 class="fw-bold mb-3">تحليل تفصيلي لمشاكل الدفع</h6>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>الأسباب الرئيسية:</h6>
+                            <ul>
+                                <li>انقطاع في خدمة بوابة الدفع (40%)</li>
+                                <li>خطأ في التحقق من البطاقة (35%)</li>
+                                <li>مشاكل في الاتصال (25%)</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>الحلول المقترحة:</h6>
+                            <ul>
+                                <li>إضافة بوابات دفع احتياطية</li>
+                                <li>تحسين رسائل الخطأ</li>
+                                <li>مراقبة مستمرة للخدمة</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            `);
+        }
+
+        function analyzeFeatureAdoption() {
+            showModal('تحليل اعتماد الميزة', `
+                <div class="alert alert-danger">
+                    <h6 class="fw-bold mb-3">تحليل انخفاض استخدام الميزة الجديدة</h6>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>المشاكل المحددة:</h6>
+                            <ul>
+                                <li>صعوبة في العثور على الميزة (60%)</li>
+                                <li>عدم وضوح الفائدة (30%)</li>
+                                <li>مشاكل تقنية (10%)</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>خطة التحسين:</h6>
+                            <ul>
+                                <li>تحسين موضع الميزة في الواجهة</li>
+                                <li>إضافة شرح تفاعلي</li>
+                                <li>حملة تسويقية داخلية</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            `);
+        }
+
+        function exploreMarketOpportunity(market) {
+            const marketInfo = {
+                'egypt': {
+                    name: 'السوق المصري',
+                    potential: 'عالي جداً',
+                    users: '2.3 مليون',
+                    growth: '+34%',
+                    recommendations: [
+                        'افتتاح مكتب إقليمي في القاهرة',
+                        'توظيف فريق دعم محلي',
+                        'تخصيص العروض للسوق المصري'
+                    ]
+                }
+            };
+            
+            const info = marketInfo[market];
+            showModal('استكشاف الفرصة - ' + info.name, `
+                <div class="alert alert-success">
+                    <h6 class="fw-bold mb-3">تقييم الفرصة</h6>
+                    <div class="row mb-3">
+                        <div class="col-md-4 text-center">
+                            <h5 class="text-success">${info.potential}</h5>
+                            <small class="text-muted">إمكانيات السوق</small>
+                        </div>
+                        <div class="col-md-4 text-center">
+                            <h5 class="text-info">${info.users}</h5>
+                            <small class="text-muted">عملاء محتملون</small>
+                        </div>
+                        <div class="col-md-4 text-center">
+                            <h5 class="text-warning">${info.growth}</h5>
+                            <small class="text-muted">معدل النمو</small>
+                        </div>
+                    </div>
+                    <h6>خطة العمل المقترحة:</h6>
+                    <ul>
+                        ${info.recommendations.map(rec => `<li>${rec}</li>`).join('')}
+                    </ul>
+                </div>
+            `);
+        }
+
+        function developDigitalPayment() {
+            showModal('خطة تطوير الدفع الرقمي', `
+                <div class="alert alert-primary">
+                    <h6 class="fw-bold mb-3">خارطة طريق تطوير الميزة</h6>
+                    <div class="timeline">
+                        <div class="timeline-item mb-3">
+                            <div class="d-flex align-items-center">
+                                <div class="badge bg-success me-3">المرحلة 1</div>
+                                <div>
+                                    <strong>تحليل متطلبات العملاء</strong>
+                                    <br><small class="text-muted">مدة: أسبوعين</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="timeline-item mb-3">
+                            <div class="d-flex align-items-center">
+                                <div class="badge bg-primary me-3">المرحلة 2</div>
+                                <div>
+                                    <strong>تصميم واجهات المستخدم</strong>
+                                    <br><small class="text-muted">مدة: 3 أسابيع</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="d-flex align-items-center">
+                                <div class="badge bg-warning me-3">المرحلة 3</div>
+                                <div>
+                                    <strong>التطوير والاختبار</strong>
+                                    <br><small class="text-muted">مدة: 6 أسابيع</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <h6>المتطلبات التقنية:</h6>
+                        <ul>
+                            <li>تكامل مع بوابات الدفع الرقمي المحلية</li>
+                            <li>نظام أمان متقدم للمعاملات</li>
+                            <li>واجهة بسيطة ومتوافقة مع الأجهزة المحمولة</li>
+                        </ul>
+                    </div>
+                </div>
+            `);
+        }
+
         function showEscalationConfirmation(action) {
             const modal = document.createElement('div');
             modal.className = 'modal fade';
