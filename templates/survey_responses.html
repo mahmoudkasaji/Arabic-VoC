@@ -35,10 +35,528 @@
                 </button>
             </div>
         </div>
-        
-        <div class="alert alert-info">
-            <i class="fas fa-info-circle me-2"></i>
-            هذه الصفحة ستحتوي على جدول تفاعلي لعرض جميع الردود مع إمكانية التصفية والبحث
+
+        <!-- Analytics Summary Cards -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card bg-primary text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="card-title mb-1">إجمالي الردود اليوم</h6>
+                                <h2 class="mb-0" id="todayResponses">47</h2>
+                                <small class="text-light">+12% من الأمس</small>
+                            </div>
+                            <i class="fas fa-chart-line fa-2x opacity-75"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-success text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="card-title mb-1">معدل الإكمال</h6>
+                                <h2 class="mb-0" id="completionRate">84%</h2>
+                                <small class="text-light">من إجمالي المحاولات</small>
+                            </div>
+                            <i class="fas fa-check-circle fa-2x opacity-75"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-info text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="card-title mb-1">متوسط وقت الاستجابة</h6>
+                                <h2 class="mb-0" id="avgResponseTime">3.2</h2>
+                                <small class="text-light">دقائق</small>
+                            </div>
+                            <i class="fas fa-clock fa-2x opacity-75"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-warning text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="card-title mb-1">الاستطلاعات النشطة</h6>
+                                <h2 class="mb-0" id="activeSurveys">12</h2>
+                                <small class="text-light">استطلاع مفتوح</small>
+                            </div>
+                            <i class="fas fa-poll fa-2x opacity-75"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filters and Search -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label for="searchInput" class="form-label">البحث</label>
+                        <input type="text" class="form-control" id="searchInput" placeholder="البحث في اسم الاستطلاع أو المستجيب..." oninput="searchResponses()">
+                    </div>
+                    <div class="col-md-2">
+                        <label for="statusFilter" class="form-label">الحالة</label>
+                        <select class="form-select" id="statusFilter" onchange="filterResponses()">
+                            <option value="all">جميع الحالات</option>
+                            <option value="completed">مكتمل</option>
+                            <option value="partial">جزئي</option>
+                            <option value="abandoned">مهجور</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label for="sourceFilter" class="form-label">المصدر</label>
+                        <select class="form-select" id="sourceFilter" onchange="filterResponses()">
+                            <option value="all">جميع المصادر</option>
+                            <option value="website">موقع</option>
+                            <option value="app">تطبيق</option>
+                            <option value="whatsapp">واتساب</option>
+                            <option value="email">بريد إلكتروني</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label for="dateFrom" class="form-label">من تاريخ</label>
+                        <input type="date" class="form-control" id="dateFrom" onchange="filterResponses()">
+                    </div>
+                    <div class="col-md-2">
+                        <label for="dateTo" class="form-label">إلى تاريخ</label>
+                        <input type="date" class="form-control" id="dateTo" onchange="filterResponses()">
+                    </div>
+                </div>
+                
+                <div class="mt-3">
+                    <button class="btn btn-outline-secondary btn-sm" onclick="clearFilters()">
+                        <i class="fas fa-times"></i> مسح الفلاتر
+                    </button>
+                    <button class="btn btn-outline-primary btn-sm" onclick="exportFiltered()">
+                        <i class="fas fa-download"></i> تصدير المرشح
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bulk Operations Bar (Hidden by default) -->
+        <div class="bulk-operations" id="bulkOperations" style="display: none; margin-bottom: 1rem; padding: 1rem; background: #f8f9fa; border-radius: 8px;">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <i class="fas fa-check-square me-2"></i>
+                    تم تحديد <span id="selectedCount">0</span> رد
+                </div>
+                <div>
+                    <button class="btn btn-sm btn-success me-2" onclick="bulkExportResponses()">
+                        <i class="fas fa-download me-1"></i>تصدير محدد
+                    </button>
+                    <button class="btn btn-sm btn-warning me-2" onclick="bulkMarkReviewed()">
+                        <i class="fas fa-eye me-1"></i>وضع علامة كمراجع
+                    </button>
+                    <button class="btn btn-sm btn-danger" onclick="bulkDeleteResponses()">
+                        <i class="fas fa-trash me-1"></i>حذف محدد
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Response Data Table -->
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover" id="responsesTable">
+                        <thead class="table-light">
+                            <tr>
+                                <th width="40">
+                                    <input type="checkbox" class="form-check-input" id="selectAll" onchange="toggleSelectAllResponses()">
+                                </th>
+                                <th>اسم الاستطلاع</th>
+                                <th width="150">المستجيب</th>
+                                <th width="140">التاريخ والوقت</th>
+                                <th width="100">الحالة</th>
+                                <th width="100">مصدر الرد</th>
+                                <th width="80">التقييم</th>
+                                <th width="80">الوقت</th>
+                                <th width="200">الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Response Row 1 -->
+                            <tr class="response-row" data-status="completed" data-source="website">
+                                <td>
+                                    <input type="checkbox" class="form-check-input response-checkbox" value="1">
+                                </td>
+                                <td>
+                                    <div class="fw-bold">استطلاع رضا العملاء</div>
+                                    <small class="text-muted">تقييم مستوى الرضا العام</small>
+                                </td>
+                                <td>
+                                    <div class="fw-bold">أحمد محمد</div>
+                                    <small class="text-muted">ahmed@email.com</small>
+                                </td>
+                                <td>
+                                    <div class="fw-bold">21 يناير 2025</div>
+                                    <small class="text-muted">02:30 مساءً</small>
+                                </td>
+                                <td>
+                                    <span class="badge bg-success">مكتمل</span>
+                                </td>
+                                <td>
+                                    <span class="badge bg-primary">موقع</span>
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <span class="text-success me-1">4.8</span>
+                                        <div class="stars-rating">
+                                            <i class="fas fa-star text-warning"></i>
+                                            <i class="fas fa-star text-warning"></i>
+                                            <i class="fas fa-star text-warning"></i>
+                                            <i class="fas fa-star text-warning"></i>
+                                            <i class="fas fa-star text-warning"></i>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="text-muted">3.2د</span>
+                                </td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <button class="btn btn-outline-primary btn-sm" onclick="viewResponse(1)" title="عرض التفاصيل">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="btn btn-outline-success btn-sm" onclick="exportResponse(1)" title="تصدير">
+                                            <i class="fas fa-download"></i>
+                                        </button>
+                                        <button class="btn btn-outline-danger btn-sm" onclick="deleteResponse(1)" title="حذف">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <!-- Response Row 2 -->
+                            <tr class="response-row" data-status="partial" data-source="app">
+                                <td>
+                                    <input type="checkbox" class="form-check-input response-checkbox" value="2">
+                                </td>
+                                <td>
+                                    <div class="fw-bold">تقييم المنتج الجديد</div>
+                                    <small class="text-muted">جمع آراء حول الميزات الجديدة</small>
+                                </td>
+                                <td>
+                                    <div class="fw-bold">فاطمة علي</div>
+                                    <small class="text-muted">fatima@email.com</small>
+                                </td>
+                                <td>
+                                    <div class="fw-bold">21 يناير 2025</div>
+                                    <small class="text-muted">01:15 مساءً</small>
+                                </td>
+                                <td>
+                                    <span class="badge bg-warning">جزئي</span>
+                                </td>
+                                <td>
+                                    <span class="badge bg-info">تطبيق</span>
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <span class="text-warning me-1">3.5</span>
+                                        <div class="stars-rating">
+                                            <i class="fas fa-star text-warning"></i>
+                                            <i class="fas fa-star text-warning"></i>
+                                            <i class="fas fa-star text-warning"></i>
+                                            <i class="fas fa-star-half-alt text-warning"></i>
+                                            <i class="far fa-star text-muted"></i>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="text-muted">1.8د</span>
+                                </td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <button class="btn btn-outline-primary btn-sm" onclick="viewResponse(2)" title="عرض التفاصيل">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="btn btn-outline-success btn-sm" onclick="exportResponse(2)" title="تصدير">
+                                            <i class="fas fa-download"></i>
+                                        </button>
+                                        <button class="btn btn-outline-danger btn-sm" onclick="deleteResponse(2)" title="حذف">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <!-- Response Row 3 -->
+                            <tr class="response-row" data-status="completed" data-source="whatsapp">
+                                <td>
+                                    <input type="checkbox" class="form-check-input response-checkbox" value="3">
+                                </td>
+                                <td>
+                                    <div class="fw-bold">تقييم جودة الخدمة</div>
+                                    <small class="text-muted">قياس مستوى جودة خدمة العملاء</small>
+                                </td>
+                                <td>
+                                    <div class="fw-bold">محمد سالم</div>
+                                    <small class="text-muted">+966501234567</small>
+                                </td>
+                                <td>
+                                    <div class="fw-bold">21 يناير 2025</div>
+                                    <small class="text-muted">12:45 مساءً</small>
+                                </td>
+                                <td>
+                                    <span class="badge bg-success">مكتمل</span>
+                                </td>
+                                <td>
+                                    <span class="badge bg-success">واتساب</span>
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <span class="text-success me-1">4.2</span>
+                                        <div class="stars-rating">
+                                            <i class="fas fa-star text-warning"></i>
+                                            <i class="fas fa-star text-warning"></i>
+                                            <i class="fas fa-star text-warning"></i>
+                                            <i class="fas fa-star text-warning"></i>
+                                            <i class="far fa-star text-muted"></i>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="text-muted">2.7د</span>
+                                </td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <button class="btn btn-outline-primary btn-sm" onclick="viewResponse(3)" title="عرض التفاصيل">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="btn btn-outline-success btn-sm" onclick="exportResponse(3)" title="تصدير">
+                                            <i class="fas fa-download"></i>
+                                        </button>
+                                        <button class="btn btn-outline-danger btn-sm" onclick="deleteResponse(3)" title="حذف">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <!-- Response Row 4 -->
+                            <tr class="response-row" data-status="abandoned" data-source="email">
+                                <td>
+                                    <input type="checkbox" class="form-check-input response-checkbox" value="4">
+                                </td>
+                                <td>
+                                    <div class="fw-bold">استطلاع الربع الأول</div>
+                                    <small class="text-muted">تقييم الأداء للربع الأول</small>
+                                </td>
+                                <td>
+                                    <div class="fw-bold">سارة أحمد</div>
+                                    <small class="text-muted">sara@email.com</small>
+                                </td>
+                                <td>
+                                    <div class="fw-bold">21 يناير 2025</div>
+                                    <small class="text-muted">11:20 صباحًا</small>
+                                </td>
+                                <td>
+                                    <span class="badge bg-danger">مهجور</span>
+                                </td>
+                                <td>
+                                    <span class="badge bg-secondary">بريد</span>
+                                </td>
+                                <td>
+                                    <span class="text-muted">-</span>
+                                </td>
+                                <td>
+                                    <span class="text-muted">0.5د</span>
+                                </td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <button class="btn btn-outline-primary btn-sm" onclick="viewResponse(4)" title="عرض التفاصيل">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="btn btn-outline-warning btn-sm" onclick="sendReminder(4)" title="إرسال تذكير">
+                                            <i class="fas fa-bell"></i>
+                                        </button>
+                                        <button class="btn btn-outline-danger btn-sm" onclick="deleteResponse(4)" title="حذف">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <!-- Response Row 5 -->
+                            <tr class="response-row" data-status="completed" data-source="website">
+                                <td>
+                                    <input type="checkbox" class="form-check-input response-checkbox" value="5">
+                                </td>
+                                <td>
+                                    <div class="fw-bold">استطلاع تجربة التطبيق</div>
+                                    <small class="text-muted">تقييم تجربة المستخدمين</small>
+                                </td>
+                                <td>
+                                    <div class="fw-bold">خالد عبدالله</div>
+                                    <small class="text-muted">khalid@email.com</small>
+                                </td>
+                                <td>
+                                    <div class="fw-bold">21 يناير 2025</div>
+                                    <small class="text-muted">10:30 صباحًا</small>
+                                </td>
+                                <td>
+                                    <span class="badge bg-success">مكتمل</span>
+                                </td>
+                                <td>
+                                    <span class="badge bg-primary">موقع</span>
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <span class="text-success me-1">4.6</span>
+                                        <div class="stars-rating">
+                                            <i class="fas fa-star text-warning"></i>
+                                            <i class="fas fa-star text-warning"></i>
+                                            <i class="fas fa-star text-warning"></i>
+                                            <i class="fas fa-star text-warning"></i>
+                                            <i class="fas fa-star-half-alt text-warning"></i>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="text-muted">4.1د</span>
+                                </td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <button class="btn btn-outline-primary btn-sm" onclick="viewResponse(5)" title="عرض التفاصيل">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="btn btn-outline-success btn-sm" onclick="exportResponse(5)" title="تصدير">
+                                            <i class="fas fa-download"></i>
+                                        </button>
+                                        <button class="btn btn-outline-danger btn-sm" onclick="deleteResponse(5)" title="حذف">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <!-- Response Row 6 -->
+                            <tr class="response-row" data-status="completed" data-source="app">
+                                <td>
+                                    <input type="checkbox" class="form-check-input response-checkbox" value="6">
+                                </td>
+                                <td>
+                                    <div class="fw-bold">استطلاع التسوق الإلكتروني</div>
+                                    <small class="text-muted">تقييم تجربة المتجر الإلكتروني</small>
+                                </td>
+                                <td>
+                                    <div class="fw-bold">نورا حسن</div>
+                                    <small class="text-muted">nora@email.com</small>
+                                </td>
+                                <td>
+                                    <div class="fw-bold">20 يناير 2025</div>
+                                    <small class="text-muted">04:45 مساءً</small>
+                                </td>
+                                <td>
+                                    <span class="badge bg-success">مكتمل</span>
+                                </td>
+                                <td>
+                                    <span class="badge bg-info">تطبيق</span>
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <span class="text-success me-1">4.9</span>
+                                        <div class="stars-rating">
+                                            <i class="fas fa-star text-warning"></i>
+                                            <i class="fas fa-star text-warning"></i>
+                                            <i class="fas fa-star text-warning"></i>
+                                            <i class="fas fa-star text-warning"></i>
+                                            <i class="fas fa-star text-warning"></i>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="text-muted">2.9د</span>
+                                </td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <button class="btn btn-outline-primary btn-sm" onclick="viewResponse(6)" title="عرض التفاصيل">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="btn btn-outline-success btn-sm" onclick="exportResponse(6)" title="تصدير">
+                                            <i class="fas fa-download"></i>
+                                        </button>
+                                        <button class="btn btn-outline-danger btn-sm" onclick="deleteResponse(6)" title="حذف">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Empty State (Hidden by default) -->
+        <div class="empty-state text-center py-5" id="emptyState" style="display: none;">
+            <i class="fas fa-inbox fa-4x text-muted mb-3"></i>
+            <h4>لا توجد ردود</h4>
+            <p class="text-muted">لم يتم العثور على ردود تطابق معايير البحث الحالية.</p>
+            <button class="btn btn-outline-primary" onclick="clearFilters()">
+                <i class="fas fa-times"></i> مسح الفلاتر
+            </button>
+        </div>
+    </div>
+
+    <!-- Response Detail Modal -->
+    <div class="modal fade" id="responseDetailModal" tabindex="-1" aria-labelledby="responseDetailModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="responseDetailModalLabel">تفاصيل الرد</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <!-- Response Summary -->
+                        <div class="col-md-4">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h6 class="mb-0">معلومات المستجيب</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div id="responseInfo">
+                                        <!-- Will be populated by JavaScript -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Response Details -->
+                        <div class="col-md-8">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h6 class="mb-0">الأسئلة والأجوبة</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div id="responseDetails">
+                                        <!-- Will be populated by JavaScript -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
+                    <button type="button" class="btn btn-primary" onclick="exportCurrentResponse()">
+                        <i class="fas fa-download"></i> تصدير هذا الرد
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -56,6 +574,376 @@
                 ]);
             }
         });
+
+        // Response management functionality
+        let selectedResponses = [];
+
+        // Search functionality
+        function searchResponses() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+            const rows = document.querySelectorAll('.response-row');
+            const emptyState = document.getElementById('emptyState');
+            const table = document.querySelector('#responsesTable').closest('.card');
+            let visibleCount = 0;
+
+            rows.forEach(row => {
+                const surveyName = row.querySelector('.fw-bold').textContent.toLowerCase();
+                const respondentName = row.querySelector('td:nth-child(3) .fw-bold').textContent.toLowerCase();
+                const respondentContact = row.querySelector('td:nth-child(3) .text-muted').textContent.toLowerCase();
+                
+                if (surveyName.includes(searchTerm) || respondentName.includes(searchTerm) || respondentContact.includes(searchTerm)) {
+                    row.style.display = '';
+                    visibleCount++;
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+
+            // Show/hide empty state
+            if (visibleCount === 0) {
+                table.style.display = 'none';
+                emptyState.style.display = 'block';
+            } else {
+                table.style.display = 'block';
+                emptyState.style.display = 'none';
+            }
+        }
+
+        // Filter functionality
+        function filterResponses() {
+            const statusFilter = document.getElementById('statusFilter').value;
+            const sourceFilter = document.getElementById('sourceFilter').value;
+            const dateFrom = document.getElementById('dateFrom').value;
+            const dateTo = document.getElementById('dateTo').value;
+            
+            const rows = document.querySelectorAll('.response-row');
+            const emptyState = document.getElementById('emptyState');
+            const table = document.querySelector('#responsesTable').closest('.card');
+            let visibleCount = 0;
+
+            rows.forEach(row => {
+                let shouldShow = true;
+                
+                // Status filter
+                if (statusFilter !== 'all' && row.dataset.status !== statusFilter) {
+                    shouldShow = false;
+                }
+                
+                // Source filter
+                if (sourceFilter !== 'all' && row.dataset.source !== sourceFilter) {
+                    shouldShow = false;
+                }
+                
+                // Date range filter (simplified for demo)
+                if (dateFrom || dateTo) {
+                    // In a real implementation, you would parse the date from the row
+                    // and compare it with the filter dates
+                }
+                
+                if (shouldShow) {
+                    row.style.display = '';
+                    visibleCount++;
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+
+            // Show/hide empty state
+            if (visibleCount === 0) {
+                table.style.display = 'none';
+                emptyState.style.display = 'block';
+            } else {
+                table.style.display = 'block';
+                emptyState.style.display = 'none';
+            }
+        }
+
+        // Clear filters
+        function clearFilters() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('statusFilter').value = 'all';
+            document.getElementById('sourceFilter').value = 'all';
+            document.getElementById('dateFrom').value = '';
+            document.getElementById('dateTo').value = '';
+            
+            // Show all rows
+            document.querySelectorAll('.response-row').forEach(row => {
+                row.style.display = '';
+            });
+            
+            // Hide empty state
+            document.getElementById('emptyState').style.display = 'none';
+            document.querySelector('#responsesTable').closest('.card').style.display = 'block';
+        }
+
+        // Bulk selection functionality
+        function toggleSelectAllResponses() {
+            const selectAllCheckbox = document.getElementById('selectAll');
+            const responseCheckboxes = document.querySelectorAll('.response-checkbox:not([style*="display: none"])');
+            const isChecked = selectAllCheckbox.checked;
+
+            selectedResponses = [];
+            
+            responseCheckboxes.forEach(checkbox => {
+                if (checkbox.closest('.response-row').style.display !== 'none') {
+                    checkbox.checked = isChecked;
+                    if (isChecked) {
+                        selectedResponses.push(checkbox.value);
+                    }
+                }
+            });
+
+            updateBulkOperations();
+        }
+
+        function updateBulkOperations() {
+            const bulkOperations = document.getElementById('bulkOperations');
+            const selectedCount = document.getElementById('selectedCount');
+            
+            // Count visible checked checkboxes
+            const visibleChecked = document.querySelectorAll('.response-checkbox:checked');
+            selectedResponses = Array.from(visibleChecked).map(cb => cb.value).filter(value => {
+                const row = document.querySelector(`.response-checkbox[value="${value}"]`).closest('.response-row');
+                return row.style.display !== 'none';
+            });
+
+            if (selectedResponses.length > 0) {
+                bulkOperations.style.display = 'block';
+                selectedCount.textContent = selectedResponses.length;
+            } else {
+                bulkOperations.style.display = 'none';
+            }
+
+            // Update select all checkbox state
+            const selectAllCheckbox = document.getElementById('selectAll');
+            const allVisibleCheckboxes = document.querySelectorAll('.response-checkbox').length;
+            const checkedVisibleCheckboxes = selectedResponses.length;
+            
+            selectAllCheckbox.indeterminate = checkedVisibleCheckboxes > 0 && checkedVisibleCheckboxes < allVisibleCheckboxes;
+            selectAllCheckbox.checked = checkedVisibleCheckboxes === allVisibleCheckboxes && allVisibleCheckboxes > 0;
+        }
+
+        // Add event listeners to individual checkboxes
+        document.addEventListener('change', function(e) {
+            if (e.target.classList.contains('response-checkbox')) {
+                updateBulkOperations();
+            }
+        });
+
+        // Individual response actions
+        function viewResponse(responseId) {
+            const modal = new bootstrap.Modal(document.getElementById('responseDetailModal'));
+            
+            // Sample response data - in real implementation, fetch from API
+            const responseData = {
+                1: {
+                    info: {
+                        name: 'أحمد محمد',
+                        email: 'ahmed@email.com',
+                        survey: 'استطلاع رضا العملاء',
+                        date: '21 يناير 2025',
+                        time: '02:30 مساءً',
+                        status: 'مكتمل',
+                        source: 'موقع',
+                        rating: 4.8,
+                        duration: '3.2 دقيقة'
+                    },
+                    details: [
+                        { question: 'كيف تقيم خدماتنا بشكل عام؟', answer: 'ممتاز جداً، الخدمة سريعة ومميزة', sentiment: 'positive' },
+                        { question: 'ما رأيك في فريق خدمة العملاء؟', answer: 'متعاونين ومفيدين للغاية', sentiment: 'positive' },
+                        { question: 'هل توصي بخدماتنا للآخرين؟', answer: 'نعم بالتأكيد', sentiment: 'positive' },
+                        { question: 'أي تحسينات تقترحها؟', answer: 'ربما تحسين التطبيق المحمول قليلاً', sentiment: 'neutral' }
+                    ]
+                },
+                2: {
+                    info: {
+                        name: 'فاطمة علي',
+                        email: 'fatima@email.com',
+                        survey: 'تقييم المنتج الجديد',
+                        date: '21 يناير 2025',
+                        time: '01:15 مساءً',
+                        status: 'جزئي',
+                        source: 'تطبيق',
+                        rating: 3.5,
+                        duration: '1.8 دقيقة'
+                    },
+                    details: [
+                        { question: 'كيف تقيم المنتج الجديد؟', answer: 'جيد لكن يحتاج بعض التحسينات', sentiment: 'neutral' },
+                        { question: 'ما الميزة التي أعجبتك أكثر؟', answer: 'التصميم الجديد رائع', sentiment: 'positive' },
+                        { question: 'هل واجهت أي مشاكل؟', answer: 'نعم، بطء في التحميل أحياناً', sentiment: 'negative' }
+                    ]
+                }
+            };
+
+            const data = responseData[responseId] || responseData[1];
+            
+            // Populate response info
+            document.getElementById('responseInfo').innerHTML = `
+                <div class="mb-3">
+                    <strong>الاسم:</strong><br>
+                    <span>${data.info.name}</span>
+                </div>
+                <div class="mb-3">
+                    <strong>البريد الإلكتروني:</strong><br>
+                    <span>${data.info.email}</span>
+                </div>
+                <div class="mb-3">
+                    <strong>الاستطلاع:</strong><br>
+                    <span>${data.info.survey}</span>
+                </div>
+                <div class="mb-3">
+                    <strong>التاريخ والوقت:</strong><br>
+                    <span>${data.info.date} - ${data.info.time}</span>
+                </div>
+                <div class="mb-3">
+                    <strong>الحالة:</strong><br>
+                    <span class="badge bg-${data.info.status === 'مكتمل' ? 'success' : 'warning'}">${data.info.status}</span>
+                </div>
+                <div class="mb-3">
+                    <strong>المصدر:</strong><br>
+                    <span class="badge bg-primary">${data.info.source}</span>
+                </div>
+                <div class="mb-3">
+                    <strong>التقييم العام:</strong><br>
+                    <span class="text-success fw-bold">${data.info.rating}</span>
+                </div>
+                <div class="mb-3">
+                    <strong>مدة الاستجابة:</strong><br>
+                    <span>${data.info.duration}</span>
+                </div>
+            `;
+            
+            // Populate response details
+            let detailsHtml = '';
+            data.details.forEach((item, index) => {
+                const sentimentClass = item.sentiment === 'positive' ? 'success' : item.sentiment === 'negative' ? 'danger' : 'warning';
+                const sentimentIcon = item.sentiment === 'positive' ? 'smile' : item.sentiment === 'negative' ? 'frown' : 'meh';
+                
+                detailsHtml += `
+                    <div class="border-bottom pb-3 mb-3">
+                        <h6 class="text-primary mb-2">
+                            <i class="fas fa-question-circle me-1"></i>
+                            السؤال ${index + 1}
+                        </h6>
+                        <p class="mb-2"><strong>${item.question}</strong></p>
+                        <div class="bg-light p-3 rounded">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <p class="mb-0 flex-grow-1">${item.answer}</p>
+                                <span class="badge bg-${sentimentClass} ms-2">
+                                    <i class="fas fa-${sentimentIcon} me-1"></i>
+                                    ${item.sentiment === 'positive' ? 'إيجابي' : item.sentiment === 'negative' ? 'سلبي' : 'محايد'}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            document.getElementById('responseDetails').innerHTML = detailsHtml;
+            
+            modal.show();
+        }
+
+        // Individual actions
+        function exportResponse(responseId) {
+            console.log('Exporting response:', responseId);
+            alert(`جاري تصدير الرد رقم ${responseId}...`);
+        }
+
+        function deleteResponse(responseId) {
+            const row = document.querySelector(`.response-checkbox[value="${responseId}"]`).closest('tr');
+            const respondentName = row.querySelector('td:nth-child(3) .fw-bold').textContent;
+            
+            if (confirm(`هل أنت متأكد من حذف رد "${respondentName}" نهائياً؟`)) {
+                console.log('Deleting response:', responseId);
+                row.remove();
+                updateAnalyticsCards();
+            }
+        }
+
+        function sendReminder(responseId) {
+            console.log('Sending reminder for response:', responseId);
+            alert('تم إرسال تذكير للمستجيب بنجاح');
+        }
+
+        // Bulk operations
+        function bulkExportResponses() {
+            if (selectedResponses.length === 0) return;
+            
+            console.log('Bulk exporting responses:', selectedResponses);
+            alert(`جاري تصدير ${selectedResponses.length} رد...`);
+        }
+
+        function bulkMarkReviewed() {
+            if (selectedResponses.length === 0) return;
+            
+            if (confirm(`هل تريد وضع علامة على ${selectedResponses.length} رد كمراجع؟`)) {
+                console.log('Bulk marking as reviewed:', selectedResponses);
+                alert(`تم وضع علامة على ${selectedResponses.length} رد كمراجع`);
+                
+                // Clear selection
+                selectedResponses = [];
+                document.querySelectorAll('.response-checkbox').forEach(cb => cb.checked = false);
+                updateBulkOperations();
+            }
+        }
+
+        function bulkDeleteResponses() {
+            if (selectedResponses.length === 0) return;
+            
+            if (confirm(`تحذير: سيتم حذف ${selectedResponses.length} رد نهائياً. هل أنت متأكد؟`)) {
+                console.log('Bulk deleting responses:', selectedResponses);
+                
+                // Remove rows from table
+                selectedResponses.forEach(id => {
+                    const row = document.querySelector(`.response-checkbox[value="${id}"]`).closest('tr');
+                    row.remove();
+                });
+                
+                // Clear selection
+                selectedResponses = [];
+                updateBulkOperations();
+                updateAnalyticsCards();
+            }
+        }
+
+        // Export functions
+        function exportFiltered() {
+            const visibleRows = document.querySelectorAll('.response-row:not([style*="display: none"])');
+            console.log('Exporting filtered responses:', visibleRows.length);
+            alert(`جاري تصدير ${visibleRows.length} رد مرشح...`);
+        }
+
+        function exportCurrentResponse() {
+            console.log('Exporting current response from modal');
+            alert('جاري تصدير تفاصيل الرد الحالي...');
+        }
+
+        // Update analytics cards dynamically
+        function updateAnalyticsCards() {
+            const allRows = document.querySelectorAll('.response-row');
+            const completedRows = document.querySelectorAll('.response-row[data-status="completed"]');
+            const todayRows = allRows.length; // Simplified for demo
+            
+            let totalRating = 0;
+            let ratingCount = 0;
+            
+            allRows.forEach(row => {
+                const ratingElement = row.querySelector('.text-success, .text-warning');
+                if (ratingElement) {
+                    const rating = parseFloat(ratingElement.textContent);
+                    if (!isNaN(rating)) {
+                        totalRating += rating;
+                        ratingCount++;
+                    }
+                }
+            });
+
+            // Update cards
+            document.getElementById('todayResponses').textContent = todayRows;
+            document.getElementById('completionRate').textContent = Math.round((completedRows.length / allRows.length) * 100) + '%';
+            document.getElementById('avgResponseTime').textContent = ratingCount > 0 ? (totalRating / ratingCount).toFixed(1) : '0';
+        }
     </script>
 </body>
 </html>
