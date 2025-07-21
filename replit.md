@@ -141,6 +141,14 @@ An Arabic-first multi-channel feedback processing platform built with Flask and 
 ## Recent Changes (July 2025)
 
 ### Major Architecture Updates
+- **July 21**: **Homepage Simplification - MVP Landing Page** - Ultra-simplified homepage design for better user experience
+  - Removed complex feature cards, user journey sections, stats section, and detailed footer features
+  - Kept beautiful hero section with gradient background and subtle pattern overlay
+  - Focused on two primary CTAs: "إنشاء استطلاع جديد" and "عرض الاستطلاعات"
+  - Minimal footer with essential navigation links only
+  - Aligned all CTAs with existing navigation structure (/surveys/builder, /surveys, /dashboard/realtime, /analytics/journey-map)
+  - Responsive design maintained with mobile-optimized button layouts
+  - Created backup route `/homepage-original` for accessing the full-featured version if needed
 - **July 21**: **Predictive CX Insights Implementation** - Complete forward-looking analytics system for proactive customer experience management
   - **Satisfaction Prediction Model**: AI-powered satisfaction forecasting with 67% confidence score
     - Visual prediction gauge with interactive SVG circle progress indicator

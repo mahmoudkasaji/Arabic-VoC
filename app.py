@@ -55,8 +55,8 @@ app.register_blueprint(executive_bp, url_prefix='/api/executive-dashboard')
 
 @app.route('/')
 def index():
-    """Main Arabic homepage - MVP version"""
-    return render_template('index_mvp.html', 
+    """Main Arabic homepage - Ultra simple version"""
+    return render_template('index_simple.html', 
                          lang='ar', 
                          dir='rtl',
                          title='منصة صوت العميل العربية')

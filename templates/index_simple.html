@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    {% include 'components/head.html' %}
+    <title>منصة صوت العميل العربية</title>
+    
+    <style>
+        body {
+            background: #f8f9fa;
+        }
+
+        /* Hero Section - Keep the beautiful aesthetics */
+        .hero-section {
+            background: linear-gradient(135deg, #2E8B57, #3A9B6A);
+            color: white;
+            padding: 5rem 0;
+            margin-bottom: 3rem;
+            border-radius: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 100%;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") repeat;
+            z-index: 1;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+        }
+
+        .hero-title {
+            font-family: 'Amiri', serif;
+            font-size: 4rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .hero-description {
+            font-size: 1.4rem;
+            margin-bottom: 3rem;
+            line-height: 1.6;
+            opacity: 0.95;
+            max-width: 800px;
+            margin-right: auto;
+            margin-left: auto;
+        }
+
+        .cta-button {
+            background: #ffffff;
+            color: #2E8B57;
+            border: none;
+            padding: 1.2rem 3.5rem;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.3rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(255, 255, 255, 0.3);
+            text-decoration: none;
+            display: inline-block;
+            margin: 0.5rem;
+        }
+
+        .cta-button:hover {
+            background: #f8f9fa;
+            color: #236B47;
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(255, 255, 255, 0.4);
+        }
+
+        /* Simple Footer */
+        .simple-footer {
+            background: #2c3e50;
+            color: white;
+            padding: 2rem 0;
+            margin-top: 4rem;
+            text-align: center;
+        }
+
+        .footer-brand {
+            font-family: 'Amiri', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .footer-links {
+            margin: 1.5rem 0;
+        }
+
+        .footer-links a {
+            color: #bdc3c7;
+            text-decoration: none;
+            margin: 0 1rem;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: white;
+        }
+
+        .footer-copyright {
+            margin-top: 1.5rem;
+            color: #95a5a6;
+            font-size: 0.9rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .hero-description {
+                font-size: 1.2rem;
+                padding: 0 1rem;
+            }
+            
+            .cta-button {
+                display: block;
+                margin: 1rem auto;
+                max-width: 280px;
+            }
+
+            .footer-links a {
+                display: block;
+                margin: 0.5rem 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    {% include 'components/standard_header.html' %}
+
+    <div class="container">
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <div class="hero-content">
+                <h1 class="hero-title">
+                    منصة صوت العميل العربية
+                </h1>
+                <p class="hero-description">
+                    منصة متقدمة لتحليل آراء العملاء باللغة العربية مع دعم اللهجات المختلفة والذكاء الاصطناعي
+                </p>
+                
+                <!-- Simple Call to Action -->
+                <div>
+                    <a href="/surveys/builder" class="cta-button">
+                        <i class="fas fa-plus me-2"></i>
+                        إنشاء استطلاع جديد
+                    </a>
+                    <a href="/surveys" class="cta-button">
+                        <i class="fas fa-list me-2"></i>
+                        عرض الاستطلاعات
+                    </a>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Simple Footer -->
+    <footer class="simple-footer">
+        <div class="container">
+            <div class="footer-brand">منصة صوت العميل العربية</div>
+            <div class="footer-links">
+                <a href="/">الرئيسية</a>
+                <a href="/surveys/builder">إنشاء استطلاع</a>
+                <a href="/surveys">الاستطلاعات</a>
+                <a href="/dashboard/realtime">لوحة التحكم</a>
+                <a href="/analytics/journey-map">التحليلات</a>
+            </div>
+            <div class="footer-copyright">
+                © 2025 منصة صوت العميل العربية. جميع الحقوق محفوظة.
+            </div>
+        </div>
+    </footer>
+
+    {% include 'components/scripts.html' %}
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set active navigation
+            if (typeof StandardNavigation !== 'undefined') {
+                StandardNavigation.setActiveNav('home');
+            }
+        });
+    </script>
+</body>
+</html>
