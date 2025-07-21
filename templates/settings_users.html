@@ -92,111 +92,340 @@
                     </div>
                 </div>
 
+                <!-- Enhanced Search and Filtering -->
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <div class="row g-3 align-items-end">
+                            <div class="col-md-4">
+                                <label class="form-label">البحث بالاسم أو البريد الإلكتروني</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-search"></i></span>
+                                    <input type="search" id="userSearch" class="form-control" placeholder="اكتب للبحث...">
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">الحالة</label>
+                                <select id="statusFilter" class="form-select">
+                                    <option value="">الكل</option>
+                                    <option value="active">نشط</option>
+                                    <option value="suspended">معلق</option>
+                                    <option value="pending">في الانتظار</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">الدور</label>
+                                <select id="roleFilter" class="form-select">
+                                    <option value="">جميع الأدوار</option>
+                                    <option value="admin">مدير</option>
+                                    <option value="analyst">محلل</option>
+                                    <option value="user">مستخدم</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="d-flex gap-2">
+                                    <button id="clearFilters" class="btn btn-outline-secondary">
+                                        <i class="fas fa-times me-1"></i>مسح الفلاتر
+                                    </button>
+                                    <button id="exportUsers" class="btn btn-outline-success">
+                                        <i class="fas fa-download me-1"></i>تصدير
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bulk Operations Bar (Hidden by default) -->
+                <div id="bulkActionsBar" class="card mb-3" style="display: none;">
+                    <div class="card-body bg-light">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong><span id="selectedCount">0</span> مستخدم محدد</strong>
+                            </div>
+                            <div class="btn-group">
+                                <button id="bulkSuspend" class="btn btn-warning btn-sm">
+                                    <i class="fas fa-pause me-1"></i>تعليق المحدد
+                                </button>
+                                <button id="bulkDelete" class="btn btn-danger btn-sm">
+                                    <i class="fas fa-trash me-1"></i>حذف المحدد
+                                </button>
+                                <button id="clearSelection" class="btn btn-outline-secondary btn-sm">
+                                    <i class="fas fa-times me-1"></i>إلغاء التحديد
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Users Table -->
                 <div class="card">
                     <div class="card-header">
                         <div class="d-flex justify-content-between align-items-center">
-                            <h5 class="card-title mb-0">قائمة المستخدمين</h5>
-                            <div class="d-flex gap-2">
-                                <input type="search" class="form-control" placeholder="البحث..." style="width: 200px;">
-                                <select class="form-select" style="width: 150px;">
-                                    <option>جميع الأدوار</option>
-                                    <option>مدير</option>
-                                    <option>محلل</option>
-                                    <option>مستخدم</option>
-                                </select>
+                            <h5 class="card-title mb-0">
+                                <i class="fas fa-table me-2"></i>قائمة المستخدمين
+                            </h5>
+                            <div class="text-muted small">
+                                <i class="fas fa-info-circle me-1"></i>
+                                انقر على عناوين الأعمدة للترتيب
                             </div>
                         </div>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table class="table table-hover">
+                            <table id="usersTable" class="table table-hover">
                                 <thead>
                                     <tr>
-                                        <th>الاسم</th>
-                                        <th>البريد الإلكتروني</th>
-                                        <th>الدور</th>
-                                        <th>الحالة</th>
-                                        <th>آخر دخول</th>
-                                        <th>الإجراءات</th>
+                                        <th style="width: 40px;">
+                                            <input type="checkbox" id="selectAll" class="form-check-input">
+                                        </th>
+                                        <th class="sortable" data-sort="name">
+                                            الاسم <i class="fas fa-sort ms-1"></i>
+                                        </th>
+                                        <th class="sortable" data-sort="email">
+                                            البريد الإلكتروني <i class="fas fa-sort ms-1"></i>
+                                        </th>
+                                        <th class="sortable" data-sort="role">
+                                            الدور والصلاحيات <i class="fas fa-sort ms-1"></i>
+                                        </th>
+                                        <th class="sortable" data-sort="status">
+                                            الحالة <i class="fas fa-sort ms-1"></i>
+                                        </th>
+                                        <th class="sortable" data-sort="last_login">
+                                            آخر دخول <i class="fas fa-sort ms-1"></i>
+                                        </th>
+                                        <th class="sortable" data-sort="last_export">
+                                            آخر تصدير <i class="fas fa-sort ms-1"></i>
+                                        </th>
+                                        <th style="width: 200px;">الإجراءات</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
+                                    <tr data-user-id="1" class="user-row">
+                                        <td>
+                                            <input type="checkbox" class="form-check-input row-select" value="1">
+                                        </td>
                                         <td>
                                             <div class="d-flex align-items-center">
-                                                <img src="https://via.placeholder.com/32" class="rounded-circle me-2" alt="صورة المستخدم">
-                                                <span>أحمد محمد</span>
+                                                <div class="position-relative me-2">
+                                                    <img src="https://via.placeholder.com/32" class="rounded-circle" alt="صورة المستخدم">
+                                                    <i class="fas fa-crown position-absolute top-0 start-100 translate-middle text-warning" title="مدير"></i>
+                                                </div>
+                                                <div>
+                                                    <div class="fw-bold">أحمد محمد</div>
+                                                    <small class="text-muted">مدير النظام</small>
+                                                </div>
                                             </div>
                                         </td>
-                                        <td>ahmed@example.com</td>
-                                        <td><span class="badge bg-danger">مدير</span></td>
-                                        <td><span class="badge bg-success">نشط</span></td>
-                                        <td>منذ 5 دقائق</td>
+                                        <td>
+                                            <div>ahmed@example.com</div>
+                                            <div class="d-flex align-items-center mt-1">
+                                                <i class="fas fa-shield-alt text-danger me-1" title="وصول لبيانات حساسة"></i>
+                                                <small class="text-muted">وصول عالي الأمان</small>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="mb-1">
+                                                <span class="badge bg-danger me-1">
+                                                    <i class="fas fa-crown me-1"></i>مدير
+                                                </span>
+                                                <div class="dropdown d-inline">
+                                                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                                        تغيير
+                                                    </button>
+                                                    <ul class="dropdown-menu">
+                                                        <li><a class="dropdown-item" href="#" onclick="changeRole(1, 'admin')">مدير</a></li>
+                                                        <li><a class="dropdown-item" href="#" onclick="changeRole(1, 'analyst')">محلل</a></li>
+                                                        <li><a class="dropdown-item" href="#" onclick="changeRole(1, 'user')">مستخدم</a></li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            <small class="text-muted">عرض التقارير | إنشاء الاستبيانات | تصدير البيانات | إدارة المستخدمين</small>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-success">نشط</span>
+                                            <div class="small text-muted mt-1">متصل الآن</div>
+                                        </td>
+                                        <td>
+                                            <div>منذ 5 دقائق</div>
+                                            <small class="text-muted">من IP: 192.168.1.1</small>
+                                        </td>
+                                        <td>
+                                            <div class="text-success">اليوم 2:15 م</div>
+                                            <a href="#" class="small text-primary" onclick="showActivityLog(1)">سجل النشاط</a>
+                                        </td>
                                         <td>
                                             <div class="btn-group btn-group-sm">
-                                                <button class="btn btn-outline-primary" title="تعديل">
-                                                    <i class="fas fa-edit"></i>
+                                                <button class="btn btn-outline-warning" onclick="resetPassword(1)" title="إعادة تعيين كلمة المرور">
+                                                    <i class="fas fa-key"></i>
                                                 </button>
-                                                <button class="btn btn-outline-warning" title="إيقاف">
+                                                <button class="btn btn-outline-secondary" onclick="suspendUser(1)" title="تعليق">
                                                     <i class="fas fa-pause"></i>
                                                 </button>
-                                                <button class="btn btn-outline-danger" title="حذف">
-                                                    <i class="fas fa-trash"></i>
-                                                </button>
+                                                <div class="dropdown d-inline">
+                                                    <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" title="المزيد">
+                                                        <i class="fas fa-ellipsis-h"></i>
+                                                    </button>
+                                                    <ul class="dropdown-menu">
+                                                        <li><a class="dropdown-item" href="#" onclick="editUser(1)"><i class="fas fa-edit me-2"></i>تعديل المعلومات</a></li>
+                                                        <li><a class="dropdown-item" href="#" onclick="viewProfile(1)"><i class="fas fa-user me-2"></i>عرض الملف</a></li>
+                                                        <li><hr class="dropdown-divider"></li>
+                                                        <li><a class="dropdown-item text-danger" href="#" onclick="deleteUser(1)"><i class="fas fa-trash me-2"></i>حذف نهائيًا</a></li>
+                                                    </ul>
+                                                </div>
                                             </div>
                                         </td>
                                     </tr>
-                                    <tr>
+                                    <tr data-user-id="2" class="user-row">
+                                        <td>
+                                            <input type="checkbox" class="form-check-input row-select" value="2">
+                                        </td>
                                         <td>
                                             <div class="d-flex align-items-center">
-                                                <img src="https://via.placeholder.com/32" class="rounded-circle me-2" alt="صورة المستخدم">
-                                                <span>فاطمة علي</span>
+                                                <div class="position-relative me-2">
+                                                    <img src="https://via.placeholder.com/32" class="rounded-circle" alt="صورة المستخدم">
+                                                    <i class="fas fa-user-circle position-absolute top-0 start-100 translate-middle text-primary" title="محلل"></i>
+                                                </div>
+                                                <div>
+                                                    <div class="fw-bold">فاطمة علي</div>
+                                                    <small class="text-muted">محلل البيانات</small>
+                                                </div>
                                             </div>
                                         </td>
-                                        <td>fatima@example.com</td>
-                                        <td><span class="badge bg-primary">محلل</span></td>
-                                        <td><span class="badge bg-success">نشط</span></td>
-                                        <td>منذ ساعة</td>
+                                        <td>
+                                            <div>fatima@example.com</div>
+                                            <div class="d-flex align-items-center mt-1">
+                                                <i class="fas fa-check-circle text-success me-1" title="مستخدم محقق"></i>
+                                                <small class="text-muted">مستخدم موثوق</small>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="mb-1">
+                                                <span class="badge bg-primary me-1">
+                                                    <i class="fas fa-chart-line me-1"></i>محلل
+                                                </span>
+                                                <div class="dropdown d-inline">
+                                                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                                        تغيير
+                                                    </button>
+                                                    <ul class="dropdown-menu">
+                                                        <li><a class="dropdown-item" href="#" onclick="changeRole(2, 'admin')">مدير</a></li>
+                                                        <li><a class="dropdown-item" href="#" onclick="changeRole(2, 'analyst')">محلل</a></li>
+                                                        <li><a class="dropdown-item" href="#" onclick="changeRole(2, 'user')">مستخدم</a></li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            <small class="text-muted">عرض التقارير | إنشاء الاستبيانات | تصدير البيانات</small>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-success">نشط</span>
+                                            <div class="small text-muted mt-1">آخر نشاط قبل ساعة</div>
+                                        </td>
+                                        <td>
+                                            <div>منذ ساعة</div>
+                                            <small class="text-muted">من IP: 192.168.1.15</small>
+                                        </td>
+                                        <td>
+                                            <div class="text-muted">أمس 4:22 م</div>
+                                            <a href="#" class="small text-primary" onclick="showActivityLog(2)">سجل النشاط</a>
+                                        </td>
                                         <td>
                                             <div class="btn-group btn-group-sm">
-                                                <button class="btn btn-outline-primary" title="تعديل">
-                                                    <i class="fas fa-edit"></i>
+                                                <button class="btn btn-outline-warning" onclick="resetPassword(2)" title="إعادة تعيين كلمة المرور">
+                                                    <i class="fas fa-key"></i>
                                                 </button>
-                                                <button class="btn btn-outline-warning" title="إيقاف">
+                                                <button class="btn btn-outline-secondary" onclick="suspendUser(2)" title="تعليق">
                                                     <i class="fas fa-pause"></i>
                                                 </button>
-                                                <button class="btn btn-outline-danger" title="حذف">
-                                                    <i class="fas fa-trash"></i>
-                                                </button>
+                                                <div class="dropdown d-inline">
+                                                    <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" title="المزيد">
+                                                        <i class="fas fa-ellipsis-h"></i>
+                                                    </button>
+                                                    <ul class="dropdown-menu">
+                                                        <li><a class="dropdown-item" href="#" onclick="editUser(2)"><i class="fas fa-edit me-2"></i>تعديل المعلومات</a></li>
+                                                        <li><a class="dropdown-item" href="#" onclick="viewProfile(2)"><i class="fas fa-user me-2"></i>عرض الملف</a></li>
+                                                        <li><hr class="dropdown-divider"></li>
+                                                        <li><a class="dropdown-item text-danger" href="#" onclick="deleteUser(2)"><i class="fas fa-trash me-2"></i>حذف نهائيًا</a></li>
+                                                    </ul>
+                                                </div>
                                             </div>
                                         </td>
                                     </tr>
-                                    <tr>
+                                    <tr data-user-id="3" class="user-row">
+                                        <td>
+                                            <input type="checkbox" class="form-check-input row-select" value="3">
+                                        </td>
                                         <td>
                                             <div class="d-flex align-items-center">
-                                                <img src="https://via.placeholder.com/32" class="rounded-circle me-2" alt="صورة المستخدم">
-                                                <span>خالد سعد</span>
+                                                <div class="position-relative me-2">
+                                                    <img src="https://via.placeholder.com/32" class="rounded-circle" alt="صورة المستخدم">
+                                                    <i class="fas fa-user position-absolute top-0 start-100 translate-middle text-secondary" title="مستخدم"></i>
+                                                </div>
+                                                <div>
+                                                    <div class="fw-bold">خالد سعد</div>
+                                                    <small class="text-muted">مستخدم عادي</small>
+                                                </div>
                                             </div>
                                         </td>
-                                        <td>khalid@example.com</td>
-                                        <td><span class="badge bg-secondary">مستخدم</span></td>
-                                        <td><span class="badge bg-warning">معلق</span></td>
-                                        <td>أمس</td>
+                                        <td>
+                                            <div>khalid@example.com</div>
+                                            <div class="d-flex align-items-center mt-1">
+                                                <i class="fas fa-clock text-warning me-1" title="في الانتظار"></i>
+                                                <small class="text-muted">لم يفعل الحساب بعد</small>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="mb-1">
+                                                <span class="badge bg-secondary me-1">
+                                                    <i class="fas fa-user me-1"></i>مستخدم
+                                                </span>
+                                                <div class="dropdown d-inline">
+                                                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                                        تغيير
+                                                    </button>
+                                                    <ul class="dropdown-menu">
+                                                        <li><a class="dropdown-item" href="#" onclick="changeRole(3, 'admin')">مدير</a></li>
+                                                        <li><a class="dropdown-item" href="#" onclick="changeRole(3, 'analyst')">محلل</a></li>
+                                                        <li><a class="dropdown-item" href="#" onclick="changeRole(3, 'user')">مستخدم</a></li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            <small class="text-muted">عرض التقارير | إنشاء الاستبيانات</small>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-warning">في الانتظار</span>
+                                            <div class="small text-muted mt-1">لم يسجل دخول بعد</div>
+                                        </td>
+                                        <td>
+                                            <div class="text-muted">-</div>
+                                            <small class="text-muted">لم يسجل دخول</small>
+                                        </td>
+                                        <td>
+                                            <div class="text-muted">-</div>
+                                            <a href="#" class="small text-primary" onclick="showActivityLog(3)">سجل النشاط</a>
+                                        </td>
                                         <td>
                                             <div class="btn-group btn-group-sm">
-                                                <button class="btn btn-outline-primary" title="تعديل">
-                                                    <i class="fas fa-edit"></i>
+                                                <button class="btn btn-outline-info" onclick="resendInvite(3)" title="إعادة إرسال الدعوة">
+                                                    <i class="fas fa-paper-plane"></i>
                                                 </button>
-                                                <button class="btn btn-outline-success" title="تفعيل">
-                                                    <i class="fas fa-play"></i>
+                                                <button class="btn btn-outline-warning" onclick="resetPassword(3)" title="إعادة تعيين كلمة المرور">
+                                                    <i class="fas fa-key"></i>
                                                 </button>
-                                                <button class="btn btn-outline-danger" title="حذف">
-                                                    <i class="fas fa-trash"></i>
-                                                </button>
+                                                <div class="dropdown d-inline">
+                                                    <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" title="المزيد">
+                                                        <i class="fas fa-ellipsis-h"></i>
+                                                    </button>
+                                                    <ul class="dropdown-menu">
+                                                        <li><a class="dropdown-item" href="#" onclick="editUser(3)"><i class="fas fa-edit me-2"></i>تعديل المعلومات</a></li>
+                                                        <li><a class="dropdown-item" href="#" onclick="viewProfile(3)"><i class="fas fa-user me-2"></i>عرض الملف</a></li>
+                                                        <li><hr class="dropdown-divider"></li>
+                                                        <li><a class="dropdown-item text-danger" href="#" onclick="deleteUser(3)"><i class="fas fa-trash me-2"></i>حذف نهائيًا</a></li>
+                                                    </ul>
+                                                </div>
                                             </div>
                                         </td>
                                     </tr>
+
                                 </tbody>
                             </table>
                         </div>
@@ -268,10 +497,446 @@
         </div>
     </div>
 
+    <!-- Activity Log Modal -->
+    <div class="modal fade" id="activityLogModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-history me-2"></i>
+                        سجل النشاط - <span id="activityUserName"></span>
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="activityLogContent">
+                        <div class="list-group">
+                            <div class="list-group-item">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <h6 class="mb-1">تسجيل دخول ناجح</h6>
+                                        <small class="text-muted">من عنوان IP: 192.168.1.1</small>
+                                    </div>
+                                    <small>اليوم 2:15 م</small>
+                                </div>
+                            </div>
+                            <div class="list-group-item">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <h6 class="mb-1">تصدير تقرير العملاء</h6>
+                                        <small class="text-muted">ملف Excel - 2,450 سجل</small>
+                                    </div>
+                                    <small>اليوم 2:10 م</small>
+                                </div>
+                            </div>
+                            <div class="list-group-item">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <h6 class="mb-1">إنشاء استطلاع جديد</h6>
+                                        <small class="text-muted">استطلاع رضا العملاء Q4</small>
+                                    </div>
+                                    <small>أمس 4:30 م</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-primary">
+                        <i class="fas fa-download me-1"></i>
+                        تصدير السجل
+                    </button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div class="modal fade" id="confirmModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmModalTitle">تأكيد العملية</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="confirmModalBody">هل أنت متأكد من هذا الإجراء؟</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                    <button type="button" id="confirmModalAction" class="btn btn-primary">تأكيد</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     {% include 'components/scripts.html' %}
     
+    <style>
+        .sortable {
+            cursor: pointer;
+            user-select: none;
+        }
+        
+        .sortable:hover {
+            background-color: rgba(0,0,0,0.05);
+        }
+        
+        .user-row:hover {
+            background-color: rgba(46, 139, 87, 0.05);
+        }
+        
+        .table tbody tr.selected {
+            background-color: rgba(46, 139, 87, 0.1);
+        }
+        
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+        
+        .badge {
+            transition: all 0.2s ease;
+        }
+        
+        .btn:hover {
+            transform: translateY(-1px);
+        }
+    </style>
+
     <script>
-        document.getElementById('addUserForm').addEventListener('submit', function(e) {
+        // Global variables
+        let selectedUsers = new Set();
+        let sortOrder = {
+            column: 'name',
+            direction: 'asc'
+        };
+
+        // DOM Ready
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeEventListeners();
+            updateBulkActionsVisibility();
+        });
+
+        function initializeEventListeners() {
+            // Search functionality
+            document.getElementById('userSearch').addEventListener('input', filterUsers);
+            document.getElementById('statusFilter').addEventListener('change', filterUsers);
+            document.getElementById('roleFilter').addEventListener('change', filterUsers);
+            document.getElementById('clearFilters').addEventListener('click', clearAllFilters);
+
+            // Select all functionality
+            document.getElementById('selectAll').addEventListener('change', toggleSelectAll);
+            
+            // Row selection
+            document.querySelectorAll('.row-select').forEach(checkbox => {
+                checkbox.addEventListener('change', handleRowSelection);
+            });
+
+            // Bulk actions
+            document.getElementById('bulkSuspend').addEventListener('click', () => bulkAction('suspend'));
+            document.getElementById('bulkDelete').addEventListener('click', () => bulkAction('delete'));
+            document.getElementById('clearSelection').addEventListener('click', clearSelection);
+
+            // Sorting
+            document.querySelectorAll('.sortable').forEach(header => {
+                header.addEventListener('click', handleSort);
+            });
+
+            // Export functionality
+            document.getElementById('exportUsers').addEventListener('click', exportUsers);
+
+            // Add user form
+            document.getElementById('addUserForm').addEventListener('submit', handleAddUser);
+        }
+
+        function filterUsers() {
+            const searchTerm = document.getElementById('userSearch').value.toLowerCase();
+            const statusFilter = document.getElementById('statusFilter').value;
+            const roleFilter = document.getElementById('roleFilter').value;
+            
+            const rows = document.querySelectorAll('.user-row');
+            
+            rows.forEach(row => {
+                const name = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
+                const email = row.querySelector('td:nth-child(3)').textContent.toLowerCase();
+                const role = row.querySelector('.badge').textContent.toLowerCase();
+                const status = row.querySelector('td:nth-child(5) .badge').textContent.toLowerCase();
+                
+                const matchesSearch = name.includes(searchTerm) || email.includes(searchTerm);
+                const matchesStatus = !statusFilter || status.includes(statusFilter);
+                const matchesRole = !roleFilter || role.includes(roleFilter);
+                
+                if (matchesSearch && matchesStatus && matchesRole) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
+        function clearAllFilters() {
+            document.getElementById('userSearch').value = '';
+            document.getElementById('statusFilter').value = '';
+            document.getElementById('roleFilter').value = '';
+            filterUsers();
+        }
+
+        function toggleSelectAll() {
+            const selectAll = document.getElementById('selectAll');
+            const visibleRows = document.querySelectorAll('.user-row:not([style*="display: none"]) .row-select');
+            
+            visibleRows.forEach(checkbox => {
+                checkbox.checked = selectAll.checked;
+                handleRowSelection.call(checkbox);
+            });
+        }
+
+        function handleRowSelection() {
+            const userId = this.value;
+            const row = this.closest('tr');
+            
+            if (this.checked) {
+                selectedUsers.add(userId);
+                row.classList.add('selected');
+            } else {
+                selectedUsers.delete(userId);
+                row.classList.remove('selected');
+            }
+            
+            updateBulkActionsVisibility();
+            updateSelectAllState();
+        }
+
+        function updateBulkActionsVisibility() {
+            const bulkBar = document.getElementById('bulkActionsBar');
+            const selectedCount = document.getElementById('selectedCount');
+            
+            selectedCount.textContent = selectedUsers.size;
+            
+            if (selectedUsers.size > 0) {
+                bulkBar.style.display = 'block';
+            } else {
+                bulkBar.style.display = 'none';
+            }
+        }
+
+        function updateSelectAllState() {
+            const selectAll = document.getElementById('selectAll');
+            const visibleRows = document.querySelectorAll('.user-row:not([style*="display: none"]) .row-select');
+            const checkedRows = document.querySelectorAll('.user-row:not([style*="display: none"]) .row-select:checked');
+            
+            if (checkedRows.length === 0) {
+                selectAll.indeterminate = false;
+                selectAll.checked = false;
+            } else if (checkedRows.length === visibleRows.length) {
+                selectAll.indeterminate = false;
+                selectAll.checked = true;
+            } else {
+                selectAll.indeterminate = true;
+                selectAll.checked = false;
+            }
+        }
+
+        function clearSelection() {
+            selectedUsers.clear();
+            document.querySelectorAll('.row-select').forEach(checkbox => {
+                checkbox.checked = false;
+            });
+            document.querySelectorAll('.user-row').forEach(row => {
+                row.classList.remove('selected');
+            });
+            updateBulkActionsVisibility();
+            updateSelectAllState();
+        }
+
+        function bulkAction(action) {
+            if (selectedUsers.size === 0) return;
+            
+            const actionText = action === 'suspend' ? 'تعليق' : 'حذف';
+            const actionClass = action === 'suspend' ? 'btn-warning' : 'btn-danger';
+            
+            showConfirmModal(
+                `${actionText} المستخدمين المحددين`,
+                `هل أنت متأكد من ${actionText} ${selectedUsers.size} مستخدم؟ هذا الإجراء يمكن التراجع عنه.`,
+                actionClass,
+                () => {
+                    // Simulate API call
+                    console.log(`${action} users:`, Array.from(selectedUsers));
+                    
+                    selectedUsers.forEach(userId => {
+                        const row = document.querySelector(`tr[data-user-id="${userId}"]`);
+                        if (action === 'suspend') {
+                            const statusBadge = row.querySelector('td:nth-child(5) .badge');
+                            statusBadge.className = 'badge bg-warning';
+                            statusBadge.textContent = 'معلق';
+                        } else if (action === 'delete') {
+                            row.style.display = 'none';
+                        }
+                    });
+                    
+                    clearSelection();
+                    showToast(`تم ${actionText} المستخدمين المحددين بنجاح`);
+                }
+            );
+        }
+
+        function handleSort(event) {
+            const column = event.currentTarget.dataset.sort;
+            
+            if (sortOrder.column === column) {
+                sortOrder.direction = sortOrder.direction === 'asc' ? 'desc' : 'asc';
+            } else {
+                sortOrder.column = column;
+                sortOrder.direction = 'asc';
+            }
+            
+            // Update sort icons
+            document.querySelectorAll('.sortable i').forEach(icon => {
+                icon.className = 'fas fa-sort ms-1';
+            });
+            
+            const currentIcon = event.currentTarget.querySelector('i');
+            currentIcon.className = `fas fa-sort-${sortOrder.direction === 'asc' ? 'up' : 'down'} ms-1`;
+            
+            // Sort rows (simplified for demo)
+            console.log(`Sorting by ${column} ${sortOrder.direction}`);
+        }
+
+        function exportUsers() {
+            // Simulate export functionality
+            showToast('جاري تصدير بيانات المستخدمين...');
+            
+            setTimeout(() => {
+                showToast('تم تصدير البيانات بنجاح');
+            }, 2000);
+        }
+
+        // User action functions
+        function changeRole(userId, newRole) {
+            const roleNames = {
+                'admin': 'مدير',
+                'analyst': 'محلل', 
+                'user': 'مستخدم'
+            };
+            
+            showConfirmModal(
+                'تغيير دور المستخدم',
+                `هل تريد تغيير دور المستخدم إلى "${roleNames[newRole]}"؟`,
+                'btn-primary',
+                () => {
+                    const row = document.querySelector(`tr[data-user-id="${userId}"]`);
+                    const badge = row.querySelector('.badge');
+                    
+                    badge.textContent = roleNames[newRole];
+                    badge.className = `badge ${newRole === 'admin' ? 'bg-danger' : newRole === 'analyst' ? 'bg-primary' : 'bg-secondary'} me-1`;
+                    
+                    showToast(`تم تغيير دور المستخدم إلى ${roleNames[newRole]} بنجاح`);
+                }
+            );
+        }
+
+        function resetPassword(userId) {
+            showConfirmModal(
+                'إعادة تعيين كلمة المرور',
+                'سيتم إرسال رابط إعادة تعيين كلمة المرور للمستخدم عبر البريد الإلكتروني',
+                'btn-warning',
+                () => {
+                    showToast('تم إرسال رابط إعادة تعيين كلمة المرور');
+                }
+            );
+        }
+
+        function suspendUser(userId) {
+            showConfirmModal(
+                'تعليق المستخدم',
+                'سيتم تعليق حساب المستخدم ومنعه من الوصول للنظام',
+                'btn-warning',
+                () => {
+                    const row = document.querySelector(`tr[data-user-id="${userId}"]`);
+                    const statusBadge = row.querySelector('td:nth-child(5) .badge');
+                    statusBadge.className = 'badge bg-warning';
+                    statusBadge.textContent = 'معلق';
+                    
+                    showToast('تم تعليق المستخدم بنجاح');
+                }
+            );
+        }
+
+        function deleteUser(userId) {
+            showConfirmModal(
+                'حذف المستخدم نهائيًا',
+                'سيتم حذف المستخدم وجميع بياناته نهائيًا. هذا الإجراء لا يمكن التراجع عنه!',
+                'btn-danger',
+                () => {
+                    const row = document.querySelector(`tr[data-user-id="${userId}"]`);
+                    row.remove();
+                    showToast('تم حذف المستخدم نهائيًا');
+                }
+            );
+        }
+
+        function resendInvite(userId) {
+            showToast('جاري إعادة إرسال الدعوة...');
+            
+            setTimeout(() => {
+                showToast('تم إعادة إرسال الدعوة بنجاح');
+            }, 1500);
+        }
+
+        function editUser(userId) {
+            showToast('ميزة تعديل المعلومات ستكون متاحة قريبًا');
+        }
+
+        function viewProfile(userId) {
+            window.open('/profile', '_blank');
+        }
+
+        function showActivityLog(userId) {
+            const modal = new bootstrap.Modal(document.getElementById('activityLogModal'));
+            document.getElementById('activityUserName').textContent = `المستخدم ${userId}`;
+            modal.show();
+        }
+
+        // Utility functions
+        function showConfirmModal(title, message, buttonClass, onConfirm) {
+            const modal = new bootstrap.Modal(document.getElementById('confirmModal'));
+            
+            document.getElementById('confirmModalTitle').textContent = title;
+            document.getElementById('confirmModalBody').textContent = message;
+            
+            const confirmButton = document.getElementById('confirmModalAction');
+            confirmButton.className = `btn ${buttonClass}`;
+            
+            confirmButton.onclick = () => {
+                modal.hide();
+                onConfirm();
+            };
+            
+            modal.show();
+        }
+
+        function showToast(message) {
+            // Simple toast notification (you could use Bootstrap Toast or custom implementation)
+            const existingToast = document.querySelector('.custom-toast');
+            if (existingToast) {
+                existingToast.remove();
+            }
+            
+            const toast = document.createElement('div');
+            toast.className = 'custom-toast position-fixed top-0 end-0 m-3 p-3 bg-success text-white rounded';
+            toast.style.zIndex = '9999';
+            toast.textContent = message;
+            
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+
+        function handleAddUser(e) {
             e.preventDefault();
             
             // Get form data
@@ -290,11 +955,11 @@
             const modal = bootstrap.Modal.getInstance(document.getElementById('addUserModal'));
             modal.hide();
             
-            alert('تم إضافة المستخدم بنجاح');
+            showToast('تم إضافة المستخدم بنجاح');
             
             // Reset form
-            this.reset();
-        });
+            e.target.reset();
+        }
     </script>
 </body>
 </html>
