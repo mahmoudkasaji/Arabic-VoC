@@ -122,6 +122,257 @@
             gap: 8px;
         }
 
+        /* Progressive Disclosure Styles */
+        .guided-flow-container {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
+        }
+
+        .workflow-progress {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 10px;
+        }
+
+        .progress-step {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #6c757d;
+            font-weight: 500;
+        }
+
+        .progress-step.active {
+            color: var(--primary-color);
+            font-weight: 700;
+        }
+
+        .progress-step.completed {
+            color: #28a745;
+        }
+
+        .step-number {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #e9ecef;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        .progress-step.active .step-number {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .progress-step.completed .step-number {
+            background: #28a745;
+            color: white;
+        }
+
+        .survey-setup-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        .setup-title {
+            color: var(--primary-color);
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .template-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .template-card {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .template-card:hover {
+            border-color: var(--primary-color);
+            box-shadow: 0 4px 15px rgba(46, 139, 87, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .template-card.selected {
+            border-color: var(--primary-color);
+            background: rgba(46, 139, 87, 0.05);
+        }
+
+        .essential-questions {
+            margin-bottom: 20px;
+        }
+
+        .essential-questions h6 {
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-bottom: 15px;
+            font-size: 1rem;
+        }
+
+        .advanced-questions {
+            border-top: 1px solid #dee2e6;
+            margin-top: 20px;
+            padding-top: 20px;
+        }
+
+        .expand-toggle {
+            background: none;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 0 auto;
+            font-size: 0.9rem;
+        }
+
+        .expand-toggle:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .expand-toggle .fa-chevron-down {
+            transition: transform 0.3s ease;
+        }
+
+        .expand-toggle.expanded .fa-chevron-down {
+            transform: rotate(180deg);
+        }
+
+        .question-counter {
+            background: rgba(46, 139, 87, 0.1);
+            border-left: 4px solid var(--primary-color);
+            padding: 12px 16px;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 20px;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .auto-save-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+            color: #28a745;
+            background: rgba(40, 167, 69, 0.1);
+            padding: 8px 12px;
+            border-radius: 20px;
+        }
+
+        .context-help {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            color: #856404;
+        }
+
+        .context-help .fa-lightbulb {
+            color: #f39c12;
+            margin-left: 8px;
+        }
+
+        .question-type-tooltip {
+            position: relative;
+        }
+
+        .question-type-tooltip:hover::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #333;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            white-space: nowrap;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .question-type-tooltip:hover::before {
+            content: '';
+            position: absolute;
+            bottom: 94%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 6px solid transparent;
+            border-top-color: #333;
+            z-index: 1000;
+        }
+
+        .empty-state-guidance {
+            text-align: center;
+            padding: 40px 20px;
+            color: #6c757d;
+        }
+
+        .empty-state-guidance i {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+            opacity: 0.7;
+        }
+
+        .guided-start-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(46, 139, 87, 0.2);
+        }
+
+        .guided-start-btn:hover {
+            background: #236B47;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(46, 139, 87, 0.3);
+        }
+
+        .hide-advanced {
+            display: none;
+        }
+
         .collapsible-sidebar {
             transition: transform 0.3s ease;
         }
@@ -758,70 +1009,207 @@
 
 
     <div class="builder-container">
-        <!-- Question Types Sidebar -->
+        <!-- Progressive Question Types Sidebar -->
         <div class="sidebar">
             <h5 class="mb-4">أنواع الأسئلة</h5>
             
-            <div class="question-types" id="questionTypes">
-                <div class="question-type" data-type="text">
-                    <i class="fas fa-font"></i>
-                    <span>نص قصير</span>
+            <!-- Essential Questions (Always Visible) -->
+            <div class="essential-questions">
+                <h6><i class="fas fa-star me-2"></i>أسئلة أساسية</h6>
+                <div class="question-types" id="essentialQuestionTypes">
+                    <div class="question-type question-type-tooltip" data-type="text" data-tooltip="مناسب لجمع نصوص قصيرة مثل الأسماء والآراء المختصرة">
+                        <i class="fas fa-font question-type-icon"></i>
+                        <span>نص قصير</span>
+                    </div>
+                    
+                    <div class="question-type question-type-tooltip" data-type="multiple_choice" data-tooltip="مثالي لأسئلة الاختيار من متعدد وقياس التفضيلات">
+                        <i class="fas fa-list question-type-icon"></i>
+                        <span>اختيار متعدد</span>
+                    </div>
+                    
+                    <div class="question-type question-type-tooltip" data-type="rating" data-tooltip="لقياس مستوى الرضا والتقييم من 1 إلى 5 نجوم">
+                        <i class="fas fa-star question-type-icon"></i>
+                        <span>تقييم بالنجوم</span>
+                    </div>
+                    
+                    <div class="question-type question-type-tooltip" data-type="nps" data-tooltip="مقياس صافي نقاط الترشيح لقياس ولاء العملاء">
+                        <i class="fas fa-chart-line question-type-icon"></i>
+                        <span>مقياس الترشيح (NPS)</span>
+                    </div>
                 </div>
-                
-                <div class="question-type" data-type="textarea">
-                    <i class="fas fa-align-left"></i>
-                    <span>نص طويل</span>
-                </div>
-                
-                <div class="question-type" data-type="multiple_choice">
-                    <i class="fas fa-list"></i>
-                    <span>اختيار متعدد</span>
-                </div>
-                
-                <div class="question-type" data-type="checkbox">
-                    <i class="fas fa-check-square"></i>
-                    <span>مربعات اختيار</span>
-                </div>
-                
-                <div class="question-type" data-type="dropdown">
+            </div>
+            
+            <!-- Advanced Questions (Expandable) -->
+            <div class="advanced-questions">
+                <button class="expand-toggle" id="expandAdvanced">
                     <i class="fas fa-chevron-down"></i>
-                    <span>قائمة منسدلة</span>
-                </div>
+                    <span>عرض المزيد من أنواع الأسئلة</span>
+                </button>
                 
-                <div class="question-type" data-type="rating">
-                    <i class="fas fa-star"></i>
-                    <span>تقييم بالنجوم</span>
-                </div>
-                
-                <div class="question-type" data-type="slider">
-                    <i class="fas fa-sliders-h"></i>
-                    <span>مؤشر تمرير</span>
-                </div>
-                
-                <div class="question-type" data-type="nps">
-                    <i class="fas fa-chart-line"></i>
-                    <span>مؤشر الترشيح</span>
-                </div>
-                
-                <div class="question-type" data-type="date">
-                    <i class="fas fa-calendar"></i>
-                    <span>تاريخ</span>
-                </div>
-                
-                <div class="question-type" data-type="email">
-                    <i class="fas fa-envelope"></i>
-                    <span>بريد إلكتروني</span>
-                </div>
-                
-                <div class="question-type" data-type="phone">
-                    <i class="fas fa-phone"></i>
-                    <span>رقم هاتف</span>
+                <div class="question-types hide-advanced" id="advancedQuestionTypes">
+                    <div class="question-type question-type-tooltip" data-type="textarea" data-tooltip="للنصوص الطويلة والتعليقات المفصلة">
+                        <i class="fas fa-align-left question-type-icon"></i>
+                        <span>نص طويل</span>
+                    </div>
+                    
+                    <div class="question-type question-type-tooltip" data-type="checkbox" data-tooltip="للسماح بالاختيار المتعدد من قائمة خيارات">
+                        <i class="fas fa-check-square question-type-icon"></i>
+                        <span>مربعات اختيار</span>
+                    </div>
+                    
+                    <div class="question-type question-type-tooltip" data-type="dropdown" data-tooltip="قائمة منسدلة لتوفير المساحة مع خيارات متعددة">
+                        <i class="fas fa-chevron-down question-type-icon"></i>
+                        <span>قائمة منسدلة</span>
+                    </div>
+                    
+                    <div class="question-type question-type-tooltip" data-type="slider" data-tooltip="مؤشر تمرير لقياس القيم بدقة على مقياس متدرج">
+                        <i class="fas fa-sliders-h question-type-icon"></i>
+                        <span>مؤشر تمرير</span>
+                    </div>
+                    
+                    <div class="question-type question-type-tooltip" data-type="date" data-tooltip="لجمع التواريخ مثل تواريخ الميلاد أو المواعيد">
+                        <i class="fas fa-calendar question-type-icon"></i>
+                        <span>تاريخ</span>
+                    </div>
+                    
+                    <div class="question-type question-type-tooltip" data-type="email" data-tooltip="لجمع عناوين البريد الإلكتروني مع التحقق التلقائي">
+                        <i class="fas fa-envelope question-type-icon"></i>
+                        <span>بريد إلكتروني</span>
+                    </div>
+                    
+                    <div class="question-type question-type-tooltip" data-type="phone" data-tooltip="لجمع أرقام الهواتف مع التنسيق المناسب">
+                        <i class="fas fa-phone question-type-icon"></i>
+                        <span>رقم هاتف</span>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Main Canvas -->
+        <!-- Main Canvas with Guided Flow -->
         <div class="main-canvas">
+            <!-- Workflow Progress Indicator -->
+            <div class="workflow-progress" id="workflowProgress">
+                <div class="progress-step active" id="step1">
+                    <div class="step-number">1</div>
+                    <span>معلومات الاستطلاع</span>
+                </div>
+                <div class="progress-step" id="step2">
+                    <div class="step-number">2</div>
+                    <span>إضافة الأسئلة</span>
+                </div>
+                <div class="progress-step" id="step3">
+                    <div class="step-number">3</div>
+                    <span>المراجعة</span>
+                </div>
+                <div class="progress-step" id="step4">
+                    <div class="step-number">4</div>
+                    <span>النشر</span>
+                </div>
+            </div>
+
+            <!-- Question Counter & Auto-Save Status -->
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div class="question-counter" id="questionCounter">
+                    <i class="fas fa-list-ol me-2"></i>
+                    تم إضافة <span id="questionCount">0</span> سؤال
+                </div>
+                <div class="auto-save-status" id="autoSaveStatus">
+                    <i class="fas fa-check-circle"></i>
+                    <span id="saveStatusText">تم الحفظ منذ 30 ثانية</span>
+                </div>
+            </div>
+
+            <!-- Step 1: Survey Setup (Initial State) -->
+            <div class="guided-flow-container" id="surveySetupStep">
+                <div class="survey-setup-section">
+                    <h5 class="setup-title">
+                        <i class="fas fa-info-circle"></i>
+                        معلومات الاستطلاع الأساسية
+                    </h5>
+                    
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="form-group mb-4">
+                                <label for="surveyTitle" class="form-label fw-bold">عنوان الاستطلاع</label>
+                                <input type="text" class="form-control form-control-modern" id="surveyTitle" 
+                                       placeholder="مثال: استطلاع رضا العملاء لعام 2025">
+                            </div>
+                            
+                            <div class="form-group mb-4">
+                                <label for="surveyDescription" class="form-label fw-bold">وصف الاستطلاع</label>
+                                <textarea class="form-control form-control-modern" id="surveyDescription" rows="3"
+                                          placeholder="اكتب وصفاً مختصراً يوضح الهدف من الاستطلاع وأهميته للمشاركين"></textarea>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="context-help">
+                                <i class="fas fa-lightbulb"></i>
+                                <strong>نصيحة:</strong> عنوان واضح ووصف مقنع يزيد من معدل الاستجابة بنسبة تصل إلى 40%
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center mt-4">
+                        <button class="guided-start-btn" id="startAddingQuestions">
+                            <i class="fas fa-arrow-left me-2"></i>
+                            البدء في إضافة الأسئلة
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Template Options -->
+                <div class="survey-setup-section mt-4">
+                    <h5 class="setup-title">
+                        <i class="fas fa-magic"></i>
+                        أو استخدم قالباً جاهزاً
+                    </h5>
+                    
+                    <div class="template-grid">
+                        <div class="template-card" data-template="satisfaction">
+                            <i class="fas fa-smile fa-2x mb-3" style="color: var(--primary-color);"></i>
+                            <h6>استطلاع رضا العملاء</h6>
+                            <p class="small text-muted">قياس مستوى الرضا العام مع أسئلة NPS والتقييم</p>
+                        </div>
+                        
+                        <div class="template-card" data-template="feedback">
+                            <i class="fas fa-comments fa-2x mb-3" style="color: var(--secondary-color);"></i>
+                            <h6>جمع التعليقات</h6>
+                            <p class="small text-muted">أسئلة مفتوحة لجمع آراء مفصلة حول المنتج أو الخدمة</p>
+                        </div>
+                        
+                        <div class="template-card" data-template="event">
+                            <i class="fas fa-calendar-check fa-2x mb-3" style="color: var(--accent-color);"></i>
+                            <h6>تقييم الأحداث</h6>
+                            <p class="small text-muted">تقييم شامل للمؤتمرات والفعاليات والدورات التدريبية</p>
+                        </div>
+                        
+                        <div class="template-card" data-template="employee">
+                            <i class="fas fa-users fa-2x mb-3" style="color: #e74c3c;"></i>
+                            <h6>استطلاع الموظفين</h6>
+                            <p class="small text-muted">قياس رضا الموظفين ومستوى المشاركة في العمل</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 2: Question Building (Hidden Initially) -->
+            <div class="guided-flow-container d-none" id="questionBuildingStep">
+                <div class="context-help">
+                    <i class="fas fa-lightbulb"></i>
+                    <strong id="contextHelpText">ابدأ بسؤال ترحيبي لتحسين معدل الاستجابة</strong>
+                </div>
+                
+                <!-- Questions Area with Empty State -->
+                <div class="questions-container">
+                    <div class="survey-preview" id="questionsArea">
+                        <div class="empty-state-guidance">
+                            <i class="fas fa-question-circle"></i>
+                            <h4>ابدأ بإنشاء أول سؤال</h4>
+                            <p class="text-muted">اسحب نوع السؤال من الشريط الجانبي أو اختر من القائمة المنسدلة أدناه</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <!-- Mobile Question Type Selector -->
             <div class="mobile-question-selector">
                 <div class="row">
@@ -1007,9 +1395,209 @@
                 ]);
             }
             
+            // Initialize Progressive Disclosure Flow
+            initializeProgressiveFlow();
+            
             console.log('DOM loaded, initializing survey builder...');
             surveyBuilder = new SurveyBuilder();
         });
+        
+        // Progressive Disclosure Functionality
+        function initializeProgressiveFlow() {
+            // Advanced Questions Toggle
+            const expandToggle = document.getElementById('expandAdvanced');
+            const advancedQuestions = document.getElementById('advancedQuestionTypes');
+            
+            if (expandToggle && advancedQuestions) {
+                expandToggle.addEventListener('click', function() {
+                    const isExpanded = !advancedQuestions.classList.contains('hide-advanced');
+                    
+                    if (isExpanded) {
+                        // Collapse
+                        advancedQuestions.classList.add('hide-advanced');
+                        expandToggle.classList.remove('expanded');
+                        expandToggle.querySelector('span').textContent = 'عرض المزيد من أنواع الأسئلة';
+                    } else {
+                        // Expand
+                        advancedQuestions.classList.remove('hide-advanced');
+                        expandToggle.classList.add('expanded');
+                        expandToggle.querySelector('span').textContent = 'إخفاء الأنواع الإضافية';
+                    }
+                });
+            }
+
+            // Start Adding Questions Button
+            const startBtn = document.getElementById('startAddingQuestions');
+            
+            if (startBtn) {
+                startBtn.addEventListener('click', function() {
+                    const titleField = document.getElementById('surveyTitle');
+                    
+                    if (!titleField.value.trim()) {
+                        titleField.focus();
+                        showContextHelp('يرجى إدخال عنوان الاستطلاع قبل المتابعة');
+                        return;
+                    }
+                    
+                    // Transition to question building step
+                    transitionToStep(2);
+                });
+            }
+
+            // Template Selection
+            const templateCards = document.querySelectorAll('.template-card');
+            templateCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    const template = this.dataset.template;
+                    selectTemplate(template, this);
+                });
+            });
+
+            // Auto-save simulation
+            simulateAutoSave();
+        }
+
+        // Step Transition Function
+        function transitionToStep(stepNumber) {
+            // Update progress indicators
+            const steps = document.querySelectorAll('.progress-step');
+            steps.forEach((step, index) => {
+                step.classList.remove('active', 'completed');
+                if (index + 1 < stepNumber) {
+                    step.classList.add('completed');
+                } else if (index + 1 === stepNumber) {
+                    step.classList.add('active');
+                }
+            });
+
+            // Show/hide appropriate containers
+            const setupStep = document.getElementById('surveySetupStep');
+            const buildingStep = document.getElementById('questionBuildingStep');
+            
+            if (stepNumber === 1) {
+                setupStep.classList.remove('d-none');
+                buildingStep.classList.add('d-none');
+            } else if (stepNumber === 2) {
+                setupStep.classList.add('d-none');
+                buildingStep.classList.remove('d-none');
+                updateContextHelp(0);
+            }
+        }
+
+        // Template Selection
+        function selectTemplate(templateType, cardElement) {
+            // Remove selection from other templates
+            document.querySelectorAll('.template-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            // Select current template
+            cardElement.classList.add('selected');
+            
+            // Pre-fill based on template
+            const templates = {
+                satisfaction: {
+                    title: 'استطلاع رضا العملاء',
+                    description: 'نحن نهتم برأيك! ساعدنا في تحسين خدماتنا من خلال الإجابة على هذه الأسئلة القصيرة.',
+                },
+                feedback: {
+                    title: 'استطلاع جمع التعليقات',
+                    description: 'شاركنا آراءك وتعليقاتك حول تجربتك معنا.',
+                },
+                event: {
+                    title: 'تقييم الفعالية',
+                    description: 'كيف كانت تجربتك في الفعالية؟ تقييمك يهمنا لتحسين الفعاليات القادمة.',
+                },
+                employee: {
+                    title: 'استطلاع رضا الموظفين',
+                    description: 'رأيك يهمنا! ساعدنا في تحسين بيئة العمل وتجربة الموظفين.',
+                }
+            };
+            
+            const template = templates[templateType];
+            if (template) {
+                document.getElementById('surveyTitle').value = template.title;
+                document.getElementById('surveyDescription').value = template.description;
+                
+                // Enable and highlight start button
+                const startBtn = document.getElementById('startAddingQuestions');
+                startBtn.style.background = 'var(--primary-color)';
+                startBtn.style.transform = 'scale(1.05)';
+                
+                setTimeout(() => {
+                    startBtn.style.transform = 'scale(1)';
+                }, 200);
+            }
+        }
+
+        // Context-Sensitive Help
+        function updateContextHelp(questionCount) {
+            const helpTexts = [
+                'ابدأ بسؤال ترحيبي لتحسين معدل الاستجابة',
+                'أضف سؤالاً عن الرضا العام - يساعد في فهم التجربة الشاملة',
+                'اسأل عن تفاصيل محددة - هذا يعطي رؤى قابلة للتنفيذ',
+                'اختتم بسؤال مفتوح للحصول على تعليقات إضافية',
+                'لديك مجموعة جيدة من الأسئلة! يمكنك المراجعة والنشر'
+            ];
+            
+            const contextText = helpTexts[Math.min(questionCount, helpTexts.length - 1)];
+            const helpElement = document.getElementById('contextHelpText');
+            if (helpElement) {
+                helpElement.textContent = contextText;
+            }
+        }
+
+        function showContextHelp(message) {
+            const helpElement = document.getElementById('contextHelpText');
+            if (helpElement) {
+                const originalText = helpElement.textContent;
+                helpElement.textContent = message;
+                helpElement.parentElement.style.background = '#f8d7da';
+                helpElement.parentElement.style.borderColor = '#f5c6cb';
+                helpElement.parentElement.style.color = '#721c24';
+                
+                setTimeout(() => {
+                    helpElement.textContent = originalText;
+                    helpElement.parentElement.style.background = '#fff3cd';
+                    helpElement.parentElement.style.borderColor = '#ffeaa7';
+                    helpElement.parentElement.style.color = '#856404';
+                }, 3000);
+            }
+        }
+
+        // Auto-save Simulation
+        function simulateAutoSave() {
+            let lastSaveTime = 30;
+            const statusElement = document.getElementById('saveStatusText');
+            
+            setInterval(() => {
+                lastSaveTime += 10;
+                if (statusElement) {
+                    if (lastSaveTime < 60) {
+                        statusElement.textContent = `تم الحفظ منذ ${lastSaveTime} ثانية`;
+                    } else {
+                        const minutes = Math.floor(lastSaveTime / 60);
+                        statusElement.textContent = `تم الحفظ منذ ${minutes} دقيقة`;
+                    }
+                }
+            }, 10000);
+        }
+
+        // Question Counter Update (to be called by survey builder)
+        function updateQuestionCounter(count) {
+            const counterElement = document.getElementById('questionCount');
+            
+            if (counterElement) {
+                counterElement.textContent = count;
+                updateContextHelp(count);
+                
+                // Animate the counter
+                counterElement.parentElement.style.transform = 'scale(1.1)';
+                setTimeout(() => {
+                    counterElement.parentElement.style.transform = 'scale(1)';
+                }, 200);
+            }
+        }
     </script>
 </body>
 </html>

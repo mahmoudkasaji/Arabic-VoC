@@ -141,6 +141,16 @@ An Arabic-first multi-channel feedback processing platform built with Flask and 
 ## Recent Changes (July 2025)
 
 ### Major Architecture Updates
+- **July 21**: **Survey Builder Progressive Disclosure Implementation** - Complete UX overhaul to reduce cognitive load for new users
+  - Implemented 4-step guided workflow with visual progress indicators (معلومات الاستطلاع → إضافة الأسئلة → المراجعة → النشر)
+  - Created initial state with simplified entry: survey title/description fields + template selection options
+  - Progressive question type disclosure: 4 essential types shown initially (نص قصير, اختيار متعدد, تقييم بالنجوم, مقياس الترشيح) with expandable advanced types
+  - Added context-sensitive help system with smart guidance based on survey progress and question count
+  - Implemented pre-built templates (satisfaction, feedback, event, employee surveys) with auto-fill functionality
+  - Real-time question counter and auto-save status indicators for user confidence
+  - Enhanced tooltips explaining when to use each question type for better decision-making
+  - Workflow validation ensuring users complete required fields before advancing steps
+  - Maintained full functionality for power users while dramatically improving new user experience
 - **July 21**: **Survey Design System Implementation** - Comprehensive design system with consistent styling across all survey features
   - Created `survey-design-system.css` with Arabic RTL support and complete component library
   - Implemented standardized button system (Primary, Secondary, Outline, Destructive, Ghost, Link) with 5 size variants
