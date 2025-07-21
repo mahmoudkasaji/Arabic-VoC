@@ -973,6 +973,37 @@
                     { title: 'الرئيسية', url: '/' },
                     { title: 'الاستطلاعات', url: '/surveys' },
                     { title: 'إنشاء استطلاع جديد' }
+                ], [
+                    { 
+                        label: 'معاينة', 
+                        icon: 'fas fa-eye',
+                        class: 'btn btn-sm btn-outline-info',
+                        onclick: function() {
+                            if (typeof surveyBuilder !== 'undefined') {
+                                surveyBuilder.previewSurvey();
+                            }
+                        }
+                    },
+                    { 
+                        label: 'حفظ', 
+                        icon: 'fas fa-save',
+                        class: 'btn btn-sm btn-outline-success',
+                        onclick: function() {
+                            if (typeof surveyBuilder !== 'undefined') {
+                                surveyBuilder.saveSurvey();
+                            }
+                        }
+                    },
+                    { 
+                        label: 'نشر', 
+                        icon: 'fas fa-rocket',
+                        class: 'btn btn-sm btn-primary',
+                        onclick: function() {
+                            if (typeof surveyBuilder !== 'undefined') {
+                                surveyBuilder.publishSurvey();
+                            }
+                        }
+                    }
                 ]);
             }
             

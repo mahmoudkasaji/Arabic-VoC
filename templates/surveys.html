@@ -360,6 +360,25 @@
                     { title: 'الرئيسية', url: '/' },
                     { title: 'الاستطلاعات', url: '/surveys' },
                     { title: 'إدارة الاستطلاعات' }
+                ], [
+                    { 
+                        label: 'إنشاء جديد', 
+                        icon: 'fas fa-plus',
+                        href: '/surveys/builder',
+                        class: 'btn btn-sm btn-primary'
+                    },
+                    { 
+                        label: 'التقارير', 
+                        icon: 'fas fa-chart-bar',
+                        href: '/analytics/reports',
+                        class: 'btn btn-sm btn-outline-info'
+                    },
+                    { 
+                        label: 'الإعدادات', 
+                        icon: 'fas fa-cog',
+                        href: '/settings/system',
+                        class: 'btn btn-sm btn-outline-secondary'
+                    }
                 ]);
             }
         });

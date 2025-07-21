@@ -510,6 +510,21 @@
                     { title: 'الرئيسية', url: '/' },
                     { title: 'الاستطلاعات', url: '/surveys' },
                     { title: 'توزيع الاستطلاعات' }
+                ], [
+                    { 
+                        label: 'إرسال تجريبي', 
+                        icon: 'fas fa-paper-plane',
+                        class: 'btn btn-sm btn-success',
+                        onclick: function() {
+                            alert('سيتم تشغيل نظام الإرسال التجريبي قريباً!');
+                        }
+                    },
+                    { 
+                        label: 'إعداد القنوات', 
+                        icon: 'fas fa-cog',
+                        href: '/integrations/destinations',
+                        class: 'btn btn-sm btn-outline-primary'
+                    }
                 ]);
             }
         });
