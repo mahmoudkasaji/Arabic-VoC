@@ -55,11 +55,19 @@ app.register_blueprint(executive_bp, url_prefix='/api/executive-dashboard')
 
 @app.route('/')
 def index():
-    """Main Arabic dashboard page"""
-    return render_template('index.html', 
+    """Main Arabic homepage - MVP version"""
+    return render_template('index_mvp.html', 
                          lang='ar', 
                          dir='rtl',
                          title='منصة صوت العميل العربية')
+
+@app.route('/homepage-original')
+def homepage_original():
+    """Original homepage for comparison"""
+    return render_template('index.html', 
+                         lang='ar', 
+                         dir='rtl',
+                         title='منصة صوت العميل العربية - النسخة الأصلية')
 
 @app.route('/feedback')
 def feedback_page():

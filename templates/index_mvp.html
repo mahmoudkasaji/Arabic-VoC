@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    {% include 'components/head.html' %}
+    <title>منصة صوت العميل العربية - MVP</title>
+    
+    <style>
+        /* Hero Section */
+        .hero-section {
+            background: linear-gradient(135deg, #2E8B57, #3A9B6A);
+            color: white;
+            padding: 4rem 0;
+            margin-bottom: 3rem;
+            border-radius: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 100%;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") repeat;
+            z-index: 1;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-title {
+            font-family: 'Amiri', serif;
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .hero-description {
+            font-size: 1.3rem;
+            margin-bottom: 2.5rem;
+            line-height: 1.6;
+            opacity: 0.95;
+        }
+
+        .cta-primary {
+            background: #ffffff;
+            color: #2E8B57;
+            border: none;
+            padding: 1.2rem 3rem;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(255, 255, 255, 0.3);
+            text-decoration: none;
+            display: inline-block;
+            margin-left: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .cta-primary:hover {
+            background: #f8f9fa;
+            color: #236B47;
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(255, 255, 255, 0.4);
+        }
+
+        .cta-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            padding: 1rem 2.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            margin-left: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .cta-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.8);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* Quick Start Guide */
+        .quick-start {
+            background: white;
+            border-radius: 1rem;
+            padding: 3rem 2rem;
+            margin: 3rem 0;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .quick-start h2 {
+            font-family: 'Amiri', serif;
+            font-size: 2.2rem;
+            color: #2E8B57;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .quick-start-subtitle {
+            text-align: center;
+            color: #666;
+            font-size: 1.1rem;
+            margin-bottom: 3rem;
+        }
+
+        .step {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .step-number {
+            background: #2E8B57;
+            color: white;
+            width: 4rem;
+            height: 4rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin: 0 auto 1.5rem auto;
+            box-shadow: 0 4px 15px rgba(46, 139, 87, 0.3);
+        }
+
+        .step h4 {
+            color: #2E8B57;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .step p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .start-button {
+            background: #2E8B57;
+            color: white;
+            border: none;
+            padding: 1rem 3rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 2rem;
+            box-shadow: 0 4px 15px rgba(46, 139, 87, 0.3);
+        }
+
+        .start-button:hover {
+            background: #236B47;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(46, 139, 87, 0.4);
+            color: white;
+        }
+
+        /* Footer */
+        .footer {
+            background: #2c3e50;
+            color: white;
+            padding: 2rem 0 1rem 0;
+            margin-top: 4rem;
+            border-radius: 1rem 1rem 0 0;
+        }
+
+        .footer h5 {
+            color: white;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .footer a {
+            color: #bdc3c7;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer a:hover {
+            color: white;
+        }
+
+        .footer-brand {
+            font-family: 'Amiri', serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .hero-description {
+                font-size: 1.1rem;
+            }
+            
+            .cta-primary, .cta-secondary {
+                display: block;
+                text-align: center;
+                margin: 0.5rem auto;
+                width: 100%;
+                max-width: 280px;
+            }
+            
+            .quick-start {
+                padding: 2rem 1rem;
+            }
+            
+            .step-number {
+                width: 3rem;
+                height: 3rem;
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    {% include 'components/standard_header.html' %}
+
+    <div class="container">
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <div class="hero-content">
+                <div class="row align-items-center">
+                    <div class="col-lg-8">
+                        <h1 class="hero-title">
+                            منصة صوت العميل العربية
+                        </h1>
+                        <p class="hero-description">
+                            منصة متقدمة لتحليل آراء العملاء باللغة العربية مع دعم اللهجات المختلفة والذكاء الاصطناعي.
+                            <strong>احصل على رؤى عميقة من تعليقات عملائك</strong>
+                        </p>
+                        
+                        <!-- Call to Action Buttons -->
+                        <div>
+                            <a href="/surveys/builder" class="cta-primary">
+                                <i class="fas fa-plus me-2"></i>
+                                إنشاء استطلاع جديد
+                            </a>
+                            <a href="/surveys" class="cta-secondary">
+                                <i class="fas fa-list me-2"></i>
+                                إدارة الاستطلاعات
+                            </a>
+                        </div>
+                        
+                        <!-- Secondary Actions -->
+                        <div style="margin-top: 1.5rem;">
+                            <a href="/dashboard/realtime" class="cta-secondary">
+                                <i class="fas fa-tachometer-alt me-2"></i>
+                                لوحة التحكم
+                            </a>
+                            <a href="/analytics/journey-map" class="cta-secondary">
+                                <i class="fas fa-chart-line me-2"></i>
+                                التحليلات
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 text-center">
+                        <div class="hero-visual">
+                            <i class="fas fa-chart-bar" style="font-size: 6rem; opacity: 0.3; color: white;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Quick Start Guide -->
+        <section class="quick-start">
+            <h2>إنشاء استطلاع في 3 خطوات</h2>
+            <p class="quick-start-subtitle">ابدأ رحلتك مع تحليل صوت العميل العربي</p>
+            
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <h4>اختر نوع الاستطلاع</h4>
+                        <p>حدد هدفك: قياس الرضا، جمع التعليقات، أو تقييم المنتج</p>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <h4>أضف الأسئلة</h4>
+                        <p>اسحب وأسقط الأسئلة بسهولة مع دعم كامل للغة العربية</p>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <h4>انشر واحصل على النتائج</h4>
+                        <p>وزع الاستطلاع عبر القنوات المختلفة وراقب النتائج مباشرة</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center">
+                <a href="/surveys/builder" class="start-button">
+                    <i class="fas fa-rocket me-2"></i>
+                    ابدأ الإنشاء الآن
+                </a>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6 mb-4">
+                    <div class="footer-brand">منصة صوت العميل العربية</div>
+                    <p class="text-light mb-3">
+                        منصة متقدمة لتحليل آراء العملاء باللغة العربية
+                        مع دعم الذكاء الاصطناعي والتحليلات في الوقت الفعلي.
+                    </p>
+                </div>
+                <div class="col-lg-3 mb-4">
+                    <h5>الروابط السريعة</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="/" class="text-decoration-none">الرئيسية</a></li>
+                        <li><a href="/surveys/builder" class="text-decoration-none">إنشاء استطلاع</a></li>
+                        <li><a href="/surveys" class="text-decoration-none">إدارة الاستطلاعات</a></li>
+                        <li><a href="/dashboard/realtime" class="text-decoration-none">لوحة التحكم</a></li>
+                        <li><a href="/analytics/journey-map" class="text-decoration-none">التحليلات</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 mb-4">
+                    <h5>المميزات الأساسية</h5>
+                    <ul class="list-unstyled">
+                        <li class="text-light">تحليل المشاعر</li>
+                        <li class="text-light">دعم اللهجات العربية</li>
+                        <li class="text-light">تقارير احترافية</li>
+                        <li class="text-light">تحديثات فورية</li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="text-light">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <p class="text-light mb-0">
+                        © 2025 منصة صوت العميل العربية. جميع الحقوق محفوظة.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    {% include 'components/scripts.html' %}
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set active navigation
+            if (typeof StandardNavigation !== 'undefined') {
+                StandardNavigation.setActiveNav('home');
+            }
+        });
+    </script>
+</body>
+</html>
