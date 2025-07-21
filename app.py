@@ -240,8 +240,10 @@ def dashboards_analyst():
 @app.route('/dashboards/journey-map')
 def dashboards_journey_map():
     """Customer Journey Map Dashboard - primary route"""
+    embed_mode = request.args.get('embed', 'false').lower() == 'true'
     return render_template('analytics_journey_map.html', 
-                         title='خريطة رحلة العميل')
+                         title='خريطة رحلة العميل',
+                         embed_mode=embed_mode)
 
 # Updated navigation routes - Analytics
 @app.route('/analytics/insights')
