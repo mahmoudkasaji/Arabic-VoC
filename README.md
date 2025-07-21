@@ -1,8 +1,8 @@
-# Arabic Voice of Customer Platform
+# Voice of Customer Platform
 
-## منصة صوت العميل العربية
+## منصة صوت العميل
 
-A comprehensive Arabic-first feedback processing platform that leverages AI-powered sentiment analysis to collect, process, and analyze customer feedback from multiple channels.
+A comprehensive multi-channel feedback processing platform with Arabic language support that leverages AI-powered sentiment analysis to collect, process, and analyze customer feedback.
 
 ## Features
 

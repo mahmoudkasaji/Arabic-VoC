@@ -1,8 +1,8 @@
-# Arabic Voice of Customer Platform
+# Voice of Customer Platform
 
 ## Overview
 
-An Arabic-first multi-channel feedback processing platform built with Flask and SQLAlchemy. The system collects customer feedback from various channels, processes Arabic text using AI-powered analysis, provides real-time analytics and insights, and includes a comprehensive survey delivery system. The platform enables creating web-hosted surveys and distributing them via email, SMS, WhatsApp, and QR codes through a streamlined 3-step process.
+A multi-channel feedback processing platform with Arabic language support, built with Flask and SQLAlchemy. The system collects customer feedback from various channels, processes Arabic text using AI-powered analysis, provides real-time analytics and insights, and includes a comprehensive survey delivery system. The platform enables creating web-hosted surveys and distributing them via email, SMS, WhatsApp, and QR codes through a streamlined 3-step process.
 
 ## System Architecture
 
@@ -141,7 +141,11 @@ An Arabic-first multi-channel feedback processing platform built with Flask and 
 ## Recent Changes (July 2025)
 
 ### Major Architecture Updates
-- **July 21**: **Homepage Simplification - MVP Landing Page** - Ultra-simplified homepage design for better user experience
+- **July 21**: **Platform Rebranding and Homepage Simplification** - Renamed from "Arabic Voice of Customer Platform" to "Voice of Customer Platform" across all codebase
+  - Updated homepage, navigation, templates, config, and documentation files  
+  - Changed Arabic title from "منصة صوت العميل العربية" to "منصة صوت العميل"
+  - Platform now positioned as multi-channel feedback platform with Arabic language support rather than Arabic-first platform
+  - Ultra-simplified homepage design for better user experience
   - Removed complex feature cards, user journey sections, stats section, and detailed footer features
   - Kept beautiful hero section with gradient background and subtle pattern overlay
   - Focused on two primary CTAs: "إنشاء استطلاع جديد" and "عرض الاستطلاعات"

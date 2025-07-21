@@ -10,7 +10,7 @@ class BaseConfig:
     """Base configuration with common settings"""
     
     # Application settings
-    APP_NAME = "Arabic Voice of Customer Platform"
+    APP_NAME = "Voice of Customer Platform"
     VERSION = "1.0.0"
     SECRET_KEY = os.environ.get("SECRET_KEY", "dev-secret-key-change-in-production")
     

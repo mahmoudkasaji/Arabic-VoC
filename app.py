@@ -59,7 +59,7 @@ def index():
     return render_template('index_simple.html', 
                          lang='ar', 
                          dir='rtl',
-                         title='منصة صوت العميل العربية')
+                         title='منصة صوت العميل')
 
 @app.route('/homepage-original')
 def homepage_original():
@@ -67,7 +67,7 @@ def homepage_original():
     return render_template('index.html', 
                          lang='ar', 
                          dir='rtl',
-                         title='منصة صوت العميل العربية - النسخة الأصلية')
+                         title='منصة صوت العميل - النسخة الأصلية')
 
 @app.route('/feedback')
 def feedback_page():
