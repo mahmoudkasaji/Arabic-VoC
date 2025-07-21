@@ -6,36 +6,33 @@
     
     <style>
         body {
-            background: #fefefe;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
             min-height: 100vh;
-            color: #2d3748;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-            line-height: 1.6;
         }
 
-        /* Hero Section - Minimalist elegance */
+        /* Hero Section - Simple and vibrant */
         .hero-section {
-            background: #ffffff;
-            color: #2d3748;
-            padding: 6rem 2rem 5rem;
-            margin: 0;
-            border-radius: 0;
+            background: linear-gradient(135deg, #2E8B57 0%, #3A9B6A 50%, #45A574 100%);
+            color: white;
+            padding: 4rem 2rem;
+            margin: 2rem 0;
+            border-radius: 1.5rem;
             position: relative;
             overflow: hidden;
-            box-shadow: none;
-            border-bottom: 1px solid rgba(0,0,0,0.04);
+            box-shadow: 0 20px 40px rgba(46, 139, 87, 0.3);
         }
 
         .hero-section::before {
             content: '';
             position: absolute;
-            top: -50%;
-            right: -50%;
+            top: 0;
+            right: 0;
             width: 100%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(46, 139, 87, 0.03) 0%, transparent 70%);
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(255,255,255,0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255,255,255,0.1) 0%, transparent 50%);
             z-index: 1;
-            pointer-events: none;
         }
 
         .hero-content {
@@ -46,121 +43,81 @@
 
         .hero-title {
             font-family: 'Amiri', serif;
-            font-size: 3.2rem;
-            font-weight: 600;
+            font-size: 3.5rem;
+            font-weight: 700;
             margin-bottom: 1.5rem;
-            color: #1a202c;
-            line-height: 1.1;
-            letter-spacing: -0.025em;
-            text-shadow: none;
+            color: white;
+            line-height: 1.2;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
         .hero-description {
-            font-size: 1.25rem;
-            margin-bottom: 3rem;
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
             line-height: 1.6;
-            color: #4a5568;
-            font-weight: 400;
-            max-width: 600px;
+            opacity: 0.95;
+            max-width: 700px;
             margin-right: auto;
             margin-left: auto;
         }
 
         .cta-button {
-            background: #2E8B57;
-            color: white;
+            background: #ffffff;
+            color: #2E8B57;
             border: none;
-            padding: 1rem 2.5rem;
-            border-radius: 8px;
-            font-weight: 500;
-            font-size: 1.1rem;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 1.2rem 3rem;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(255, 255, 255, 0.3);
             text-decoration: none;
             display: inline-block;
-            margin: 0 0.5rem;
-            box-shadow: 0 4px 12px rgba(46, 139, 87, 0.15);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .cta-button.secondary {
-            background: white;
-            color: #2E8B57;
-            border: 1.5px solid #e2e8f0;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            margin: 0.5rem;
         }
 
         .cta-button:hover {
-            background: #276749;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(46, 139, 87, 0.25);
-        }
-        
-        .cta-button.secondary:hover {
-            background: #f7fafc;
-            border-color: #cbd5e0;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+            background: #f8f9fa;
+            color: #236B47;
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(255, 255, 255, 0.4);
         }
 
-        /* Minimalist Footer */
+        /* Simple Footer */
         .simple-footer {
-            background: #f8fafc;
-            color: #4a5568;
-            padding: 4rem 0 3rem;
-            margin-top: 8rem;
+            background: #2c3e50;
+            color: white;
+            padding: 2rem 0;
+            margin-top: 3rem;
             text-align: center;
-            border-top: 1px solid #e2e8f0;
         }
 
         .footer-brand {
             font-family: 'Amiri', serif;
-            font-size: 1.25rem;
-            font-weight: 600;
-            margin-bottom: 2rem;
-            color: #2d3748;
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
         }
 
         .footer-links {
-            margin: 2rem 0;
+            margin: 1rem 0;
         }
 
         .footer-links a {
-            color: #718096;
+            color: #bdc3c7;
             text-decoration: none;
-            margin: 0 2rem;
-            padding: 0.5rem 0;
-            border-radius: 0;
-            transition: color 0.2s ease;
-            display: inline-block;
-            font-weight: 400;
-            position: relative;
-        }
-        
-        .footer-links a::after {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: #2E8B57;
-            transition: width 0.3s ease;
+            margin: 0 1rem;
+            transition: color 0.3s ease;
         }
 
         .footer-links a:hover {
-            color: #2E8B57;
-        }
-        
-        .footer-links a:hover::after {
-            width: 100%;
+            color: white;
         }
 
         .footer-copyright {
-            margin-top: 3rem;
-            color: #a0aec0;
+            margin-top: 1rem;
+            color: #95a5a6;
             font-size: 0.9rem;
-            font-weight: 400;
         }
 
         /* Features Highlight - Clean minimal */
@@ -273,8 +230,8 @@
                     منصة صوت العميل
                 </h1>
                 <!-- Demo Notice Badge -->
-                <div style="background: #fff3cd; color: #856404; padding: 0.5rem 1.5rem; border-radius: 6px; display: inline-block; margin-bottom: 2rem; border: 1px solid #ffeeba; font-size: 0.9rem;">
-                    <i class="fas fa-info-circle me-2"></i>
+                <div style="background: rgba(255,255,255,0.2); padding: 0.4rem 1.2rem; border-radius: 20px; display: inline-block; margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.3);">
+                    <i class="fas fa-flask me-2"></i>
                     <strong>عرض توضيحي</strong> - غير مخصص للاستخدام التجاري
                 </div>
                 
@@ -282,34 +239,14 @@
                     منصة متقدمة لتحليل آراء العملاء باللغة العربية مع دعم اللهجات المختلفة والذكاء الاصطناعي
                 </p>
                 
-                <!-- What you can explore -->
-                <div class="features-highlight">
-                    <h4 style="margin-bottom: 2rem; font-size: 1.5rem; font-weight: 600; color: #2d3748; text-align: center;">ما يمكنك استكشافه</h4>
-                    <div class="features-grid">
-                        <div class="feature-item">
-                            <i class="fas fa-poll-h feature-icon"></i>
-                            <h5 style="margin: 0; font-size: 1.1rem; font-weight: 600; color: #2d3748;">إنشاء استطلاعات</h5>
-                            <p style="margin: 0; color: #718096; font-size: 0.95rem;">بأسئلة متنوعة وذكية</p>
-                        </div>
-                        <div class="feature-item">
-                            <i class="fas fa-chart-line feature-icon"></i>
-                            <h5 style="margin: 0; font-size: 1.1rem; font-weight: 600; color: #2d3748;">تحليلات متقدمة</h5>
-                            <p style="margin: 0; color: #718096; font-size: 0.95rem;">رؤى عميقة وتقارير شاملة</p>
-                        </div>
-                        <div class="feature-item">
-                            <i class="fas fa-eye feature-icon"></i>
-                            <h5 style="margin: 0; font-size: 1.1rem; font-weight: 600; color: #2d3748;">مراقبة فورية</h5>
-                            <p style="margin: 0; color: #718096; font-size: 0.95rem;">نتائج وإحصائيات لحظية</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Clean Call to Action -->
-                <div style="margin-top: 4rem;">
+                <!-- Simple Call to Action -->
+                <div>
                     <a href="/surveys/builder" class="cta-button">
+                        <i class="fas fa-plus me-2"></i>
                         ابدأ الاستكشاف
                     </a>
-                    <a href="/dashboard/realtime" class="cta-button secondary">
+                    <a href="/dashboard/realtime" class="cta-button">
+                        <i class="fas fa-chart-line me-2"></i>
                         عرض التحليلات
                     </a>
                 </div>
