@@ -509,6 +509,65 @@
                 <i class="fas fa-times"></i> مسح الفلاتر
             </button>
         </div>
+
+        <!-- No Responses State (Initial state when no responses exist) -->
+        <div class="empty-state text-center py-5" id="noResponsesState" style="display: none;">
+            <div class="mb-4">
+                <i class="fas fa-comments fa-4x text-muted mb-3"></i>
+                <h3 class="text-muted">لا توجد ردود بعد</h3>
+                <p class="text-muted fs-5 mb-4">ابدأ بمشاركة استطلاعاتك لجمع الردود من عملائك</p>
+            </div>
+            
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <div class="card border-0 bg-light">
+                        <div class="card-body p-4">
+                            <h5 class="mb-3">ابدأ في جمع الردود</h5>
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <a href="/surveys/distribution" class="text-decoration-none">
+                                        <div class="d-flex flex-column align-items-center p-3 bg-white rounded border h-100">
+                                            <i class="fas fa-share-alt fa-2x text-primary mb-2"></i>
+                                            <h6 class="text-center mb-1">توزيع الاستطلاعات</h6>
+                                            <small class="text-muted text-center">شارك استطلاعاتك عبر البريد والواتساب</small>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="col-md-4">
+                                    <a href="/surveys/builder" class="text-decoration-none">
+                                        <div class="d-flex flex-column align-items-center p-3 bg-white rounded border h-100">
+                                            <i class="fas fa-plus-circle fa-2x text-success mb-2"></i>
+                                            <h6 class="text-center mb-1">إنشاء استطلاع جديد</h6>
+                                            <small class="text-muted text-center">صمم استطلاع جديد لجمع آراء العملاء</small>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="col-md-4">
+                                    <a href="/surveys" class="text-decoration-none">
+                                        <div class="d-flex flex-column align-items-center p-3 bg-white rounded border h-100">
+                                            <i class="fas fa-list fa-2x text-info mb-2"></i>
+                                            <h6 class="text-center mb-1">إدارة الاستطلاعات</h6>
+                                            <small class="text-muted text-center">عرض وتحرير الاستطلاعات الحالية</small>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <div class="row justify-content-center">
+                    <div class="col-md-6">
+                        <div class="alert alert-info border-0">
+                            <i class="fas fa-lightbulb me-2"></i>
+                            <strong>نصيحة:</strong> كلما زاد عدد الردود، كانت رؤاك أعمق وأكثر دقة لفهم احتياجات عملائك
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Response Detail Modal -->
@@ -943,7 +1002,65 @@
             document.getElementById('todayResponses').textContent = todayRows;
             document.getElementById('completionRate').textContent = Math.round((completedRows.length / allRows.length) * 100) + '%';
             document.getElementById('avgResponseTime').textContent = ratingCount > 0 ? (totalRating / ratingCount).toFixed(1) : '0';
+            
+            // Check if we should show the no responses state
+            checkEmptyStates();
         }
+
+        // Handle empty states - show appropriate message based on situation
+        function checkEmptyStates() {
+            const allRows = document.querySelectorAll('.response-row');
+            const table = document.querySelector('#responsesTable').closest('.card');
+            const emptyState = document.getElementById('emptyState');
+            const noResponsesState = document.getElementById('noResponsesState');
+            
+            if (allRows.length === 0) {
+                // No responses exist at all - show the enhanced empty state
+                table.style.display = 'none';
+                emptyState.style.display = 'none';
+                noResponsesState.style.display = 'block';
+            } else {
+                // Responses exist, hide the no responses state
+                noResponsesState.style.display = 'none';
+                // The regular empty state will be handled by search/filter functions
+            }
+        }
+
+        // Add a demo function to simulate clearing all responses (for testing empty state)
+        function showNoResponsesDemo() {
+            // Hide all response rows
+            document.querySelectorAll('.response-row').forEach(row => {
+                row.style.display = 'none';
+            });
+            
+            // Update analytics to show empty state
+            document.getElementById('todayResponses').textContent = '0';
+            document.getElementById('completionRate').textContent = '0%';
+            document.getElementById('avgResponseTime').textContent = '0';
+            
+            // Show the no responses state
+            const table = document.querySelector('#responsesTable').closest('.card');
+            const noResponsesState = document.getElementById('noResponsesState');
+            
+            table.style.display = 'none';
+            noResponsesState.style.display = 'block';
+            
+            console.log('Demo: Showing no responses state');
+        }
+
+        // Add button to header for testing empty state (can be removed in production)
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add demo button to page header for testing
+            const pageHeader = document.querySelector('.page-header .survey-action-buttons');
+            if (pageHeader) {
+                const demoButton = document.createElement('button');
+                demoButton.className = 'btn-outline-standard btn-sm-standard ms-2';
+                demoButton.innerHTML = '<i class="fas fa-eye-slash"></i> عرض الحالة الفارغة';
+                demoButton.onclick = showNoResponsesDemo;
+                demoButton.title = 'تجريب عرض الحالة عند عدم وجود ردود';
+                pageHeader.appendChild(demoButton);
+            }
+        });
     </script>
 </body>
 </html>
