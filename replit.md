@@ -141,6 +141,19 @@ An Arabic-first multi-channel feedback processing platform built with Flask and 
 ## Recent Changes (July 2025)
 
 ### Major Architecture Updates
+- **July 21**: **Analyst Dashboard Usability Enhancements** - Comprehensive refinement focusing on enhanced user experience and interactivity
+  - Added comprehensive legend system with color coding explanations (red/yellow/green meanings)
+  - Implemented interactive tooltips with "ما معنى هذا المقياس؟" help icons for all metrics
+  - Enhanced metric cards with expandable functionality showing detailed breakdowns
+  - Added real-time update indicators with pulse animation and last-update timestamps
+  - Implemented advanced time period controls with custom date ranges and period comparison
+  - Created enhanced filtering system with quick filters, active filter tags, and save/load functionality
+  - Added "الرؤى الذكية" (Smart Insights) panel with significant changes, anomaly detection, and suggested actions
+  - Enhanced impact matrix with improved legend, drill-down capabilities, and export functionality
+  - Added comprehensive modal system for detailed metric explanations and data breakdowns
+  - Implemented section-specific export functionality with "تصدير هذا القسم" buttons
+  - Created interactive heatmap cells with hover effects and detailed tooltips
+  - Added priority-based action recommendations with P1-P4 classification system
 - **July 21**: **Survey Builder Progressive Disclosure Implementation** - Complete UX overhaul to reduce cognitive load for new users
   - Implemented 4-step guided workflow with visual progress indicators (معلومات الاستطلاع → إضافة الأسئلة → المراجعة → النشر)
   - Created initial state with simplified entry: survey title/description fields + template selection options
