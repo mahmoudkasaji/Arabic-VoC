@@ -237,6 +237,12 @@ def dashboards_analyst():
     return render_template('dashboards_analyst.html', 
                          title='عرض المحلل')
 
+@app.route('/dashboards/journey-map')
+def dashboards_journey_map():
+    """Customer Journey Map Dashboard - primary route"""
+    return render_template('analytics_journey_map.html', 
+                         title='خريطة رحلة العميل')
+
 # Updated navigation routes - Analytics
 @app.route('/analytics/insights')
 def analytics_insights():
@@ -258,9 +264,9 @@ def analytics_ai_lab():
 
 @app.route('/analytics/journey-map')
 def analytics_journey_map():
-    """Customer Journey Map with Arabic VoC insights"""
-    return render_template('analytics_journey_map.html', 
-                         title='خريطة رحلة العميل')
+    """Customer Journey Map - redirect to dashboard route for consistency"""
+    from flask import redirect, url_for
+    return redirect(url_for('dashboards_journey_map'))
 
 @app.route('/integrations')
 def integrations_redirect():

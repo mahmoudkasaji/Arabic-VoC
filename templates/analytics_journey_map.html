@@ -66,6 +66,36 @@
             cursor: pointer;
         }
 
+        /* Dashboard Breadcrumb Styles */
+        .breadcrumb {
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            padding: 0.75rem 1rem;
+            margin: 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .breadcrumb-item + .breadcrumb-item::before {
+            content: "←";
+            font-weight: bold;
+            color: #6c757d;
+        }
+
+        .breadcrumb-item a {
+            color: #2E8B57;
+            transition: all 0.3s ease;
+        }
+
+        .breadcrumb-item a:hover {
+            color: #236B47;
+            text-decoration: underline !important;
+        }
+
+        .breadcrumb-item.active {
+            color: #495057;
+            font-weight: 600;
+        }
+
         /* Control Panel */
         .control-panel {
             background: white;
@@ -431,11 +461,32 @@
     {% include 'components/navigation.html' %}
 
     <div class="container-fluid px-4 py-3">
+        <!-- Dashboard Breadcrumb -->
+        <nav aria-label="breadcrumb" class="mb-3">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="/" class="text-decoration-none">
+                        <i class="fas fa-home me-1"></i>الرئيسية
+                    </a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="#" class="text-decoration-none">لوحات القيادة</a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">
+                    <i class="fas fa-map-marked-alt me-1"></i>خريطة رحلة العميل
+                </li>
+            </ol>
+        </nav>
+
         <!-- Journey Map Header -->
         <div class="journey-header">
             <div class="dashboard-header-row">
                 <div class="view-controls">
-                    <h1 class="journey-title">NPS & Sentiment by Customer Stages</h1>
+                    <h1 class="journey-title">
+                        <i class="fas fa-map-marked-alt me-2 text-success"></i>
+                        NPS & Sentiment by Customer Stages
+                        <span class="badge bg-success ms-2">Dashboard</span>
+                    </h1>
                     <div style="margin-right: 2rem;">
                         <p class="view-by-label">View by:</p>
                         <select id="viewBySelect" class="form-select form-select-sm" style="width: auto;">
