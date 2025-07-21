@@ -203,6 +203,18 @@ def survey_responses_page():
     return render_template('survey_responses.html', 
                          title='الردود والنتائج')
 
+@app.route('/surveys/design-system')
+def survey_design_system():
+    """Survey design system showcase page"""
+    return render_template('components/design_system_showcase.html', 
+                         title='نظام التصميم')
+
+@app.route('/surveys/form-example')
+def survey_form_example():
+    """Survey form example using design system"""
+    return render_template('survey_form_example.html', 
+                         title='نموذج استطلاع تجريبي')
+
 # Updated navigation routes - Dashboards
 @app.route('/dashboards/executive')
 @app.route('/executive-dashboard')  # Keep old route for compatibility

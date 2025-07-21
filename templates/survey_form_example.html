@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    {% include 'components/head.html' %}
+    <title>نموذج استطلاع تجريبي - منصة صوت العميل العربية</title>
+</head>
+<body>
+    {% include 'components/navigation.html' %}
+    {% include 'components/survey_header.html' %}
+    {% include 'components/survey_actions.html' %}
+
+    <div class="container mt-4" style="max-width: 800px;">
+        <!-- Survey Form with Design System -->
+        <div class="survey-card">
+            <div class="survey-card-header">
+                <h1 class="survey-heading-secondary" style="margin: 0;">
+                    استطلاع رضا العملاء
+                </h1>
+                <p class="survey-body-text survey-text-secondary" style="margin: 0;">
+                    نحن نقدر رأيكم في خدماتنا لتحسين تجربتكم معنا
+                </p>
+            </div>
+            
+            <div class="survey-card-body">
+                <form id="surveyForm">
+                    <!-- Personal Information Section -->
+                    <div class="mb-5">
+                        <h3 class="survey-heading-tertiary survey-text-primary">المعلومات الشخصية</h3>
+                        
+                        <div class="survey-form-group">
+                            <label class="survey-label required">الاسم الكامل</label>
+                            <input type="text" class="survey-input" placeholder="أدخل اسمك الكامل" required>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="survey-form-group">
+                                    <label class="survey-label required">البريد الإلكتروني</label>
+                                    <input type="email" class="survey-input" placeholder="example@email.com" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="survey-form-group">
+                                    <label class="survey-label">رقم الهاتف</label>
+                                    <input type="tel" class="survey-input" placeholder="+966501234567">
+                                    <div class="survey-help-text">اختياري - للتواصل في حال الحاجة</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="survey-form-group">
+                            <label class="survey-label">العمر</label>
+                            <select class="survey-input survey-select">
+                                <option>اختر الفئة العمرية</option>
+                                <option>أقل من 18 سنة</option>
+                                <option>18-25 سنة</option>
+                                <option>26-35 سنة</option>
+                                <option>36-45 سنة</option>
+                                <option>46-55 سنة</option>
+                                <option>أكثر من 55 سنة</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- Service Evaluation Section -->
+                    <div class="mb-5">
+                        <h3 class="survey-heading-tertiary survey-text-primary">تقييم الخدمة</h3>
+                        
+                        <div class="survey-form-group">
+                            <label class="survey-label required">كيف تقيم مستوى الرضا العام؟</label>
+                            <div class="mt-3">
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="radio" name="satisfaction" id="excellent" value="5">
+                                    <label class="form-check-label survey-text-success survey-font-semibold" for="excellent">
+                                        ممتاز - تجاوزت توقعاتي
+                                    </label>
+                                </div>
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="radio" name="satisfaction" id="good" value="4">
+                                    <label class="form-check-label" for="good">
+                                        جيد - لبت توقعاتي
+                                    </label>
+                                </div>
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="radio" name="satisfaction" id="average" value="3">
+                                    <label class="form-check-label survey-text-warning" for="average">
+                                        متوسط - مقبول
+                                    </label>
+                                </div>
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="radio" name="satisfaction" id="poor" value="2">
+                                    <label class="form-check-label survey-text-error" for="poor">
+                                        ضعيف - أقل من المتوقع
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="satisfaction" id="verypoor" value="1">
+                                    <label class="form-check-label survey-text-error survey-font-semibold" for="verypoor">
+                                        ضعيف جداً - غير مرضي تماماً
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="survey-form-group">
+                            <label class="survey-label">ما هي الخدمات التي استخدمتها؟ (يمكن اختيار أكثر من خيار)</label>
+                            <div class="mt-3">
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="checkbox" id="service1" value="customer-support">
+                                    <label class="form-check-label" for="service1">خدمة العملاء</label>
+                                </div>
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="checkbox" id="service2" value="technical-support">
+                                    <label class="form-check-label" for="service2">الدعم الفني</label>
+                                </div>
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="checkbox" id="service3" value="billing">
+                                    <label class="form-check-label" for="service3">الفوترة والمدفوعات</label>
+                                </div>
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="checkbox" id="service4" value="delivery">
+                                    <label class="form-check-label" for="service4">التوصيل</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="service5" value="other">
+                                    <label class="form-check-label" for="service5">أخرى</label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="survey-form-group">
+                            <label class="survey-label">هل توصي بخدماتنا للآخرين؟</label>
+                            <select class="survey-input survey-select">
+                                <option>اختر الإجابة</option>
+                                <option>بالتأكيد سأوصي</option>
+                                <option>ربما سأوصي</option>
+                                <option>محايد</option>
+                                <option>ربما لن أوصي</option>
+                                <option>بالتأكيد لن أوصي</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- Feedback Section -->
+                    <div class="mb-5">
+                        <h3 class="survey-heading-tertiary survey-text-primary">التعليقات والاقتراحات</h3>
+                        
+                        <div class="survey-form-group">
+                            <label class="survey-label">ما الذي أعجبك أكثر في خدمتنا؟</label>
+                            <textarea class="survey-input survey-textarea" rows="3" placeholder="شاركنا رأيك حول النقاط الإيجابية..."></textarea>
+                        </div>
+                        
+                        <div class="survey-form-group">
+                            <label class="survey-label">كيف يمكننا تحسين خدماتنا؟</label>
+                            <textarea class="survey-input survey-textarea" rows="4" placeholder="اقتراحاتك مهمة جداً لتطوير خدماتنا..."></textarea>
+                        </div>
+                        
+                        <div class="survey-form-group">
+                            <label class="survey-label">تقييم سرعة الاستجابة</label>
+                            <div class="mt-3">
+                                <input type="range" class="form-range" min="1" max="10" step="1" id="responseSpeed" value="5">
+                                <div class="d-flex justify-content-between">
+                                    <small class="survey-caption">بطيء جداً</small>
+                                    <small class="survey-caption">سريع جداً</small>
+                                </div>
+                                <div class="text-center mt-2">
+                                    <span class="survey-status survey-status-active">
+                                        <span class="survey-status-dot survey-status-dot-active"></span>
+                                        التقييم: <span id="speedValue">5</span>/10
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Preferences Section -->
+                    <div class="mb-5">
+                        <h3 class="survey-heading-tertiary survey-text-primary">التفضيلات</h3>
+                        
+                        <div class="survey-form-group">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" role="switch" id="notifications">
+                                <label class="form-check-label survey-label" for="notifications">
+                                    أرغب في تلقي إشعارات حول التحديثات والعروض الجديدة
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="survey-form-group">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" role="switch" id="newsletter" checked>
+                                <label class="form-check-label survey-label" for="newsletter">
+                                    الاشتراك في النشرة الإخبارية
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="survey-form-group">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" role="switch" id="followup">
+                                <label class="form-check-label survey-label" for="followup">
+                                    أوافق على التواصل معي للمتابعة حول هذا الاستطلاع
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="survey-card-footer">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <span class="survey-status survey-status-draft">
+                            <span class="survey-status-dot survey-status-dot-draft"></span>
+                            مسودة
+                        </span>
+                    </div>
+                    
+                    <div class="d-flex gap-2">
+                        <button type="button" class="survey-btn survey-btn-secondary survey-btn-md" onclick="saveDraft()">
+                            <i class="fas fa-save"></i>
+                            حفظ مسودة
+                        </button>
+                        <button type="submit" class="survey-btn survey-btn-primary survey-btn-md" form="surveyForm">
+                            <i class="fas fa-paper-plane"></i>
+                            إرسال الإجابات
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Success/Error Messages -->
+        <div id="successMessage" class="survey-card mt-4" style="display: none; border-color: var(--survey-status-active);">
+            <div class="survey-card-body text-center">
+                <div class="survey-text-success mb-3">
+                    <i class="fas fa-check-circle fa-3x"></i>
+                </div>
+                <h3 class="survey-heading-tertiary survey-text-success">شكراً لك!</h3>
+                <p class="survey-body-text">تم إرسال إجاباتك بنجاح. نقدر مشاركتك معنا.</p>
+                <button class="survey-btn survey-btn-primary survey-btn-sm" onclick="resetForm()">
+                    <i class="fas fa-plus"></i>
+                    استطلاع جديد
+                </button>
+            </div>
+        </div>
+        
+        <div id="errorMessage" class="survey-card mt-4" style="display: none; border-color: var(--survey-status-error);">
+            <div class="survey-card-body text-center">
+                <div class="survey-text-error mb-3">
+                    <i class="fas fa-exclamation-circle fa-3x"></i>
+                </div>
+                <h3 class="survey-heading-tertiary survey-text-error">خطأ في الإرسال</h3>
+                <p class="survey-body-text">حدث خطأ أثناء إرسال الإجابات. يرجى المحاولة مرة أخرى.</p>
+                <button class="survey-btn survey-btn-destructive survey-btn-sm" onclick="hideMessage()">
+                    <i class="fas fa-times"></i>
+                    إغلاق
+                </button>
+            </div>
+        </div>
+    </div>
+
+    {% include 'components/scripts.html' %}
+    
+    <script>
+        // Initialize survey navigation
+        document.addEventListener('DOMContentLoaded', function() {
+            SurveyNavigation.setPage(
+                'نموذج استطلاع تجريبي',
+                'مثال تطبيقي على استخدام نظام التصميم في النماذج'
+            );
+            SurveyNavigation.setActiveNav('surveys');
+            
+            // Update range slider value display
+            const speedSlider = document.getElementById('responseSpeed');
+            const speedValue = document.getElementById('speedValue');
+            
+            speedSlider.addEventListener('input', function() {
+                speedValue.textContent = this.value;
+            });
+        });
+        
+        // Form submission handling
+        document.getElementById('surveyForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Simulate form submission
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            
+            // Show loading state
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الإرسال...';
+            submitBtn.disabled = true;
+            
+            // Simulate API call
+            setTimeout(() => {
+                // Reset button
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+                
+                // Show success message
+                document.getElementById('successMessage').style.display = 'block';
+                
+                // Hide form
+                document.querySelector('.survey-card').style.display = 'none';
+                
+                // Scroll to success message
+                document.getElementById('successMessage').scrollIntoView({ behavior: 'smooth' });
+            }, 2000);
+        });
+        
+        function saveDraft() {
+            const btn = event.target;
+            const originalText = btn.innerHTML;
+            
+            // Show saving state
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الحفظ...';
+            btn.disabled = true;
+            
+            // Simulate save
+            setTimeout(() => {
+                btn.innerHTML = '<i class="fas fa-check"></i> تم الحفظ';
+                
+                // Reset after 2 seconds
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                }, 2000);
+            }, 1000);
+        }
+        
+        function resetForm() {
+            document.getElementById('surveyForm').reset();
+            document.getElementById('successMessage').style.display = 'none';
+            document.getElementById('errorMessage').style.display = 'none';
+            document.querySelector('.survey-card').style.display = 'block';
+            window.scrollTo(0, 0);
+        }
+        
+        function hideMessage() {
+            document.getElementById('errorMessage').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
