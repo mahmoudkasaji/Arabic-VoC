@@ -326,6 +326,12 @@ def register_page():
     return render_template('register.html', 
                          title='إنشاء حساب')
 
+@app.route('/profile')
+def profile_page():
+    """User profile page"""
+    return render_template('profile.html', 
+                         title='الملف الشخصي')
+
 @app.route('/api/ai-services-status')
 def ai_services_status():
     """Get AI services configuration status"""

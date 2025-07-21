@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    {% include 'components/head.html' %}
+    <title>الملف الشخصي - منصة صوت العميل</title>
+</head>
+<body>
+    {% include 'components/standard_header.html' %}
+    
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <!-- Profile Header -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-body text-center">
+                        <div class="profile-avatar mb-3">
+                            <i class="fas fa-user-circle" style="font-size: 4rem; color: #2E8B57;"></i>
+                        </div>
+                        <h2 class="h4 mb-1">المستخدم التجريبي</h2>
+                        <p class="text-muted">demo@example.com</p>
+                        <span class="badge bg-success">نشط</span>
+                    </div>
+                </div>
+
+                <!-- Profile Information -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-info-circle me-2"></i>
+                            المعلومات الأساسية
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <p><strong>الاسم الكامل:</strong> المستخدم التجريبي</p>
+                                <p><strong>البريد الإلكتروني:</strong> demo@example.com</p>
+                                <p><strong>الهاتف:</strong> +966 xxx xxx xxx</p>
+                            </div>
+                            <div class="col-sm-6">
+                                <p><strong>المسمى الوظيفي:</strong> مدير تجربة العملاء</p>
+                                <p><strong>الشركة:</strong> شركة تجريبية</p>
+                                <p><strong>تاريخ الانضمام:</strong> يناير 2024</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Account Settings -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-cog me-2"></i>
+                            إعدادات الحساب
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-check form-switch mb-3">
+                            <input class="form-check-input" type="checkbox" id="emailNotifications" checked>
+                            <label class="form-check-label" for="emailNotifications">
+                                تلقي إشعارات البريد الإلكتروني
+                            </label>
+                        </div>
+                        <div class="form-check form-switch mb-3">
+                            <input class="form-check-input" type="checkbox" id="smsNotifications">
+                            <label class="form-check-label" for="smsNotifications">
+                                تلقي إشعارات الرسائل النصية
+                            </label>
+                        </div>
+                        <div class="form-check form-switch mb-3">
+                            <input class="form-check-input" type="checkbox" id="darkMode">
+                            <label class="form-check-label" for="darkMode">
+                                الوضع المظلم
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Security Settings -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-shield-alt me-2"></i>
+                            الأمان والخصوصية
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <button class="btn btn-outline-primary btn-sm">
+                                    <i class="fas fa-key me-2"></i>
+                                    تغيير كلمة المرور
+                                </button>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <button class="btn btn-outline-success btn-sm">
+                                    <i class="fas fa-mobile-alt me-2"></i>
+                                    المصادقة الثنائية
+                                </button>
+                            </div>
+                        </div>
+                        <p class="text-muted small">
+                            <i class="fas fa-info-circle me-1"></i>
+                            آخر تسجيل دخول: اليوم في 2:30 مساءً
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Demo Notice -->
+                <div class="alert alert-warning" role="alert">
+                    <i class="fas fa-flask me-2"></i>
+                    <strong>عرض توضيحي:</strong> هذه صفحة ملف شخصي تجريبية. 
+                    في النسخة الحقيقية، ستتمكن من تعديل معلوماتك وإعداداتك.
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="text-center mb-4">
+                    <button class="btn btn-primary me-2">
+                        <i class="fas fa-save me-2"></i>
+                        حفظ التغييرات
+                    </button>
+                    <a href="/" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-right me-2"></i>
+                        العودة للصفحة الرئيسية
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% include 'components/scripts.html' %}
+    
+    <script>
+        // Simple demo functionality for switches
+        document.querySelectorAll('.form-check-input').forEach(input => {
+            input.addEventListener('change', function() {
+                const label = this.nextElementSibling.textContent.trim();
+                if (this.checked) {
+                    console.log(`تم تفعيل: ${label}`);
+                } else {
+                    console.log(`تم إلغاء تفعيل: ${label}`);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
