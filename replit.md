@@ -141,6 +141,29 @@ An Arabic-first multi-channel feedback processing platform built with Flask and 
 ## Recent Changes (July 2025)
 
 ### Major Architecture Updates
+- **July 21**: **Actions Required Workflow Tab Implementation** - Complete workflow management system for CX analysts
+  - Added comprehensive tab-based navigation to Analyst Dashboard with three main sections:
+    - **الإجراءات المطلوبة** (Actions Required) - Default active tab with daily workflow management
+    - **التحليلات والمقاييس** (Analytics & Metrics) - Existing analytics content moved to dedicated tab
+    - **الرؤى الذكية** (Smart Insights) - Dedicated tab for AI-powered insights and recommendations
+  - **Today's Priorities Section** with urgency-based task management:
+    - HIGH PRIORITY (Red): Overdue customer responses, delivery issues, negative product reviews
+    - MEDIUM PRIORITY (Yellow): Regional analysis tasks, weekly reports, improvement tracking
+    - Interactive checkboxes with action buttons for quick case handling
+  - **Automated Response Templates** with quick-access cards for:
+    - Delivery complaints with tracking info request templates
+    - Technical issues with troubleshooting step templates  
+    - Refund requests with policy explanation templates
+  - **Follow-up Tracking Pipeline** with visual progress tracking:
+    - New cases, Under Review, Pending Customer, Resolved status tracking
+    - Real-time case count updates with progress bars
+  - **Personal Performance Tracking** with analyst-specific metrics:
+    - Daily resolved cases, average response time, customer satisfaction ratings
+    - Weekly goal achievement tracking (current vs target percentages)
+  - **Knowledge Base Integration** with quick access to:
+    - FAQ responses in Arabic, escalation procedures, product information, company policies
+  - **Interactive Workflow Actions** with JavaScript handlers for all workflow functions:
+    - Case opening, quick responses, issue escalation, template usage, knowledge base access
 - **July 21**: **Analyst Dashboard Usability Enhancements** - Comprehensive refinement focusing on enhanced user experience and interactivity
   - Added comprehensive legend system with color coding explanations (red/yellow/green meanings)
   - Implemented interactive tooltips with "ما معنى هذا المقياس؟" help icons for all metrics
