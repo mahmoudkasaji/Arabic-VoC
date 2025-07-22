@@ -144,7 +144,8 @@ A multi-channel feedback processing platform with Arabic language support, built
 **Goal**: Replace complex AI orchestration with simple OpenAI calls, consolidate utility modules, remove advanced features for improved maintainability and performance.
 
 **Detailed Implementation Plan**: See `PHASE2_SIMPLIFICATION_IMPLEMENTATION_PLAN.md`  
-**Feature Impact Analysis**: See `PHASE2_FEATURE_IMPACT_ANALYSIS.md`
+**Feature Impact Analysis**: See `PHASE2_FEATURE_IMPACT_ANALYSIS.md`  
+**Architecture Overview**: See `PHASE2_ARCHITECTURE_OVERVIEW.md`
 
 **Current Analysis**:
 - Complex AI orchestration: ~2,600 lines across specialized agents and orchestrator
