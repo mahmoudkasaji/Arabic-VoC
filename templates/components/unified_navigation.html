@@ -41,15 +41,24 @@
                     </ul>
                 </li>
                 
-                <!-- 2. Dashboards -->
+                <!-- 2. Analytics (Consolidated Dashboard + Analytics) -->
                 <li class="nav-item dropdown mx-2">
-                    <a class="nav-link dropdown-toggle" href="#" id="dashboardsDropdown" role="button" 
+                    <a class="nav-link dropdown-toggle" href="#" id="analyticsDropdown" role="button" 
                        data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="fas fa-tachometer-alt me-1"></i>لوحات القيادة
+                        <i class="fas fa-chart-line me-1"></i>التحليلات
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="/dashboard">
-                            <i class="fas fa-tachometer-alt me-2"></i>لوحة القيادة الرئيسية
+                        <li><h6 class="dropdown-header">لوحات البيانات</h6></li>
+                        <li><a class="dropdown-item" href="/analytics/dashboard">
+                            <i class="fas fa-tachometer-alt me-2"></i>لوحة القيادة التنفيذية
+                        </a></li>
+                        <li><a class="dropdown-item" href="/analytics/insights">
+                            <i class="fas fa-lightbulb me-2"></i>الرؤى الذكية والمعمل
+                        </a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><h6 class="dropdown-header">التقارير</h6></li>
+                        <li><a class="dropdown-item" href="/analytics/reports">
+                            <i class="fas fa-file-chart me-2"></i>تقارير مفصلة
                         </a></li>
                     </ul>
                 </li>
@@ -68,20 +77,7 @@
                     </ul>
                 </li>
                 
-                <!-- 4. Analytics -->
-                <li class="nav-item dropdown mx-2">
-                    <a class="nav-link dropdown-toggle" href="#" id="analyticsDropdown" role="button" 
-                       data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="fas fa-brain me-1"></i>التحليلات
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="/analytics/insights">
-                            <i class="fas fa-lightbulb me-2"></i>الرؤى والتحليلات
-                        </a></li>
-                    </ul>
-                </li>
-                
-                <!-- 5. Settings -->
+                <!-- 4. Settings -->
                 <li class="nav-item dropdown mx-2">
                     <a class="nav-link dropdown-toggle" href="#" id="settingsDropdown" role="button" 
                        data-bs-toggle="dropdown" aria-expanded="false">

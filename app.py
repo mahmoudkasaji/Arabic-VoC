@@ -158,12 +158,7 @@ def surveys_page():
 
 
 
-@app.route('/analytics')
-@app.route('/dashboard')
-def dashboard_page():
-    """Main dashboard page"""
-    return render_template('dashboard.html',
-                         title='لوحة القيادة')
+# Routes consolidated under analytics section below
 
 # Simplified survey routes
 @app.route('/surveys/create')
@@ -185,12 +180,34 @@ def survey_responses_page():
     return render_template('survey_responses.html', 
                          title='الردود والنتائج')
 
-# Simplified analytics route
+# Analytics Routes (Consolidated Dashboard + Insights)
+@app.route('/dashboard')
+def dashboard_redirect():
+    """Redirect old dashboard route to new analytics structure"""
+    return redirect(url_for('analytics_dashboard'))
+
+@app.route('/analytics')
+def analytics_main():
+    """Main analytics page - redirect to dashboard"""
+    return redirect(url_for('analytics_dashboard'))
+
+@app.route('/analytics/dashboard')
+def analytics_dashboard():
+    """Executive dashboard with Arabic analytics"""
+    return render_template('dashboard.html', 
+                         title='لوحة القيادة التنفيذية')
+
 @app.route('/analytics/insights')
 def analytics_insights():
-    """Analytics and insights page"""
+    """Analytics page with AI insights and testing lab"""
     return render_template('analytics.html', 
-                         title='الرؤى والتحليلات')
+                         title='الرؤى الذكية والمعمل')
+
+@app.route('/analytics/reports')
+def analytics_reports():
+    """Analytics reports page (placeholder for future expansion)"""
+    return render_template('analytics.html', 
+                         title='التقارير المفصلة')
 
 # Single integrations page
 @app.route('/integrations')
