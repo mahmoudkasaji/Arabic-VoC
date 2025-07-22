@@ -238,9 +238,47 @@
         .executive-nav .nav-link.active {
             color: white !important;
             border-bottom-color: var(--primary-color);
-            background: var(--primary-color);
+            background: var(--primary-color) !important;
             font-weight: 700;
             box-shadow: 0 2px 6px rgba(27, 94, 32, 0.4);
+        }
+        
+        /* Force high contrast for all active tabs - Maximum Specificity */
+        .nav-tabs .nav-link.active,
+        .executive-nav .nav-link.active,
+        button.nav-link.active,
+        .nav-tabs button.nav-link.active,
+        .executive-nav button.nav-link.active,
+        ul.nav-tabs .nav-link.active,
+        ul.executive-nav .nav-link.active,
+        .nav.nav-tabs .nav-link.active {
+            background-color: #1B5E20 !important;
+            background: #1B5E20 !important;
+            color: white !important;
+            font-weight: 700 !important;
+            border-color: #1B5E20 !important;
+            border: 2px solid #1B5E20 !important;
+            text-shadow: none !important;
+            opacity: 1 !important;
+        }
+        
+        /* Ensure Bootstrap doesn't override */
+        .nav-tabs .nav-item.show .nav-link,
+        .nav-tabs .nav-link.active {
+            color: white !important;
+            background-color: #1B5E20 !important;
+            border-color: #1B5E20 !important;
+        }
+        
+        /* Direct targeting for problematic tab */
+        #detailed-reports-tab.active,
+        #detailed-reports-tab.nav-link.active,
+        button#detailed-reports-tab.active {
+            background-color: #1B5E20 !important;
+            background: #1B5E20 !important;
+            color: white !important;
+            font-weight: 700 !important;
+            border: 2px solid #1B5E20 !important;
         }
 
         .executive-nav .badge {
@@ -469,7 +507,9 @@
                             </button>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="detailed-reports-tab" data-bs-toggle="tab" data-bs-target="#detailed-reports" type="button" role="tab">
+                            <button class="nav-link" id="detailed-reports-tab" data-bs-toggle="tab" data-bs-target="#detailed-reports" type="button" role="tab" 
+                                    style="background-color: #f8f9fa !important; color: #495057 !important;" 
+                                    onclick="this.style.backgroundColor='#1B5E20'; this.style.color='white'; this.style.fontWeight='700';">
                                 <i class="fas fa-file-chart-line me-2"></i>
                                 التقارير التفصيلية
                             </button>
@@ -1276,6 +1316,63 @@
             }
         }
 
+        // Tab Contrast Enhancement System
+        class TabContrastManager {
+            constructor() {
+                this.initializeTabContrast();
+                this.setupTabListeners();
+            }
+
+            initializeTabContrast() {
+                // Force high contrast for active tabs immediately
+                const activeTab = document.querySelector('.nav-link.active');
+                if (activeTab) {
+                    this.applyActiveStyles(activeTab);
+                }
+            }
+
+            applyActiveStyles(tab) {
+                tab.style.backgroundColor = '#1B5E20';
+                tab.style.background = '#1B5E20';
+                tab.style.color = 'white';
+                tab.style.fontWeight = '700';
+                tab.style.border = '2px solid #1B5E20';
+                tab.style.borderBottom = '2px solid #1B5E20';
+                tab.style.textShadow = 'none';
+            }
+
+            applyInactiveStyles(tab) {
+                tab.style.backgroundColor = '#f8f9fa';
+                tab.style.background = '#f8f9fa';
+                tab.style.color = '#495057';
+                tab.style.fontWeight = '500';
+                tab.style.border = '1px solid #dee2e6';
+            }
+
+            setupTabListeners() {
+                const navLinks = document.querySelectorAll('.nav-link, .executive-nav .nav-link, .nav-tabs .nav-link');
+                
+                navLinks.forEach(link => {
+                    // Handle Bootstrap tab activation
+                    link.addEventListener('show.bs.tab', (e) => {
+                        // Reset all tabs
+                        navLinks.forEach(otherLink => this.applyInactiveStyles(otherLink));
+                        // Apply active styling
+                        this.applyActiveStyles(e.target);
+                    });
+
+                    // Handle direct clicks
+                    link.addEventListener('click', (e) => {
+                        setTimeout(() => {
+                            if (e.target.classList.contains('active')) {
+                                this.applyActiveStyles(e.target);
+                            }
+                        }, 50);
+                    });
+                });
+            }
+        }
+
         // Initialize all systems when DOM is loaded
         document.addEventListener('DOMContentLoaded', () => {
             console.log('DOM loaded, initializing enhanced dashboard...');
@@ -1285,6 +1382,7 @@
             new ExportManager();
             new MobileNavigationManager();
             new BadgeManager();
+            new TabContrastManager(); // High-contrast tab system
 
             // Set active navigation
             if (typeof StandardNavigation !== 'undefined') {
