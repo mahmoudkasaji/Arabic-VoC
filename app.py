@@ -229,6 +229,12 @@ def settings_users_page():
     return render_template('settings_users.html', 
                          title='إدارة المستخدمين')
 
+@app.route('/settings/design-system')
+def settings_design_system_page():
+    """Design System Showcase"""
+    return render_template('settings_design_system.html', 
+                         title='نظام التصميم الموحد')
+
 @app.route('/login')
 def login_page():
     """Login page"""
