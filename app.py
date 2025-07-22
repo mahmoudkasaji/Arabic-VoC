@@ -223,6 +223,12 @@ def analytics_insights():
     return render_template('analytics.html', 
                          title='الرؤى الذكية والمعمل')
 
+@app.route('/analytics/demo')
+def analytics_demo():
+    """Live analytics demonstration with simple analyzer"""
+    return render_template('analytics_demo.html', 
+                         title='تجربة التحليل المباشر')
+
 @app.route('/analytics/reports')
 def analytics_reports():
     """Analytics reports page (placeholder for future expansion)"""
@@ -458,17 +464,62 @@ def dashboard_metrics():
                 'percentage': round((count / total_feedback * 100) if total_feedback > 0 else 0, 1)
             })
         
+        # Topic distribution from simple analyzer
+        topic_distribution = {}
+        if processed_feedback > 0:
+            topic_entries = db.session.query(Feedback).filter(
+                Feedback.key_topics.isnot(None)
+            ).all()
+            
+            for entry in topic_entries:
+                if entry.key_topics:
+                    topics = entry.key_topics.split(',')
+                    for topic in topics:
+                        topic = topic.strip()
+                        if topic:
+                            topic_distribution[topic] = topic_distribution.get(topic, 0) + 1
+        
+        # Priority distribution from simple analyzer
+        priority_stats = db.session.query(
+            Feedback.priority_level,
+            db.func.count(Feedback.id).label('count')
+        ).filter(Feedback.priority_level.isnot(None)).group_by(Feedback.priority_level).all()
+        
+        priority_distribution = {}
+        for priority, count in priority_stats:
+            priority_distribution[priority] = count
+        
+        # Sentiment distribution based on simple analyzer scores
+        sentiment_distribution = {
+            'positive': 0,
+            'negative': 0, 
+            'neutral': 0
+        }
+        
+        if processed_feedback > 0:
+            sentiment_entries = db.session.query(Feedback).filter(
+                Feedback.sentiment_score.isnot(None)
+            ).all()
+            
+            for entry in sentiment_entries:
+                if entry.sentiment_score > 0.6:
+                    sentiment_distribution['positive'] += 1
+                elif entry.sentiment_score < 0.4:
+                    sentiment_distribution['negative'] += 1
+                else:
+                    sentiment_distribution['neutral'] += 1
+
         return jsonify({
             'total_feedback': total_feedback,
             'processed_feedback': processed_feedback,
             'pending_feedback': pending_feedback,
             'average_sentiment': round(avg_sentiment, 2),
             'channel_metrics': channel_metrics,
-            'sentiment_distribution': {
-                'positive': processed_feedback // 3,  # Mock data for now
-                'neutral': processed_feedback // 3,
-                'negative': processed_feedback // 3
-            }
+            'sentiment_distribution': sentiment_distribution,
+            'topic_distribution': topic_distribution,
+            'priority_distribution': priority_distribution,
+            'analysis_method': 'simple_arabic_analyzer',
+            'timestamp': datetime.utcnow().isoformat()
         })
         
     except Exception as e:
