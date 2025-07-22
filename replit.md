@@ -139,6 +139,18 @@ A multi-channel feedback processing platform with Arabic language support, built
 - `SECRET_KEY`: Application security key
 - `ARABIC_LOCALE`: Locale configuration for Arabic text
 
+## Phase 2: Core Simplification Plan (July 2025)
+
+**Goal**: Replace complex AI orchestration with simple OpenAI calls, consolidate utility modules, remove advanced features for improved maintainability and performance.
+
+**Detailed Implementation Plan**: See `PHASE2_SIMPLIFICATION_IMPLEMENTATION_PLAN.md`
+
+**Current Analysis**:
+- Complex AI orchestration: ~2,600 lines across specialized agents and orchestrator
+- Utility module sprawl: 20+ utility files with overlapping functionality  
+- Advanced features: Cultural intelligence, uncertainty quantification, multi-model routing
+- Target: 82% code reduction while preserving core Arabic VoC functionality
+
 ## Recent Changes (July 2025)
 
 ### Major Architecture Updates
