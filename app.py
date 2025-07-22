@@ -87,7 +87,7 @@ def submit_feedback():
         if channel not in [c.value for c in FeedbackChannel]:
             channel = 'website'
             
-        # Create feedback record
+        # Create feedback record with simple analysis
         feedback = Feedback(
             content=content,
             channel=FeedbackChannel(channel),
@@ -100,6 +100,26 @@ def submit_feedback():
         
         db.session.add(feedback)
         db.session.commit()
+        
+        # Simple real-time analysis (Phase 2)
+        try:
+            from utils.simple_arabic_analyzer import SimpleArabicAnalyzer
+            analyzer = SimpleArabicAnalyzer()
+            analysis_result = analyzer.analyze_feedback_sync(content)
+            
+            # Update feedback with analysis results
+            feedback.sentiment_score = analysis_result.get('sentiment_score')
+            feedback.confidence_score = analysis_result.get('confidence')
+            feedback.key_topics = ','.join(analysis_result.get('topics', []))
+            feedback.priority_level = analysis_result.get('priority')
+            feedback.status = FeedbackStatus.PROCESSED
+            
+            db.session.commit()
+            logger.info(f"Feedback {feedback.id} analyzed in {analysis_result.get('processing_time', 0)}s")
+            
+        except Exception as e:
+            logger.error(f"Real-time analysis failed for feedback {feedback.id}: {e}")
+            # Continue without analysis - feedback still saved
         
         return jsonify({
             'success': True,
@@ -303,38 +323,51 @@ def ai_services_status():
 
 @app.route('/api/test-ai-analysis', methods=['POST'])
 def test_ai_analysis():
-    """CX Analysis with business-focused intelligence"""
+    """Simple AI Analysis - Phase 2 Implementation"""
     try:
         data = request.get_json()
         text = data.get('text', '')
-        service = data.get('service', 'auto')
+        use_simple = data.get('use_simple', True)  # Feature flag for A/B testing
         
         if not text.strip():
             return jsonify({
                 'error': 'Text is required'
             }), 400
         
-        # Use CX Analysis Engine for business intelligence
-        import asyncio
-        from utils.cx_analysis_engine import CXAnalysisEngine
-        
-        async def run_cx_analysis():
-            cx_engine = CXAnalysisEngine()
-            return await cx_engine.analyze_feedback(text)
-        
-        # Run async analysis
-        result = asyncio.run(run_cx_analysis())
-        
-        return jsonify({
-            'status': 'success',
-            'text_analyzed': text,
-            'analysis': result,
-            'analysis_type': 'cx_business_intelligence',
-            'timestamp': datetime.utcnow().isoformat()
-        })
+        if use_simple:
+            # Use Simple Arabic Analyzer (Phase 2)
+            from utils.simple_arabic_analyzer import SimpleArabicAnalyzer
+            analyzer = SimpleArabicAnalyzer()
+            result = analyzer.analyze_feedback_sync(text)
+            
+            return jsonify({
+                'status': 'success',
+                'text_analyzed': text,
+                'analysis': result,
+                'analysis_type': 'simple_arabic_analysis',
+                'timestamp': datetime.utcnow().isoformat()
+            })
+        else:
+            # Fallback to complex system if needed
+            import asyncio
+            from utils.cx_analysis_engine import CXAnalysisEngine
+            
+            async def run_cx_analysis():
+                cx_engine = CXAnalysisEngine()
+                return await cx_engine.analyze_feedback(text)
+            
+            result = asyncio.run(run_cx_analysis())
+            
+            return jsonify({
+                'status': 'success',
+                'text_analyzed': text,
+                'analysis': result,
+                'analysis_type': 'cx_business_intelligence',
+                'timestamp': datetime.utcnow().isoformat()
+            })
         
     except Exception as e:
-        logger.error(f"CX analysis failed: {str(e)}")
+        logger.error(f"Analysis failed: {str(e)}")
         return jsonify({'error': f'Analysis failed: {str(e)}'}), 500
 
 @app.route('/api/committee-performance')
