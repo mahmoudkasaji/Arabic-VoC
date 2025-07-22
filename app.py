@@ -189,10 +189,17 @@ def survey_create_page():
                          title='إنشاء استطلاع جديد')
 
 @app.route('/surveys/distribution')
-def survey_distribution_page():
-    """Survey distribution system"""
-    return render_template('survey_delivery_mvp.html', 
-                         title='توزيع الاستطلاعات')
+def survey_distribution_redirect():
+    """Redirect distribution to integrated survey management hub"""
+    survey_id = request.args.get('survey')
+    channel = request.args.get('channel')
+    
+    if survey_id:
+        # Redirect to survey management with distribution context
+        return redirect(f'/surveys?action=distribute&survey={survey_id}&channel={channel or ""}')
+    else:
+        # Redirect to main survey management hub
+        return redirect('/surveys?tab=distribution')
 
 @app.route('/surveys/responses')
 def survey_responses_page():

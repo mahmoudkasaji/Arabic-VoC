@@ -1140,7 +1140,50 @@
             // Initialize CX enhancements
             initializeCXEnhancements();
             updateCounters();
+            
+            // Handle URL parameters for redirected users
+            handleUrlParameters();
         });
+
+        function handleUrlParameters() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const action = urlParams.get('action');
+            const surveyId = urlParams.get('survey');
+            const channel = urlParams.get('channel');
+            const tab = urlParams.get('tab');
+            
+            // Show helpful message for users redirected from old distribution URL
+            if (action === 'distribute' || tab === 'distribution') {
+                showRedirectMessage();
+            }
+            
+            // Auto-open distribution for specific survey
+            if (action === 'distribute' && surveyId) {
+                setTimeout(() => {
+                    const distributeButton = document.querySelector(`[onclick*="showEmailCampaign(${surveyId})"]`);
+                    if (distributeButton && channel === 'email') {
+                        distributeButton.click();
+                    }
+                }, 1000);
+            }
+        }
+
+        function showRedirectMessage() {
+            const message = `
+            <div class="alert alert-info alert-dismissible fade show" role="alert">
+                <i class="fas fa-info-circle me-2"></i>
+                <strong>مرحباً!</strong> تم نقلك إلى مركز إدارة الاستطلاعات المحدث. 
+                يمكنك الآن الوصول لجميع خيارات التوزيع مباشرة من أزرار "توزيع" في جدول الاستطلاعات.
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>`;
+            
+            const container = document.querySelector('.container-unified');
+            if (container && container.firstChild) {
+                const alertDiv = document.createElement('div');
+                alertDiv.innerHTML = message;
+                container.insertBefore(alertDiv.firstChild, container.firstChild);
+            }
+        }
 
         // CX Product Manager Enhancement Features
         function initializeCXEnhancements() {
