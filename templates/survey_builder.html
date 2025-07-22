@@ -132,6 +132,71 @@
             grid-column: span 2;
         }
 
+        /* Enhanced drag and drop feedback */
+        .drop-zone-active {
+            border: 2px dashed var(--primary-color) !important;
+            background: rgba(46, 139, 87, 0.05) !important;
+            animation: dropZonePulse 2s infinite;
+        }
+
+        .drop-zone-active::before {
+            content: 'اسحب نوع السؤال هنا لإضافته';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: var(--primary-color);
+            font-weight: bold;
+            font-size: 1.1em;
+            pointer-events: none;
+        }
+
+        @keyframes dropZonePulse {
+            0%, 100% { border-color: var(--primary-color); }
+            50% { border-color: var(--success-color); }
+        }
+
+        /* Question type click feedback */
+        .question-type {
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .question-type:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(46, 139, 87, 0.2);
+        }
+
+        .question-type:active {
+            transform: scale(0.95);
+        }
+
+        /* Visual feedback for dragging */
+        .dragging {
+            opacity: 0.8;
+            transform: rotate(5deg) scale(1.05);
+        }
+
+        /* Questions area empty state styling */
+        .survey-preview {
+            min-height: 400px;
+            position: relative;
+            border: 2px dashed #dee2e6;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .survey-preview.has-questions {
+            border: 1px solid #dee2e6;
+            min-height: auto;
+            display: block;
+            padding: 20px;
+        }
+
         .sidebar h5 {
             font-size: 1rem;
             font-weight: 600;

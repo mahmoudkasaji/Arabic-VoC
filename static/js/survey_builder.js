@@ -23,11 +23,26 @@ class SurveyBuilder {
     }
 
     setupDragAndDrop() {
-        const questionTypes = document.getElementById('questionTypes');
+        // Support both original and progressive disclosure structures
+        let questionTypes = document.getElementById('questionTypes');
         const questionsArea = document.getElementById('questionsArea');
         
+        // Check for progressive disclosure structure
+        if (!questionTypes) {
+            const essentialTypes = document.getElementById('essentialQuestionTypes');
+            const advancedTypes = document.getElementById('advancedQuestionTypes');
+            
+            if (essentialTypes) {
+                questionTypes = essentialTypes.parentNode; // Use the sidebar container
+                console.log('Using progressive disclosure structure');
+            }
+        }
+        
         if (!questionTypes || !questionsArea) {
-            console.error('Required elements not found for drag and drop');
+            console.error('Required elements not found for drag and drop', {
+                questionTypes: !!questionTypes,
+                questionsArea: !!questionsArea
+            });
             return;
         }
 
@@ -70,28 +85,66 @@ class SurveyBuilder {
             }
         });
 
-        // Make question types sortable (for dragging)
-        this.sidebarSortable = Sortable.create(questionTypes, {
-            group: {
-                name: 'questionTypes',
-                pull: 'clone',
-                put: false
-            },
-            sort: false,
-            animation: 200,
-            onStart: (evt) => {
-                console.log('Started dragging question type:', evt.item.dataset.type);
-                evt.item.classList.add('dragging');
-                document.body.classList.add('drag-active');
-            },
-            onEnd: (evt) => {
-                console.log('Ended dragging');
-                evt.item.classList.remove('dragging');
-                document.body.classList.remove('drag-active');
-            }
-        });
+        // Setup drag and drop for both essential and advanced question types
+        this.setupQuestionTypeDragging();
 
         console.log('Drag and drop initialized');
+    }
+
+    setupQuestionTypeDragging() {
+        // Get all question type containers
+        const containers = [
+            'essentialQuestionTypes',
+            'advancedQuestionTypes',
+            'questionTypes' // fallback for old structure
+        ];
+
+        containers.forEach(containerId => {
+            const container = document.getElementById(containerId);
+            if (container) {
+                console.log('Setting up drag for container:', containerId);
+                Sortable.create(container, {
+                    group: {
+                        name: 'questionTypes',
+                        pull: 'clone',
+                        put: false
+                    },
+                    sort: false,
+                    animation: 200,
+                    onStart: (evt) => {
+                        console.log('Started dragging question type:', evt.item.dataset.type);
+                        evt.item.classList.add('dragging');
+                        document.body.classList.add('drag-active');
+                        
+                        // Show drop zone hints
+                        this.showDropZoneHints();
+                    },
+                    onEnd: (evt) => {
+                        console.log('Ended dragging');
+                        evt.item.classList.remove('dragging');
+                        document.body.classList.remove('drag-active');
+                        
+                        // Hide drop zone hints
+                        this.hideDropZoneHints();
+                    }
+                });
+            }
+        });
+    }
+
+    showDropZoneHints() {
+        const questionsArea = document.getElementById('questionsArea');
+        if (questionsArea) {
+            questionsArea.classList.add('drop-zone-active');
+        }
+    }
+
+    hideDropZoneHints() {
+        const questionsArea = document.getElementById('questionsArea');
+        if (questionsArea) {
+            questionsArea.classList.remove('drop-zone-active');
+        }
+    }
     }
 
     setupEventListeners() {
@@ -108,6 +161,69 @@ class SurveyBuilder {
 
         // Mobile question type selector
         this.setupMobileQuestionSelector();
+        
+        // Click-to-add functionality for question types
+        this.setupClickToAdd();
+    }
+
+    setupMobileQuestionSelector() {
+        const mobileSelect = document.getElementById('mobileQuestionTypeSelect');
+        const mobileAddBtn = document.getElementById('mobileAddQuestionBtn');
+
+        if (mobileSelect && mobileAddBtn) {
+            // Enable/disable add button based on selection
+            mobileSelect.addEventListener('change', () => {
+                const selectedType = mobileSelect.value;
+                mobileAddBtn.disabled = !selectedType;
+                
+                if (selectedType) {
+                    mobileAddBtn.textContent = `إضافة: ${this.getQuestionTypeLabel(selectedType)}`;
+                } else {
+                    mobileAddBtn.textContent = 'إضافة السؤال';
+                }
+            });
+
+            // Mobile add button click handler
+            mobileAddBtn.addEventListener('click', () => {
+                const selectedType = mobileSelect.value;
+                if (selectedType) {
+                    this.addQuestion(selectedType);
+                    mobileSelect.value = '';
+                    mobileAddBtn.disabled = true;
+                    mobileAddBtn.textContent = 'إضافة السؤال';
+                    
+                    // Transition to step 3 (editing mode)
+                    if (typeof transitionToStep === 'function') {
+                        transitionToStep(3);
+                    }
+                }
+            });
+        }
+    }
+
+    setupClickToAdd() {
+        // Add click functionality to all question type elements
+        document.addEventListener('click', (e) => {
+            const questionTypeElement = e.target.closest('.question-type');
+            if (questionTypeElement && questionTypeElement.dataset.type) {
+                const questionType = questionTypeElement.dataset.type;
+                console.log('Click to add question type:', questionType);
+                
+                // Add question
+                this.addQuestion(questionType);
+                
+                // Transition to step 3 (editing mode) if we have questions
+                if (this.questions.length >= 1 && typeof transitionToStep === 'function') {
+                    transitionToStep(3);
+                }
+                
+                // Visual feedback
+                questionTypeElement.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    questionTypeElement.style.transform = '';
+                }, 150);
+            }
+        });
     }
 
     setupMobileQuestionSelector() {
@@ -167,6 +283,17 @@ class SurveyBuilder {
         this.questions.push(question);
         this.renderQuestion(question);
         this.updateQuestionsArea();
+        
+        // Update question counter
+        const questionCountElement = document.getElementById('questionCount');
+        if (questionCountElement) {
+            questionCountElement.textContent = this.questions.length;
+        }
+        
+        // Auto-transition to step 3 if we have questions and transition function exists
+        if (this.questions.length >= 1 && typeof transitionToStep === 'function') {
+            transitionToStep(3);
+        }
     }
 
     getDefaultQuestionText(type) {
