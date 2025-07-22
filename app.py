@@ -125,7 +125,8 @@ def list_feedback():
         page = request.args.get('page', 1, type=int)
         per_page = request.args.get('per_page', 10, type=int)
         
-        feedback_query = db.session.query(Feedback).order_by(Feedback.created_at.desc())
+        from sqlalchemy import select
+        feedback_query = select(Feedback).order_by(Feedback.created_at.desc())
         feedback_paginated = db.paginate(
             feedback_query, page=page, per_page=per_page, error_out=False
         )
