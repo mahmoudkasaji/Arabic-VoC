@@ -1,533 +1,0 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    {% include 'components/head.html' %}
-    {% include 'components/standard_buttons.html' %}
-    <title>عرض توزيع الاستطلاعات - منصة صوت العميل العربية</title>
-</head>
-<body>
-    {% include 'components/standard_header.html' %}
-    
-    <div class="container-custom">
-        <div class="page-header">
-            <h1 class="arabic-title">
-                <i class="fas fa-paper-plane me-3"></i>
-                نظام توزيع الاستطلاعات متعدد القنوات
-            </h1>
-            <p class="text-muted">عرض تفاعلي لإمكانيات توزيع الاستطلاعات عبر البريد الإلكتروني والرسائل النصية وواتساب والويب</p>
-        </div>
-
-        <!-- System Overview -->
-        <div class="row mb-5">
-            <div class="col-lg-6">
-                <div class="card-custom">
-                    <div class="card-header-custom">
-                        <h3 class="card-title">
-                            <i class="fas fa-info-circle text-primary-custom me-2"></i>
-                            نظرة عامة على النظام
-                        </h3>
-                    </div>
-                    <div class="mb-3">
-                        <h5>النظام الحالي (العرض التوضيحي):</h5>
-                        <ul class="list-unstyled ms-3">
-                            <li><i class="fas fa-check text-success-custom me-2"></i>نماذج إرسال التعليقات اليدوية</li>
-                            <li><i class="fas fa-check text-success-custom me-2"></i>التعليقات المفتوحة من العملاء</li>
-                            <li><i class="fas fa-check text-success-custom me-2"></i>التقييمات والتعليقات الفورية</li>
-                            <li><i class="fas fa-check text-success-custom me-2"></i>معالجة فورية بالذكاء الاصطناعي</li>
-                        </ul>
-                    </div>
-                    <div>
-                        <h5>نظام الاستطلاعات الجديد (الإنتاج):</h5>
-                        <ul class="list-unstyled ms-3">
-                            <li><i class="fas fa-star text-warning me-2"></i>توزيع الاستطلاعات المنظمة</li>
-                            <li><i class="fas fa-star text-warning me-2"></i>إدارة الحملات المجدولة</li>
-                            <li><i class="fas fa-star text-warning me-2"></i>توزيع ذكي متعدد القنوات</li>
-                            <li><i class="fas fa-star text-warning me-2"></i>تحليلات متقدمة للاستجابات</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="col-lg-6">
-                <div class="card-custom">
-                    <div class="card-header-custom">
-                        <h3 class="card-title">
-                            <i class="fas fa-chart-line text-success-custom me-2"></i>
-                            المزايا الرئيسية
-                        </h3>
-                    </div>
-                    <div class="row">
-                        <div class="col-6">
-                            <div class="text-center p-3">
-                                <div class="h2 text-primary-custom">+40%</div>
-                                <div class="text-muted">معدل الاستجابة</div>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="text-center p-3">
-                                <div class="h2 text-success-custom">+60%</div>
-                                <div class="text-muted">عمق الرؤى</div>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="text-center p-3">
-                                <div class="h2 text-info">-50%</div>
-                                <div class="text-muted">وقت الحصول على النتائج</div>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="text-center p-3">
-                                <div class="h2 text-warning">+35%</div>
-                                <div class="text-muted">التفاعل متعدد القنوات</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Channel Demonstration -->
-        <div class="card-custom mb-5">
-            <div class="card-header-custom">
-                <h3 class="card-title">
-                    <i class="fas fa-broadcast-tower text-primary-custom me-2"></i>
-                    عرض القنوات المتعددة
-                </h3>
-                <p class="card-subtitle">انقر على أي قناة لرؤية كيفية تسليم الاستطلاعات</p>
-            </div>
-            
-            <div class="row">
-                <!-- Email Channel -->
-                <div class="col-lg-3 col-md-6 mb-4">
-                    <div class="card-custom card-interactive h-100" onclick="showChannelDemo('email')">
-                        <div class="text-center">
-                            <i class="fas fa-envelope fa-3x text-primary-custom mb-3"></i>
-                            <h5>البريد الإلكتروني</h5>
-                            <p class="text-muted">رسائل HTML مع قوالب عربية</p>
-                            <div class="badge bg-success-custom">جاهز</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- SMS Channel -->
-                <div class="col-lg-3 col-md-6 mb-4">
-                    <div class="card-custom card-interactive h-100" onclick="showChannelDemo('sms')">
-                        <div class="text-center">
-                            <i class="fas fa-sms fa-3x text-success-custom mb-3"></i>
-                            <h5>الرسائل النصية</h5>
-                            <p class="text-muted">استطلاعات تدريجية تفاعلية</p>
-                            <div class="badge bg-success-custom">جاهز</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- WhatsApp Channel -->
-                <div class="col-lg-3 col-md-6 mb-4">
-                    <div class="card-custom card-interactive h-100" onclick="showChannelDemo('whatsapp')">
-                        <div class="text-center">
-                            <i class="fab fa-whatsapp fa-3x text-success-custom mb-3"></i>
-                            <h5>واتساب</h5>
-                            <p class="text-muted">رسائل تفاعلية مع أزرار</p>
-                            <div class="badge bg-success-custom">جاهز</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Web Channel -->
-                <div class="col-lg-3 col-md-6 mb-4">
-                    <div class="card-custom card-interactive h-100" onclick="showChannelDemo('web')">
-                        <div class="text-center">
-                            <i class="fas fa-globe fa-3x text-info mb-3"></i>
-                            <h5>الويب</h5>
-                            <p class="text-muted">صفحات استطلاع + رموز QR</p>
-                            <div class="badge bg-success-custom">جاهز</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Channel Demo Content -->
-        <div id="channelDemoContent" style="display: none;">
-            <div class="card-custom">
-                <div class="card-header-custom">
-                    <h3 class="card-title" id="demoTitle"></h3>
-                    <button type="button" class="btn-outline-custom" onclick="closeChannelDemo()">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-                <div id="demoContent"></div>
-            </div>
-        </div>
-
-        <!-- Survey Campaign Simulation -->
-        <div class="card-custom mb-5">
-            <div class="card-header-custom">
-                <h3 class="card-title">
-                    <i class="fas fa-rocket text-warning me-2"></i>
-                    محاكاة حملة استطلاع
-                </h3>
-                <p class="card-subtitle">قم بإنشاء وإطلاق حملة استطلاع تجريبية</p>
-            </div>
-            
-            <form id="campaignSimulator">
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group-custom">
-                            <label class="form-label-custom">عنوان الاستطلاع</label>
-                            <input type="text" class="form-control-custom" 
-                                   value="استطلاع رضا العملاء - يونيو 2025" readonly>
-                        </div>
-                        
-                        <div class="form-group-custom">
-                            <label class="form-label-custom">الجمهور المستهدف</label>
-                            <select class="form-control-custom">
-                                <option>العملاء عالي القيمة (100 عميل)</option>
-                                <option>العملاء الجدد (250 عميل)</option>
-                                <option>جميع العملاء (1,500 عميل)</option>
-                            </select>
-                        </div>
-                    </div>
-                    
-                    <div class="col-md-6">
-                        <div class="form-group-custom">
-                            <label class="form-label-custom">القنوات المحددة</label>
-                            <div class="row">
-                                <div class="col-6">
-                                    <div class="form-check-custom">
-                                        <input class="form-check-input-custom" type="checkbox" checked>
-                                        <label class="form-check-label-custom">البريد الإلكتروني</label>
-                                    </div>
-                                    <div class="form-check-custom">
-                                        <input class="form-check-input-custom" type="checkbox" checked>
-                                        <label class="form-check-label-custom">واتساب</label>
-                                    </div>
-                                </div>
-                                <div class="col-6">
-                                    <div class="form-check-custom">
-                                        <input class="form-check-input-custom" type="checkbox">
-                                        <label class="form-check-label-custom">الرسائل النصية</label>
-                                    </div>
-                                    <div class="form-check-custom">
-                                        <input class="form-check-input-custom" type="checkbox" checked>
-                                        <label class="form-check-label-custom">الويب</label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="text-center">
-                    <button type="button" class="btn-primary-custom btn-lg-custom" onclick="simulateCampaign()">
-                        <i class="fas fa-play me-2"></i>
-                        إطلاق الحملة التجريبية
-                    </button>
-                </div>
-            </form>
-        </div>
-
-        <!-- Campaign Results -->
-        <div id="campaignResults" class="card-custom" style="display: none;">
-            <div class="card-header-custom">
-                <h3 class="card-title">
-                    <i class="fas fa-chart-bar text-success-custom me-2"></i>
-                    نتائج الحملة الفورية
-                </h3>
-            </div>
-            
-            <div class="row text-center">
-                <div class="col-md-3">
-                    <div class="p-3">
-                        <div class="h2 text-primary-custom" id="sentCount">--</div>
-                        <div class="text-muted">تم الإرسال</div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="p-3">
-                        <div class="h2 text-success-custom" id="deliveredCount">--</div>
-                        <div class="text-muted">تم التسليم</div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="p-3">
-                        <div class="h2 text-warning" id="responseCount">--</div>
-                        <div class="text-muted">الاستجابات</div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="p-3">
-                        <div class="h2 text-info" id="responseRate">--</div>
-                        <div class="text-muted">معدل الاستجابة</div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="mt-4">
-                <h5>التوزيع حسب القناة:</h5>
-                <div class="row" id="channelBreakdown"></div>
-            </div>
-        </div>
-
-        <!-- Integration with Current System -->
-        <div class="card-custom">
-            <div class="card-header-custom">
-                <h3 class="card-title">
-                    <i class="fas fa-link text-info me-2"></i>
-                    التكامل مع النظام الحالي
-                </h3>
-            </div>
-            
-            <div class="row">
-                <div class="col-md-6">
-                    <h5>العرض التوضيحي للتعليقات (محفوظ):</h5>
-                    <ul class="list-unstyled">
-                        <li><i class="fas fa-arrow-left text-success-custom me-2"></i>
-                            <a href="/feedback" class="text-decoration-none">نموذج إرسال التعليقات</a>
-                        </li>
-                        <li><i class="fas fa-arrow-left text-success-custom me-2"></i>
-                            <a href="/analytics/executive" class="text-decoration-none">لوحة التحليلات التنفيذية</a>
-                        </li>
-                        <li><i class="fas fa-arrow-left text-success-custom me-2"></i>
-                            <a href="/surveys" class="text-decoration-none">منشئ الاستطلاعات</a>
-                        </li>
-                    </ul>
-                </div>
-                
-                <div class="col-md-6">
-                    <h5>إمكانيات الاستطلاعات الجديدة:</h5>
-                    <ul class="list-unstyled">
-                        <li><i class="fas fa-plus text-primary-custom me-2"></i>توزيع البريد الإلكتروني الآلي</li>
-                        <li><i class="fas fa-plus text-primary-custom me-2"></i>استطلاعات الرسائل النصية التفاعلية</li>
-                        <li><i class="fas fa-plus text-primary-custom me-2"></i>تكامل واتساب للأعمال</li>
-                        <li><i class="fas fa-plus text-primary-custom me-2"></i>رموز QR للمواقع الفعلية</li>
-                        <li><i class="fas fa-plus text-primary-custom me-2"></i>تحليلات متقدمة للاستجابات</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    {% include 'components/scripts.html' %}
-    
-    <script>
-    // Fix Bootstrap dropdown initialization
-    document.addEventListener('DOMContentLoaded', function() {
-        // Initialize all dropdowns
-        var dropdownElementList = [].slice.call(document.querySelectorAll('.dropdown-toggle'));
-        var dropdownList = dropdownElementList.map(function (dropdownToggleEl) {
-            return new bootstrap.Dropdown(dropdownToggleEl);
-        });
-        
-        // Debug: Log dropdown initialization
-        console.log('Dropdowns initialized:', dropdownList.length);
-    });
-    </script>
-    
-    <script>
-        // Channel demo content
-        const channelDemos = {
-            email: {
-                title: 'عرض توزيع البريد الإلكتروني',
-                content: `
-                    <div class="p-4">
-                        <h5>مزايا البريد الإلكتروني:</h5>
-                        <ul>
-                            <li>قوالب HTML غنية بالعربية</li>
-                            <li>رسائل شخصية مع اسم العميل</li>
-                            <li>تتبع فتح الرسائل والنقرات</li>
-                            <li>إدارة إلغاء الاشتراك التلقائي</li>
-                        </ul>
-                        
-                        <div class="border rounded p-3 bg-light mt-3">
-                            <h6>مثال على محتوى الرسالة:</h6>
-                            <div style="font-size: 0.9em;">
-                                <strong>الموضوع:</strong> استطلاع رأي: تجربتك مع خدماتنا<br>
-                                <strong>المحتوى:</strong><br>
-                                مرحباً أحمد محمد،<br><br>
-                                نأمل مشاركتك في استطلاع قصير (5 دقائق) لتحسين خدماتنا...<br>
-                                <button class="btn btn-sm btn-primary mt-2">ابدأ الاستطلاع</button>
-                            </div>
-                        </div>
-                    </div>
-                `
-            },
-            sms: {
-                title: 'عرض الرسائل النصية التفاعلية',
-                content: `
-                    <div class="p-4">
-                        <h5>مزايا الرسائل النصية:</h5>
-                        <ul>
-                            <li>معدل قراءة عالي (98%)</li>
-                            <li>أسئلة تدريجية قصيرة</li>
-                            <li>استجابات سريعة بكلمة واحدة</li>
-                            <li>مناسب للفئات العمرية الأكبر</li>
-                        </ul>
-                        
-                        <div class="border rounded p-3 bg-light mt-3">
-                            <h6>مثال على محادثة:</h6>
-                            <div style="font-size: 0.9em;">
-                                <div class="mb-2"><strong>النظام:</strong> مرحباً فاطمة، كيف تقيمين خدمتنا من 1-5؟</div>
-                                <div class="mb-2"><strong>العميل:</strong> 4</div>
-                                <div class="mb-2"><strong>النظام:</strong> شكراً! ما الذي يمكننا تحسينه؟</div>
-                                <div class="mb-2"><strong>العميل:</strong> سرعة الرد</div>
-                                <div><strong>النظام:</strong> شكراً لوقتك! ✅</div>
-                            </div>
-                        </div>
-                    </div>
-                `
-            },
-            whatsapp: {
-                title: 'عرض واتساب للأعمال',
-                content: `
-                    <div class="p-4">
-                        <h5>مزايا واتساب:</h5>
-                        <ul>
-                            <li>أزرار تفاعلية للاستجابة السريعة</li>
-                            <li>مشاركة الوسائط (صور، مستندات)</li>
-                            <li>محادثات طبيعية ومريحة</li>
-                            <li>تأكيد التسليم والقراءة</li>
-                        </ul>
-                        
-                        <div class="border rounded p-3 bg-light mt-3">
-                            <h6>مثال على رسالة تفاعلية:</h6>
-                            <div style="font-size: 0.9em;">
-                                <div class="mb-2"><strong>منصة صوت العميل العربية</strong></div>
-                                <div class="mb-2">مرحباً خالد، نأمل مشاركتك في استطلاع قصير (3 دقائق)</div>
-                                <div class="mb-2">📋 <strong>استطلاع رضا العملاء</strong></div>
-                                <div class="d-flex gap-2 mt-2">
-                                    <button class="btn btn-sm btn-success">ابدأ الاستطلاع</button>
-                                    <button class="btn btn-sm btn-secondary">لاحقاً</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `
-            },
-            web: {
-                title: 'عرض الاستطلاعات الإلكترونية',
-                content: `
-                    <div class="p-4">
-                        <h5>مزايا الاستطلاعات الإلكترونية:</h5>
-                        <ul>
-                            <li>تصميم متجاوب ومتوافق مع الأجهزة المحمولة</li>
-                            <li>دعم كامل للغة العربية واتجاه RTL</li>
-                            <li>رموز QR للمواقع الفعلية</li>
-                            <li>شريط تقدم وحفظ تلقائي</li>
-                        </ul>
-                        
-                        <div class="border rounded p-3 bg-light mt-3">
-                            <h6>مثال على صفحة استطلاع:</h6>
-                            <div style="font-size: 0.9em;">
-                                <div class="text-center mb-2">
-                                    <strong>استطلاع رضا العملاء</strong><br>
-                                    <div class="progress mt-2" style="height: 6px;">
-                                        <div class="progress-bar" style="width: 60%"></div>
-                                    </div>
-                                </div>
-                                <div class="mt-3">
-                                    <strong>السؤال 3 من 5:</strong><br>
-                                    كيف تقيم جودة خدمة العملاء؟<br>
-                                    <div class="mt-2">⭐⭐⭐⭐⭐</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `
-            }
-        };
-
-        function showChannelDemo(channel) {
-            const demo = channelDemos[channel];
-            document.getElementById('demoTitle').textContent = demo.title;
-            document.getElementById('demoContent').innerHTML = demo.content;
-            document.getElementById('channelDemoContent').style.display = 'block';
-            document.getElementById('channelDemoContent').scrollIntoView({ behavior: 'smooth' });
-        }
-
-        function closeChannelDemo() {
-            document.getElementById('channelDemoContent').style.display = 'none';
-        }
-
-        async function simulateCampaign() {
-            // Show loading state
-            const button = event.target;
-            const originalText = button.innerHTML;
-            button.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>جاري الإطلاق...';
-            button.disabled = true;
-
-            // Simulate campaign execution
-            await new Promise(resolve => setTimeout(resolve, 2000));
-
-            // Show results
-            const results = {
-                sent: 100,
-                delivered: 97,
-                responses: 42,
-                responseRate: '42%',
-                channels: {
-                    'البريد الإلكتروني': { sent: 40, responses: 18 },
-                    'واتساب': { sent: 35, responses: 16 },
-                    'الويب': { sent: 25, responses: 8 }
-                }
-            };
-
-            document.getElementById('sentCount').textContent = results.sent;
-            document.getElementById('deliveredCount').textContent = results.delivered;
-            document.getElementById('responseCount').textContent = results.responses;
-            document.getElementById('responseRate').textContent = results.responseRate;
-
-            // Show channel breakdown
-            const channelBreakdown = document.getElementById('channelBreakdown');
-            channelBreakdown.innerHTML = '';
-            Object.entries(results.channels).forEach(([channel, data]) => {
-                channelBreakdown.innerHTML += `
-                    <div class="col-md-4 text-center">
-                        <div class="p-3">
-                            <strong>${channel}</strong><br>
-                            <span class="text-muted">${data.sent} إرسال</span><br>
-                            <span class="text-success">${data.responses} استجابة</span>
-                        </div>
-                    </div>
-                `;
-            });
-
-            document.getElementById('campaignResults').style.display = 'block';
-            document.getElementById('campaignResults').scrollIntoView({ behavior: 'smooth' });
-
-            // Reset button
-            button.innerHTML = originalText;
-            button.disabled = false;
-        }
-    </script>
-    
-    <script>
-        // Initialize standardized navigation
-        document.addEventListener('DOMContentLoaded', function() {
-            if (typeof StandardNavigation !== 'undefined') {
-                StandardNavigation.setActiveNav('surveys');
-                StandardNavigation.setBreadcrumb([
-                    { title: 'الرئيسية', url: '/' },
-                    { title: 'الاستطلاعات', url: '/surveys' },
-                    { title: 'توزيع الاستطلاعات' }
-                ], [
-                    { 
-                        label: 'إرسال تجريبي', 
-                        icon: 'fas fa-paper-plane',
-                        class: 'btn btn-sm btn-success',
-                        onclick: function() {
-                            alert('سيتم تشغيل نظام الإرسال التجريبي قريباً!');
-                        }
-                    },
-                    { 
-                        label: 'إعداد القنوات', 
-                        icon: 'fas fa-cog',
-                        href: '/integrations/destinations',
-                        class: 'btn btn-sm btn-outline-primary'
-                    }
-                ]);
-            }
-        });
-    </script>
-</body>
-</html>

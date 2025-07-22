@@ -1,783 +1,0 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    {% include 'components/head.html' %}
-    {% include 'components/standard_buttons.html' %}
-    <title>منصة صوت العميل العربية - الصفحة الرئيسية</title>
-    
-    <style>
-        .hero-section {
-            background: linear-gradient(135deg, var(--primary-500), var(--accent-blue));
-            color: var(--text-white);
-            padding: 4rem 0 3rem 0;
-            margin-bottom: 2rem;
-            border-radius: 1rem;
-        }
-
-        .primary-cta {
-            background: #ffffff;
-            color: #2E8B57;
-            border: none;
-            padding: 1.25rem 3rem;
-            border-radius: 50px;
-            font-weight: 700;
-            font-size: 1.25rem;
-            transition: all 0.3s ease;
-            box-shadow: 0 8px 25px rgba(255, 255, 255, 0.3);
-            text-decoration: none;
-            display: inline-block;
-        }
-
-        .primary-cta:hover {
-            background: #f8f9fa;
-            color: #236B47;
-            transform: translateY(-3px);
-            box-shadow: 0 12px 35px rgba(255, 255, 255, 0.4);
-        }
-
-        .secondary-cta {
-            background: transparent;
-            color: white;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            padding: 0.9rem 2rem;
-            border-radius: 50px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-block;
-        }
-
-        .secondary-cta:hover {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: rgba(255, 255, 255, 0.6);
-            color: white;
-            transform: translateY(-2px);
-        }
-
-        .quick-start-guide {
-            background: white;
-            border-radius: 1rem;
-            padding: 2.5rem 2rem;
-            margin: 3rem 0;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-        }
-
-        .step-indicator {
-            background: var(--primary-color);
-            color: white;
-            width: 3rem;
-            height: 3rem;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 1.2rem;
-            margin: 0 auto 1rem auto;
-        }
-
-        .user-journey-section {
-            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-            padding: 3rem 0;
-            margin: 2rem 0;
-            border-radius: 1rem;
-        }
-
-        .journey-card {
-            background: white;
-            border-radius: 0.75rem;
-            padding: 2rem;
-            height: 100%;
-            box-shadow: 0 2px 15px rgba(0,0,0,0.08);
-            transition: all 0.3s ease;
-            cursor: pointer;
-            border: 2px solid transparent;
-        }
-
-        .journey-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 30px rgba(46, 139, 87, 0.15);
-            border-color: var(--primary-color);
-        }
-
-        .journey-icon {
-            font-size: 2.5rem;
-            color: var(--primary-color);
-            margin-bottom: 1rem;
-        }
-
-        .feature-card {
-            background: var(--bg-primary);
-            border-radius: var(--radius-xl);
-            padding: var(--space-8);
-            margin-bottom: var(--space-8);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            cursor: pointer;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-        }
-
-        .feature-icon {
-            font-size: 3rem;
-            color: var(--primary-color);
-            margin-bottom: 1rem;
-        }
-
-        .btn-primary-custom {
-            background: var(--primary-color);
-            border: none;
-            padding: 0.75rem 2rem;
-            border-radius: 25px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-
-        .btn-primary-custom:hover {
-            background: #236B47;
-            transform: translateY(-2px);
-        }
-
-        .stats-section {
-            background: white;
-            padding: 3rem 0;
-            margin: 3rem 0;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-
-        .stat-item {
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-
-        .stat-number {
-            font-size: 3rem;
-            font-weight: 700;
-            color: var(--primary-color);
-            display: block;
-        }
-
-        .stat-label {
-            color: #6c757d;
-            font-size: 1.1rem;
-        }
-
-        .navbar-brand {
-            font-family: 'Amiri', serif;
-            font-weight: 700;
-            font-size: 1.5rem;
-        }
-
-        .footer {
-            background: var(--text-color);
-            color: white;
-            padding: 3rem 0 1rem 0;
-            margin-top: 4rem;
-        }
-
-        @media (max-width: 768px) {
-            .hero-section {
-                padding: 2rem 0;
-            }
-            
-            .primary-cta {
-                font-size: 1.1rem;
-                padding: 1rem 2rem;
-            }
-            
-            .secondary-cta {
-                padding: 0.75rem 1.5rem;
-                font-size: 0.9rem;
-            }
-            
-            .feature-card {
-                margin-bottom: 1rem;
-            }
-            
-            .quick-start-guide {
-                padding: 1.5rem 1rem;
-                margin: 2rem 0;
-            }
-            
-            .step-indicator {
-                width: 2.5rem;
-                height: 2.5rem;
-                font-size: 1rem;
-            }
-            
-            .journey-card {
-                padding: 1.5rem;
-                margin-bottom: 1.5rem;
-            }
-            
-            .journey-icon {
-                font-size: 2rem;
-            }
-            
-            .user-journey-section {
-                padding: 2rem 0;
-            }
-        }
-        
-        @media (max-width: 576px) {
-            .hero-section {
-                padding: 1.5rem 0;
-            }
-            
-            .display-4 {
-                font-size: 1.8rem;
-            }
-            
-            .primary-cta {
-                font-size: 1rem;
-                padding: 0.9rem 1.8rem;
-                width: 100%;
-                text-align: center;
-            }
-            
-            .secondary-cta {
-                padding: 0.6rem 1.2rem;
-                font-size: 0.85rem;
-                margin: 0.25rem 0;
-            }
-            
-            #secondaryCTAs {
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            .quick-start-guide {
-                padding: 1rem;
-            }
-        }
-    </style>
-</head>
-<body>
-    {% include 'components/standard_header.html' %}
-
-    <!-- Enhanced Hero Section with Clear CTAs -->
-    <section class="hero-section">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-lg-8">
-                    <h1 class="arabic-title display-4 mb-4">
-                        منصة صوت العميل العربية
-                    </h1>
-                    <p class="lead mb-5">
-                        منصة متقدمة لتحليل آراء العملاء باللغة العربية مع دعم اللهجات المختلفة والذكاء الثقافي.
-                        <strong>احصل على رؤى عميقة من تعليقات عملائك في 3 خطوات بسيطة</strong>
-                    </p>
-                    
-                    <!-- Primary CTA -->
-                    <div class="mb-4">
-                        <a href="/surveys/builder" class="primary-cta">
-                            <i class="fas fa-rocket me-2"></i>
-                            ابدأ الآن - إنشاء أول استطلاع
-                        </a>
-                    </div>
-                    
-                    <!-- Secondary Options -->
-                    <div class="d-flex gap-3 flex-wrap">
-                        <a href="/surveys" class="secondary-cta">
-                            <i class="fas fa-list me-2"></i>
-                            استكشف الاستطلاعات الموجودة
-                        </a>
-                        <a href="/surveys/distribution-demo" class="secondary-cta">
-                            <i class="fas fa-play-circle me-2"></i>
-                            مثال تفاعلي
-                        </a>
-                        <a href="/surveys/responses" class="secondary-cta">
-                            <i class="fas fa-chart-line me-2"></i>
-                            عرض النتائج والتحليلات
-                        </a>
-                    </div>
-                </div>
-                <div class="col-lg-4 text-center">
-                    <div class="hero-visual">
-                        <i class="fas fa-chart-bar" style="font-size: 6rem; opacity: 0.4; color: white;"></i>
-                        <div class="mt-3">
-                            <small style="opacity: 0.8;">أنشئ استطلاعك الأول في أقل من دقيقتين</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Quick Start Guide -->
-    <section class="container">
-        <div class="quick-start-guide">
-            <div class="row">
-                <div class="col-12 text-center mb-4">
-                    <h2 class="arabic-title mb-3">إنشاء استطلاع في 3 خطوات</h2>
-                    <p class="lead text-muted">ابدأ رحلتك مع تحليل صوت العميل العربي</p>
-                </div>
-            </div>
-            
-            <div class="row">
-                <div class="col-lg-4 text-center mb-4">
-                    <div class="step-indicator">1</div>
-                    <h5 class="mb-3">اختر نوع الاستطلاع</h5>
-                    <p class="text-muted">
-                        حدد هدفك: قياس الرضا، جمع التعليقات، أو تقييم المنتج
-                    </p>
-                </div>
-                <div class="col-lg-4 text-center mb-4">
-                    <div class="step-indicator">2</div>
-                    <h5 class="mb-3">أضف الأسئلة</h5>
-                    <p class="text-muted">
-                        اسحب وأسقط الأسئلة بسهولة مع دعم كامل للغة العربية
-                    </p>
-                </div>
-                <div class="col-lg-4 text-center mb-4">
-                    <div class="step-indicator">3</div>
-                    <h5 class="mb-3">انشر واحصل على النتائج</h5>
-                    <p class="text-muted">
-                        وزع الاستطلاع عبر القنوات المختلفة وراقب النتائج مباشرة
-                    </p>
-                </div>
-            </div>
-            
-            <div class="text-center mt-4">
-                <a href="/surveys/builder" class="btn-primary-standard btn-lg-standard">
-                    <i class="fas fa-play me-2"></i>
-                    ابدأ الإنشاء الآن
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <!-- User Journey Section -->
-    <section class="user-journey-section">
-        <div class="container">
-            <div class="row">
-                <div class="col-12 text-center mb-5">
-                    <h2 class="arabic-title display-6">اختر نقطة البداية المناسبة لك</h2>
-                    <p class="lead text-muted">كل مستخدم يجد طريقه الصحيح للبدء</p>
-                </div>
-            </div>
-            
-            <div class="row" id="userJourneyCards">
-                <!-- For New Users -->
-                <div class="col-lg-4 mb-4">
-                    <div class="journey-card" onclick="window.location.href='/surveys/builder'">
-                        <div class="text-center">
-                            <i class="fas fa-user-plus journey-icon"></i>
-                            <h4 class="arabic-title mb-3">مستخدم جديد؟</h4>
-                            <p class="text-muted mb-4">
-                                ابدأ رحلتك مع إنشاء أول استطلاع لك.
-                                سنوجهك خطوة بخطوة لتحقيق أهدافك.
-                            </p>
-                            <div class="btn-primary-standard btn-sm-standard">
-                                <i class="fas fa-rocket me-1"></i>
-                                إنشاء أول استطلاع
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- For Returning Users -->
-                <div class="col-lg-4 mb-4">
-                    <div class="journey-card" onclick="window.location.href='/surveys'">
-                        <div class="text-center">
-                            <i class="fas fa-history journey-icon"></i>
-                            <h4 class="arabic-title mb-3">أهلاً بعودتك!</h4>
-                            <p class="text-muted mb-4">
-                                تابع عملك على الاستطلاعات الحالية
-                                أو ابدأ مشروعاً جديداً.
-                            </p>
-                            <div class="btn-secondary-standard btn-sm-standard">
-                                <i class="fas fa-list me-1"></i>
-                                عرض الاستطلاعات
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- For Exploring Users -->
-                <div class="col-lg-4 mb-4">
-                    <div class="journey-card" onclick="window.location.href='/surveys/distribution-demo'">
-                        <div class="text-center">
-                            <i class="fas fa-compass journey-icon"></i>
-                            <h4 class="arabic-title mb-3">أريد الاستكشاف</h4>
-                            <p class="text-muted mb-4">
-                                جرب المنصة مع عرض تفاعلي كامل
-                                واطلع على جميع الإمكانيات.
-                            </p>
-                            <div class="btn-info-standard btn-sm-standard">
-                                <i class="fas fa-play me-1"></i>
-                                عرض تفاعلي
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Features Section -->
-    <section class="container">
-        <div class="row">
-            <div class="col-12 text-center mb-5">
-                <h2 class="arabic-title display-6 mb-3">المميزات الرئيسية</h2>
-                <p class="lead text-muted">منصة شاملة مصممة خصيصاً للسوق العربي</p>
-            </div>
-        </div>
-        
-        <div class="row">
-            <div class="col-lg-4 col-md-6">
-                <div class="feature-card" onclick="window.location.href='/dashboard/realtime'">
-                    <div class="text-center">
-                        <i class="fas fa-chart-line feature-icon"></i>
-                        <h4 class="arabic-title mb-3">تحليلات في الوقت الفعلي</h4>
-                        <p class="text-muted">
-                            اطلع على تحليل المشاعر والاتجاهات لحظة بلحظة مع لوحة تحكم تفاعلية
-                            تدعم التحديثات المباشرة أقل من ثانية واحدة.
-                        </p>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="col-lg-4 col-md-6">
-                <div class="feature-card" onclick="window.location.href='/feedback'">
-                    <div class="text-center">
-                        <i class="fas fa-comments feature-icon"></i>
-                        <h4 class="arabic-title mb-3">دعم اللهجات العربية</h4>
-                        <p class="text-muted">
-                            معالجة متقدمة للهجات الخليجية والمصرية والشامية والمغربية
-                            مع فهم السياق الثقافي والتعبيرات المحلية.
-                        </p>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="col-lg-4 col-md-6">
-                <div class="feature-card" onclick="window.location.href='/surveys'">
-                    <div class="text-center">
-                        <i class="fas fa-poll feature-icon"></i>
-                        <h4 class="arabic-title mb-3">استطلاعات ذكية</h4>
-                        <p class="text-muted">
-                            إنشاء وإدارة استطلاعات الرأي باللغة العربية مع تحليل تلقائي
-                            للنتائج وتقارير مفصلة بتنسيق RTL.
-                        </p>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="col-lg-4 col-md-6">
-                <div class="feature-card">
-                    <div class="text-center">
-                        <i class="fas fa-brain feature-icon"></i>
-                        <h4 class="arabic-title mb-3">ذكاء اصطناعي متقدم</h4>
-                        <p class="text-muted">
-                            تحليل المشاعر والمواضيع باستخدام GPT-4o مع فهم عميق
-                            للثقافة العربية والسياق الاجتماعي.
-                        </p>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="col-lg-4 col-md-6">
-                <div class="feature-card">
-                    <div class="text-center">
-                        <i class="fas fa-mobile-alt feature-icon"></i>
-                        <h4 class="arabic-title mb-3">قنوات متعددة</h4>
-                        <p class="text-muted">
-                            جمع التعليقات من الموقع والتطبيق والواتساب والبريد الإلكتروني
-                            ووسائل التواصل الاجتماعي في مكان واحد.
-                        </p>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="col-lg-4 col-md-6">
-                <div class="feature-card">
-                    <div class="text-center">
-                        <i class="fas fa-file-pdf feature-icon"></i>
-                        <h4 class="arabic-title mb-3">تقارير احترافية</h4>
-                        <p class="text-muted">
-                            إنتاج تقارير PDF باللغة العربية مع تنسيق RTL صحيح
-                            وخطوط عربية احترافية ورسوم بيانية.
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Stats Section -->
-    <section class="container">
-        <div class="stats-section">
-            <div class="row">
-                <div class="col-12 text-center mb-4">
-                    <h3 class="arabic-title">الأداء والإحصائيات</h3>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-lg-3 col-md-6">
-                    <div class="stat-item">
-                        <span class="stat-number">88,000+</span>
-                        <span class="stat-label">تحليل في الثانية</span>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <div class="stat-item">
-                        <span class="stat-number">&lt;1s</span>
-                        <span class="stat-label">زمن تحميل اللوحة</span>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <div class="stat-item">
-                        <span class="stat-number">4</span>
-                        <span class="stat-label">لهجات عربية مدعومة</span>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <div class="stat-item">
-                        <span class="stat-number">10+</span>
-                        <span class="stat-label">قناة تجميع البيانات</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Enhanced Call to Action with User State Awareness -->
-    <section class="container text-center mb-5" id="finalCTA">
-        <div class="row">
-            <div class="col-lg-8 mx-auto">
-                <h3 class="arabic-title mb-4" id="ctaTitle">ابدأ رحلتك مع تحليل صوت العميل العربي</h3>
-                <p class="lead mb-4" id="ctaDescription">
-                    انضم إلى المؤسسات الرائدة في المنطقة واحصل على رؤى قيمة
-                    من آراء عملائك باللغة العربية
-                </p>
-                
-                <!-- Primary CTA Section -->
-                <div class="mb-4" id="primaryCTASection">
-                    <a href="/surveys/builder" class="btn btn-primary-custom btn-lg">
-                        <i class="fas fa-rocket me-2"></i>
-                        ابدأ الآن - إنشاء أول استطلاع مجاناً
-                    </a>
-                </div>
-                
-                <!-- Secondary Actions -->
-                <div class="d-flex gap-3 justify-content-center flex-wrap" id="secondaryCTAs">
-                    <a href="/surveys/distribution-demo" class="btn btn-outline-info btn-lg">
-                        <i class="fas fa-play me-2"></i>
-                        عرض تفاعلي
-                    </a>
-                    <a href="/surveys" class="btn btn-outline-secondary btn-lg">
-                        <i class="fas fa-list me-2"></i>
-                        استكشاف الاستطلاعات
-                    </a>
-                </div>
-                
-                <!-- User State Awareness Messages -->
-                <div class="mt-4">
-                    <small class="text-muted" id="userStateMessage">
-                        💡 <strong>نصيحة:</strong> يمكنك إنشاء استطلاعك الأول في أقل من دقيقتين!
-                    </small>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-4 mb-4">
-                    <h5 class="arabic-title">منصة صوت العميل العربية</h5>
-                    <p class="text-light">
-                        منصة متقدمة لتحليل آراء العملاء باللغة العربية
-                        مع دعم الذكاء الاصطناعي والتحليلات في الوقت الفعلي.
-                    </p>
-                </div>
-                <div class="col-lg-2 mb-4">
-                    <h6>الروابط السريعة</h6>
-                    <ul class="list-unstyled">
-                        <li><a href="/" class="text-light text-decoration-none">الرئيسية</a></li>
-                        <li><a href="/dashboard/realtime" class="text-light text-decoration-none">لوحة التحليلات</a></li>
-                        <li><a href="/feedback" class="text-light text-decoration-none">إرسال تعليق</a></li>
-                        <li><a href="/surveys" class="text-light text-decoration-none">الاستطلاعات</a></li>
-                    </ul>
-                </div>
-                <div class="col-lg-3 mb-4">
-                    <h6>المميزات</h6>
-                    <ul class="list-unstyled">
-                        <li class="text-light">تحليل المشاعر</li>
-                        <li class="text-light">دعم اللهجات</li>
-                        <li class="text-light">تقارير احترافية</li>
-                        <li class="text-light">تحديثات فورية</li>
-                    </ul>
-                </div>
-                <div class="col-lg-3 mb-4">
-                    <h6>الدعم التقني</h6>
-                    <ul class="list-unstyled">
-                        <li class="text-light">support@arabic-voc.com</li>
-                        <li class="text-light">دليل المستخدم</li>
-                        <li class="text-light">الأسئلة الشائعة</li>
-                        <li class="text-light">تدريب المستخدمين</li>
-                    </ul>
-                </div>
-            </div>
-            <hr class="text-light">
-            <div class="row">
-                <div class="col-12 text-center">
-                    <p class="text-light mb-0">
-                        © 2025 منصة صوت العميل العربية. جميع الحقوق محفوظة.
-                    </p>
-                </div>
-            </div>
-        </div>
-    </footer>
-
-    <!-- Bootstrap JS -->
-    {% include 'components/scripts.html' %}
-    
-    <!-- Custom JavaScript -->
-    <script>
-        // Add smooth scrolling
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
-                });
-            });
-        });
-
-        // Add loading animation for feature cards
-        document.querySelectorAll('.feature-card').forEach(card => {
-            card.addEventListener('click', function() {
-                if (this.onclick) {
-                    this.style.opacity = '0.7';
-                    setTimeout(() => {
-                        this.style.opacity = '1';
-                    }, 300);
-                }
-            });
-        });
-
-        // Real-time stats animation (demo)
-        function animateStats() {
-            const statNumbers = document.querySelectorAll('.stat-number');
-            statNumbers.forEach(stat => {
-                if (stat.textContent.includes('88,000+')) {
-                    // Animate the processing rate
-                    let current = 88000;
-                    const increment = Math.floor(Math.random() * 100);
-                    current += increment;
-                    stat.textContent = current.toLocaleString('ar-SA') + '+';
-                }
-            });
-        }
-
-        // Update stats every 5 seconds for demo
-        setInterval(animateStats, 5000);
-        
-        // Initialize navigation for homepage
-        document.addEventListener('DOMContentLoaded', function() {
-            if (typeof StandardNavigation !== 'undefined') {
-                StandardNavigation.setActiveNav('home');
-                // No breadcrumb needed for homepage
-            }
-            
-            // User State Awareness - Adapt homepage content based on user history
-            adaptHomepageForUser();
-        });
-        
-        // User State Awareness Functionality
-        function adaptHomepageForUser() {
-            // Check if user is returning (simple localStorage check for demo)
-            const isReturningUser = localStorage.getItem('hasVisitedBefore');
-            const hasCreatedSurveys = localStorage.getItem('userSurveysCount');
-            
-            if (!isReturningUser) {
-                // First-time visitor - Emphasize getting started
-                showNewUserExperience();
-                localStorage.setItem('hasVisitedBefore', 'true');
-            } else if (hasCreatedSurveys && parseInt(hasCreatedSurveys) > 0) {
-                // Returning user with surveys - Show continuation options
-                showReturningUserExperience();
-            } else {
-                // Returning user without surveys - Encourage first survey creation
-                showReturnUserFirstSurvey();
-            }
-        }
-        
-        function showNewUserExperience() {
-            // Highlight the new user journey card
-            const newUserCard = document.querySelector('.journey-card');
-            if (newUserCard) {
-                newUserCard.style.border = '3px solid #2E8B57';
-                newUserCard.style.boxShadow = '0 8px 30px rgba(46, 139, 87, 0.25)';
-            }
-            
-            // Update user state message
-            const message = document.getElementById('userStateMessage');
-            if (message) {
-                message.innerHTML = '👋 <strong>مرحباً بك!</strong> ابدأ رحلتك مع إنشاء أول استطلاع - سيستغرق دقيقتين فقط!';
-            }
-        }
-        
-        function showReturningUserExperience() {
-            // Update title for returning users
-            const title = document.getElementById('ctaTitle');
-            const description = document.getElementById('ctaDescription');
-            
-            if (title) {
-                title.textContent = 'أهلاً بعودتك! تابع عملك أو ابدأ مشروعاً جديداً';
-            }
-            
-            if (description) {
-                description.textContent = 'تابع إدارة استطلاعاتك الحالية أو أنشئ استطلاعات جديدة لجمع المزيد من الآراء القيمة';
-            }
-            
-            // Change primary CTA to focus on existing work
-            const primaryCTA = document.querySelector('#primaryCTASection a');
-            if (primaryCTA) {
-                primaryCTA.href = '/surveys';
-                primaryCTA.innerHTML = '<i class="fas fa-list me-2"></i>عرض استطلاعاتي الحالية';
-            }
-            
-            // Update user state message
-            const message = document.getElementById('userStateMessage');
-            if (message) {
-                message.innerHTML = '🎯 <strong>نصيحة:</strong> تحقق من نتائج استطلاعاتك أو أنشئ استطلاعاً جديداً للحصول على رؤى إضافية';
-            }
-        }
-        
-        function showReturnUserFirstSurvey() {
-            // Update message for returning users who haven't created surveys yet
-            const message = document.getElementById('userStateMessage');
-            if (message) {
-                message.innerHTML = '💪 <strong>لنبدأ معاً!</strong> حان الوقت لإنشاء استطلاعك الأول والاستفادة من قوة المنصة';
-            }
-        }
-        
-        // Track user interactions for better personalization
-        function trackUserAction(action) {
-            // Simple tracking for demo purposes
-            if (action === 'survey_created') {
-                const currentCount = parseInt(localStorage.getItem('userSurveysCount') || '0');
-                localStorage.setItem('userSurveysCount', (currentCount + 1).toString());
-            }
-        }
-        
-        // Add click tracking to main CTAs
-        document.addEventListener('click', function(e) {
-            if (e.target.closest('a[href="/surveys/builder"]')) {
-                trackUserAction('navigate_to_builder');
-            }
-            if (e.target.closest('a[href="/surveys"]')) {
-                trackUserAction('navigate_to_surveys');
-            }
-        });
-    </script>
-</body>
-</html>

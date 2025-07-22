@@ -61,13 +61,7 @@ def index():
                          dir='rtl',
                          title='منصة صوت العميل')
 
-@app.route('/homepage-original')
-def homepage_original():
-    """Original homepage for comparison"""
-    return render_template('index.html', 
-                         lang='ar', 
-                         dir='rtl',
-                         title='منصة صوت العميل - النسخة الأصلية')
+# Removed redundant homepage route
 
 @app.route('/feedback')
 def feedback_page():
@@ -154,10 +148,7 @@ def list_feedback():
         logger.error(f"Error listing feedback: {e}")
         return jsonify({'error': 'حدث خطأ في جلب التعليقات'}), 500
 
-@app.route('/dashboard/realtime')
-def realtime_dashboard():
-    """Redirect to executive dashboard (replaces old real-time dashboard)"""
-    return redirect(url_for('executive_dashboard_page'))
+# Removed redundant realtime dashboard route
 
 @app.route('/surveys')
 def surveys_page():
@@ -168,160 +159,58 @@ def surveys_page():
 
 
 @app.route('/analytics')
-def analytics_page():
-    """Redirect analytics to executive dashboard"""
-    return redirect(url_for('executive_dashboard_page'))
+@app.route('/dashboard')
+def dashboard_page():
+    """Main dashboard page"""
+    return render_template('dashboard.html',
+                         title='لوحة القيادة')
 
-@app.route('/analytics/executive')
-@app.route('/executive-dashboard')
-def executive_dashboard_page():
-    """Executive dashboard page"""
-    return render_template('executive_dashboard.html',
-                         title='لوحة القيادة التنفيذية')
-
-# Updated navigation routes - Surveys
+# Simplified survey routes
 @app.route('/surveys/create')
-@app.route('/surveys/builder')  # Keep old route for compatibility
-@app.route('/survey-builder')  # Keep old route for compatibility
+@app.route('/survey-builder')
 def survey_create_page():
-    """Survey creation page with templates"""
+    """Survey creation page"""
     return render_template('survey_builder.html', 
                          title='إنشاء استطلاع جديد')
 
-@app.route('/surveys/manage')
-def surveys_manage_page():
-    """Survey management page"""
-    return render_template('surveys.html', 
-                         title='إدارة الاستطلاعات')
-
-@app.route('/surveys/distribution-demo')
-def survey_distribution_demo():
-    """MVP Survey distribution system"""
+@app.route('/surveys/distribution')
+def survey_distribution_page():
+    """Survey distribution system"""
     return render_template('survey_delivery_mvp.html', 
                          title='توزيع الاستطلاعات')
 
-@app.route('/surveys/access')
-def survey_distribution_access():
-    """Quick access page for survey distribution system"""
-    return render_template('survey_distribution_access.html',
-                         title='الوصول لنظام التوزيع')
-
 @app.route('/surveys/responses')
 def survey_responses_page():
-    """Survey responses management page"""
+    """Survey responses page"""
     return render_template('survey_responses.html', 
                          title='الردود والنتائج')
 
-@app.route('/surveys/design-system')
-def survey_design_system():
-    """Survey design system showcase page"""
-    return render_template('components/design_system_showcase.html', 
-                         title='نظام التصميم')
-
-@app.route('/surveys/form-example')
-def survey_form_example():
-    """Survey form example using design system"""
-    return render_template('survey_form_example.html', 
-                         title='نموذج استطلاع تجريبي')
-
-# Updated navigation routes - Dashboards
-@app.route('/dashboards/executive')
-@app.route('/executive-dashboard')  # Keep old route for compatibility
-def dashboards_executive():
-    """Executive dashboard page"""
-    return render_template('executive_dashboard.html',
-                         title='العرض التنفيذي')
-
-@app.route('/dashboards/analyst')
-def dashboards_analyst():
-    """Analyst dashboard page"""
-    return render_template('dashboards_analyst.html', 
-                         title='عرض المحلل')
-
-@app.route('/dashboards/journey-map')
-def dashboards_journey_map():
-    """Customer Journey Map Dashboard - primary route"""
-    embed_mode = request.args.get('embed', 'false').lower() == 'true'
-    return render_template('analytics_journey_map.html', 
-                         title='خريطة رحلة العميل',
-                         embed_mode=embed_mode)
-
-# Updated navigation routes - Analytics
+# Simplified analytics route
 @app.route('/analytics/insights')
 def analytics_insights():
-    """Real-time insights page"""
-    return render_template('analytics_insights.html', 
-                         title='الرؤى المباشرة')
+    """Analytics and insights page"""
+    return render_template('analytics.html', 
+                         title='الرؤى والتحليلات')
 
-@app.route('/analytics/reports')
-def analytics_reports_page():
-    """Reports and export page"""
-    return render_template('analytics_reports.html', 
-                         title='التقارير والتصدير')
-
-@app.route('/analytics/ai-lab')
-def analytics_ai_lab():
-    """AI Testing Lab page"""
-    return render_template('analytics_ai_lab.html', 
-                         title='مختبر الذكاء الاصطناعي')
-
-@app.route('/analytics/journey-map')
-def analytics_journey_map():
-    """Customer Journey Map - redirect to dashboard route for consistency"""
-    from flask import redirect, url_for
-    return redirect(url_for('dashboards_journey_map'))
-
+# Single integrations page
 @app.route('/integrations')
-def integrations_redirect():
-    """Redirect to data sources by default"""
-    return redirect(url_for('integrations_sources_page'))
-
-@app.route('/integrations/sources')
-def integrations_sources_page():
-    """Data sources catalog page"""
-    return render_template('integrations_sources.html', 
-                         title='مصادر البيانات')
-
-@app.route('/integrations/destinations')
-def integrations_destinations_page():
-    """Data destinations catalog page"""
-    return render_template('integrations_destinations.html', 
-                         title='وجهات البيانات')
-
-@app.route('/integrations/ai')
-def integrations_ai_page():
-    """AI & LLM management page"""
+def integrations_page():
+    """AI integrations page"""
     return render_template('integrations_ai.html', 
-                         title='إدارة الذكاء الاصطناعي')
+                         title='إدارة التكامل')
 
-# Updated navigation routes - Settings
+# Simplified settings routes  
+@app.route('/settings')
+def settings_page():
+    """Main settings page"""
+    return render_template('settings_system.html', 
+                         title='الإعدادات')
+
 @app.route('/settings/users')
 def settings_users_page():
     """User management page"""
     return render_template('settings_users.html', 
                          title='إدارة المستخدمين')
-
-@app.route('/settings/system')
-def settings_system_page():
-    """System configuration page - includes language, AI keys, preferences"""
-    return render_template('settings_system.html', 
-                         title='إعدادات النظام')
-
-# Keep old routes for compatibility
-@app.route('/settings/account')
-def settings_account_page():
-    """Account management page - redirect to users"""
-    return redirect(url_for('settings_users_page'))
-
-@app.route('/settings/security')
-def settings_security_page():
-    """Security page - redirect to system"""
-    return redirect(url_for('settings_system_page'))
-
-@app.route('/settings/admin')
-def settings_admin_page():
-    """Admin page - redirect to users"""
-    return redirect(url_for('settings_users_page'))
 
 @app.route('/login')
 def login_page():
