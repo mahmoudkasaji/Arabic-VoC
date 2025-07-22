@@ -156,7 +156,7 @@ async def process_feedback_with_ai(feedback_id: int, db: AsyncSession):
             pass
 
 async def process_survey_response_sentiment(response_id: int, db: AsyncSession):
-    """Process survey response for sentiment analysis"""
+    """Process survey response using simple analyzer"""
     try:
         # Get response
         result = await db.execute(select(SurveyResponse).where(SurveyResponse.id == response_id))
@@ -176,17 +176,21 @@ async def process_survey_response_sentiment(response_id: int, db: AsyncSession):
         combined_text = " ".join(text_content)
         
         if combined_text and len(combined_text.strip()) > 5:
-            # Analyze sentiment
+            # Use simple analyzer for survey responses
             try:
-                ai_analysis = analyze_arabic_feedback(combined_text)
-                response.sentiment_score = ai_analysis["sentiment"]["score"]
-                response.confidence_score = ai_analysis["sentiment"]["confidence"]
-                response.keywords = ai_analysis.get("categories", [])
-            except:
+                from utils.simple_arabic_analyzer import SimpleArabicAnalyzer
+                analyzer = SimpleArabicAnalyzer()
+                analysis_result = analyzer.analyze_feedback_sync(combined_text)
+                
+                response.sentiment_score = analysis_result["sentiment_score"]
+                response.confidence_score = analysis_result["confidence"]
+                response.keywords = analysis_result.get("topics", [])
+            except Exception as e:
                 # Fallback analysis
-                sentiment_result = extract_sentiment(combined_text)
-                response.sentiment_score = sentiment_result["score"]
-                response.confidence_score = sentiment_result["confidence"]
+                logger.warning(f"Simple analyzer failed for survey {response_id}: {e}")
+                response.sentiment_score = 0.5
+                response.confidence_score = 0.5
+                response.keywords = ["general"]
             
             await db.commit()
             

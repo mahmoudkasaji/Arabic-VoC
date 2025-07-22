@@ -264,8 +264,8 @@ class APIKeyManager:
         # Try specialized agent system first if enabled
         if use_agent_committee:
             try:
-                from utils.specialized_orchestrator import get_specialized_orchestrator
-                orchestrator = get_specialized_orchestrator(self)
+                from utils.simple_arabic_analyzer import SimpleArabicAnalyzer
+                analyzer = SimpleArabicAnalyzer()
                 
                 # Use async specialized agent orchestration
                 import asyncio
