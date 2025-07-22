@@ -156,6 +156,17 @@
             color: #1b5e20;
         }
 
+        .btn-distribute {
+            background: #e8f5e8;
+            color: #2e7d32;
+            border: 1px solid #4caf50;
+        }
+
+        .btn-distribute:hover {
+            background: #c8e6c9;
+            color: #1b5e20;
+        }
+
         .btn-share {
             background: #fff3e0;
             color: #ef6c00;
@@ -422,6 +433,48 @@
                 gap: 1rem;
             }
         }
+
+        /* CX Enhancement Styles */
+        .pulse-highlight {
+            animation: pulse-glow 2s infinite;
+            box-shadow: 0 0 0 4px rgba(46, 139, 87, 0.3);
+        }
+
+        @keyframes pulse-glow {
+            0% { box-shadow: 0 0 0 4px rgba(46, 139, 87, 0.3); }
+            50% { box-shadow: 0 0 0 8px rgba(46, 139, 87, 0.1); }
+            100% { box-shadow: 0 0 0 4px rgba(46, 139, 87, 0.3); }
+        }
+
+        .workflow-guide .workflow-step {
+            transition: transform 0.2s ease;
+        }
+
+        .workflow-guide .workflow-step:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-distribute.dropdown-toggle::after {
+            margin-left: 0.5rem;
+        }
+
+        /* Enhanced tooltip styles */
+        .btn-action[title]:hover::after {
+            content: attr(title);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #333;
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            white-space: nowrap;
+            z-index: 1000;
+            pointer-events: none;
+        }
     </style>
 </head>
 <body>
@@ -454,21 +507,31 @@
             </div>
             
             <div class="quick-actions">
-                <a href="/surveys/builder" class="btn-primary-standard btn-md-standard">
+                <a href="/surveys/create" class="btn-primary-standard btn-md-standard" data-action="create-survey">
                     <i class="fas fa-plus"></i>
                     إنشاء استطلاع جديد
                 </a>
-                <a href="#" class="btn-secondary-standard btn-md-standard" onclick="importSurvey()">
-                    <i class="fas fa-upload"></i>
-                    استيراد استطلاع
-                </a>
-                <a href="/surveys/templates" class="btn-secondary-standard btn-md-standard">
-                    <i class="fas fa-clone"></i>
-                    عرض القوالب
-                </a>
-                <button class="btn-outline-standard btn-md-standard" onclick="exportSelected()">
-                    <i class="fas fa-download"></i>
-                    تصدير
+                <div class="btn-group" role="group">
+                    <button class="btn-secondary-standard btn-md-standard dropdown-toggle" data-bs-toggle="dropdown">
+                        <i class="fas fa-magic"></i>
+                        أدوات سريعة
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#" onclick="importSurvey()">
+                            <i class="fas fa-upload me-2"></i>استيراد استطلاع
+                        </a></li>
+                        <li><a class="dropdown-item" href="/surveys/templates">
+                            <i class="fas fa-clone me-2"></i>عرض القوالب
+                        </a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="#" onclick="exportSelected()">
+                            <i class="fas fa-download me-2"></i>تصدير المحدد
+                        </a></li>
+                    </ul>
+                </div>
+                <button class="btn-outline-standard btn-md-standard" onclick="showWorkflowGuide()" data-feature="help">
+                    <i class="fas fa-question-circle"></i>
+                    دليل سير العمل
                 </button>
             </div>
         </div>
@@ -593,20 +656,33 @@
                             </td>
                             <td>
                                 <div class="action-buttons">
-                                    <a href="/surveys/builder?id=1" class="btn-action btn-edit" title="تحرير">
+                                    <a href="/surveys/builder?id=1" class="btn-action btn-edit" title="تحرير الاستطلاع">
                                         <i class="fas fa-edit"></i>تحرير
                                     </a>
-                                    <a href="/surveys/responses?survey=1" class="btn-action btn-responses" title="عرض الردود">
-                                        <i class="fas fa-chart-bar"></i>الردود
+                                    <div class="btn-group btn-group-sm" role="group">
+                                        <button class="btn-action btn-distribute dropdown-toggle" data-bs-toggle="dropdown" title="خيارات التوزيع">
+                                            <i class="fas fa-paper-plane"></i>توزيع
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li><a class="dropdown-item" href="/surveys/distribution?survey=1">
+                                                <i class="fas fa-link me-2"></i>إنشاء رابط مشاركة
+                                            </a></li>
+                                            <li><a class="dropdown-item" href="#" onclick="showEmailCampaign(1)">
+                                                <i class="fas fa-envelope me-2"></i>حملة بريد إلكتروني
+                                            </a></li>
+                                            <li><a class="dropdown-item" href="#" onclick="showSMSCampaign(1)">
+                                                <i class="fas fa-sms me-2"></i>رسائل نصية
+                                            </a></li>
+                                        </ul>
+                                    </div>
+                                    <a href="/surveys/responses?survey=1" class="btn-action btn-responses" title="عرض الردود والتحليلات">
+                                        <i class="fas fa-chart-line"></i>النتائج
                                     </a>
-                                    <button class="btn-action btn-share" onclick="showShareModal(1)" title="مشاركة">
-                                        <i class="fas fa-share-alt"></i>مشاركة
-                                    </button>
-                                    <button class="btn-action btn-duplicate" onclick="duplicateSurvey(1)" title="تكرار">
+                                    <button class="btn-action btn-duplicate" onclick="duplicateSurvey(1)" title="نسخ الاستطلاع">
                                         <i class="fas fa-copy"></i>نسخ
                                     </button>
-                                    <button class="btn-action btn-delete" onclick="deleteSurvey(1)" title="حذف">
-                                        <i class="fas fa-trash"></i>حذف
+                                    <button class="btn-action btn-delete text-danger" onclick="deleteSurvey(1)" title="حذف الاستطلاع">
+                                        <i class="fas fa-trash"></i>
                                     </button>
                                 </div>
                             </td>
@@ -1037,39 +1113,150 @@
     {% include 'components/scripts.html' %}
     
     <script>
-        // Initialize standardized navigation
+        // Initialize enhanced survey management with CX improvements
         document.addEventListener('DOMContentLoaded', function() {
             if (typeof StandardNavigation !== 'undefined') {
                 StandardNavigation.setActiveNav('surveys', 'manage');
                 StandardNavigation.setBreadcrumb([
                     { title: 'الرئيسية', url: '/' },
                     { title: 'الاستطلاعات', url: '/surveys' },
-                    { title: 'إدارة الاستطلاعات' }
+                    { title: 'مركز إدارة الاستطلاعات' }
                 ], [
                     { 
                         label: 'إنشاء جديد', 
                         icon: 'fas fa-plus',
-                        href: '/surveys/builder',
+                        href: '/surveys/create',
                         class: 'btn btn-sm btn-primary'
                     },
                     { 
-                        label: 'التقارير', 
-                        icon: 'fas fa-chart-bar',
-                        href: '/analytics/reports',
+                        label: 'دليل سير العمل', 
+                        icon: 'fas fa-question-circle',
+                        onclick: 'showWorkflowGuide()',
                         class: 'btn btn-sm btn-outline-info'
-                    },
-                    { 
-                        label: 'الإعدادات', 
-                        icon: 'fas fa-cog',
-                        href: '/settings/system',
-                        class: 'btn btn-sm btn-outline-secondary'
                     }
                 ]);
             }
             
-            // Update counters on page load
+            // Initialize CX enhancements
+            initializeCXEnhancements();
             updateCounters();
         });
+
+        // CX Product Manager Enhancement Features
+        function initializeCXEnhancements() {
+            trackNavigationEvents();
+            initializeContextualHelp();
+            setupProgressiveDisclosure();
+        }
+
+        function trackNavigationEvents() {
+            document.querySelectorAll('[data-action]').forEach(button => {
+                button.addEventListener('click', function() {
+                    const action = this.getAttribute('data-action');
+                    console.log(`User action tracked: ${action}`);
+                });
+            });
+        }
+
+        function showWorkflowGuide() {
+            const guide = `
+            <div class="workflow-guide">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <div class="workflow-step p-3 border rounded">
+                            <div class="d-flex align-items-center mb-2">
+                                <span class="badge bg-primary rounded-pill me-2">1</span>
+                                <h6 class="mb-0">إنشاء الاستطلاع</h6>
+                            </div>
+                            <p class="text-muted mb-0">ابدأ بإنشاء استطلاع جديد أو استخدم قالب جاهز</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="workflow-step p-3 border rounded">
+                            <div class="d-flex align-items-center mb-2">
+                                <span class="badge bg-success rounded-pill me-2">2</span>
+                                <h6 class="mb-0">إعداد التوزيع</h6>
+                            </div>
+                            <p class="text-muted mb-0">اختر قنوات التوزيع: رابط، بريد إلكتروني، أو رسائل نصية</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="workflow-step p-3 border rounded">
+                            <div class="d-flex align-items-center mb-2">
+                                <span class="badge bg-info rounded-pill me-2">3</span>
+                                <h6 class="mb-0">مراقبة الردود</h6>
+                            </div>
+                            <p class="text-muted mb-0">تابع الردود والإحصائيات في الوقت الفعلي</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="workflow-step p-3 border rounded">
+                            <div class="d-flex align-items-center mb-2">
+                                <span class="badge bg-warning rounded-pill me-2">4</span>
+                                <h6 class="mb-0">تحليل النتائج</h6>
+                            </div>
+                            <p class="text-muted mb-0">احصل على رؤى ذكية وتقارير مفصلة</p>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+            
+            showModal('دليل سير العمل المتكامل', guide);
+        }
+
+        function showEmailCampaign(surveyId) {
+            window.location.href = `/surveys/distribution?survey=${surveyId}&channel=email`;
+        }
+
+        function showSMSCampaign(surveyId) {
+            window.location.href = `/surveys/distribution?survey=${surveyId}&channel=sms`;
+        }
+
+        function initializeContextualHelp() {
+            const isNewUser = localStorage.getItem('survey_tour_completed') !== 'true';
+            if (isNewUser) {
+                setTimeout(showNewUserTour, 3000);
+            }
+        }
+
+        function showNewUserTour() {
+            console.log('New user tour: highlighting key features');
+            // Add subtle highlight to main actions for new users
+            document.querySelector('[data-action="create-survey"]')?.classList.add('pulse-highlight');
+        }
+
+        function setupProgressiveDisclosure() {
+            const surveyCount = document.querySelectorAll('.survey-row').length;
+            if (surveyCount > 5) {
+                document.querySelectorAll('.advanced-feature').forEach(el => {
+                    el.style.display = 'block';
+                });
+            }
+        }
+
+        function showModal(title, content) {
+            const modal = document.createElement('div');
+            modal.className = 'modal fade show';
+            modal.style.display = 'block';
+            modal.style.backgroundColor = 'rgba(0,0,0,0.5)';
+            modal.innerHTML = `
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">${title}</h5>
+                            <button type="button" class="btn-close" onclick="this.closest('.modal').remove()"></button>
+                        </div>
+                        <div class="modal-body">
+                            ${content}
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" onclick="this.closest('.modal').remove()">فهمت</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
 
         // Survey management functionality
         let selectedSurveys = [];
