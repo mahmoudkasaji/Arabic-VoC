@@ -88,6 +88,50 @@
             transition: all 0.3s ease;
         }
 
+        /* Progressive Disclosure Classes */
+        .sidebar.step-hidden {
+            display: none;
+        }
+
+        .sidebar.step-visible {
+            display: block;
+            animation: slideInFromRight 0.4s ease-out;
+        }
+
+        @keyframes slideInFromRight {
+            from {
+                transform: translateX(20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Step-specific styling */
+        .workflow-step-1 .sidebar {
+            display: none; /* Hide both sidebars in step 1 */
+        }
+
+        .workflow-step-1 .main-canvas {
+            grid-column: 1 / -1; /* Take full width */
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .workflow-step-2 .question-types-sidebar {
+            display: block;
+        }
+
+        .workflow-step-2 .properties-sidebar {
+            display: none; /* Hide properties until question is selected */
+        }
+
+        .workflow-step-2 .main-canvas {
+            grid-column: span 2;
+        }
+
         .sidebar h5 {
             font-size: 1rem;
             font-weight: 600;
@@ -1008,9 +1052,9 @@
     {% include 'components/unified_navigation.html' %}
 
 
-    <div class="builder-container">
+    <div class="builder-container" id="builderContainer">
         <!-- Progressive Question Types Sidebar -->
-        <div class="sidebar">
+        <div class="sidebar question-types-sidebar" id="questionTypesSidebar">
             <h5 class="mb-4">أنواع الأسئلة</h5>
             
             <!-- Essential Questions (Always Visible) -->
@@ -1480,9 +1524,131 @@
             } else if (stepNumber === 2) {
                 setupStep.classList.add('d-none');
                 buildingStep.classList.remove('d-none');
-                updateContextHelp(0);
+            }
+
+            // Progressive sidebar management
+            manageSidebarVisibility(stepNumber);
+        }
+
+        // Sidebar Visibility Management - Core UX Logic
+        function manageSidebarVisibility(stepNumber) {
+            const builderContainer = document.getElementById('builderContainer');
+            const questionTypesSidebar = document.getElementById('questionTypesSidebar');
+            const propertiesSidebar = document.getElementById('propertiesSidebar');
+
+            // Remove all step classes
+            builderContainer.classList.remove('workflow-step-1', 'workflow-step-2', 'workflow-step-3');
+
+            if (stepNumber === 1) {
+                // Step 1: Survey Information - Hide both sidebars, focus on content
+                builderContainer.classList.add('workflow-step-1');
+                showContextHelp('اسأل نفسك: ما الهدف من هذا الاستطلاع؟ عنوان واضح يزيد الاستجابة بـ 40%');
+                
+            } else if (stepNumber === 2) {
+                // Step 2: Question Building - Show question types, hide properties
+                builderContainer.classList.add('workflow-step-2');
+                questionTypesSidebar.style.display = 'block';
+                propertiesSidebar.style.display = 'none';
+                showContextHelp('ابدأ بسؤال ترحيبي بسيط، ثم أضف الأسئلة الأساسية تدريجياً');
+                
+            } else if (stepNumber >= 3) {
+                // Step 3+: Full editing - Show both sidebars
+                builderContainer.classList.add('workflow-step-3');
+                questionTypesSidebar.style.display = 'block';
+                propertiesSidebar.style.display = 'block';
+                showContextHelp('اضبط خصائص كل سؤال لضمان جودة البيانات المُجمعة');
             }
         }
+
+        // Context Help System
+        function showContextHelp(message) {
+            const helpElement = document.getElementById('contextHelpText');
+            if (helpElement) {
+                helpElement.textContent = message;
+            }
+        }
+
+        // Template Selection Handler
+        function selectTemplate(templateType, cardElement) {
+            // Visual feedback
+            document.querySelectorAll('.template-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            cardElement.classList.add('selected');
+
+            // Load template-specific questions
+            loadTemplateQuestions(templateType);
+            
+            // Auto-transition to step 2 after template selection
+            setTimeout(() => {
+                transitionToStep(2);
+            }, 800);
+        }
+
+        // Template Questions Loader
+        function loadTemplateQuestions(templateType) {
+            const templates = {
+                satisfaction: [
+                    { type: 'rating', text: 'كيف تقيم رضاك العام عن خدماتنا؟', required: true },
+                    { type: 'nps', text: 'ما احتمالية أن توصي بخدماتنا لأصدقائك؟', required: true },
+                    { type: 'textarea', text: 'ما الذي يمكننا تحسينه؟', required: false }
+                ],
+                feedback: [
+                    { type: 'multiple_choice', text: 'ما الخدمة التي استخدمتها؟', required: true },
+                    { type: 'rating', text: 'قيّم جودة الخدمة', required: true },
+                    { type: 'textarea', text: 'اترك تعليقك هنا', required: false }
+                ],
+                event: [
+                    { type: 'rating', text: 'قيّم المحتوى المقدم', required: true },
+                    { type: 'rating', text: 'قيّم التنظيم العام', required: true },
+                    { type: 'checkbox', text: 'ما المواضيع التي تود رؤيتها مستقبلاً؟', required: false }
+                ],
+                employee: [
+                    { type: 'rating', text: 'مدى رضاك عن بيئة العمل؟', required: true },
+                    { type: 'rating', text: 'مدى رضاك عن الإدارة؟', required: true },
+                    { type: 'textarea', text: 'اقتراحات للتحسين', required: false }
+                ]
+            };
+
+            const templateQuestions = templates[templateType] || [];
+            console.log(`Loading template: ${templateType} with ${templateQuestions.length} questions`);
+            
+            // Here you would integrate with the existing survey builder to add questions
+            // For now, just update the context help
+            showContextHelp(`تم تحديد قالب ${getTemplateName(templateType)}. يمكنك تعديل الأسئلة أو إضافة المزيد.`);
+        }
+
+        function getTemplateName(templateType) {
+            const names = {
+                satisfaction: 'رضا العملاء',
+                feedback: 'جمع التعليقات', 
+                event: 'تقييم الأحداث',
+                employee: 'رضا الموظفين'
+            };
+            return names[templateType] || templateType;
+        }
+
+        // Auto-save simulation
+        function simulateAutoSave() {
+            const statusElement = document.getElementById('saveStatusText');
+            if (statusElement) {
+                let seconds = 0;
+                setInterval(() => {
+                    seconds += 30;
+                    if (seconds < 60) {
+                        statusElement.textContent = `تم الحفظ منذ ${seconds} ثانية`;
+                    } else {
+                        const minutes = Math.floor(seconds / 60);
+                        statusElement.textContent = `تم الحفظ منذ ${minutes} دقيقة`;
+                    }
+                }, 30000);
+            }
+        }
+
+        // Initialize at step 1 on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            transitionToStep(1);
+        });
 
         // Template Selection
         function selectTemplate(templateType, cardElement) {
