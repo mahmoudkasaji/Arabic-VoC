@@ -9,9 +9,9 @@
     --primary-200: #bce5cc;
     --primary-300: #8dd3aa;
     --primary-400: #5bb882;
-    --primary-500: #2E8B57;  /* Main brand color - Sea Green */
-    --primary-600: #25754a;
-    --primary-700: #1f5e3d;
+    --primary-500: #1B5E20;  /* Main brand color - Darker Green for better contrast */
+    --primary-600: #0F3711;
+    --primary-700: #0A2408;
     --primary-800: #1a4d33;
     --primary-900: #16402b;
 
@@ -50,10 +50,10 @@
     --neutral-800: #343a40;
     --neutral-900: #212529;
 
-    /* Text Colors */
-    --text-primary: #2c3e50;
-    --text-secondary: #6c757d;
-    --text-muted: #adb5bd;
+    /* Text Colors - Enhanced Contrast */
+    --text-primary: #212529;
+    --text-secondary: #495057;
+    --text-muted: #6c757d;
     --text-white: #ffffff;
     --text-inverse: #ffffff;
 

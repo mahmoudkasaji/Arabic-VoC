@@ -7,28 +7,28 @@ Arabic RTL support and consistent styling patterns.
 */
 
 :root {
-    /* Primary Colors */
-    --survey-primary: #2E8B57;
-    --survey-primary-hover: #236B47;
-    --survey-primary-light: rgba(46, 139, 87, 0.1);
-    --survey-primary-dark: #1B5E20;
+    /* Primary Colors - Enhanced Contrast */
+    --survey-primary: #1B5E20;
+    --survey-primary-hover: #0F3711;
+    --survey-primary-light: rgba(27, 94, 32, 0.15);
+    --survey-primary-dark: #0A2408;
     
-    /* Secondary Colors */
-    --survey-secondary: #6C757D;
-    --survey-secondary-hover: #5A6268;
-    --survey-secondary-light: rgba(108, 117, 125, 0.1);
+    /* Secondary Colors - Enhanced Contrast */
+    --survey-secondary: #343A40;
+    --survey-secondary-hover: #1D2124;
+    --survey-secondary-light: rgba(52, 58, 64, 0.15);
     
-    /* Accent Colors */
-    --survey-accent: #4169E1;
-    --survey-accent-hover: #3654D1;
-    --survey-accent-light: rgba(65, 105, 225, 0.1);
+    /* Accent Colors - Enhanced Contrast */
+    --survey-accent: #1548E8;
+    --survey-accent-hover: #0E33B8;
+    --survey-accent-light: rgba(21, 72, 232, 0.15);
     
-    /* Status Colors */
-    --survey-status-active: #28A745;
+    /* Status Colors - Enhanced Contrast */
+    --survey-status-active: #155724;
     --survey-status-active-bg: #D4EDDA;
     --survey-status-active-border: #C3E6CB;
     
-    --survey-status-draft: #FFC107;
+    --survey-status-draft: #856404;
     --survey-status-draft-bg: #FFF3CD;
     --survey-status-draft-border: #FFEAA7;
     
@@ -326,15 +326,16 @@ Button System
     }
 }
 
-/* Ghost Button */
+/* Ghost Button - Enhanced Contrast */
 .survey-btn-ghost {
     background-color: transparent;
-    color: var(--survey-gray-600);
+    color: var(--survey-gray-700);
     border-color: transparent;
+    font-weight: var(--survey-font-semibold);
     
     &:hover:not(:disabled) {
         background-color: var(--survey-gray-100);
-        color: var(--survey-gray-800);
+        color: var(--survey-gray-900);
     }
     
     &:active:not(:disabled) {
