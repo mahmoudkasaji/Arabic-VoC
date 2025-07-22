@@ -406,30 +406,26 @@
 </head>
 
 <body>
-    {% include 'components/navigation.html' %}
+    {% include 'components/unified_navigation.html' %}
 
-    <div class="executive-dashboard">
-        <!-- Dashboard Header -->
-        <div class="dashboard-header">
-            <div class="d-flex justify-content-between align-items-start">
-                <div>
-                    <h1 class="dashboard-title">
-                        <i class="fas fa-chart-line"></i>
-                        لوحة التحليلات والقيادة
-                    </h1>
-                    <p class="dashboard-subtitle">مؤشرات الأداء الرئيسية والتحليلات المتقدمة لصوت العميل العربي</p>
-                </div>
-                <div class="text-left">
+    <div class="page-container">
+        <div class="dashboard-unified">
+            <!-- Dashboard Header -->
+            <div class="page-header-unified">
+                <h1 class="page-title-unified">
+                    <i class="fas fa-chart-line me-2"></i>
+                    لوحة التحليلات والقيادة
+                </h1>
+                <p class="page-subtitle-unified">مؤشرات الأداء الرئيسية والتحليلات المتقدمة لصوت العميل العربي</p>
+                <div class="mt-3">
                     <small class="text-muted">آخر تحديث: <span id="lastUpdate">جاري التحميل...</span></small>
                 </div>
             </div>
-        </div>
 
-        <!-- KPI Cards Row -->
-        <div class="row">
-            <!-- CSAT Card -->
-            <div class="col-lg-4 mb-4">
-                <div class="kpi-card">
+            <!-- KPI Cards Row -->
+            <div class="grid-unified grid-3-cols">
+                <!-- CSAT Card -->
+                <div class="card-unified">
                     <div class="kpi-header">
                         <h3 class="kpi-title">رضا العملاء (CSAT)</h3>
                         <div class="kpi-icon" style="background: var(--info-color);">
@@ -442,11 +438,9 @@
                         <span>جاري التحميل...</span>
                     </div>
                 </div>
-            </div>
 
-            <!-- Volume Card -->
-            <div class="col-lg-4 mb-4">
-                <div class="kpi-card">
+                <!-- Volume Card -->
+                <div class="card-unified">
                     <div class="kpi-header">
                         <h3 class="kpi-title">حجم الاستجابات</h3>
                         <div class="kpi-icon" style="background: var(--success-color);">
@@ -459,11 +453,9 @@
                         <span>جاري التحميل...</span>
                     </div>
                 </div>
-            </div>
 
-            <!-- Sentiment Card -->
-            <div class="col-lg-4 mb-4">
-                <div class="kpi-card">
+                <!-- Sentiment Card -->
+                <div class="card-unified">
                     <div class="kpi-header">
                         <h3 class="kpi-title">مؤشر المشاعر العربي</h3>
                         <div class="kpi-icon" style="background: var(--warning-color);">
