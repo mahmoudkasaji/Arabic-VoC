@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="{{ get_language_info().code }}" dir="{{ get_language_info().direction }}">
 <head>
     {% include 'components/head.html' %}
-    <title>نظام التصميم - منصة صوت العميل</title>
+    <title>{{ 'settings_dropdown.design_system' | translate }} - {{ 'app.name' | translate }}</title>
     
     <style>
         /* Design System Showcase Styles */
