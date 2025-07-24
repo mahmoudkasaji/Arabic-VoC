@@ -1,0 +1,219 @@
+{
+  "app": {
+    "name": "منصة صوت العميل",
+    "tagline": "منصة متقدمة لتحليل آراء العملاء",
+    "description": "منصة شاملة لجمع وتحليل آراء العملاء باللغة العربية مع دعم الذكاء الاصطناعي"
+  },
+  "navigation": {
+    "surveys": "الاستطلاعات",
+    "analytics": "التحليلات", 
+    "integrations": "التكاملات",
+    "settings": "الإعدادات",
+    "home": "الرئيسية",
+    "feedback": "التعليقات",
+    "dashboard": "لوحة القيادة",
+    "toggle_menu": "تبديل القائمة",
+    "surveys_dropdown": {
+      "title": "الاستطلاعات",
+      "integrated_workflow": "سير العمل المتكامل",
+      "create_new": "إنشاء استطلاع جديد",
+      "management_center": "مركز إدارة الاستطلاعات",
+      "management_subtitle": "إدارة وتوزيع في مكان واحد",
+      "analytics_reports": "التحليلات والتقارير",
+      "responses_results": "الردود والنتائج"
+    },
+    "analytics_dropdown": {
+      "title": "التحليلات",
+      "dashboards": "لوحات البيانات",
+      "executive_dashboard": "لوحة القيادة التنفيذية",
+      "smart_insights": "الرؤى الذكية والمعمل",
+      "live_demo": "تجربة التحليل المباشر",
+      "reports": "التقارير",
+      "detailed_reports": "تقارير مفصلة"
+    },
+    "integrations_dropdown": {
+      "title": "التكاملات",
+      "data_flow": "تدفق البيانات",
+      "ai_management": "إدارة الذكاء الاصطناعي",
+      "ai_subtitle": "تكوين وإدارة نماذج الذكاء الاصطناعي"
+    },
+    "settings_dropdown": {
+      "title": "الإعدادات",
+      "system_management": "إدارة النظام",
+      "user_management": "إدارة المستخدمين",
+      "design_system": "نظام التصميم الموحد",
+      "design_subtitle": "مكتبة المكونات والتوثيق"
+    }
+  },
+  "buttons": {
+    "create": "إنشاء",
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "edit": "تعديل",
+    "delete": "حذف",
+    "submit": "إرسال",
+    "back": "رجوع",
+    "next": "التالي",
+    "previous": "السابق",
+    "close": "إغلاق",
+    "open": "فتح",
+    "view": "عرض",
+    "download": "تحميل",
+    "upload": "رفع",
+    "search": "بحث",
+    "filter": "تصفية",
+    "reset": "إعادة تعيين",
+    "confirm": "تأكيد",
+    "login": "تسجيل الدخول",
+    "logout": "تسجيل الخروج",
+    "register": "إنشاء حساب",
+    "get_started": "ابدأ الآن",
+    "browse_surveys": "تصفح الاستطلاعات",
+    "start_exploring": "ابدأ الاستكشاف",
+    "view_analytics": "عرض التحليلات",
+    "create_survey": "إنشاء استطلاع",
+    "dashboard": "لوحة التحكم"
+  },
+  "forms": {
+    "required": "مطلوب",
+    "optional": "اختياري",
+    "email": "البريد الإلكتروني",
+    "password": "كلمة المرور",
+    "username": "اسم المستخدم",
+    "phone": "رقم الهاتف",
+    "name": "الاسم",
+    "title": "العنوان",
+    "description": "الوصف",
+    "content": "المحتوى",
+    "message": "الرسالة",
+    "subject": "الموضوع",
+    "feedback": "التعليق",
+    "rating": "التقييم",
+    "language": "اللغة",
+    "date": "التاريخ",
+    "time": "الوقت"
+  },
+  "messages": {
+    "success": {
+      "saved": "تم الحفظ بنجاح",
+      "created": "تم الإنشاء بنجاح",
+      "updated": "تم التحديث بنجاح",
+      "deleted": "تم الحذف بنجاح",
+      "submitted": "تم الإرسال بنجاح",
+      "feedback_submitted": "تم إرسال التعليق بنجاح"
+    },
+    "errors": {
+      "required_field": "هذا الحقل مطلوب",
+      "invalid_email": "البريد الإلكتروني غير صحيح",
+      "invalid_phone": "رقم الهاتف غير صحيح",
+      "general_error": "حدث خطأ غير متوقع",
+      "network_error": "خطأ في الاتصال",
+      "server_error": "خطأ في الخادم",
+      "not_found": "غير موجود",
+      "unauthorized": "غير مخول",
+      "forbidden": "محظور"
+    },
+    "loading": "جاري التحميل...",
+    "no_data": "لا توجد بيانات",
+    "empty_state": "لا توجد عناصر لعرضها"
+  },
+  "homepage": {
+    "hero": {
+      "title": "منصة صوت العميل",
+      "subtitle": "تحليل متقدم لآراء العملاء بالذكاء الاصطناعي",
+      "description": "منصة للاستماع الأفضل لعملائك وفهمهم وتلبية احتياجاتهم",
+      "cta_primary": "ابدأ الآن",
+      "cta_secondary": "تعرف على المزيد"
+    },
+    "demo": {
+      "title": "عرض توضيحي",
+      "subtitle": "غير مخصص للاستخدام التجاري",
+      "footer_notice": "هذا عرض توضيحي.",
+      "footer_subtitle": "غير مخصص للاستخدام التجاري."
+    },
+    "features": {
+      "title": "المميزات الرئيسية",
+      "subtitle": "كل ما تحتاجه لفهم عملائك بشكل أفضل",
+      "arabic_ai": {
+        "title": "ذكاء اصطناعي عربي",
+        "description": "تحليل متطور للنصوص العربية مع فهم السياق الثقافي"
+      },
+      "real_time": {
+        "title": "تحليل فوري",
+        "description": "نتائج التحليل خلال ثوانٍ مع دقة عالية"
+      },
+      "multi_channel": {
+        "title": "متعدد القنوات",
+        "description": "جمع الآراء من جميع قنوات التواصل"
+      }
+    }
+  },
+  "dashboard": {
+    "title": "لوحة القيادة التنفيذية",
+    "subtitle": "نظرة شاملة على أداء تجربة العملاء",
+    "metrics": {
+      "total_feedback": "إجمالي التعليقات",
+      "satisfaction": "رضا العملاء",
+      "response_rate": "معدل الاستجابة",
+      "processing_time": "وقت المعالجة"
+    }
+  },
+  "surveys": {
+    "title": "إدارة الاستطلاعات",
+    "subtitle": "إنشاء وإدارة وتوزيع الاستطلاعات",
+    "create_new": "إنشاء استطلاع جديد",
+    "my_surveys": "استطلاعاتي",
+    "templates": "القوالب",
+    "responses": "الردود"
+  },
+  "analytics": {
+    "title": "التحليلات والرؤى",
+    "subtitle": "تحليل متقدم بالذكاء الاصطناعي",
+    "sentiment_analysis": "تحليل المشاعر",
+    "topic_analysis": "تحليل المواضيع",
+    "trends": "الاتجاهات"
+  },
+  "feedback": {
+    "title": "إرسال تعليق",
+    "subtitle": "شاركنا رأيك أو اقتراحك",
+    "placeholder": "اكتب تعليقك هنا...",
+    "channel": "قناة التواصل",
+    "channels": {
+      "website": "الموقع الإلكتروني",
+      "email": "البريد الإلكتروني",
+      "phone": "الهاتف",
+      "whatsapp": "واتساب",
+      "social_media": "وسائل التواصل"
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "تسجيل الدخول",
+      "subtitle": "مرحباً بعودتك",
+      "email_placeholder": "البريد الإلكتروني",
+      "password_placeholder": "كلمة المرور",
+      "remember_me": "تذكرني",
+      "forgot_password": "نسيت كلمة المرور؟",
+      "no_account": "ليس لديك حساب؟",
+      "create_account": "إنشاء حساب"
+    },
+    "register": {
+      "title": "إنشاء حساب",
+      "subtitle": "انضم إلى منصتنا",
+      "have_account": "لديك حساب بالفعل؟",
+      "login_here": "سجل الدخول هنا"
+    }
+  },
+  "settings": {
+    "title": "الإعدادات",
+    "profile": "الملف الشخصي",
+    "preferences": "التفضيلات",
+    "security": "الأمان",
+    "notifications": "الإشعارات"
+  },
+  "language": {
+    "current": "العربية",
+    "switch_to": "English",
+    "toggle_tooltip": "تبديل اللغة إلى الإنجليزية"
+  }
+}

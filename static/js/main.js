@@ -780,7 +780,7 @@ document.addEventListener('DOMContentLoaded', () => {
     Navigation.init();
 
     // Initialize language management
-    LanguageManager.initializeLanguage();
+    LanguageToggle.init();
 
     // Initialize feedback form if present
     FeedbackManager.initForm();
@@ -824,102 +824,65 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log('Arabic Voice of Customer Platform initialized');
 });
 
-// Language Management System
-const LanguageManager = {
-    currentLanguage: 'ar',
-
-    /**
-     * Initialize language system
-     */
-    initializeLanguage() {
-        const savedLang = localStorage.getItem('preferred_language') || 'ar';
-        this.switchLanguage(savedLang);
-        console.log('Language system initialized:', savedLang);
+// Language Toggle System
+const LanguageToggle = {
+    init() {
+        this.bindEvents();
+        this.updateLanguageButton();
     },
-
-    /**
-     * Switch between Arabic and English
-     */
-    switchLanguage(lang) {
-        this.currentLanguage = lang;
-        localStorage.setItem('preferred_language', lang);
-
-        // Update HTML direction and language
-        document.documentElement.setAttribute('lang', lang);
-        document.documentElement.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
-
-        // Update text content
-        this.updatePageText(lang);
-
-        console.log('Switched to language:', lang);
+    
+    bindEvents() {
+        // Add click handler for language toggle if button exists
+        const toggleBtn = document.querySelector('[onclick="toggleLanguage()"]');
+        if (toggleBtn) {
+            toggleBtn.onclick = (e) => {
+                e.preventDefault();
+                this.toggleLanguage();
+            };
+        }
     },
-
-    /**
-     * Update page text based on language
-     */
-    updatePageText(lang) {
-        const translations = {
-            ar: {
-                'langText': 'العربية',
-                'platform-title-text': 'منصة صوت العميل العربية',
-                'feedback-title-text': 'شاركنا رأيك',
-                'feedback-subtitle-text': 'نقدر آرائكم وملاحظاتكم لتحسين خدماتنا وتجربتكم معنا',
-                'nav-home-text': 'الرئيسية',
-                'nav-analytics-text': 'لوحة التحليلات',
-                'nav-feedback-text': 'إرسال تعليق',
-                'nav-surveys-text': 'الاستطلاعات',
-                'nav-login-text': 'تسجيل الدخول',
-                'nav-register-text': 'إنشاء حساب',
-                'rating-label-text': 'تقييمك العام:',
-                'content-label-text': 'تعليقك أو ملاحظاتك:',
-                'name-label-text': 'الاسم (اختياري):',
-                'submit-btn-text': 'إرسال التعليق',
-                'success-title-text': 'شكراً لك!',
-                'success-message-text': 'تم إرسال تعليقك بنجاح وسيتم تحليله قريباً',
-                'dialect-help-text': 'يمكنك الكتابة بأي لهجة عربية - سنفهمها جميعاً'
-            },
-            en: {
-                'langText': 'English',
-                'platform-title-text': 'Arabic Voice of Customer Platform',
-                'feedback-title-text': 'Share Your Opinion',
-                'feedback-subtitle-text': 'We value your feedback and suggestions to improve our services and your experience',
-                'nav-home-text': 'Home',
-                'nav-analytics-text': 'Analytics Dashboard',
-                'nav-feedback-text': 'Submit Feedback',
-                'nav-surveys-text': 'Surveys',
-                'nav-login-text': 'Login',
-                'nav-register-text': 'Register',
-                'rating-label-text': 'Your Rating:',
-                'content-label-text': 'Your Feedback:',
-                'name-label-text': 'Name (Optional):',
-                'submit-btn-text': 'Submit Feedback',
-                'success-title-text': 'Thank You!',
-                'success-message-text': 'Your feedback has been submitted successfully and will be analyzed shortly',
-                'dialect-help-text': 'You can write in any Arabic dialect - we understand them all'
+    
+    async toggleLanguage() {
+        try {
+            const response = await fetch('/api/language/toggle', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({})
+            });
+            
+            if (response.ok) {
+                // Reload page to apply language changes
+                window.location.reload();
+            } else {
+                console.error('Language toggle failed');
             }
-        };
-
-        const texts = translations[lang] || translations.ar;
-
-        Object.entries(texts).forEach(([key, value]) => {
-            const element = document.getElementById(key);
-            if (element) {
-                element.textContent = value;
-                console.log('Updated', key, ':', value);
+        } catch (error) {
+            console.error('Error toggling language:', error);
+        }
+    },
+    
+    async updateLanguageButton() {
+        try {
+            const response = await fetch('/api/language/status');
+            if (response.ok) {
+                const status = await response.json();
+                const button = document.querySelector('[onclick="toggleLanguage()"]');
+                if (button) {
+                    const switchText = status.current_language === 'ar' ? 'English' : 'العربية';
+                    button.innerHTML = `<i class="fas fa-globe me-1"></i>${switchText}`;
+                }
             }
-        });
+        } catch (error) {
+            console.error('Error updating language button:', error);
+        }
     }
 };
 
-/**
- * Global toggle language function
- */
+// Global function for onclick handlers
 function toggleLanguage() {
-    const currentLang = LanguageManager.currentLanguage;
-    const newLang = currentLang === 'ar' ? 'en' : 'ar';
-
-    console.log('Switching to:', newLang);
-    LanguageManager.switchLanguage(newLang);
+    LanguageToggle.toggleLanguage();
 }
 
 // Export functions for global access
@@ -928,6 +891,5 @@ window.Dashboard = Dashboard;
 window.API = API;
 window.UI = UI;
 window.ArabicUtils = ArabicUtils;
-window.LanguageManager = LanguageManager;
+window.LanguageToggle = LanguageToggle;
 window.toggleLanguage = toggleLanguage;
-window.langManager = LanguageManager;

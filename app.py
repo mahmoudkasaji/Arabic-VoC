@@ -6,7 +6,7 @@ Main application with proper Arabic support and WSGI compatibility
 import os
 import logging
 from datetime import datetime, timedelta
-from flask import Flask, render_template, request, jsonify, redirect, url_for
+from flask import Flask, render_template, request, jsonify, redirect, url_for, session
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase
 from werkzeug.middleware.proxy_fix import ProxyFix
@@ -39,6 +39,11 @@ app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 # Initialize database
 db.init_app(app)
 
+# Initialize language system
+from utils.language_manager import language_manager
+from utils.template_helpers import register_template_helpers
+register_template_helpers(app)
+
 # Import models after db initialization
 from models_unified import Feedback, FeedbackChannel, FeedbackStatus
 
@@ -55,11 +60,9 @@ app.register_blueprint(executive_bp, url_prefix='/api/executive-dashboard')
 
 @app.route('/')
 def index():
-    """Main Arabic homepage - Ultra simple version"""
-    return render_template('index_simple.html', 
-                         lang='ar', 
-                         dir='rtl',
-                         title='منصة صوت العميل')
+    """Main homepage with language support"""
+    current_lang = language_manager.get_current_language()
+    return render_template('index_simple.html')
 
 # Removed redundant homepage route
 
@@ -67,7 +70,6 @@ def index():
 def feedback_page():
     """Feedback submission page"""
     return render_template('feedback.html', 
-                         title='إرسال تعليق',
                          channels=list(FeedbackChannel))
 
 @app.route('/api/feedback/submit', methods=['POST'])
@@ -121,16 +123,18 @@ def submit_feedback():
             logger.error(f"Real-time analysis failed for feedback {feedback.id}: {e}")
             # Continue without analysis - feedback still saved
         
+        from utils.template_helpers import get_success_message
         return jsonify({
             'success': True,
-            'message': 'تم إرسال التعليق بنجاح',
+            'message': get_success_message('feedback_submitted'),
             'feedback_id': feedback.id
         })
         
     except Exception as e:
         logger.error(f"Error submitting feedback: {e}")
         db.session.rollback()
-        return jsonify({'error': 'حدث خطأ في إرسال التعليق'}), 500
+        from utils.template_helpers import get_error_message
+        return jsonify({'error': get_error_message('general_error')}), 500
 
 @app.route('/api/feedback/list')
 def list_feedback():
@@ -166,7 +170,8 @@ def list_feedback():
         
     except Exception as e:
         logger.error(f"Error listing feedback: {e}")
-        return jsonify({'error': 'حدث خطأ في جلب التعليقات'}), 500
+        from utils.template_helpers import get_error_message
+        return jsonify({'error': get_error_message('general_error')}), 500
 
 # Removed redundant realtime dashboard route
 
@@ -382,6 +387,56 @@ def test_ai_analysis():
     except Exception as e:
         logger.error(f"Analysis failed: {str(e)}")
         return jsonify({'error': f'Analysis failed: {str(e)}'}), 500
+
+@app.route('/api/language/toggle', methods=['POST'])
+def toggle_language():
+    """Toggle user's language preference"""
+    try:
+        data = request.get_json() or {}
+        target_lang = data.get('language')
+        
+        if not target_lang:
+            # Auto-toggle to opposite language
+            current_lang = language_manager.get_current_language()
+            target_lang = language_manager.get_opposite_language(current_lang)
+        
+        if language_manager.set_language(target_lang):
+            from utils.template_helpers import get_success_message
+            return jsonify({
+                'success': True,
+                'message': get_success_message('saved'),
+                'language': target_lang,
+                'direction': language_manager.get_direction(target_lang),
+                'language_info': language_manager.get_language_info(target_lang)
+            })
+        else:
+            from utils.template_helpers import get_error_message
+            return jsonify({
+                'error': get_error_message('general_error')
+            }), 400
+            
+    except Exception as e:
+        logger.error(f"Error toggling language: {e}")
+        from utils.template_helpers import get_error_message
+        return jsonify({'error': get_error_message('general_error')}), 500
+
+@app.route('/api/language/status')
+def language_status():
+    """Get current language status"""
+    try:
+        current_lang = language_manager.get_current_language()
+        return jsonify({
+            'current_language': current_lang,
+            'direction': language_manager.get_direction(current_lang),
+            'opposite_language': language_manager.get_opposite_language(current_lang),
+            'supported_languages': language_manager.supported_languages,
+            'language_info': language_manager.get_language_info(current_lang),
+            'toggle_url': language_manager.get_toggle_url()
+        })
+    except Exception as e:
+        logger.error(f"Error getting language status: {e}")
+        from utils.template_helpers import get_error_message
+        return jsonify({'error': get_error_message('general_error')}), 500
 
 @app.route('/api/committee-performance')
 def committee_performance():

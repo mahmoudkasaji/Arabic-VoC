@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="{{ get_lang() }}" dir="{{ get_dir() }}">
 <head>
     {% include 'components/head.html' %}
-    <title>منصة صوت العميل</title>
+    <title>{{ 'app.name' | translate }}</title>
     
     <style>
         body {
@@ -227,36 +227,36 @@
         <section class="hero-section">
             <div class="hero-content">
                 <h1 class="hero-title">
-                    منصة صوت العميل
+                    {{ 'homepage.hero.title' | translate }}
                 </h1>
                 <!-- Demo Notice Badge -->
                 <div style="background: rgba(255,255,255,0.2); padding: 0.4rem 1.2rem; border-radius: 20px; display: inline-block; margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.3);">
                     <i class="fas fa-flask me-2"></i>
-                    <strong>عرض توضيحي</strong> - غير مخصص للاستخدام التجاري
+                    <strong>{{ 'homepage.demo.title' | translate }}</strong> - {{ 'homepage.demo.subtitle' | translate }}
                 </div>
                 
                 <p class="hero-description">
-                    منصة للاستماع الأفضل لعملائك وفهمهم وتلبية احتياجاتهم
+                    {{ 'homepage.hero.description' | translate }}
                 </p>
                 
                 <!-- Simple Call to Action -->
                 <div>
                     <a href="/register" class="cta-button" style="background: #28a745; color: white; box-shadow: 0 8px 25px rgba(40, 167, 69, 0.3);">
                         <i class="fas fa-user-plus me-2"></i>
-                        إنشاء حساب جديد
+                        {{ 'buttons.register' | translate }}
                     </a>
                     <a href="/login" class="cta-button" style="background: #007bff; color: white; box-shadow: 0 8px 25px rgba(0, 123, 255, 0.3);">
                         <i class="fas fa-sign-in-alt me-2"></i>
-                        تسجيل الدخول
+                        {{ 'buttons.login' | translate }}
                     </a>
                     <br>
                     <a href="/surveys/builder" class="cta-button">
                         <i class="fas fa-plus me-2"></i>
-                        ابدأ الاستكشاف
+                        {{ 'buttons.start_exploring' | translate }}
                     </a>
                     <a href="/dashboard/realtime" class="cta-button">
                         <i class="fas fa-chart-line me-2"></i>
-                        عرض التحليلات
+                        {{ 'buttons.view_analytics' | translate }}
                     </a>
                 </div>
             </div>
@@ -266,19 +266,19 @@
     <!-- Simple Footer -->
     <footer class="simple-footer">
         <div class="container">
-            <div class="footer-brand">منصة صوت العميل</div>
+            <div class="footer-brand">{{ 'app.name' | translate }}</div>
             
             <!-- Demo Notice -->
             <div style="background: rgba(255,193,7,0.2); padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; border: 1px solid rgba(255,193,7,0.4);">
                 <i class="fas fa-info-circle me-2" style="color: #ffc107;"></i>
-                <strong>هذا عرض توضيحي.</strong> غير مخصص للاستخدام التجاري.
+                <strong>{{ 'homepage.demo.footer_notice' | translate }}</strong> {{ 'homepage.demo.footer_subtitle' | translate }}
             </div>
             
             <!-- Essential Links Only -->
             <div class="footer-links">
-                <a href="/surveys/builder">إنشاء استطلاع</a>
-                <a href="/surveys">الاستطلاعات</a>
-                <a href="/dashboard/realtime">لوحة التحكم</a>
+                <a href="/surveys/builder">{{ 'buttons.create_survey' | translate }}</a>
+                <a href="/surveys">{{ 'navigation.surveys_dropdown.title' | translate }}</a>
+                <a href="/dashboard/realtime">{{ 'buttons.dashboard' | translate }}</a>
             </div>
             
             <div class="footer-copyright">

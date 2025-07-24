@@ -1,0 +1,219 @@
+{
+  "app": {
+    "name": "Voice of Customer Platform",
+    "tagline": "Advanced Customer Feedback Analytics",
+    "description": "Comprehensive platform for collecting and analyzing customer feedback with advanced AI capabilities"
+  },
+  "navigation": {
+    "surveys": "Surveys",
+    "analytics": "Analytics",
+    "integrations": "Integrations",
+    "settings": "Settings",
+    "home": "Home",
+    "feedback": "Feedback",
+    "dashboard": "Dashboard",
+    "toggle_menu": "Toggle Menu",
+    "surveys_dropdown": {
+      "title": "Surveys",
+      "integrated_workflow": "Integrated Workflow",
+      "create_new": "Create New Survey",
+      "management_center": "Survey Management Center",
+      "management_subtitle": "Manage and distribute in one place",
+      "analytics_reports": "Analytics & Reports",
+      "responses_results": "Responses & Results"
+    },
+    "analytics_dropdown": {
+      "title": "Analytics",
+      "dashboards": "Dashboards",
+      "executive_dashboard": "Executive Dashboard",
+      "smart_insights": "Smart Insights & Lab",
+      "live_demo": "Live Analysis Demo",
+      "reports": "Reports",
+      "detailed_reports": "Detailed Reports"
+    },
+    "integrations_dropdown": {
+      "title": "Integrations",
+      "data_flow": "Data Flow",
+      "ai_management": "AI Management",
+      "ai_subtitle": "Configure and manage AI models"
+    },
+    "settings_dropdown": {
+      "title": "Settings",
+      "system_management": "System Management",
+      "user_management": "User Management",
+      "design_system": "Unified Design System",
+      "design_subtitle": "Component library and documentation"
+    }
+  },
+  "buttons": {
+    "create": "Create",
+    "save": "Save",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "delete": "Delete",
+    "submit": "Submit",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "close": "Close",
+    "open": "Open",
+    "view": "View",
+    "download": "Download",
+    "upload": "Upload",
+    "search": "Search",
+    "filter": "Filter",
+    "reset": "Reset",
+    "confirm": "Confirm",
+    "login": "Login",
+    "logout": "Logout",
+    "register": "Register",
+    "get_started": "Get Started",
+    "browse_surveys": "Browse Surveys",
+    "start_exploring": "Start Exploring",
+    "view_analytics": "View Analytics",
+    "create_survey": "Create Survey",
+    "dashboard": "Dashboard"
+  },
+  "forms": {
+    "required": "Required",
+    "optional": "Optional",
+    "email": "Email",
+    "password": "Password",
+    "username": "Username",
+    "phone": "Phone",
+    "name": "Name",
+    "title": "Title",
+    "description": "Description",
+    "content": "Content",
+    "message": "Message",
+    "subject": "Subject",
+    "feedback": "Feedback",
+    "rating": "Rating",
+    "language": "Language",
+    "date": "Date",
+    "time": "Time"
+  },
+  "messages": {
+    "success": {
+      "saved": "Successfully saved",
+      "created": "Successfully created",
+      "updated": "Successfully updated",
+      "deleted": "Successfully deleted",
+      "submitted": "Successfully submitted",
+      "feedback_submitted": "Feedback submitted successfully"
+    },
+    "errors": {
+      "required_field": "This field is required",
+      "invalid_email": "Invalid email address",
+      "invalid_phone": "Invalid phone number",
+      "general_error": "An unexpected error occurred",
+      "network_error": "Network connection error",
+      "server_error": "Server error",
+      "not_found": "Not found",
+      "unauthorized": "Unauthorized",
+      "forbidden": "Forbidden"
+    },
+    "loading": "Loading...",
+    "no_data": "No data available",
+    "empty_state": "No items to display"
+  },
+  "homepage": {
+    "hero": {
+      "title": "Voice of Customer Platform",
+      "subtitle": "Advanced Customer Feedback Analytics with AI",
+      "description": "Platform for better listening to your customers, understanding them, and meeting their needs",
+      "cta_primary": "Get Started",
+      "cta_secondary": "Learn More"
+    },
+    "demo": {
+      "title": "Demo Version",
+      "subtitle": "Not for commercial use",
+      "footer_notice": "This is a demo.",
+      "footer_subtitle": "Not for commercial use."
+    },
+    "features": {
+      "title": "Key Features",
+      "subtitle": "Everything you need to understand your customers better",
+      "arabic_ai": {
+        "title": "Arabic AI",
+        "description": "Advanced Arabic text analysis with cultural context understanding"
+      },
+      "real_time": {
+        "title": "Real-time Analysis",
+        "description": "Get analysis results in seconds with high accuracy"
+      },
+      "multi_channel": {
+        "title": "Multi-channel",
+        "description": "Collect feedback from all communication channels"
+      }
+    }
+  },
+  "dashboard": {
+    "title": "Executive Dashboard",
+    "subtitle": "Comprehensive overview of customer experience performance",
+    "metrics": {
+      "total_feedback": "Total Feedback",
+      "satisfaction": "Customer Satisfaction",
+      "response_rate": "Response Rate",
+      "processing_time": "Processing Time"
+    }
+  },
+  "surveys": {
+    "title": "Survey Management",
+    "subtitle": "Create, manage, and distribute surveys",
+    "create_new": "Create New Survey",
+    "my_surveys": "My Surveys",
+    "templates": "Templates",
+    "responses": "Responses"
+  },
+  "analytics": {
+    "title": "Analytics & Insights",
+    "subtitle": "Advanced AI-powered analysis",
+    "sentiment_analysis": "Sentiment Analysis",
+    "topic_analysis": "Topic Analysis",
+    "trends": "Trends"
+  },
+  "feedback": {
+    "title": "Submit Feedback",
+    "subtitle": "Share your opinion or suggestion",
+    "placeholder": "Write your feedback here...",
+    "channel": "Communication Channel",
+    "channels": {
+      "website": "Website",
+      "email": "Email",
+      "phone": "Phone",
+      "whatsapp": "WhatsApp",
+      "social_media": "Social Media"
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Login",
+      "subtitle": "Welcome back",
+      "email_placeholder": "Email",
+      "password_placeholder": "Password",
+      "remember_me": "Remember me",
+      "forgot_password": "Forgot password?",
+      "no_account": "Don't have an account?",
+      "create_account": "Create account"
+    },
+    "register": {
+      "title": "Create Account",
+      "subtitle": "Join our platform",
+      "have_account": "Already have an account?",
+      "login_here": "Login here"
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "profile": "Profile",
+    "preferences": "Preferences",
+    "security": "Security",
+    "notifications": "Notifications"
+  },
+  "language": {
+    "current": "English",
+    "switch_to": "العربية",
+    "toggle_tooltip": "Switch to Arabic"
+  }
+}

@@ -4,12 +4,20 @@
         <!-- Brand - Centered Layout -->
         <a class="navbar-brand fw-bold text-primary mx-auto mx-lg-0" href="/" style="font-size: 1.25rem;">
             <i class="fas fa-home me-2"></i>
-            منصة صوت العميل
+            {{ 'app.name' | translate }}
         </a>
+        
+        <!-- Language Toggle Button -->
+        <div class="navbar-nav ms-auto me-3">
+            <button class="btn btn-outline-primary btn-sm" onclick="toggleLanguage()" title="{{ 'language.toggle_tooltip' | translate }}">
+                <i class="fas fa-globe me-1"></i>
+                {{ 'language.switch_to' | translate }}
+            </button>
+        </div>
         
         <!-- Mobile Toggle -->
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavigation" 
-                aria-controls="mainNavigation" aria-expanded="false" aria-label="تبديل القائمة">
+                aria-controls="mainNavigation" aria-expanded="false" aria-label="{{ 'navigation.toggle_menu' | translate }}">
             <span class="navbar-toggler-icon"></span>
         </button>
         
@@ -20,21 +28,21 @@
                 <li class="nav-item dropdown mx-2">
                     <a class="nav-link dropdown-toggle" href="#" id="surveysDropdown" role="button" 
                        data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="fas fa-poll me-1"></i>الاستطلاعات
+                        <i class="fas fa-poll me-1"></i>{{ 'navigation.surveys_dropdown.title' | translate }}
                     </a>
                     <ul class="dropdown-menu">
-                        <li><h6 class="dropdown-header">سير العمل المتكامل</h6></li>
+                        <li><h6 class="dropdown-header">{{ 'navigation.surveys_dropdown.integrated_workflow' | translate }}</h6></li>
                         <li><a class="dropdown-item" href="/surveys/create">
-                            <i class="fas fa-plus me-2"></i>إنشاء استطلاع جديد
+                            <i class="fas fa-plus me-2"></i>{{ 'navigation.surveys_dropdown.create_new' | translate }}
                         </a></li>
                         <li><a class="dropdown-item" href="/surveys">
-                            <i class="fas fa-tasks me-2 text-primary"></i>مركز إدارة الاستطلاعات ⭐
-                            <small class="d-block text-muted">إدارة وتوزيع في مكان واحد</small>
+                            <i class="fas fa-tasks me-2 text-primary"></i>{{ 'navigation.surveys_dropdown.management_center' | translate }} ⭐
+                            <small class="d-block text-muted">{{ 'navigation.surveys_dropdown.management_subtitle' | translate }}</small>
                         </a></li>
                         <li><hr class="dropdown-divider"></li>
-                        <li><h6 class="dropdown-header">التحليلات والتقارير</h6></li>
+                        <li><h6 class="dropdown-header">{{ 'navigation.surveys_dropdown.analytics_reports' | translate }}</h6></li>
                         <li><a class="dropdown-item" href="/surveys/responses">
-                            <i class="fas fa-chart-bar me-2"></i>الردود والنتائج
+                            <i class="fas fa-chart-bar me-2"></i>{{ 'navigation.surveys_dropdown.responses_results' | translate }}
                         </a></li>
                     </ul>
                 </li>
@@ -43,23 +51,23 @@
                 <li class="nav-item dropdown mx-2">
                     <a class="nav-link dropdown-toggle" href="#" id="analyticsDropdown" role="button" 
                        data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="fas fa-chart-line me-1"></i>التحليلات
+                        <i class="fas fa-chart-line me-1"></i>{{ 'navigation.analytics_dropdown.title' | translate }}
                     </a>
                     <ul class="dropdown-menu">
-                        <li><h6 class="dropdown-header">لوحات البيانات</h6></li>
+                        <li><h6 class="dropdown-header">{{ 'navigation.analytics_dropdown.dashboards' | translate }}</h6></li>
                         <li><a class="dropdown-item" href="/analytics/dashboard">
-                            <i class="fas fa-tachometer-alt me-2"></i>لوحة القيادة التنفيذية
+                            <i class="fas fa-tachometer-alt me-2"></i>{{ 'navigation.analytics_dropdown.executive_dashboard' | translate }}
                         </a></li>
                         <li><a class="dropdown-item" href="/analytics/insights">
-                            <i class="fas fa-lightbulb me-2"></i>الرؤى الذكية والمعمل
+                            <i class="fas fa-lightbulb me-2"></i>{{ 'navigation.analytics_dropdown.smart_insights' | translate }}
                         </a></li>
                         <li><a class="dropdown-item" href="/analytics/demo">
-                            <i class="fas fa-play me-2 text-success"></i>تجربة التحليل المباشر ⭐
+                            <i class="fas fa-play me-2 text-success"></i>{{ 'navigation.analytics_dropdown.live_demo' | translate }} ⭐
                         </a></li>
                         <li><hr class="dropdown-divider"></li>
-                        <li><h6 class="dropdown-header">التقارير</h6></li>
+                        <li><h6 class="dropdown-header">{{ 'navigation.analytics_dropdown.reports' | translate }}</h6></li>
                         <li><a class="dropdown-item" href="/analytics/reports">
-                            <i class="fas fa-file-chart me-2"></i>تقارير مفصلة
+                            <i class="fas fa-file-chart me-2"></i>{{ 'navigation.analytics_dropdown.detailed_reports' | translate }}
                         </a></li>
                     </ul>
                 </li>
@@ -68,12 +76,12 @@
                 <li class="nav-item dropdown mx-2">
                     <a class="nav-link dropdown-toggle" href="#" id="integrationsDropdown" role="button" 
                        data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="fas fa-plug me-1"></i>التكاملات
+                        <i class="fas fa-plug me-1"></i>{{ 'navigation.integrations_dropdown.title' | translate }}
                     </a>
                     <ul class="dropdown-menu">
-                        <li><h6 class="dropdown-header">تدفق البيانات</h6></li>
+                        <li><h6 class="dropdown-header">{{ 'navigation.integrations_dropdown.data_flow' | translate }}</h6></li>
                         <li><a class="dropdown-item" href="/integrations">
-                            <i class="fas fa-brain me-2 text-purple"></i>إدارة التكامل
+                            <i class="fas fa-brain me-2 text-purple"></i>{{ 'navigation.integrations_dropdown.ai_management' | translate }}
                         </a></li>
                     </ul>
                 </li>
@@ -82,23 +90,21 @@
                 <li class="nav-item dropdown mx-2">
                     <a class="nav-link dropdown-toggle" href="#" id="settingsDropdown" role="button" 
                        data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="fas fa-cog me-1"></i>الإعدادات
+                        <i class="fas fa-cog me-1"></i>{{ 'navigation.settings_dropdown.title' | translate }}
                     </a>
                     <ul class="dropdown-menu">
-                        <li><h6 class="dropdown-header">إدارة الحساب</h6></li>
+                        <li><h6 class="dropdown-header">{{ 'navigation.settings_dropdown.system_management' | translate }}</h6></li>
                         <li><a class="dropdown-item" href="/settings">
-                            <i class="fas fa-sliders-h me-2"></i>إعدادات النظام
+                            <i class="fas fa-sliders-h me-2"></i>{{ 'navigation.settings_dropdown.system_management' | translate }}
                         </a></li>
                         <li><a class="dropdown-item" href="/settings/users">
-                            <i class="fas fa-users me-2"></i>إدارة المستخدمين
+                            <i class="fas fa-users me-2"></i>{{ 'navigation.settings_dropdown.user_management' | translate }}
                         </a></li>
                         <li><hr class="dropdown-divider"></li>
-                        <li><h6 class="dropdown-header">متقدم</h6></li>
+                        <li><h6 class="dropdown-header">{{ 'navigation.settings_dropdown.design_system' | translate }}</h6></li>
                         <li><a class="dropdown-item" href="/settings/design-system">
-                            <i class="fas fa-palette me-2"></i>نظام التصميم
-                        </a></li>
-                        <li><a class="dropdown-item" href="/settings/admin">
-                            <i class="fas fa-server me-2"></i>إدارة المنصة
+                            <i class="fas fa-palette me-2"></i>{{ 'navigation.settings_dropdown.design_system' | translate }}
+                            <small class="d-block text-muted">{{ 'navigation.settings_dropdown.design_subtitle' | translate }}</small>
                         </a></li>
                     </ul>
                 </li>
@@ -111,14 +117,14 @@
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" 
                        data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="fas fa-user-circle me-1"></i>المستخدم
+                        <i class="fas fa-user-circle me-1"></i>{{ 'auth.login.title' | translate }}
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end">
                         <li><a class="dropdown-item" href="/login">
-                            <i class="fas fa-sign-in-alt me-2"></i>تسجيل الدخول
+                            <i class="fas fa-sign-in-alt me-2"></i>{{ 'buttons.login' | translate }}
                         </a></li>
                         <li><a class="dropdown-item" href="/register">
-                            <i class="fas fa-user-plus me-2"></i>إنشاء حساب
+                            <i class="fas fa-user-plus me-2"></i>{{ 'buttons.register' | translate }}
                         </a></li>
                     </ul>
                 </li>
