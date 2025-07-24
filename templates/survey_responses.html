@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="{{ get_language_info().code }}" dir="{{ get_language_info().direction }}">
 <head>
     {% include 'components/head.html' %}
     {% include 'components/standard_buttons.html' %}
-    <title>الردود والنتائج - منصة صوت العميل العربية</title>
+    <title>{{ 'surveys_dropdown.responses_results' | translate }} - {{ 'app.name' | translate }}</title>
     
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

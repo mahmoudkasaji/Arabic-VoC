@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="{{ get_language_info().code }}" dir="{{ get_language_info().direction }}">
 <head>
     {% include 'components/head.html' %}
-    <title>إرسال تعليق - منصة صوت العميل العربية</title>
+    <title>{{ 'feedback.title' | translate }} - {{ 'app.name' | translate }}</title>
     
     <style>
         .feedback-container { 

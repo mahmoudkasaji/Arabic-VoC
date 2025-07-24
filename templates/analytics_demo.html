@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="{{ get_language_info().code }}" dir="{{ get_language_info().direction }}">
 <head>
     {% include 'components/head.html' %}
-    <title>{{ title }} - منصة صوت العميل</title>
+    <title>{{ title | default('analytics_dropdown.live_demo' | translate) }} - {{ 'app.name' | translate }}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/unified-layout.css') }}">
     <style>
         .demo-container {

@@ -164,7 +164,9 @@
     "create_new": "إنشاء استطلاع جديد",
     "my_surveys": "استطلاعاتي",
     "templates": "القوالب",
-    "responses": "الردود"
+    "responses": "الردود",
+    "builder_title": "منشئ الاستطلاعات",
+    "delivery_title": "توزيع الاستطلاعات"
   },
   "analytics": {
     "title": "التحليلات والرؤى",
@@ -202,7 +204,13 @@
       "subtitle": "انضم إلى منصتنا",
       "have_account": "لديك حساب بالفعل؟",
       "login_here": "سجل الدخول هنا"
+    },
+    "demo": {
+      "quick_test": "للتجربة السريعة"
     }
+  },
+  "navigation": {
+    "back_to_home": "العودة للرئيسية"
   },
   "settings": {
     "title": "الإعدادات",

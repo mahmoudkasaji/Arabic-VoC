@@ -159,12 +159,14 @@
     }
   },
   "surveys": {
-    "title": "Survey Management",
+    "title": "Survey Management", 
     "subtitle": "Create, manage, and distribute surveys",
     "create_new": "Create New Survey",
     "my_surveys": "My Surveys",
     "templates": "Templates",
-    "responses": "Responses"
+    "responses": "Responses",
+    "builder_title": "Survey Builder",
+    "delivery_title": "Survey Delivery"
   },
   "analytics": {
     "title": "Analytics & Insights",
@@ -202,7 +204,13 @@
       "subtitle": "Join our platform",
       "have_account": "Already have an account?",
       "login_here": "Login here"
+    },
+    "demo": {
+      "quick_test": "Quick test"
     }
+  },
+  "navigation": {
+    "back_to_home": "Back to Home"
   },
   "settings": {
     "title": "Settings",
