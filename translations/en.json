@@ -43,7 +43,8 @@
       "user_management": "User Management",
       "design_system": "Unified Design System",
       "design_subtitle": "Component library and documentation"
-    }
+    },
+    "back_to_home": "Back to Home"
   },
   "buttons": {
     "create": "Create",
@@ -208,9 +209,6 @@
     "demo": {
       "quick_test": "Quick test"
     }
-  },
-  "navigation": {
-    "back_to_home": "Back to Home"
   },
   "settings": {
     "title": "Settings",

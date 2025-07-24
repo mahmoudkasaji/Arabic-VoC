@@ -438,6 +438,23 @@ def language_status():
         from utils.template_helpers import get_error_message
         return jsonify({'error': get_error_message('general_error')}), 500
 
+@app.route('/api/language/test')
+def language_test():
+    """Test translation functionality"""
+    key = request.args.get('key', 'navigation.surveys_dropdown.title')
+    try:
+        translation = language_manager.translate(key)
+        current_lang = language_manager.get_current_language()
+        return jsonify({
+            'key': key,
+            'translation': translation,
+            'language': current_lang,
+            'translations_exist': bool(language_manager.translations),
+            'navigation_data': language_manager.translations.get(current_lang, {}).get('navigation', {})
+        })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 @app.route('/api/committee-performance')
 def committee_performance():
     """Get agent committee performance metrics"""

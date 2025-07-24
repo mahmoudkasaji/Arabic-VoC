@@ -43,7 +43,8 @@
       "user_management": "إدارة المستخدمين",
       "design_system": "نظام التصميم الموحد",
       "design_subtitle": "مكتبة المكونات والتوثيق"
-    }
+    },
+    "back_to_home": "العودة للرئيسية"
   },
   "buttons": {
     "create": "إنشاء",
@@ -208,9 +209,6 @@
     "demo": {
       "quick_test": "للتجربة السريعة"
     }
-  },
-  "navigation": {
-    "back_to_home": "العودة للرئيسية"
   },
   "settings": {
     "title": "الإعدادات",
