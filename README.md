@@ -27,6 +27,7 @@ A comprehensive Voice of Customer platform with advanced bilingual (Arabic/Engli
 
 ### 🚀 Technical Architecture
 - **Flask Backend**: Production-ready WSGI application optimized for Replit deployment
+- **Replit Authentication**: Native OAuth 2.0 integration with PKCE security
 - **PostgreSQL Database**: Scalable database with Arabic text optimization and connection pooling
 - **Simplified AI Analysis**: Streamlined analysis engine (60% faster, 83% less memory usage)
 - **Modern Frontend**: Vanilla JavaScript with SortableJS for drag-and-drop functionality
@@ -67,6 +68,8 @@ A comprehensive Voice of Customer platform with advanced bilingual (Arabic/Engli
    export DATABASE_URL="postgresql://user:password@localhost/voc_platform"
    export OPENAI_API_KEY="your-openai-api-key"
    export SESSION_SECRET="your-session-secret"
+   export REPL_ID="your-replit-app-id"  # Auto-provided in Replit
+   export ISSUER_URL="https://replit.com/oidc"  # Replit OAuth endpoint
    ```
 
 3. **Run Application**
@@ -76,6 +79,8 @@ A comprehensive Voice of Customer platform with advanced bilingual (Arabic/Engli
 
 ### Access Points
 - **Main Platform**: `/` - Homepage with language selection
+- **Authentication**: `/auth/replit_auth` - Replit OAuth login
+- **User Profile**: `/profile` - User profile and platform preferences
 - **Survey Builder**: `/surveys/create` - Drag-and-drop survey creation
 - **Analytics Dashboard**: `/analytics/dashboard` - Real-time insights
 - **Settings**: `/settings` - User preferences and system configuration
@@ -115,6 +120,12 @@ A comprehensive Voice of Customer platform with advanced bilingual (Arabic/Engli
 - `GET /analytics/dashboard` - Real-time dashboard metrics
 - `POST /api/test-ai-analysis` - AI-powered text analysis
 - `GET /api/dashboard/metrics` - Dashboard data endpoints
+
+### Authentication & User Management
+- `GET /auth/replit_auth` - Initiate Replit OAuth login
+- `GET /auth/replit_auth/logout` - User logout
+- `GET /profile` - User profile and preferences
+- `POST /api/user_preferences/update` - Update user preferences
 
 ### Language & Internationalization
 - `POST /api/language/toggle` - Switch interface language
