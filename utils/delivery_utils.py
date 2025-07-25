@@ -63,7 +63,9 @@ class UnifiedDeliveryManager:
             try:
                 from utils.gmail_delivery import GmailDeliveryService
                 gmail_service = GmailDeliveryService()
-                result = gmail_service.send_survey_invitation(recipient, link, title, "Voice of Customer Platform", template)
+                # Extract first name from email or use default
+                customer_name = recipient.split('@')[0].title() if '@' in recipient else "Customer"
+                result = gmail_service.send_survey_invitation(recipient, link, title, "Voice of Customer Platform", template, customer_name)
                 
                 return DeliveryResult(
                     success=result.success,

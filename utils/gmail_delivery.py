@@ -37,7 +37,8 @@ class GmailDeliveryService:
                               survey_link: str,
                               survey_title: str,
                               sender_name: str = "Voice of Customer Platform",
-                              message_template: Optional[str] = None) -> GmailDeliveryResult:
+                              message_template: Optional[str] = None,
+                              customer_first_name: str = "Customer") -> GmailDeliveryResult:
         """Send survey invitation via Gmail"""
         
         if not self.configured:
@@ -56,11 +57,11 @@ class GmailDeliveryService:
             # Create email content
             if message_template:
                 # Use custom template
-                email_body = message_template.replace("{survey_link}", survey_link).replace("{survey_title}", survey_title)
+                email_body = message_template.replace("{survey_link}", survey_link).replace("{survey_title}", survey_title).replace("{customer_first_name}", customer_first_name)
             else:
                 # Default template
                 email_body = f"""
-السلام عليكم ورحمة الله وبركاته،
+Hello {{customer_first_name}},
 
 يسعدنا دعوتكم للمشاركة في استطلاع رأي مهم حول: {survey_title}
 
@@ -93,7 +94,7 @@ class GmailDeliveryService:
                         <h2>استطلاع رأي مهم</h2>
                     </div>
                     <div class="content">
-                        <p>السلام عليكم ورحمة الله وبركاته،</p>
+                        <p>Hello {customer_first_name},</p>
                         <p>يسعدنا دعوتكم للمشاركة في استطلاع رأي حول: <strong>{survey_title}</strong></p>
                         <p>مشاركتكم مهمة جداً لنا وستساعدنا في تحسين خدماتنا.</p>
                         <div style="text-align: center;">
