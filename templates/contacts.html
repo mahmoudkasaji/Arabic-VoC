@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="{{ get_language_info().code }}" dir="{{ get_language_info().direction }}">
+<head>
+    {% include 'components/head.html' %}
+    <title>{{ 'contacts.title' | translate }} - {{ 'app.name' | translate }}</title>
+</head>
+<body>
+    {% include 'components/unified_navigation.html' %}
+    
+    <div class="container-custom">
+        <!-- Header -->
+        <div class="page-header mb-4">
+            <h1 class="page-title">إدارة جهات الاتصال</h1>
+            <p class="page-description">إدارة قائمة جهات الاتصال لتوزيع الاستطلاعات</p>
+        </div>
+
+        <!-- Actions Bar -->
+        <div class="card-unified mb-4">
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="searchContacts" placeholder="البحث في جهات الاتصال...">
+                            <button class="btn btn-outline-secondary" type="button" onclick="searchContacts()">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-md-6 text-end">
+                        <button class="btn btn-primary me-2" onclick="showAddContactModal()">
+                            <i class="fas fa-plus me-2"></i>إضافة جهة اتصال
+                        </button>
+                        <button class="btn btn-outline-primary me-2" onclick="showBulkImportModal()">
+                            <i class="fas fa-upload me-2"></i>استيراد جماعي
+                        </button>
+                        <button class="btn btn-outline-secondary" onclick="testEmailService()">
+                            <i class="fas fa-envelope me-2"></i>اختبار البريد الإلكتروني
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="card-unified mb-4">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3">
+                        <label class="form-label">المجموعة</label>
+                        <select class="form-select" id="groupFilter" onchange="applyFilters()">
+                            <option value="">جميع المجموعات</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">القناة</label>
+                        <select class="form-select" id="channelFilter" onchange="applyFilters()">
+                            <option value="">جميع القنوات</option>
+                            <option value="email">البريد الإلكتروني</option>
+                            <option value="sms">الرسائل النصية</option>
+                            <option value="whatsapp">واتساب</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">الحالة</label>
+                        <select class="form-select" id="statusFilter" onchange="applyFilters()">
+                            <option value="active">نشط</option>
+                            <option value="all">الكل</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">&nbsp;</label>
+                        <div>
+                            <button class="btn btn-outline-secondary w-100" onclick="resetFilters()">
+                                <i class="fas fa-undo me-2"></i>إعادة تعيين
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contacts Table -->
+        <div class="card-unified">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-users me-2"></i>قائمة جهات الاتصال
+                    <span class="badge bg-primary" id="contactCount">0</span>
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover" id="contactsTable">
+                        <thead>
+                            <tr>
+                                <th>الاسم</th>
+                                <th>البريد الإلكتروني</th>
+                                <th>الهاتف</th>
+                                <th>الشركة</th>
+                                <th>القنوات المتاحة</th>
+                                <th>اللغة</th>
+                                <th>الحالة</th>
+                                <th>الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="contactsTableBody">
+                            <tr>
+                                <td colspan="8" class="text-center py-4">
+                                    <div class="spinner-border text-primary" role="status">
+                                        <span class="visually-hidden">جاري التحميل...</span>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Contact Modal -->
+    <div class="modal fade" id="addContactModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">إضافة جهة اتصال جديدة</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addContactForm">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">الاسم *</label>
+                                    <input type="text" class="form-control" id="contactName" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">الشركة</label>
+                                    <input type="text" class="form-control" id="contactCompany">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">البريد الإلكتروني</label>
+                                    <input type="email" class="form-control" id="contactEmail">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">رقم الهاتف</label>
+                                    <input type="tel" class="form-control" id="contactPhone" placeholder="+966xxxxxxxxx">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">اللغة المفضلة</label>
+                                    <select class="form-select" id="contactLanguage">
+                                        <option value="ar">العربية</option>
+                                        <option value="en">English</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">الحالة</label>
+                                    <select class="form-select" id="contactStatus">
+                                        <option value="true">نشط</option>
+                                        <option value="false">غير نشط</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">تفضيلات التواصل</label>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="emailOptIn" checked>
+                                        <label class="form-check-label" for="emailOptIn">البريد الإلكتروني</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="smsOptIn" checked>
+                                        <label class="form-check-label" for="smsOptIn">الرسائل النصية</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="whatsappOptIn" checked>
+                                        <label class="form-check-label" for="whatsappOptIn">واتساب</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">ملاحظات</label>
+                            <textarea class="form-control" id="contactNotes" rows="3"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                    <button type="button" class="btn btn-primary" onclick="saveContact()">حفظ</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Email Test Modal -->
+    <div class="modal fade" id="emailTestModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">اختبار خدمة البريد الإلكتروني</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">البريد الإلكتروني للاختبار</label>
+                        <input type="email" class="form-control" id="testEmail" placeholder="test@example.com">
+                        <div class="form-text">سيتم إرسال رسالة اختبار إلى هذا العنوان</div>
+                    </div>
+                    <div id="emailTestResult" class="mt-3" style="display: none;"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                    <button type="button" class="btn btn-primary" onclick="runEmailTest()">إرسال اختبار</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/js/contacts.js"></script>
+</body>
+</html>

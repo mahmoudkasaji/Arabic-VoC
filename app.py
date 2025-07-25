@@ -60,6 +60,9 @@ with app.app_context():
     # Will be re-enabled after refactoring
     from models.survey import Survey, Question, SurveyStatus, QuestionType
     
+    # Import contact models for survey delivery
+    from models.contacts import Contact, ContactGroup, ContactGroupMembership, ContactDelivery
+    
     # Import preferences model to ensure table creation
     try:
         from models.replit_user_preferences import ReplitUserPreferences
@@ -76,6 +79,10 @@ import api.survey_management
 # Register executive dashboard API blueprint
 from api.executive_dashboard import executive_bp
 app.register_blueprint(executive_bp, url_prefix='/api/executive-dashboard')
+
+# Register contacts API blueprint
+from api.contacts import contacts_bp
+app.register_blueprint(contacts_bp)
 
 # Import user preferences API
 import api.user_preferences
@@ -257,6 +264,12 @@ def survey_responses_page():
     """Survey responses page"""
     return render_template('survey_responses.html', 
                          title='الردود والنتائج')
+
+@app.route('/contacts')
+def contacts_page():
+    """Contact management page"""
+    return render_template('contacts.html', 
+                         title='إدارة جهات الاتصال')
 
 # Analytics Routes (Consolidated Dashboard + Insights)
 @app.route('/dashboard')

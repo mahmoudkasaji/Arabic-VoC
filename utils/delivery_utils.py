@@ -24,7 +24,11 @@ class UnifiedDeliveryManager:
     """Consolidated delivery manager for all channels"""
     
     def __init__(self):
-        self.email_configured = bool(os.getenv("SENDGRID_API_KEY"))
+        # Email: Gmail (preferred) or SendGrid (fallback)
+        gmail_configured = bool(os.getenv("GMAIL_USERNAME")) and bool(os.getenv("GMAIL_APP_PASSWORD"))
+        sendgrid_configured = bool(os.getenv("SENDGRID_API_KEY"))
+        self.email_configured = gmail_configured or sendgrid_configured
+        
         self.sms_configured = bool(os.getenv("TWILIO_ACCOUNT_SID")) and bool(os.getenv("TWILIO_AUTH_TOKEN"))
         self.whatsapp_configured = bool(os.getenv("WHATSAPP_API_KEY"))
         
@@ -51,9 +55,28 @@ class UnifiedDeliveryManager:
             return DeliveryResult(False, error_message=str(e))
     
     def _send_email(self, recipient: str, link: str, title: str, template: Optional[str]) -> DeliveryResult:
-        """Send email invitation"""
+        """Send email invitation via Gmail or SendGrid"""
+        # Try Gmail first, fallback to SendGrid
+        gmail_available = bool(os.getenv("GMAIL_USERNAME")) and bool(os.getenv("GMAIL_APP_PASSWORD"))
+        
+        if gmail_available:
+            try:
+                from utils.gmail_delivery import GmailDeliveryService
+                gmail_service = GmailDeliveryService()
+                result = gmail_service.send_survey_invitation(recipient, link, title, "Voice of Customer Platform", template)
+                
+                return DeliveryResult(
+                    success=result.success,
+                    message_id=result.message_id,
+                    error_message=result.error_message,
+                    delivery_time=result.delivery_time
+                )
+            except Exception as e:
+                logger.warning(f"Gmail delivery failed, trying SendGrid: {e}")
+        
+        # Fallback to SendGrid if Gmail is not available or fails
         if not self.email_configured:
-            return DeliveryResult(False, error_message="Email service not configured")
+            return DeliveryResult(False, error_message="No email service configured. Please set either Gmail (GMAIL_USERNAME, GMAIL_APP_PASSWORD) or SendGrid (SENDGRID_API_KEY) credentials.")
         
         try:
             import sendgrid
@@ -88,12 +111,12 @@ class UnifiedDeliveryManager:
             
             return DeliveryResult(
                 success=True,
-                message_id=response.headers.get("X-Message-Id"),
+                message_id=getattr(response, 'headers', {}).get("X-Message-Id") if hasattr(response, 'headers') else None,
                 delivery_time=datetime.utcnow()
             )
             
         except Exception as e:
-            logger.error(f"Email delivery failed: {e}")
+            logger.error(f"SendGrid delivery failed: {e}")
             return DeliveryResult(False, error_message=f"Email failed: {str(e)}")
     
     def _send_sms(self, recipient: str, link: str, title: str, template: Optional[str]) -> DeliveryResult:
@@ -123,6 +146,7 @@ class UnifiedDeliveryManager:
                 body=message_body,
                 from_=os.getenv("TWILIO_PHONE_NUMBER"),
                 to=recipient
+            )
             )
             
             return DeliveryResult(
@@ -162,7 +186,7 @@ class UnifiedDeliveryManager:
                 
                 message = client.messages.create(
                     body=message_body,
-                    from_="whatsapp:" + os.getenv("TWILIO_WHATSAPP_NUMBER", os.getenv("TWILIO_PHONE_NUMBER")),
+                    from_="whatsapp:" + (os.getenv("TWILIO_WHATSAPP_NUMBER") or os.getenv("TWILIO_PHONE_NUMBER") or ""),
                     to=whatsapp_number
                 )
                 
@@ -192,15 +216,17 @@ class UnifiedDeliveryManager:
             survey_title = delivery.get("survey_title")
             template = delivery.get("template")
             
-            result = self.send_survey_invitation(
-                channel=channel,
-                recipient=recipient,
-                survey_link=survey_link,
-                survey_title=survey_title,
-                message_template=template
-            )
-            
-            results[recipient_id] = result
+            if channel and recipient and survey_link and survey_title and self.validate_recipient(channel, recipient):
+                result = self.send_survey_invitation(
+                    channel=channel,
+                    recipient=recipient,
+                    survey_link=survey_link,
+                    survey_title=survey_title,
+                    message_template=template
+                )
+                results[str(recipient_id)] = result
+            else:
+                results[str(recipient_id)] = DeliveryResult(False, error_message="Invalid recipient or missing data")
             
             # Brief delay between sends
             import time
