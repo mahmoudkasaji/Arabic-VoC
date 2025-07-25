@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="{{ get_language_info().code }}" dir="{{ get_language_info().direction }}">
+<head>
+    {% include 'components/head.html' %}
+    <title>{{ 'surveys.title' | translate }} - {{ 'app.name' | translate }}</title>
+    
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/unified-layout.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/survey-design-system.css') }}">
+</head>
+<body>
+    {% include 'components/unified_navigation.html' %}
+<div class="container-unified">
+    <div class="page-header">
+        <h1 class="page-title">إدارة الاستطلاعات</h1>
+        <div class="page-actions">
+            <button class="btn btn-primary" onclick="location.href='/surveys/builder'">
+                <i class="fas fa-plus me-2"></i>إنشاء استطلاع جديد
+            </button>
+        </div>
+    </div>
+
+    <!-- Survey Statistics Cards -->
+    <div class="grid-4-cols mb-4">
+        <div class="card-unified">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="stat-icon bg-primary text-white rounded-circle me-3" style="width: 48px; height: 48px; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-poll"></i>
+                    </div>
+                    <div>
+                        <h3 class="mb-0" id="totalSurveys">0</h3>
+                        <p class="text-muted mb-0">إجمالي الاستطلاعات</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card-unified">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="stat-icon bg-success text-white rounded-circle me-3" style="width: 48px; height: 48px; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div>
+                        <h3 class="mb-0" id="activeSurveys">0</h3>
+                        <p class="text-muted mb-0">الاستطلاعات النشطة</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card-unified">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="stat-icon bg-info text-white rounded-circle me-3" style="width: 48px; height: 48px; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div>
+                        <h3 class="mb-0" id="totalResponses">0</h3>
+                        <p class="text-muted mb-0">إجمالي الاستجابات</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card-unified">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="stat-icon bg-warning text-white rounded-circle me-3" style="width: 48px; height: 48px; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-percentage"></i>
+                    </div>
+                    <div>
+                        <h3 class="mb-0" id="avgCompletionRate">0%</h3>
+                        <p class="text-muted mb-0">متوسط معدل الإكمال</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search and Filter Controls -->
+    <div class="card-unified mb-4">
+        <div class="card-body">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-search"></i></span>
+                        <input type="text" class="form-control" id="searchInput" placeholder="البحث في الاستطلاعات...">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="d-flex gap-2">
+                        <select class="form-select" id="statusFilter">
+                            <option value="">جميع الحالات</option>
+                            <option value="published">نشط</option>
+                            <option value="draft">مسودة</option>
+                            <option value="paused">متوقف</option>
+                        </select>
+                        <button class="btn btn-outline-secondary" onclick="refreshSurveys()">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Surveys Table -->
+    <div class="card-unified">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>العنوان</th>
+                            <th>الحالة</th>
+                            <th>الاستجابات</th>
+                            <th>معدل الإكمال</th>
+                            <th>تاريخ الإنشاء</th>
+                            <th>المعرف الفريد</th>
+                            <th>الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody id="surveysTableBody">
+                        <tr id="loadingRow">
+                            <td colspan="7" class="text-center py-4">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">جاري التحميل...</span>
+                                </div>
+                                <div class="mt-2">جاري تحميل الاستطلاعات...</div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Empty State (hidden by default) -->
+    <div id="emptyState" class="text-center py-5" style="display: none;">
+        <div class="mb-4">
+            <i class="fas fa-poll-h text-muted" style="font-size: 4rem;"></i>
+        </div>
+        <h3 class="text-muted">لا توجد استطلاعات بعد</h3>
+        <p class="text-muted mb-4">ابدأ بإنشاء أول استطلاع لك لجمع آراء العملاء</p>
+        <button class="btn btn-primary" onclick="location.href='/surveys/builder'">
+            <i class="fas fa-plus me-2"></i>إنشاء استطلاع جديد
+        </button>
+    </div>
+</div>
+
+<script>
+let surveysData = [];
+
+// Initialize page with server-side data
+document.addEventListener('DOMContentLoaded', function() {
+    // Get surveys data from server-side template
+    const surveysFromServer = {{ surveys | tojson }};
+    const statsFromServer = {{ stats | tojson }};
+    
+    console.log('Loading surveys from server data...');
+    console.log('Surveys data:', surveysFromServer);
+    
+    if (surveysFromServer && Array.isArray(surveysFromServer)) {
+        surveysData = surveysFromServer;
+        updateStatisticsFromServer(statsFromServer);
+        renderSurveys(surveysData);
+    } else {
+        console.log('No surveys data available');
+        showEmptyState();
+    }
+    
+    // Set up search functionality
+    document.getElementById('searchInput').addEventListener('input', filterSurveys);
+    document.getElementById('statusFilter').addEventListener('change', filterSurveys);
+});
+
+function updateStatisticsFromServer(stats) {
+    document.getElementById('totalSurveys').textContent = stats.total_surveys || 0;
+    document.getElementById('activeSurveys').textContent = stats.active_surveys || 0;
+    document.getElementById('totalResponses').textContent = stats.total_responses || 0;
+    document.getElementById('avgCompletionRate').textContent = (stats.avg_completion_rate || 0) + '%';
+}
+
+function showEmptyState() {
+    document.getElementById('emptyState').style.display = 'block';
+    document.querySelector('.table-responsive').style.display = 'none';
+}
+
+// Remove unused updateStatistics function - now using updateStatisticsFromServer
+
+function renderSurveys(surveys) {
+    const tbody = document.getElementById('surveysTableBody');
+    
+    if (surveys.length === 0) {
+        document.getElementById('emptyState').style.display = 'block';
+        document.querySelector('.table-responsive').style.display = 'none';
+        return;
+    }
+    
+    document.getElementById('emptyState').style.display = 'none';
+    document.querySelector('.table-responsive').style.display = 'block';
+    
+    tbody.innerHTML = surveys.map(survey => `
+        <tr>
+            <td>
+                <div class="fw-bold">${survey.title || survey.title_ar}</div>
+                <small class="text-muted">${survey.description || ''}</small>
+                <div class="mt-1">
+                    <span class="badge bg-light text-dark me-1">
+                        <i class="fas fa-question-circle"></i> ${survey.question_count || 0} أسئلة
+                    </span>
+                </div>
+            </td>
+            <td>
+                <span class="badge ${getStatusBadgeClass(survey.status)}">
+                    ${getStatusText(survey.status)}
+                </span>
+            </td>
+            <td>
+                <div class="fw-bold">${survey.response_count || 0} استجابة</div>
+                <small class="text-muted">معرف قصير: ${survey.short_id || 'غير متوفر'}</small>
+            </td>
+            <td>
+                <div class="fw-bold">${Math.round(survey.completion_rate || 0)}%</div>
+                <div class="progress mt-1" style="height: 4px;">
+                    <div class="progress-bar" style="width: ${survey.completion_rate || 0}%"></div>
+                </div>
+            </td>
+            <td>
+                <div class="fw-bold">${formatDate(survey.created_at)}</div>
+                <small class="text-muted">آخر تحديث: ${formatDate(survey.updated_at)}</small>
+            </td>
+            <td>
+                <code class="small">${survey.uuid}</code>
+                ${survey.public_url ? `<div><a href="${survey.public_url}" target="_blank" class="small">رابط عام</a></div>` : ''}
+            </td>
+            <td>
+                <div class="btn-group">
+                    <a href="/surveys/builder?id=${survey.id}" class="btn btn-sm btn-outline-primary" title="تحرير">
+                        <i class="fas fa-edit"></i>
+                    </a>
+                    <button class="btn btn-sm btn-outline-success" onclick="showDistribution(${survey.id})" title="توزيع">
+                        <i class="fas fa-share"></i>
+                    </button>
+                    <a href="/surveys/responses?id=${survey.id}" class="btn btn-sm btn-outline-info" title="الاستجابات">
+                        <i class="fas fa-chart-bar"></i>
+                    </a>
+                    <button class="btn btn-sm btn-outline-danger" onclick="deleteSurvey(${survey.id})" title="حذف">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </td>
+        </tr>
+    `).join('');
+}
+
+function getStatusBadgeClass(status) {
+    switch(status) {
+        case 'published': return 'bg-success';
+        case 'draft': return 'bg-secondary';
+        case 'paused': return 'bg-warning';
+        default: return 'bg-light text-dark';
+    }
+}
+
+function getStatusText(status) {
+    switch(status) {
+        case 'published': return 'نشط';
+        case 'draft': return 'مسودة';
+        case 'paused': return 'متوقف';
+        default: return status;
+    }
+}
+
+function formatDate(dateString) {
+    if (!dateString) return 'غير محدد';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('ar-SA', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+    });
+}
+
+function filterSurveys() {
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+    const statusFilter = document.getElementById('statusFilter').value;
+    
+    const filtered = surveysData.filter(survey => {
+        const matchesSearch = !searchTerm || 
+            (survey.title && survey.title.toLowerCase().includes(searchTerm)) ||
+            (survey.description && survey.description.toLowerCase().includes(searchTerm));
+        
+        const matchesStatus = !statusFilter || survey.status === statusFilter;
+        
+        return matchesSearch && matchesStatus;
+    });
+    
+    renderSurveys(filtered);
+}
+
+function refreshSurveys() {
+    // Reload the page to get fresh data from server
+    window.location.reload();
+}
+
+function showDistribution(surveyId) {
+    // Navigate to distribution page
+    window.location.href = `/surveys/distribution?survey=${surveyId}`;
+}
+
+function deleteSurvey(surveyId) {
+    if (confirm('هل أنت متأكد من حذف هذا الاستطلاع؟ هذا الإجراء لا يمكن التراجع عنه.')) {
+        // Implementation for delete
+        console.log('Deleting survey:', surveyId);
+        // Add actual delete API call here
+    }
+}
+
+function showError(message) {
+    const tbody = document.getElementById('surveysTableBody');
+    tbody.innerHTML = `
+        <tr>
+            <td colspan="7" class="text-center py-4 text-danger">
+                <i class="fas fa-exclamation-triangle me-2"></i>${message}
+                <br><button class="btn btn-sm btn-primary mt-2" onclick="refreshSurveys()">إعادة المحاولة</button>
+            </td>
+        </tr>
+    `;
+}
+</script>
+
+{% include 'components/scripts.html' %}
+</body>
+</html>

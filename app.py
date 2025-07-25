@@ -239,72 +239,72 @@ def list_feedback():
 
 @app.route('/surveys')
 def surveys_page():
-    """Survey management page with direct database access"""
+    """Survey management page - simple database pull"""
     try:
         from models.survey_flask import SurveyFlask
-        from sqlalchemy import func
         import json
         
-        # Fetch surveys directly from database
+        # Get all surveys from database
         surveys = db.session.query(SurveyFlask).order_by(SurveyFlask.created_at.desc()).all()
         
-        # Prepare surveys data for template
+        # Prepare survey data
         surveys_data = []
         total_responses = 0
         active_surveys = 0
         
         for survey in surveys:
-            # Calculate metrics
+            # Count active surveys
             if survey.status == 'published':
                 active_surveys += 1
             
-            total_responses += survey.response_count or 0
+            # Get response count
+            response_count = getattr(survey, 'response_count', 0) or 0
+            total_responses += response_count
             
-            survey_dict = {
+            # Get question count from JSON if available
+            question_count = 0
+            if hasattr(survey, 'questions') and survey.questions:
+                try:
+                    questions = json.loads(survey.questions)
+                    question_count = len(questions) if isinstance(questions, list) else 0
+                except:
+                    question_count = 0
+            
+            survey_data = {
                 'id': survey.id,
                 'uuid': survey.uuid,
                 'short_id': survey.short_id,
                 'title': survey.title_ar or survey.title,
-                'title_ar': survey.title_ar,
-                'title_en': survey.title_en,
                 'description': survey.description_ar or survey.description or '',
                 'status': survey.status,
-                'question_count': len(json.loads(survey.questions)) if survey.questions else 0,
-                'response_count': survey.response_count or 0,
-                'completion_rate': 0,  # Calculate if needed
+                'question_count': question_count,
+                'response_count': response_count,
                 'created_at': survey.created_at.isoformat() if survey.created_at else None,
                 'updated_at': survey.updated_at.isoformat() if survey.updated_at else None,
                 'is_public': survey.is_public,
                 'public_url': f'/s/{survey.short_id}' if survey.short_id else None
             }
-            surveys_data.append(survey_dict)
+            surveys_data.append(survey_data)
         
-        # Calculate statistics
-        total_surveys = len(surveys_data)
-        avg_completion_rate = 0  # Calculate if needed
+        # Statistics
+        stats = {
+            'total_surveys': len(surveys_data),
+            'active_surveys': active_surveys,
+            'total_responses': total_responses,
+            'avg_completion_rate': 0
+        }
         
         return render_template('surveys.html',
                              title='إدارة الاستطلاعات',
                              surveys=surveys_data,
-                             stats={
-                                 'total_surveys': total_surveys,
-                                 'active_surveys': active_surveys,
-                                 'total_responses': total_responses,
-                                 'avg_completion_rate': avg_completion_rate
-                             })
+                             stats=stats)
                              
     except Exception as e:
         logger.error(f"Error loading surveys: {e}")
-        # Return empty data on error
         return render_template('surveys.html',
                              title='إدارة الاستطلاعات',
                              surveys=[],
-                             stats={
-                                 'total_surveys': 0,
-                                 'active_surveys': 0,
-                                 'total_responses': 0,
-                                 'avg_completion_rate': 0
-                             })
+                             stats={'total_surveys': 0, 'active_surveys': 0, 'total_responses': 0, 'avg_completion_rate': 0})
 
 
 
