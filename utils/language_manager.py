@@ -37,51 +37,62 @@ class LanguageManager:
                 self.translations[lang] = {}
     
     def get_current_language(self) -> str:
-        """Get current user's language preference"""
-        # CRITICAL FIX: Simplified session-first approach for consistency
-        
-        # 1. Check URL parameter (highest priority) 
-        if request and request.args.get('lang') in self.supported_languages:
-            lang = request.args.get('lang')
-            if lang:
-                self.set_language(lang)
-                return lang
-        
-        # 2. CRITICAL: Check session FIRST and trust it completely
+        """Get current user's language preference - FINAL FIX"""
         try:
-            from flask import session
-            if hasattr(session, 'get') and session.get('language') in self.supported_languages:
-                stored_lang = session.get('language')
-                print(f"DEBUG: Found session language: {stored_lang}")  # Debug log
-                return stored_lang
+            from flask import session, g
+            
+            # 1. Check URL parameter (highest priority) 
+            if request and request.args.get('lang') in self.supported_languages:
+                lang = request.args.get('lang')
+                if lang:
+                    self.set_language(lang)
+                    return lang
+            
+            # 2. CRITICAL FIX: Use Flask's g object to cache language per request
+            if hasattr(g, '_current_language'):
+                return g._current_language
+            
+            # 3. Check session with error handling
+            session_lang = session.get('language')
+            if session_lang in self.supported_languages:
+                g._current_language = session_lang
+                return session_lang
+            
+            # 4. Check browser Accept-Language header
+            if request and request.headers.get('Accept-Language'):
+                accept_lang = request.headers.get('Accept-Language')
+                if accept_lang:
+                    browser_langs = accept_lang.split(',')
+                    for lang_header in browser_langs:
+                        lang_code = lang_header.split(';')[0].strip()[:2].lower()
+                        if lang_code in self.supported_languages:
+                            self.set_language(lang_code)
+                            g._current_language = lang_code
+                            return lang_code
+            
+            # 5. Default language
+            g._current_language = self.default_language
+            return self.default_language
+            
         except Exception as e:
-            print(f"DEBUG: Session access error: {e}")
-        
-        # 3. Check browser Accept-Language header (only if no session exists)
-        if request and request.headers.get('Accept-Language'):
-            accept_lang = request.headers.get('Accept-Language')
-            if accept_lang:
-                browser_langs = accept_lang.split(',')
-                for lang_header in browser_langs:
-                    lang_code = lang_header.split(';')[0].strip()[:2].lower()
-                    if lang_code in self.supported_languages:
-                        print(f"DEBUG: Using browser language: {lang_code}")
-                        self.set_language(lang_code)
-                        return lang_code
-        
-        # 4. Default language
-        print(f"DEBUG: Falling back to default language: {self.default_language}")
-        return self.default_language
+            print(f"DEBUG: Language detection error: {e}")
+            return self.default_language
     
     def set_language(self, language: str) -> bool:
-        """Set user's language preference"""
+        """Set user's language preference - FINAL FIX"""
         if language in self.supported_languages:
             try:
-                from flask import session
+                from flask import session, g
+                
+                # Set in session
                 session['language'] = language
-                session.permanent = True  # Make session persistent
-                session.modified = True   # Force Flask to save session
-                print(f"DEBUG: Language set to {language}, session updated")
+                session.permanent = True
+                session.modified = True
+                
+                # CRITICAL: Also cache in Flask's g object for immediate use
+                g._current_language = language
+                
+                print(f"DEBUG: Language set to {language}, session and g object updated")
                 return True
             except Exception as e:
                 print(f"DEBUG: Error setting language: {e}")

@@ -401,10 +401,12 @@ def test_ai_analysis():
         logger.error(f"Analysis failed: {str(e)}")
         return jsonify({'error': f'Analysis failed: {str(e)}'}), 500
 
-@app.route('/api/language/toggle', methods=['POST'])
+@app.route('/api/language/toggle', methods=['POST'])  
 def toggle_language():
-    """Toggle user's language preference"""
+    """Toggle user's language preference - FINAL FIX"""
     try:
+        from flask import g
+        
         data = request.get_json() or {}
         target_lang = data.get('language')
         
@@ -414,25 +416,30 @@ def toggle_language():
             target_lang = language_manager.get_opposite_language(current_lang)
             logger.info(f"Auto-toggling from {current_lang} to {target_lang}")
         
-        # CRITICAL FIX: Force session save and return proper response
+        # CRITICAL FIX: Set language with immediate effect
         if language_manager.set_language(target_lang):
-            # Ensure session is marked as modified for Flask-Session
+            # Force immediate session save
             session.modified = True
             
-            # Log for debugging
-            logger.info(f"Language switched to {target_lang}, session updated: {session.get('language')}")
+            # CRITICAL: Clear any cached language in g object and reset
+            if hasattr(g, '_current_language'):
+                delattr(g, '_current_language')
+            g._current_language = target_lang
+            
+            logger.info(f"Language switched to {target_lang}, session: {session.get('language')}, g: {getattr(g, '_current_language', 'None')}")
             
             from utils.template_helpers import get_success_message
             response = jsonify({
                 'success': True,
-                'message': get_success_message('saved'),
+                'message': get_success_message('saved', target_lang),
                 'language': target_lang,
                 'direction': language_manager.get_direction(target_lang),
                 'language_info': language_manager.get_language_info(target_lang),
-                'session_language': session.get('language')  # Debug info
+                'session_language': session.get('language'),
+                'g_language': getattr(g, '_current_language', 'None')
             })
             
-            # CRITICAL: Set cache headers to prevent caching
+            # Prevent caching
             response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
             response.headers['Pragma'] = 'no-cache'
             response.headers['Expires'] = '0'
