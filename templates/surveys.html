@@ -725,8 +725,8 @@
                     throw new Error('Failed to load surveys');
                 }
                 
-                const surveys = await response.json();
-                renderSurveys(surveys);
+                const data = await response.json();
+                renderSurveys(data.surveys || []);
             } catch (error) {
                 console.error('Error loading surveys:', error);
                 showErrorState();
@@ -780,7 +780,7 @@
                     <small class="text-muted">${survey.description || ''}</small>
                     <div class="survey-stats mt-1">
                         <span class="stat-item"><i class="fas fa-question-circle"></i>${survey.question_count} ${survey.question_count === 1 ? 'سؤال' : 'أسئلة'}</span>
-                        <span class="stat-item"><i class="fas fa-eye"></i>${survey.views || 0} مشاهدة</span>
+                        <span class="stat-item"><i class="fas fa-eye"></i>مشاهدات قريباً</span>
                     </div>
                 </td>
                 <td>
@@ -791,11 +791,11 @@
                 </td>
                 <td>
                     <div class="fw-bold ${survey.response_count > 0 ? 'text-success' : 'text-muted'}">${survey.response_count} استجابة</div>
-                    <small class="text-muted">${survey.status === 'draft' ? 'لم ينشر بعد' : 'اليوم: +' + (survey.today_responses || 0)}</small>
+                    <small class="text-muted">${survey.status === 'draft' ? 'لم ينشر بعد' : 'نشط'}</small>
                 </td>
                 <td>
-                    <div class="fw-bold">${survey.contact_count || 0} جهة</div>
-                    <div class="text-muted small">${survey.sent_count || 0} مرسل</div>
+                    <div class="fw-bold">${survey.contacts_assigned || 0} جهة</div>
+                    <div class="text-muted small">${survey.contacts_delivered || 0} مرسل</div>
                 </td>
                 <td>
                     <div class="fw-bold ${survey.completion_rate > 70 ? 'text-success' : survey.completion_rate > 40 ? 'text-info' : 'text-warning'}">${survey.completion_rate}%</div>
@@ -804,8 +804,8 @@
                     </div>
                 </td>
                 <td>
-                    <div class="fw-bold">${formatRelativeTime(survey.last_activity)}</div>
-                    <small class="text-muted">${survey.last_activity_type}</small>
+                    <div class="fw-bold">${formatRelativeTime(survey.updated_at)}</div>
+                    <small class="text-muted">آخر تحديث</small>
                 </td>
                 <td>
                     <div class="action-buttons">
@@ -821,6 +821,7 @@
         function getStatusText(status) {
             const statusMap = {
                 'draft': 'مسودة',
+                'published': 'نشط', 
                 'active': 'نشط', 
                 'paused': 'متوقف',
                 'completed': 'مكتمل',
@@ -842,7 +843,7 @@
                         <i class="fas fa-rocket"></i>نشر
                     </button>
                 `;
-            } else if (survey.status === 'active') {
+            } else if (survey.status === 'published' || survey.status === 'active') {
                 buttons += `
                     <a href="/surveys/builder?id=${survey.id}" class="btn-action btn-edit" title="تحرير">
                         <i class="fas fa-edit"></i>تحرير
@@ -924,6 +925,12 @@
                     </td>
                 `;
             }
+            
+            // Also hide empty state and table
+            const emptyState = document.getElementById('emptyState');
+            const table = document.querySelector('.survey-table');
+            if (emptyState) emptyState.style.display = 'none';
+            if (table) table.style.display = 'block';
         }
 
         function handleUrlParameters() {
