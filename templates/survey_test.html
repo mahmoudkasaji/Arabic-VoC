@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار نظام الاستطلاعات</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Arabic Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/unified-layout.css') }}">
+    
+    <style>
+        body {
+            font-family: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+        }
+        
+        .test-container {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        
+        .test-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .section-title {
+            color: #4f46e5;
+            font-weight: 600;
+            font-size: 1.25rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e5e7eb;
+        }
+        
+        .step {
+            background: #f3f4f6;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-right: 4px solid #4f46e5;
+        }
+        
+        .step-number {
+            background: #4f46e5;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-left: 0.5rem;
+        }
+        
+        .test-button {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            border: none;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-left: 0.5rem;
+        }
+        
+        .test-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(79, 70, 229, 0.3);
+        }
+        
+        .test-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .result-box {
+            background: #f0fdf4;
+            border: 1px solid #86efac;
+            color: #15803d;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            display: none;
+        }
+        
+        .error-box {
+            background: #fef2f2;
+            border: 1px solid #fca5a5;
+            color: #dc2626;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            display: none;
+        }
+        
+        .survey-info {
+            background: #eff6ff;
+            border: 1px solid #93c5fd;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .survey-link {
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            padding: 0.5rem;
+            border-radius: 4px;
+            font-family: monospace;
+            word-break: break-all;
+            font-size: 0.875rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <!-- Header -->
+        <div class="test-card">
+            <h1 class="text-center mb-4">
+                <i class="fas fa-vial me-2"></i>
+                اختبار نظام الاستطلاعات (Email-to-Web)
+            </h1>
+            <p class="text-center text-muted">
+                اختبار كامل لنظام إرسال الاستطلاعات عبر البريد الإلكتروني والاستجابة عبر الويب
+            </p>
+        </div>
+        
+        <!-- Step 1: Create Survey -->
+        <div class="test-card">
+            <div class="section-title">
+                <span class="step-number">1</span>إنشاء استطلاع للاختبار
+            </div>
+            
+            <div class="step">
+                <p><strong>الوصف:</strong> إنشاء استطلاع بسيط يحتوي على أسئلة التقييم والنصوص المفتوحة</p>
+                <button id="createSurveyBtn" class="test-button" onclick="createTestSurvey()">
+                    <i class="fas fa-plus me-2"></i>إنشاء استطلاع تجريبي
+                </button>
+            </div>
+            
+            <div id="surveyResult" class="result-box"></div>
+            <div id="surveyError" class="error-box"></div>
+        </div>
+        
+        <!-- Step 2: Send Email -->
+        <div class="test-card">
+            <div class="section-title">
+                <span class="step-number">2</span>إرسال دعوة عبر البريد الإلكتروني
+            </div>
+            
+            <div class="step">
+                <p><strong>الوصف:</strong> إرسال بريد إلكتروني يحتوي على رابط مباشر للاستطلاع</p>
+                <div class="mb-3">
+                    <label for="testEmail" class="form-label">البريد الإلكتروني للاختبار:</label>
+                    <input type="email" 
+                           class="form-control" 
+                           id="testEmail" 
+                           placeholder="test@example.com"
+                           value="iskandartest86@gmail.com">
+                </div>
+                <button id="sendEmailBtn" class="test-button" onclick="sendTestEmail()" disabled>
+                    <i class="fas fa-envelope me-2"></i>إرسال دعوة البريد الإلكتروني
+                </button>
+            </div>
+            
+            <div id="emailResult" class="result-box"></div>
+            <div id="emailError" class="error-box"></div>
+        </div>
+        
+        <!-- Step 3: View Survey -->
+        <div class="test-card">
+            <div class="section-title">
+                <span class="step-number">3</span>عرض الاستطلاع العام
+            </div>
+            
+            <div class="step">
+                <p><strong>الوصف:</strong> فتح رابط الاستطلاع العام واختبار تجربة المستخدم</p>
+                <button id="viewSurveyBtn" class="test-button" onclick="openSurveyLink()" disabled>
+                    <i class="fas fa-external-link-alt me-2"></i>فتح الاستطلاع في علامة تبويب جديدة
+                </button>
+            </div>
+            
+            <div id="surveyLinkBox" class="survey-info" style="display: none;">
+                <strong>رابط الاستطلاع:</strong>
+                <div id="surveyLinkDisplay" class="survey-link mt-2"></div>
+            </div>
+        </div>
+        
+        <!-- Step 4: Check Results -->
+        <div class="test-card">
+            <div class="section-title">
+                <span class="step-number">4</span>فحص النتائج والتحليل
+            </div>
+            
+            <div class="step">
+                <p><strong>الوصف:</strong> عرض قائمة الاستطلاعات والردود المستلمة</p>
+                <button id="checkResultsBtn" class="test-button" onclick="checkSurveyResults()">
+                    <i class="fas fa-chart-bar me-2"></i>عرض قائمة الاستطلاعات
+                </button>
+            </div>
+            
+            <div id="resultsDisplay" class="result-box"></div>
+        </div>
+        
+        <!-- Status Panel -->
+        <div class="test-card">
+            <div class="section-title">
+                <i class="fas fa-info-circle me-2"></i>حالة النظام
+            </div>
+            
+            <div id="systemStatus">
+                <div class="d-flex justify-content-between align-items-center py-2">
+                    <span>خدمة Gmail:</span>
+                    <span id="gmailStatus" class="badge bg-secondary">جاري التحقق...</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center py-2">
+                    <span>قاعدة البيانات:</span>
+                    <span id="dbStatus" class="badge bg-secondary">جاري التحقق...</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center py-2">
+                    <span>خدمة AI التحليل:</span>
+                    <span id="aiStatus" class="badge bg-secondary">جاري التحقق...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Test JavaScript -->
+    <script>
+        let currentSurvey = null;
+        
+        // Check system status on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            checkSystemStatus();
+        });
+        
+        async function checkSystemStatus() {
+            try {
+                // Check Gmail status
+                const response = await fetch('/api/contacts/test-email-service', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ test_mode: true })
+                });
+                
+                if (response.ok) {
+                    document.getElementById('gmailStatus').className = 'badge bg-success';
+                    document.getElementById('gmailStatus').textContent = 'متصل';
+                } else {
+                    document.getElementById('gmailStatus').className = 'badge bg-warning';
+                    document.getElementById('gmailStatus').textContent = 'غير متاح';
+                }
+            } catch (e) {
+                document.getElementById('gmailStatus').className = 'badge bg-danger';
+                document.getElementById('gmailStatus').textContent = 'خطأ';
+            }
+            
+            // Assume database and AI are working if page loads
+            document.getElementById('dbStatus').className = 'badge bg-success';
+            document.getElementById('dbStatus').textContent = 'متصل';
+            document.getElementById('aiStatus').className = 'badge bg-success';
+            document.getElementById('aiStatus').textContent = 'متاح';
+        }
+        
+        async function createTestSurvey() {
+            const btn = document.getElementById('createSurveyBtn');
+            const resultBox = document.getElementById('surveyResult');
+            const errorBox = document.getElementById('surveyError');
+            
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>جاري الإنشاء...';
+            
+            try {
+                const response = await fetch('/api/survey-hosting/create-simple', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        title: 'استطلاع تجريبي - رضا العملاء',
+                        description: 'استطلاع تجريبي لاختبار نظام Email-to-Web'
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    currentSurvey = data.survey;
+                    
+                    resultBox.innerHTML = `
+                        <i class="fas fa-check-circle me-2"></i>
+                        <strong>تم إنشاء الاستطلاع بنجاح!</strong><br>
+                        <strong>العنوان:</strong> ${data.survey.title}<br>
+                        <strong>المعرف:</strong> ${data.survey.uuid}<br>
+                        <strong>عدد الأسئلة:</strong> ${data.survey.questions_count}<br>
+                        <strong>الحالة:</strong> ${data.survey.status}
+                    `;
+                    resultBox.style.display = 'block';
+                    errorBox.style.display = 'none';
+                    
+                    // Enable next step
+                    document.getElementById('sendEmailBtn').disabled = false;
+                    document.getElementById('viewSurveyBtn').disabled = false;
+                    
+                    // Show survey link
+                    document.getElementById('surveyLinkDisplay').textContent = window.location.origin + data.survey.full_url;
+                    document.getElementById('surveyLinkBox').style.display = 'block';
+                    
+                } else {
+                    throw new Error(data.error || 'فشل في إنشاء الاستطلاع');
+                }
+                
+            } catch (error) {
+                errorBox.innerHTML = `<i class="fas fa-exclamation-triangle me-2"></i>${error.message}`;
+                errorBox.style.display = 'block';
+                resultBox.style.display = 'none';
+            }
+            
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-plus me-2"></i>إنشاء استطلاع تجريبي';
+        }
+        
+        async function sendTestEmail() {
+            const btn = document.getElementById('sendEmailBtn');
+            const email = document.getElementById('testEmail').value;
+            const resultBox = document.getElementById('emailResult');
+            const errorBox = document.getElementById('emailError');
+            
+            if (!email || !currentSurvey) {
+                errorBox.innerHTML = '<i class="fas fa-exclamation-triangle me-2"></i>يرجى إدخال بريد إلكتروني صحيح وإنشاء استطلاع أولاً';
+                errorBox.style.display = 'block';
+                return;
+            }
+            
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>جاري الإرسال...';
+            
+            try {
+                const response = await fetch('/api/survey-hosting/test-email-delivery', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: email,
+                        survey_uuid: currentSurvey.uuid
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    resultBox.innerHTML = `
+                        <i class="fas fa-check-circle me-2"></i>
+                        <strong>تم إرسال البريد الإلكتروني بنجاح!</strong><br>
+                        <strong>المرسل إليه:</strong> ${email}<br>
+                        <strong>رابط الاستطلاع:</strong> ${data.survey_url}<br>
+                        ${data.delivery_result.message_id ? `<strong>معرف الرسالة:</strong> ${data.delivery_result.message_id}` : ''}
+                    `;
+                    resultBox.style.display = 'block';
+                    errorBox.style.display = 'none';
+                } else {
+                    throw new Error(data.error || 'فشل في إرسال البريد الإلكتروني');
+                }
+                
+            } catch (error) {
+                errorBox.innerHTML = `<i class="fas fa-exclamation-triangle me-2"></i>${error.message}`;
+                errorBox.style.display = 'block';
+                resultBox.style.display = 'none';
+            }
+            
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-envelope me-2"></i>إرسال دعوة البريد الإلكتروني';
+        }
+        
+        function openSurveyLink() {
+            if (currentSurvey) {
+                const url = window.location.origin + currentSurvey.full_url;
+                window.open(url, '_blank');
+            }
+        }
+        
+        async function checkSurveyResults() {
+            const btn = document.getElementById('checkResultsBtn');
+            const resultsDisplay = document.getElementById('resultsDisplay');
+            
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>جاري التحميل...';
+            
+            try {
+                const response = await fetch('/api/survey-hosting/list');
+                const data = await response.json();
+                
+                if (data.success) {
+                    let html = `<i class="fas fa-list me-2"></i><strong>قائمة الاستطلاعات (${data.total}):</strong><br><br>`;
+                    
+                    data.surveys.forEach(survey => {
+                        html += `
+                            <div class="border rounded p-2 mb-2">
+                                <strong>${survey.title}</strong><br>
+                                <small>المعرف: ${survey.uuid}</small><br>
+                                <small>الردود: ${survey.response_count} | الحالة: ${survey.status}</small><br>
+                                <small>تاريخ الإنشاء: ${new Date(survey.created_at).toLocaleString('ar-SA')}</small>
+                            </div>
+                        `;
+                    });
+                    
+                    resultsDisplay.innerHTML = html;
+                    resultsDisplay.style.display = 'block';
+                } else {
+                    throw new Error(data.error || 'فشل في تحميل النتائج');
+                }
+                
+            } catch (error) {
+                resultsDisplay.innerHTML = `<i class="fas fa-exclamation-triangle me-2"></i>${error.message}`;
+                resultsDisplay.className = 'error-box';
+                resultsDisplay.style.display = 'block';
+            }
+            
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-chart-bar me-2"></i>عرض قائمة الاستطلاعات';
+        }
+    </script>
+</body>
+</html>

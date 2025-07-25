@@ -54,7 +54,7 @@ class UnifiedDeliveryManager:
             logger.error(f"Delivery failed for {channel} to {recipient}: {e}")
             return DeliveryResult(False, error_message=str(e))
     
-    def _send_email(self, recipient: str, link: str, title: str, template: Optional[str]) -> DeliveryResult:
+    def _send_email(self, recipient: str, link: str, title: str, template: Optional[str], survey_id: Optional[str] = None) -> DeliveryResult:
         """Send email invitation via Gmail or SendGrid"""
         # Try Gmail first, fallback to SendGrid
         gmail_available = bool(os.getenv("GMAIL_USERNAME")) and bool(os.getenv("GMAIL_APP_PASSWORD"))
@@ -65,6 +65,7 @@ class UnifiedDeliveryManager:
                 gmail_service = GmailDeliveryService()
                 # Extract first name from email or use default
                 customer_name = recipient.split('@')[0].title() if '@' in recipient else "Customer"
+                
                 result = gmail_service.send_survey_invitation(recipient, link, title, "Voice of Customer Platform", template, customer_name)
                 
                 return DeliveryResult(
@@ -148,7 +149,6 @@ class UnifiedDeliveryManager:
                 body=message_body,
                 from_=os.getenv("TWILIO_PHONE_NUMBER"),
                 to=recipient
-            )
             )
             
             return DeliveryResult(

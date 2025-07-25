@@ -48,7 +48,9 @@ db.init_app(app)
 # Initialize language system
 from utils.language_manager import language_manager
 from utils.template_helpers import register_template_helpers
+from utils.template_filters import register_filters
 register_template_helpers(app)
+register_filters(app)
 
 # Create tables
 with app.app_context():
@@ -56,9 +58,8 @@ with app.app_context():
     import models  # noqa: F401
     from models_unified import Feedback, FeedbackChannel, FeedbackStatus
     
-    # Note: Survey blueprint temporarily disabled due to circular import
-    # Will be re-enabled after refactoring
-    from models.survey import Survey, Question, SurveyStatus, QuestionType
+    # Import Flask-compatible survey models
+    from models.survey_flask import SurveyFlask, QuestionFlask, ResponseFlask, QuestionResponseFlask, SurveyStatus, QuestionType
     
     # Import contact models for survey delivery
     from models.contacts import Contact, ContactGroup, ContactGroupMembership, ContactDelivery
@@ -83,6 +84,10 @@ app.register_blueprint(executive_bp, url_prefix='/api/executive-dashboard')
 # Register contacts API blueprint
 from api.contacts import contacts_bp
 app.register_blueprint(contacts_bp)
+
+# Register survey hosting API blueprint
+from api.survey_hosting import survey_hosting_bp
+app.register_blueprint(survey_hosting_bp)
 
 # Import user preferences API
 import api.user_preferences
@@ -265,11 +270,161 @@ def survey_responses_page():
     return render_template('survey_responses.html', 
                          title='الردود والنتائج')
 
+# Public Survey Routes for Email-to-Web Integration
+@app.route('/survey/<uuid>')
+def public_survey(uuid):
+    """Public survey access via UUID"""
+    try:
+        from models.survey_flask import SurveyFlask
+        import json
+        
+        # Find survey by UUID
+        survey = SurveyFlask.query.filter_by(uuid=uuid).first()
+        
+        if not survey:
+            return render_template('404.html'), 404
+            
+        if not survey.is_active:
+            return render_template('survey_inactive.html', survey=survey), 403
+            
+        # Convert JSON strings to objects for template
+        for question in survey.questions:
+            if question.options:
+                try:
+                    question.options = json.loads(question.options)
+                except:
+                    question.options = []
+        
+        return render_template('survey_public.html', survey=survey)
+        
+    except Exception as e:
+        logger.error(f"Error loading survey {uuid}: {e}")
+        return render_template('404.html'), 404
+
+@app.route('/s/<short_id>')
+def public_survey_short(short_id):
+    """Public survey access via short ID"""
+    try:
+        from models.survey_flask import SurveyFlask
+        
+        # Find survey by short ID
+        survey = SurveyFlask.query.filter_by(short_id=short_id).first()
+        
+        if not survey:
+            return render_template('404.html'), 404
+            
+        # Redirect to UUID-based URL for consistency
+        return redirect(url_for('public_survey', uuid=survey.uuid))
+        
+    except Exception as e:
+        logger.error(f"Error loading survey with short ID {short_id}: {e}")
+        return render_template('404.html'), 404
+
+@app.route('/api/survey/<uuid>/submit', methods=['POST'])
+def submit_survey_response(uuid):
+    """Submit survey response"""
+    try:
+        from models.survey_flask import SurveyFlask, ResponseFlask, QuestionResponseFlask
+        import json
+        
+        # Find survey
+        survey = SurveyFlask.query.filter_by(uuid=uuid).first()
+        if not survey or not survey.is_active:
+            return jsonify({'success': False, 'error': 'Survey not found or inactive'}), 404
+        
+        # Collect form data
+        form_data = request.form.to_dict()
+        
+        # Get respondent info from request
+        respondent_email = form_data.get('respondent_email', '')
+        respondent_name = form_data.get('respondent_name', '')
+        
+        # Create response record
+        response = ResponseFlask(
+            survey_id=survey.id,
+            respondent_email=respondent_email if respondent_email else None,
+            respondent_name=respondent_name if respondent_name else None,
+            answers=json.dumps(form_data),
+            language_used=survey.primary_language,
+            is_complete=True,
+            completion_percentage=100.0,
+            completed_at=datetime.utcnow(),
+            ip_address=request.remote_addr,
+            user_agent=request.headers.get('User-Agent', '')
+        )
+        
+        db.session.add(response)
+        db.session.flush()  # Get response ID
+        
+        # Create individual question responses
+        for question in survey.questions:
+            question_key = f'question_{question.id}'
+            answer_value = form_data.get(question_key, '')
+            
+            if answer_value:
+                question_response = QuestionResponseFlask(
+                    response_id=response.id,
+                    question_id=question.id,
+                    answer_text=answer_value if question.type in ['text', 'textarea'] else None,
+                    answer_number=float(answer_value) if question.type in ['rating', 'nps'] and answer_value.isdigit() else None,
+                    answer_json=json.dumps({'value': answer_value}) if question.type in ['multiple_choice', 'checkbox'] else None
+                )
+                db.session.add(question_response)
+        
+        # Update survey metrics
+        survey.response_count += 1
+        db.session.commit()
+        
+        # Optional: Analyze text responses with existing AI system
+        try:
+            text_responses = []
+            for question in survey.questions:
+                if question.type in ['text', 'textarea']:
+                    answer = form_data.get(f'question_{question.id}', '')
+                    if answer:
+                        text_responses.append(answer)
+            
+            if text_responses:
+                combined_text = ' '.join(text_responses)
+                from utils.simple_arabic_analyzer import SimpleArabicAnalyzer
+                analyzer = SimpleArabicAnalyzer()
+                analysis_result = analyzer.analyze_feedback_sync(combined_text)
+                
+                # Update response with analysis
+                response.sentiment_score = analysis_result.get('sentiment_score')
+                response.confidence_score = analysis_result.get('confidence')
+                response.keywords = json.dumps(analysis_result.get('topics', []))
+                db.session.commit()
+                
+        except Exception as e:
+            logger.warning(f"Failed to analyze survey response {response.id}: {e}")
+            # Continue without analysis
+        
+        return jsonify({
+            'success': True,
+            'message': 'تم إرسال إجاباتك بنجاح',
+            'response_id': response.uuid
+        })
+        
+    except Exception as e:
+        logger.error(f"Error submitting survey response for {uuid}: {e}")
+        db.session.rollback()
+        return jsonify({
+            'success': False,
+            'error': 'حدث خطأ في إرسال الإجابات. يرجى المحاولة مرة أخرى.'
+        }), 500
+
 @app.route('/contacts')
 def contacts_page():
     """Contact management page"""
     return render_template('contacts.html', 
                          title='إدارة جهات الاتصال')
+
+@app.route('/survey-test')
+def survey_test_page():
+    """Survey testing page for email-to-web integration"""
+    return render_template('survey_test.html', 
+                         title='اختبار نظام الاستطلاعات')
 
 # Analytics Routes (Consolidated Dashboard + Insights)
 @app.route('/dashboard')
