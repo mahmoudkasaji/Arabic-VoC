@@ -152,54 +152,42 @@
 <script>
 let surveysData = [];
 
-// Load surveys on page load
+// Initialize page with server-side data
 document.addEventListener('DOMContentLoaded', function() {
-    loadSurveys();
+    // Get surveys data from server-side template
+    const surveysFromServer = {{ surveys | tojson }};
+    const statsFromServer = {{ stats | tojson }};
+    
+    console.log('Loading surveys from server data...');
+    console.log('Surveys data:', surveysFromServer);
+    
+    if (surveysFromServer && Array.isArray(surveysFromServer)) {
+        surveysData = surveysFromServer;
+        updateStatisticsFromServer(statsFromServer);
+        renderSurveys(surveysData);
+    } else {
+        console.log('No surveys data available');
+        showEmptyState();
+    }
     
     // Set up search functionality
     document.getElementById('searchInput').addEventListener('input', filterSurveys);
     document.getElementById('statusFilter').addEventListener('change', filterSurveys);
 });
 
-async function loadSurveys() {
-    try {
-        console.log('Loading surveys from API...');
-        const response = await fetch('/api/surveys/list');
-        
-        if (!response.ok) {
-            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-        }
-        
-        const data = await response.json();
-        console.log('API Response:', data);
-        
-        if (data.success && data.surveys) {
-            surveysData = data.surveys;
-            updateStatistics(surveysData);
-            renderSurveys(surveysData);
-        } else {
-            console.error('Invalid API response format:', data);
-            showError('خطأ في تحميل البيانات');
-        }
-    } catch (error) {
-        console.error('Error loading surveys:', error);
-        showError('فشل في تحميل الاستطلاعات');
-    }
+function updateStatisticsFromServer(stats) {
+    document.getElementById('totalSurveys').textContent = stats.total_surveys || 0;
+    document.getElementById('activeSurveys').textContent = stats.active_surveys || 0;
+    document.getElementById('totalResponses').textContent = stats.total_responses || 0;
+    document.getElementById('avgCompletionRate').textContent = (stats.avg_completion_rate || 0) + '%';
 }
 
-function updateStatistics(surveys) {
-    const totalSurveys = surveys.length;
-    const activeSurveys = surveys.filter(s => s.status === 'published').length;
-    const totalResponses = surveys.reduce((sum, s) => sum + (s.response_count || 0), 0);
-    const avgCompletionRate = surveys.length > 0 
-        ? Math.round(surveys.reduce((sum, s) => sum + (s.completion_rate || 0), 0) / surveys.length)
-        : 0;
-    
-    document.getElementById('totalSurveys').textContent = totalSurveys;
-    document.getElementById('activeSurveys').textContent = activeSurveys;
-    document.getElementById('totalResponses').textContent = totalResponses;
-    document.getElementById('avgCompletionRate').textContent = avgCompletionRate + '%';
+function showEmptyState() {
+    document.getElementById('emptyState').style.display = 'block';
+    document.querySelector('.table-responsive').style.display = 'none';
 }
+
+// Remove unused updateStatistics function - now using updateStatisticsFromServer
 
 function renderSurveys(surveys) {
     const tbody = document.getElementById('surveysTableBody');
@@ -313,8 +301,8 @@ function filterSurveys() {
 }
 
 function refreshSurveys() {
-    document.getElementById('loadingRow').style.display = 'table-row';
-    loadSurveys();
+    // Reload the page to get fresh data from server
+    window.location.reload();
 }
 
 function showDistribution(surveyId) {

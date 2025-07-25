@@ -239,9 +239,72 @@ def list_feedback():
 
 @app.route('/surveys')
 def surveys_page():
-    """Survey management page"""
-    return render_template('surveys.html',
-                         title='إدارة الاستطلاعات')
+    """Survey management page with direct database access"""
+    try:
+        from models.survey_flask import SurveyFlask
+        from sqlalchemy import func
+        import json
+        
+        # Fetch surveys directly from database
+        surveys = db.session.query(SurveyFlask).order_by(SurveyFlask.created_at.desc()).all()
+        
+        # Prepare surveys data for template
+        surveys_data = []
+        total_responses = 0
+        active_surveys = 0
+        
+        for survey in surveys:
+            # Calculate metrics
+            if survey.status == 'published':
+                active_surveys += 1
+            
+            total_responses += survey.response_count or 0
+            
+            survey_dict = {
+                'id': survey.id,
+                'uuid': survey.uuid,
+                'short_id': survey.short_id,
+                'title': survey.title_ar or survey.title,
+                'title_ar': survey.title_ar,
+                'title_en': survey.title_en,
+                'description': survey.description_ar or survey.description or '',
+                'status': survey.status,
+                'question_count': len(json.loads(survey.questions)) if survey.questions else 0,
+                'response_count': survey.response_count or 0,
+                'completion_rate': 0,  # Calculate if needed
+                'created_at': survey.created_at.isoformat() if survey.created_at else None,
+                'updated_at': survey.updated_at.isoformat() if survey.updated_at else None,
+                'is_public': survey.is_public,
+                'public_url': f'/s/{survey.short_id}' if survey.short_id else None
+            }
+            surveys_data.append(survey_dict)
+        
+        # Calculate statistics
+        total_surveys = len(surveys_data)
+        avg_completion_rate = 0  # Calculate if needed
+        
+        return render_template('surveys.html',
+                             title='إدارة الاستطلاعات',
+                             surveys=surveys_data,
+                             stats={
+                                 'total_surveys': total_surveys,
+                                 'active_surveys': active_surveys,
+                                 'total_responses': total_responses,
+                                 'avg_completion_rate': avg_completion_rate
+                             })
+                             
+    except Exception as e:
+        logger.error(f"Error loading surveys: {e}")
+        # Return empty data on error
+        return render_template('surveys.html',
+                             title='إدارة الاستطلاعات',
+                             surveys=[],
+                             stats={
+                                 'total_surveys': 0,
+                                 'active_surveys': 0,
+                                 'total_responses': 0,
+                                 'avg_completion_rate': 0
+                             })
 
 
 
