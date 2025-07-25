@@ -168,6 +168,25 @@ class SurveyBuilder {
         }
     }
 
+    addNextStepButton() {
+        // Add a "Next Step" button to proceed to delivery configuration
+        const questionsArea = document.getElementById('questionsArea');
+        let nextStepBtn = document.getElementById('nextStepButton');
+        
+        if (!nextStepBtn && questionsArea && this.questions.length > 0) {
+            nextStepBtn = document.createElement('div');
+            nextStepBtn.id = 'nextStepButton';
+            nextStepBtn.className = 'text-center mt-4';
+            nextStepBtn.innerHTML = `
+                <button class="btn btn-primary btn-lg" onclick="transitionToStep(4)" style="margin: 2rem auto;">
+                    <i class="fas fa-arrow-left me-2"></i>
+                    التالي: إعداد التوزيع
+                </button>
+            `;
+            questionsArea.appendChild(nextStepBtn);
+        }
+    }
+
     setupEventListeners() {
         // Survey header fields
         const titleField = document.getElementById('surveyTitle');
@@ -313,6 +332,7 @@ class SurveyBuilder {
         // Auto-transition to step 3 if we have questions and transition function exists
         if (this.questions.length >= 1 && typeof transitionToStep === 'function') {
             transitionToStep(3);
+            this.addNextStepButton();
         }
     }
 
