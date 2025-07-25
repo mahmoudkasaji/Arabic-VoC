@@ -44,16 +44,33 @@
                         <li><a class="dropdown-item" href="/surveys/responses">
                             <i class="fas fa-chart-bar me-2"></i>{{ 'navigation.surveys_dropdown.responses_results' | translate }}
                         </a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><h6 class="dropdown-header">{{ 'navigation.surveys_dropdown.distribution' | translate }}</h6></li>
+                    </ul>
+                </li>
+                
+                <!-- 2. Contacts -->
+                <li class="nav-item dropdown mx-2">
+                    <a class="nav-link dropdown-toggle" href="#" id="contactsDropdown" role="button" 
+                       data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-address-book me-1"></i>جهات الاتصال
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><h6 class="dropdown-header">إدارة جهات الاتصال</h6></li>
                         <li><a class="dropdown-item" href="/contacts">
-                            <i class="fas fa-address-book me-2"></i>إدارة جهات الاتصال
-                            <small class="d-block text-muted">إدارة قوائم التوزيع</small>
+                            <i class="fas fa-users me-2 text-primary"></i>قائمة جهات الاتصال ⭐
+                            <small class="d-block text-muted">إدارة وتنظيم جهات الاتصال</small>
+                        </a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><h6 class="dropdown-header">أدوات التوزيع</h6></li>
+                        <li><a class="dropdown-item" href="/contacts?action=test-email">
+                            <i class="fas fa-envelope-open me-2"></i>اختبار البريد الإلكتروني
+                        </a></li>
+                        <li><a class="dropdown-item" href="/contacts?action=bulk-import">
+                            <i class="fas fa-upload me-2"></i>استيراد جماعي
                         </a></li>
                     </ul>
                 </li>
                 
-                <!-- 2. Analytics (Consolidated Dashboard + Analytics) -->
+                <!-- 3. Analytics (Consolidated Dashboard + Analytics) -->
                 <li class="nav-item dropdown mx-2">
                     <a class="nav-link dropdown-toggle" href="#" id="analyticsDropdown" role="button" 
                        data-bs-toggle="dropdown" aria-expanded="false">
@@ -78,7 +95,7 @@
                     </ul>
                 </li>
                 
-                <!-- 3. Integrations -->
+                <!-- 4. Integrations -->
                 <li class="nav-item dropdown mx-2">
                     <a class="nav-link dropdown-toggle" href="#" id="integrationsDropdown" role="button" 
                        data-bs-toggle="dropdown" aria-expanded="false">
@@ -92,7 +109,7 @@
                     </ul>
                 </li>
                 
-                <!-- 4. Settings -->
+                <!-- 5. Settings -->
                 <li class="nav-item dropdown mx-2">
                     <a class="nav-link dropdown-toggle" href="#" id="settingsDropdown" role="button" 
                        data-bs-toggle="dropdown" aria-expanded="false">
