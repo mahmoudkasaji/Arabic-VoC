@@ -33,6 +33,12 @@ app = Flask(__name__)
 config_class = get_config()
 app.config.from_object(config_class)
 
+# CRITICAL FIX: Set session configuration for proper language persistence
+app.config['SESSION_COOKIE_SECURE'] = False  # Allow HTTP for development
+app.config['SESSION_COOKIE_HTTPONLY'] = True
+app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
+app.config['SESSION_PERMANENT'] = False
+
 # Configure proxy fix for Replit
 app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 
@@ -406,16 +412,32 @@ def toggle_language():
             # Auto-toggle to opposite language
             current_lang = language_manager.get_current_language()
             target_lang = language_manager.get_opposite_language(current_lang)
+            logger.info(f"Auto-toggling from {current_lang} to {target_lang}")
         
+        # CRITICAL FIX: Force session save and return proper response
         if language_manager.set_language(target_lang):
+            # Ensure session is marked as modified for Flask-Session
+            session.modified = True
+            
+            # Log for debugging
+            logger.info(f"Language switched to {target_lang}, session updated: {session.get('language')}")
+            
             from utils.template_helpers import get_success_message
-            return jsonify({
+            response = jsonify({
                 'success': True,
                 'message': get_success_message('saved'),
                 'language': target_lang,
                 'direction': language_manager.get_direction(target_lang),
-                'language_info': language_manager.get_language_info(target_lang)
+                'language_info': language_manager.get_language_info(target_lang),
+                'session_language': session.get('language')  # Debug info
             })
+            
+            # CRITICAL: Set cache headers to prevent caching
+            response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+            response.headers['Pragma'] = 'no-cache'
+            response.headers['Expires'] = '0'
+            
+            return response
         else:
             from utils.template_helpers import get_error_message
             return jsonify({

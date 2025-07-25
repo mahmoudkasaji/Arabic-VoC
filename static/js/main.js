@@ -34,24 +34,34 @@ window.toggleLanguage = function() {
     
     console.log('Sending toggle request to /api/language/toggle');
     
-    // Create a simple implementation that works immediately
+    // CRITICAL FIX: Include credentials and proper headers for session persistence
     fetch('/api/language/toggle', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+            'Content-Type': 'application/json',
+            'Cache-Control': 'no-cache'
+        },
+        credentials: 'same-origin',  // CRITICAL: Include session cookies
         body: JSON.stringify({})
     })
     .then(response => {
         console.log('Toggle response status:', response.status);
         if (response.ok) {
-            console.log('✅ Toggle successful, reloading page...');
-            window.location.reload();
+            return response.json();
         } else {
-            console.error('❌ Language toggle failed with status:', response.status);
-            if (button) {
-                button.disabled = false;
-                button.innerHTML = originalContent;
-            }
+            throw new Error(`HTTP ${response.status}`);
         }
+    })
+    .then(data => {
+        console.log('✅ Toggle successful:', data);
+        console.log('New language:', data.language);
+        console.log('Session language:', data.session_language);
+        
+        // CRITICAL FIX: Add small delay before reload to ensure session is saved
+        setTimeout(() => {
+            console.log('🔄 Reloading page with new language...');
+            window.location.reload(true); // Force reload from server
+        }, 100);
     })
     .catch(error => {
         console.error('❌ Error toggling language:', error);
