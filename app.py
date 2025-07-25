@@ -105,6 +105,14 @@ except Exception as e:
     logger.warning(f"Could not register Replit Auth blueprint: {e}")
     logger.info("Running without Replit Auth - development mode")
 
+# Register API blueprints
+try:
+    from api.analytics_live import analytics_live_bp
+    app.register_blueprint(analytics_live_bp)
+    logger.info("Live Analytics API blueprint registered successfully")
+except Exception as e:
+    logger.error(f"Could not register Live Analytics API blueprint: {e}")
+
 @app.route('/')
 def index():
     """Main homepage with Replit Auth and language support"""
@@ -563,14 +571,15 @@ def dashboard_redirect():
 
 @app.route('/analytics')
 def analytics_main():
-    """Main analytics page - redirect to dashboard"""
-    return redirect(url_for('analytics_dashboard'))
+    """Main analytics page with unified dashboard"""
+    return render_template('analytics_unified.html', 
+                         title='التحليلات المباشرة')
 
 @app.route('/analytics/dashboard')
 def analytics_dashboard():
-    """Executive dashboard with Arabic analytics"""
-    return render_template('dashboard.html', 
-                         title='لوحة القيادة التنفيذية')
+    """Unified live analytics dashboard with real-time data"""
+    return render_template('analytics_unified.html', 
+                         title='التحليلات المباشرة')
 
 @app.route('/analytics/insights')
 def analytics_insights():
