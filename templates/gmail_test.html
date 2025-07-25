@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار اتصال Gmail</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h4 class="mb-0">
+                            <i class="fas fa-envelope me-2"></i>
+                            اختبار اتصال Gmail
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <!-- Current Configuration -->
+                        <div class="alert alert-info">
+                            <h5><i class="fas fa-info-circle me-2"></i>التكوين الحالي</h5>
+                            <p><strong>البريد الإلكتروني:</strong> <span id="current-email">جاري التحميل...</span></p>
+                            <p><strong>حالة الخدمة:</strong> <span id="service-status">جاري التحميل...</span></p>
+                        </div>
+
+                        <!-- Test Form -->
+                        <form id="test-form">
+                            <div class="mb-3">
+                                <label for="test-email" class="form-label">بريد إلكتروني للاختبار</label>
+                                <input type="email" class="form-control" id="test-email" 
+                                       placeholder="test@example.com" required>
+                                <div class="form-text">سيتم إرسال رسالة اختبار إلى هذا العنوان</div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="survey-title" class="form-label">عنوان الاستطلاع (للاختبار)</label>
+                                <input type="text" class="form-control" id="survey-title" 
+                                       value="اختبار اتصال Gmail" required>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-paper-plane me-2"></i>
+                                إرسال رسالة اختبار
+                            </button>
+                        </form>
+
+                        <!-- Results -->
+                        <div id="test-results" class="mt-4" style="display: none;">
+                            <div class="alert" id="result-alert">
+                                <div id="result-content"></div>
+                            </div>
+                        </div>
+
+                        <!-- Troubleshooting -->
+                        <div class="mt-4">
+                            <h5><i class="fas fa-tools me-2"></i>استكشاف الأخطاء وإصلاحها</h5>
+                            <div class="alert alert-warning">
+                                <strong>إذا فشل الاختبار، تحقق من:</strong>
+                                <ul class="mb-0 mt-2">
+                                    <li>تم تفعيل المصادقة الثنائية على حساب Gmail</li>
+                                    <li>تم إنشاء كلمة مرور التطبيق بشكل صحيح</li>
+                                    <li>استخدام كلمة مرور التطبيق (16 حرف) وليس كلمة المرور العادية</li>
+                                    <li>التأكد من صحة عنوان البريد الإلكتروني</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Load current configuration
+        async function loadConfiguration() {
+            try {
+                const response = await fetch('/api/contacts/service-status');
+                const data = await response.json();
+                
+                if (data.status === 'success' && data.services.gmail) {
+                    document.getElementById('current-email').textContent = data.services.gmail.username || 'غير محدد';
+                    document.getElementById('service-status').textContent = data.services.gmail.configured ? 'مُكوّن' : 'غير مُكوّن';
+                    document.getElementById('service-status').className = data.services.gmail.configured ? 'text-success' : 'text-danger';
+                }
+            } catch (error) {
+                document.getElementById('current-email').textContent = 'خطأ في التحميل';
+                document.getElementById('service-status').textContent = 'خطأ في التحميل';
+            }
+        }
+
+        // Test email sending
+        document.getElementById('test-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const testEmail = document.getElementById('test-email').value;
+            const surveyTitle = document.getElementById('survey-title').value;
+            const resultDiv = document.getElementById('test-results');
+            const resultAlert = document.getElementById('result-alert');
+            const resultContent = document.getElementById('result-content');
+            
+            // Show loading
+            resultDiv.style.display = 'block';
+            resultAlert.className = 'alert alert-info';
+            resultContent.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>جاري إرسال رسالة الاختبار...';
+            
+            try {
+                const response = await fetch('/api/contacts/test-email', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        test_email: testEmail,
+                        survey_title: surveyTitle
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    resultAlert.className = 'alert alert-success';
+                    resultContent.innerHTML = `
+                        <i class="fas fa-check-circle me-2"></i>
+                        <strong>نجح الإرسال!</strong><br>
+                        تم إرسال رسالة الاختبار إلى ${testEmail} بنجاح.
+                    `;
+                } else {
+                    resultAlert.className = 'alert alert-danger';
+                    resultContent.innerHTML = `
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <strong>فشل الإرسال:</strong><br>
+                        ${data.message || 'خطأ غير معروف'}
+                    `;
+                }
+            } catch (error) {
+                resultAlert.className = 'alert alert-danger';
+                resultContent.innerHTML = `
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <strong>خطأ في الاتصال:</strong><br>
+                    ${error.message}
+                `;
+            }
+        });
+
+        // Load configuration on page load
+        loadConfiguration();
+    </script>
+</body>
+</html>

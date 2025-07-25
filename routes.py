@@ -33,6 +33,12 @@ def example_protected_route():
     # Access user properties: user.id, user.email, user.first_name, etc.
     return f"Hello {user.first_name or 'User'}! Your email is {user.email}"
 
+# Gmail Test Route
+@app.route('/gmail-test')
+def gmail_test():
+    from flask import render_template
+    return render_template('gmail_test.html')
+
 # Add any other routes here.
 # Use flask_login.current_user to check if current user is logged in or anonymous.
 # Use db & models to interact with the database.
