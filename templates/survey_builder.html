@@ -464,6 +464,29 @@
         .workflow-step-4 #workArea {
             display: none !important;
         }
+        
+        .workflow-step-4 #questionTypesSidebar,
+        .workflow-step-4 #propertiesSidebar {
+            display: none !important;
+        }
+        
+        .workflow-step-4 .delivery-step {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #f8f9fa;
+            z-index: 1000;
+            overflow-y: auto;
+            padding-top: 80px;
+        }
+        
+        .workflow-step-4 .delivery-step .container-unified {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
 
         .context-help {
             background: #fff3cd;
@@ -1462,6 +1485,13 @@
         <!-- Step 4: Delivery Configuration -->
         <div class="delivery-step" id="deliveryStep" style="display: none;">
             <div class="container-unified">
+                <!-- Close Button -->
+                <div class="text-end mb-3">
+                    <button class="btn btn-outline-secondary" onclick="goBackToEditing()">
+                        <i class="fas fa-times me-2"></i>إغلاق
+                    </button>
+                </div>
+                
                 <div class="page-header text-center mb-5">
                     <h2 class="section-title">توزيع الاستطلاع</h2>
                     <p class="text-muted">اختر طريقة توزيع الاستطلاع وشاركه مع العملاء</p>
@@ -1747,6 +1777,9 @@
                 questionTypesSidebar.style.display = 'none';
                 propertiesSidebar.style.display = 'none';
                 document.getElementById('workArea').style.display = 'none';
+                
+                // Hide the entire builder container and show full-screen delivery
+                document.getElementById('builderContainer').style.display = 'none';
                 showContextHelp('اختر طريقة توزيع الاستطلاع وحدد المستلمين للحصول على أفضل النتائج');
                 showDeliveryStep();
             }
@@ -1909,7 +1942,9 @@
         
         function goBackToEditing() {
             // Show the builder interface again
+            document.getElementById('builderContainer').style.display = 'flex';
             document.getElementById('workArea').style.display = 'block';
+            document.getElementById('deliveryStep').style.display = 'none';
             transitionToStep(3);
         }
 
