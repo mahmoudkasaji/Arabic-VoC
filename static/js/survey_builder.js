@@ -19,7 +19,29 @@ class SurveyBuilder {
         this.setupDragAndDrop();
         this.setupEventListeners();
         this.loadSurveyData();
+        this.setupExpandableQuestions();
         console.log('SurveyBuilder initialized');
+    }
+
+    setupExpandableQuestions() {
+        const expandToggle = document.getElementById('expandAdvanced');
+        const advancedQuestions = document.getElementById('advancedQuestionTypes');
+        
+        if (expandToggle && advancedQuestions) {
+            expandToggle.addEventListener('click', () => {
+                const isExpanded = !advancedQuestions.classList.contains('hide-advanced');
+                
+                if (isExpanded) {
+                    advancedQuestions.classList.add('hide-advanced');
+                    expandToggle.querySelector('span').textContent = 'عرض المزيد من أنواع الأسئلة';
+                    expandToggle.classList.remove('expanded');
+                } else {
+                    advancedQuestions.classList.remove('hide-advanced');
+                    expandToggle.querySelector('span').textContent = 'إخفاء الأسئلة المتقدمة';
+                    expandToggle.classList.add('expanded');
+                }
+            });
+        }
     }
 
     setupDragAndDrop() {
@@ -145,7 +167,6 @@ class SurveyBuilder {
             questionsArea.classList.remove('drop-zone-active');
         }
     }
-    }
 
     setupEventListeners() {
         // Survey header fields
@@ -237,7 +258,7 @@ class SurveyBuilder {
                 mobileAddBtn.disabled = !selectedType;
                 
                 if (selectedType) {
-                    mobileAddBtn.textContent = `إضافة: ${this.getQuestionTypeLabel(selectedType)}`;
+                    mobileAddBtn.innerHTML = `<i class="fas fa-plus"></i> إضافة: ${this.getQuestionTypeLabel(selectedType)}`;
                 } else {
                     mobileAddBtn.innerHTML = '<i class="fas fa-plus"></i> إضافة السؤال';
                 }
@@ -251,7 +272,6 @@ class SurveyBuilder {
                     // Reset selection
                     mobileSelect.value = '';
                     mobileAddBtn.disabled = true;
-                    mobileAddBtn.innerHTML = '<i class="fas fa-plus"></i> إضافة السؤال';
                     
                     // Show success feedback
                     mobileAddBtn.innerHTML = '<i class="fas fa-check"></i> تم الإضافة!';

@@ -197,6 +197,23 @@
             padding: 20px;
         }
 
+        .survey-preview.drop-zone-active {
+            border-color: var(--primary-color);
+            background: rgba(46, 139, 87, 0.05);
+            animation: dropZonePulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes dropZonePulse {
+            0%, 100% { 
+                border-color: var(--primary-color);
+                box-shadow: 0 0 0 0 rgba(46, 139, 87, 0.4);
+            }
+            50% { 
+                border-color: #2E8B57;
+                box-shadow: 0 0 0 10px rgba(46, 139, 87, 0);
+            }
+        }
+
         .sidebar h5 {
             font-size: 1rem;
             font-weight: 600;
@@ -349,6 +366,10 @@
             border-top: 1px solid #dee2e6;
             margin-top: 20px;
             padding-top: 20px;
+        }
+
+        .hide-advanced {
+            display: none !important;
         }
 
         .expand-toggle {
@@ -1101,6 +1122,39 @@
             border: 0;
         }
 
+        /* Essential drag states for SortableJS */
+        .sortable-ghost {
+            opacity: 0.5 !important;
+            background: rgba(46, 139, 87, 0.1) !important;
+        }
+
+        .sortable-chosen {
+            opacity: 0.8 !important;
+            transform: scale(1.02) !important;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2) !important;
+        }
+
+        .sortable-drag {
+            opacity: 0.9 !important;
+            transform: rotate(2deg) !important;
+        }
+
+        .question-type:active {
+            cursor: grabbing !important;
+        }
+
+        body.drag-active {
+            cursor: grabbing;
+        }
+
+        body.drag-active * {
+            pointer-events: none;
+        }
+
+        body.drag-active .sortable-drag {
+            pointer-events: auto;
+        }
+
         @media (max-width: 1200px) {
             .builder-container {
                 grid-template-columns: 1fr;
@@ -1712,6 +1766,11 @@
 
         // Initialize at step 1 on page load
         document.addEventListener('DOMContentLoaded', function() {
+            // Initialize survey builder first
+            console.log('Initializing SurveyBuilder...');
+            surveyBuilder = new SurveyBuilder();
+            
+            // Then setup workflow
             transitionToStep(1);
         });
 
