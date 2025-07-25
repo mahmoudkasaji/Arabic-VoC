@@ -12,7 +12,7 @@ from typing import List, Dict
 from unittest.mock import Mock, patch
 
 from utils.dashboard_performance import PerformanceMonitor, ArabicDashboardOptimizer
-from utils.arabic_nlp_advanced import AdvancedArabicNLP
+from utils.simple_arabic_analyzer import SimpleArabicAnalyzer
 
 class TestDashboardPerformance:
     """Test dashboard performance under various loads"""
@@ -21,7 +21,7 @@ class TestDashboardPerformance:
         """Setup test environment"""
         self.performance_monitor = PerformanceMonitor()
         self.optimizer = ArabicDashboardOptimizer()
-        self.nlp = AdvancedArabicNLP()
+        self.analyzer = SimpleArabicAnalyzer()
         
         # Test data
         self.arabic_texts = [
@@ -462,7 +462,7 @@ class TestCulturalContextValidation:
         for expected_dialect, texts in self.dialect_tests.items():
             for text in texts:
                 # Analyze cultural context (includes dialect detection)
-                analysis = self.nlp.analyze_cultural_context(text)
+                analysis = self.analyzer.analyze_cultural_context(text)
                 regional_indicators = analysis["regional_indicators"]
                 
                 # Check if expected dialect is detected
@@ -487,7 +487,7 @@ class TestCulturalContextValidation:
             correct_detections = 0
             
             for text in texts:
-                analysis = self.nlp.analyze_cultural_context(text)
+                analysis = self.analyzer.analyze_cultural_context(text)
                 cultural_markers = analysis["cultural_markers"]
                 
                 # Check if expected context is detected
@@ -535,7 +535,7 @@ class TestCulturalContextValidation:
             correct_detections = 0
             
             for text in texts:
-                analysis = self.nlp.detect_emotions_advanced(text)
+                analysis = self.analyzer.detect_emotions_advanced(text)
                 emotions = analysis["emotions"]
                 
                 # Check if expected emotion is detected

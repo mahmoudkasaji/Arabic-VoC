@@ -379,21 +379,16 @@ def test_ai_analysis():
                 'timestamp': datetime.utcnow().isoformat()
             })
         else:
-            # Fallback to complex system if needed
-            import asyncio
-            from utils.cx_analysis_engine import CXAnalysisEngine
-            
-            async def run_cx_analysis():
-                cx_engine = CXAnalysisEngine()
-                return await cx_engine.analyze_feedback(text)
-            
-            result = asyncio.run(run_cx_analysis())
+            # Simple fallback using basic analysis
+            from utils.simple_arabic_analyzer import SimpleArabicAnalyzer
+            analyzer = SimpleArabicAnalyzer()
+            result = analyzer.analyze_feedback_sync(text)
             
             return jsonify({
                 'status': 'success',
                 'text_analyzed': text,
                 'analysis': result,
-                'analysis_type': 'cx_business_intelligence',
+                'analysis_type': 'simple_fallback_analysis',
                 'timestamp': datetime.utcnow().isoformat()
             })
         

@@ -1,6 +1,6 @@
 """
 Arabic Utilities - Consolidated Arabic processing
-Phase 2: Consolidates arabic_processor.py + arabic_nlp_advanced.py + arabic_processor_optimized.py + database_arabic.py
+Phase 2: Simplified Arabic processing utilities
 """
 
 import re
