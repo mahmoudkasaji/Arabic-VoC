@@ -470,46 +470,20 @@
             display: none !important;
         }
         
+        /* Step 4 delivery content - integrated within main canvas */
         .delivery-step {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: #f8f9fa;
-            z-index: 9999;
-            overflow-y: auto;
-            padding-top: 80px;
-        }
-        
-        .delivery-step .container-unified {
-            max-width: 1200px;
-            margin: 0 auto;
+            display: none;
             padding: 2rem;
         }
         
-        /* Completely hide builder when on step 4 */
-        body.step-4-active #builderContainer,
-        body.step-4-active .sidebar,
-        body.step-4-active .question-types-sidebar,
-        body.step-4-active .properties-sidebar,
-        body.step-4-active #questionTypesSidebar,
-        body.step-4-active #propertiesSidebar {
-            display: none !important;
-            visibility: hidden !important;
-            position: absolute !important;
-            left: -9999px !important;
+        /* Step 4: Hide sidebars but keep main layout */
+        .workflow-step-4 #questionTypesSidebar,
+        .workflow-step-4 #propertiesSidebar {
+            display: none;
         }
         
-        /* Make delivery step take full screen */
-        body.step-4-active .delivery-step {
-            position: fixed !important;
-            top: 0 !important;
-            left: 0 !important;
-            width: 100vw !important;
-            height: 100vh !important;
-            z-index: 99999 !important;
-            background: #f8f9fa !important;
+        .workflow-step-4 .main-canvas {
+            grid-column: 1 / -1; /* Take full width when sidebars are hidden */
         }
 
         .context-help {
@@ -1464,6 +1438,113 @@
                 </div>
             </div>
 
+            <!-- Step 4: Delivery Configuration (within main canvas) -->
+            <div class="delivery-step" id="deliveryStep" style="display: none;">
+                <div class="canvas-header">
+                    <h2 class="canvas-title">
+                        <i class="fas fa-paper-plane me-2"></i>
+                        توزيع الاستطلاع
+                    </h2>
+                    <p class="canvas-subtitle">اختر طريقة توزيع الاستطلاع وشاركه مع العملاء</p>
+                </div>
+                
+                <div class="row g-4 justify-content-center">
+                    <!-- Web Link Sharing -->
+                    <div class="col-lg-5 col-md-6">
+                        <div class="card-unified delivery-card">
+                            <div class="text-center mb-4">
+                                <div class="delivery-icon-circle">
+                                    <i class="fas fa-link"></i>
+                                </div>
+                                <h4 class="card-title mt-3">مشاركة رابط الويب</h4>
+                                <p class="text-muted">احصل على رابط مباشر للاستطلاع لمشاركته في وسائل التواصل الاجتماعي</p>
+                            </div>
+                            
+                            <div class="form-group mb-3">
+                                <label class="form-label fw-bold">رابط الاستطلاع</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="surveyLink" readonly 
+                                           value="سيتم إنشاء الرابط عند الضغط على الزر أدناه"
+                                           style="font-size: 0.9rem;">
+                                    <button class="btn btn-outline-primary" onclick="copySurveyLink()" title="نسخ الرابط">
+                                        <i class="fas fa-copy"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group mb-4">
+                                <label class="form-label fw-bold">رمز QR للطباعة</label>
+                                <div class="qr-preview-container" id="qrCodeContainer">
+                                    <div class="text-center text-muted py-4">
+                                        <i class="fas fa-qrcode fa-3x mb-2"></i>
+                                        <p>سيظهر رمز QR هنا بعد إنشاء الرابط</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="d-grid">
+                                <button class="btn btn-primary btn-lg" onclick="generateSurveyLink()">
+                                    <i class="fas fa-magic me-2"></i>
+                                    إنشاء رابط الاستطلاع
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Email Distribution -->
+                    <div class="col-lg-5 col-md-6">
+                        <div class="card-unified delivery-card">
+                            <div class="text-center mb-4">
+                                <div class="delivery-icon-circle bg-success">
+                                    <i class="fas fa-envelope"></i>
+                                </div>
+                                <h4 class="card-title mt-3">إرسال بالبريد الإلكتروني</h4>
+                                <p class="text-muted">أرسل دعوات الاستطلاع مباشرة إلى قائمة العملاء</p>
+                            </div>
+                            
+                            <div class="form-group mb-3">
+                                <label class="form-label fw-bold">قائمة البريد الإلكتروني</label>
+                                <textarea class="form-control" rows="4" id="emailList" 
+                                          placeholder="أدخل عناوين البريد الإلكتروني مفصولة بفواصل أو أسطر جديدة:&#10;user1@example.com&#10;user2@example.com"></textarea>
+                            </div>
+                            
+                            <div class="form-group mb-3">
+                                <label class="form-label fw-bold">موضوع الرسالة</label>
+                                <input type="text" class="form-control" id="emailSubject" 
+                                       value="دعوة للمشاركة في استطلاع رأي مهم">
+                            </div>
+                            
+                            <div class="form-group mb-4">
+                                <label class="form-label fw-bold">رسالة شخصية (اختيارية)</label>
+                                <textarea class="form-control" rows="3" id="emailMessage" 
+                                          placeholder="أضف رسالة شخصية لتحسين معدل الاستجابة..."></textarea>
+                            </div>
+                            
+                            <div class="d-grid">
+                                <button class="btn btn-success btn-lg" onclick="sendEmailInvitations()">
+                                    <i class="fas fa-paper-plane me-2"></i>
+                                    إرسال الدعوات
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Navigation Buttons -->
+                <div class="row mt-5">
+                    <div class="col-12 text-center">
+                        <button class="btn btn-outline-secondary btn-lg me-3" onclick="goBackToEditing()">
+                            <i class="fas fa-arrow-right me-2"></i>
+                            العودة للتحرير
+                        </button>
+                        <button class="btn btn-primary btn-lg">
+                            <i class="fas fa-check me-2"></i>
+                            حفظ ونشر الاستطلاع
+                        </button>
+                    </div>
+                </div>
+            </div>
+
         </div>
 
         <!-- Properties Sidebar -->
@@ -1506,20 +1587,15 @@
             </div>
         </div>
 
-        <!-- Step 4: Delivery Configuration -->
+        <!-- Step 4: Delivery Configuration (within main canvas) -->
         <div class="delivery-step" id="deliveryStep" style="display: none;">
-            <div class="container-unified">
-                <!-- Close Button -->
-                <div class="text-end mb-3">
-                    <button class="btn btn-outline-secondary" onclick="goBackToEditing()">
-                        <i class="fas fa-times me-2"></i>إغلاق
-                    </button>
-                </div>
-                
-                <div class="page-header text-center mb-5">
-                    <h2 class="section-title">توزيع الاستطلاع</h2>
-                    <p class="text-muted">اختر طريقة توزيع الاستطلاع وشاركه مع العملاء</p>
-                </div>
+            <div class="canvas-header">
+                <h2 class="canvas-title">
+                    <i class="fas fa-paper-plane me-2"></i>
+                    توزيع الاستطلاع
+                </h2>
+                <p class="canvas-subtitle">اختر طريقة توزيع الاستطلاع وشاركه مع العملاء</p>
+            </div>
                 
                 <div class="row g-4 justify-content-center">
                     <!-- Web Link Sharing -->
@@ -1755,13 +1831,20 @@
             // Show/hide appropriate containers
             const setupStep = document.getElementById('surveySetupStep');
             const buildingStep = document.getElementById('questionBuildingStep');
+            const deliveryStep = document.getElementById('deliveryStep');
             
+            // Hide all step containers first
+            if (setupStep) setupStep.classList.add('d-none');
+            if (buildingStep) buildingStep.classList.add('d-none');
+            if (deliveryStep) deliveryStep.style.display = 'none';
+            
+            // Show appropriate step container
             if (stepNumber === 1) {
-                setupStep.classList.remove('d-none');
-                buildingStep.classList.add('d-none');
-            } else if (stepNumber === 2) {
-                setupStep.classList.add('d-none');
-                buildingStep.classList.remove('d-none');
+                if (setupStep) setupStep.classList.remove('d-none');
+            } else if (stepNumber === 2 || stepNumber === 3) {
+                if (buildingStep) buildingStep.classList.remove('d-none');
+            } else if (stepNumber === 4) {
+                if (deliveryStep) deliveryStep.style.display = 'block';
             }
 
             // Progressive sidebar management
@@ -1796,19 +1879,10 @@
                 propertiesSidebar.style.display = 'block';
                 showContextHelp('اضبط خصائص كل سؤال لضمان جودة البيانات المُجمعة');
             } else if (stepNumber === 4) {
-                // Step 4: Delivery Configuration - Complete UI takeover
-                document.body.classList.add('step-4-active');
-                builderContainer.style.display = 'none';
+                // Step 4: Delivery Configuration - Hide sidebars, show delivery content in main canvas
+                builderContainer.classList.add('workflow-step-4');
                 questionTypesSidebar.style.display = 'none';
                 propertiesSidebar.style.display = 'none';
-                
-                // Force hide all builder elements
-                const allSidebars = document.querySelectorAll('.sidebar, .question-types-sidebar, .properties-sidebar');
-                allSidebars.forEach(sidebar => {
-                    sidebar.style.display = 'none';
-                    sidebar.style.visibility = 'hidden';
-                });
-                
                 showContextHelp('اختر طريقة توزيع الاستطلاع وحدد المستلمين للحصول على أفضل النتائج');
                 showDeliveryStep();
             }
@@ -1970,19 +2044,7 @@
         }
         
         function goBackToEditing() {
-            // Remove step 4 body class and restore builder
-            document.body.classList.remove('step-4-active');
-            document.getElementById('builderContainer').style.display = 'flex';
-            document.getElementById('workArea').style.display = 'block';
-            document.getElementById('deliveryStep').style.display = 'none';
-            
-            // Restore sidebars
-            const allSidebars = document.querySelectorAll('.sidebar, .question-types-sidebar, .properties-sidebar');
-            allSidebars.forEach(sidebar => {
-                sidebar.style.display = 'block';
-                sidebar.style.visibility = 'visible';
-            });
-            
+            // Simple transition back to step 3
             transitionToStep(3);
         }
 
