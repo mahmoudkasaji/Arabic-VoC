@@ -314,12 +314,12 @@ def settings_design_system_page():
 @app.route('/login')
 def login_redirect():
     """Redirect to Replit Auth login"""
-    return redirect(url_for('replit_auth.login'))
+    return redirect('/auth/replit_auth')
 
 @app.route('/register')
 def register_redirect():
     """Redirect to Replit Auth (same as login)"""
-    return redirect(url_for('replit_auth.login'))
+    return redirect('/auth/replit_auth')
 
 @app.route('/profile')
 def profile_page():

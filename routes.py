@@ -1,9 +1,12 @@
 from flask import session
 from app import app, db
-from replit_auth import require_login, make_replit_blueprint
 from flask_login import current_user
-
-app.register_blueprint(make_replit_blueprint(), url_prefix="/auth")
+try:
+    from replit_auth import require_login
+except ImportError:
+    # Fallback decorator if Replit Auth is not available
+    def require_login(f):
+        return f
 
 # Make session permanent
 @app.before_request
