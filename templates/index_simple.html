@@ -241,23 +241,41 @@
                 
                 <!-- Simple Call to Action -->
                 <div>
-                    <a href="/register" class="cta-button" style="background: #28a745; color: white; box-shadow: 0 8px 25px rgba(40, 167, 69, 0.3);">
-                        <i class="fas fa-user-plus me-2"></i>
-                        {{ 'buttons.register' | translate }}
-                    </a>
-                    <a href="/login" class="cta-button" style="background: #007bff; color: white; box-shadow: 0 8px 25px rgba(0, 123, 255, 0.3);">
-                        <i class="fas fa-sign-in-alt me-2"></i>
-                        {{ 'buttons.login' | translate }}
-                    </a>
-                    <br>
-                    <a href="/surveys/builder" class="cta-button">
-                        <i class="fas fa-plus me-2"></i>
-                        {{ 'buttons.start_exploring' | translate }}
-                    </a>
-                    <a href="/dashboard/realtime" class="cta-button">
-                        <i class="fas fa-chart-line me-2"></i>
-                        {{ 'buttons.view_analytics' | translate }}
-                    </a>
+                    {% if current_user.is_authenticated %}
+                        <!-- Authenticated user actions -->
+                        <a href="/surveys/create" class="cta-button" style="background: #28a745; color: white; box-shadow: 0 8px 25px rgba(40, 167, 69, 0.3);">
+                            <i class="fas fa-plus me-2"></i>
+                            {{ 'buttons.create_survey' | translate }}
+                        </a>
+                        <a href="/analytics/dashboard" class="cta-button" style="background: #007bff; color: white; box-shadow: 0 8px 25px rgba(0, 123, 255, 0.3);">
+                            <i class="fas fa-chart-line me-2"></i>
+                            {{ 'buttons.view_analytics' | translate }}
+                        </a>
+                        <br>
+                        <a href="/surveys" class="cta-button">
+                            <i class="fas fa-tasks me-2"></i>
+                            {{ 'buttons.manage_surveys' | translate }}
+                        </a>
+                        <a href="/analytics/insights" class="cta-button">
+                            <i class="fas fa-lightbulb me-2"></i>
+                            {{ 'buttons.ai_insights' | translate }}
+                        </a>
+                    {% else %}
+                        <!-- Guest user actions -->
+                        <a href="/auth/login" class="cta-button" style="background: #007bff; color: white; box-shadow: 0 8px 25px rgba(0, 123, 255, 0.3);">
+                            <i class="fas fa-sign-in-alt me-2"></i>
+                            {{ 'buttons.login' | translate }}
+                        </a>
+                        <br>
+                        <a href="/surveys/create" class="cta-button">
+                            <i class="fas fa-plus me-2"></i>
+                            {{ 'buttons.start_exploring' | translate }}
+                        </a>
+                        <a href="/analytics/demo" class="cta-button">
+                            <i class="fas fa-play me-2"></i>
+                            {{ 'buttons.try_demo' | translate }}
+                        </a>
+                    {% endif %}
                 </div>
             </div>
         </section>

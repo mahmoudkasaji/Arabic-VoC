@@ -1,6 +1,6 @@
 """
 Flask Arabic Voice of Customer Platform
-Main application with proper Arabic support and WSGI compatibility
+Main application with Replit Auth integration and Arabic support
 """
 
 import os
@@ -50,12 +50,19 @@ from utils.language_manager import language_manager
 from utils.template_helpers import register_template_helpers
 register_template_helpers(app)
 
-# Import models after db initialization
-from models_unified import Feedback, FeedbackChannel, FeedbackStatus
-
-# Note: Survey blueprint temporarily disabled due to circular import
-# Will be re-enabled after refactoring
-from models.survey import Survey, Question, SurveyStatus, QuestionType
+# Create tables
+with app.app_context():
+    # Import models after app context is set
+    import models  # noqa: F401
+    from models_unified import Feedback, FeedbackChannel, FeedbackStatus
+    
+    # Note: Survey blueprint temporarily disabled due to circular import
+    # Will be re-enabled after refactoring
+    from models.survey import Survey, Question, SurveyStatus, QuestionType
+    
+    # Create all tables
+    db.create_all()
+    logger.info("Database tables created successfully")
 
 # Import survey management API
 import api.survey_management
@@ -64,11 +71,28 @@ import api.survey_management
 from api.executive_dashboard import executive_bp
 app.register_blueprint(executive_bp, url_prefix='/api/executive-dashboard')
 
+# Import and register Replit Auth blueprint  
+try:
+    from replit_auth import make_replit_blueprint
+    app.register_blueprint(make_replit_blueprint(), url_prefix="/auth")
+    logger.info("Replit Auth blueprint registered successfully")
+except Exception as e:
+    logger.warning(f"Could not register Replit Auth blueprint: {e}")
+    logger.info("Running without Replit Auth - development mode")
+
 @app.route('/')
 def index():
-    """Main homepage with language support"""
+    """Main homepage with Replit Auth and language support"""
+    from flask_login import current_user
     current_lang = language_manager.get_current_language()
-    return render_template('index_simple.html')
+    
+    # Check if user is authenticated
+    if current_user.is_authenticated:
+        # User is logged in, show authenticated homepage
+        return render_template('index_simple.html', user=current_user)
+    else:
+        # User is not logged in, show public homepage with login options
+        return render_template('index_simple.html')
 
 # Removed redundant homepage route
 
@@ -286,17 +310,16 @@ def settings_design_system_page():
     return render_template('settings_design_system.html', 
                          title='نظام التصميم الموحد')
 
+# Replit Auth routes - redirects to Replit OAuth
 @app.route('/login')
-def login_page():
-    """Login page"""
-    return render_template('login.html', 
-                         title='تسجيل الدخول')
+def login_redirect():
+    """Redirect to Replit Auth login"""
+    return redirect(url_for('replit_auth.login'))
 
 @app.route('/register')
-def register_page():
-    """Registration page"""
-    return render_template('register.html', 
-                         title='إنشاء حساب')
+def register_redirect():
+    """Redirect to Replit Auth (same as login)"""
+    return redirect(url_for('replit_auth.login'))
 
 @app.route('/profile')
 def profile_page():

@@ -22,6 +22,7 @@
       "analytics_reports": "Analytics & Reports",
       "responses_results": "Responses & Results"
     },
+    "profile": "Profile",
     "analytics_dropdown": {
       "title": "Analytics",
       "dashboards": "Dashboards",
@@ -73,6 +74,10 @@
     "start_exploring": "Start Exploring",
     "view_analytics": "View Analytics",
     "create_survey": "Create Survey",
+    "manage_surveys": "Manage Surveys",
+    "ai_insights": "AI Insights",
+    "try_demo": "Try Demo",
+    "back_home": "Back to Home",
     "dashboard": "Dashboard"
   },
   "forms": {

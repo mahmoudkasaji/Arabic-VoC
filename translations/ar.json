@@ -22,6 +22,7 @@
       "analytics_reports": "التحليلات والتقارير",
       "responses_results": "الردود والنتائج"
     },
+    "profile": "الملف الشخصي",
     "analytics_dropdown": {
       "title": "التحليلات",
       "dashboards": "لوحات البيانات",
@@ -73,6 +74,10 @@
     "start_exploring": "ابدأ الاستكشاف",
     "view_analytics": "عرض التحليلات",
     "create_survey": "إنشاء استطلاع",
+    "manage_surveys": "إدارة الاستطلاعات",
+    "ai_insights": "رؤى الذكاء الاصطناعي",
+    "try_demo": "جرب العرض التوضيحي",
+    "back_home": "العودة للرئيسية",
     "dashboard": "لوحة التحكم"
   },
   "forms": {
