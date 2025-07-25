@@ -90,6 +90,12 @@ def register_template_helpers(app):
             'toggle_url': language_manager.get_toggle_url(),
             'supported_languages': language_manager.supported_languages
         }
+    
+    # Alternative simpler translate function for debugging
+    @app.template_global()
+    def translate(key, **kwargs):
+        """Template global function for translation (alternative to filter)"""
+        return language_manager.translate(key, **kwargs)
 
 # Utility functions for use in Python code
 def get_translated_message(key, language=None, **kwargs):
