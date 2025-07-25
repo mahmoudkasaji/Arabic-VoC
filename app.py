@@ -291,6 +291,7 @@ def public_survey(uuid):
         for question in survey.questions:
             if question.options:
                 try:
+                    import json
                     question.options = json.loads(question.options)
                 except:
                     question.options = []
