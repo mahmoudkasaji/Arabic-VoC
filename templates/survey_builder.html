@@ -470,22 +470,46 @@
             display: none !important;
         }
         
-        .workflow-step-4 .delivery-step {
+        .delivery-step {
             position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
             background: #f8f9fa;
-            z-index: 1000;
+            z-index: 9999;
             overflow-y: auto;
             padding-top: 80px;
         }
         
-        .workflow-step-4 .delivery-step .container-unified {
+        .delivery-step .container-unified {
             max-width: 1200px;
             margin: 0 auto;
             padding: 2rem;
+        }
+        
+        /* Completely hide builder when on step 4 */
+        body.step-4-active #builderContainer,
+        body.step-4-active .sidebar,
+        body.step-4-active .question-types-sidebar,
+        body.step-4-active .properties-sidebar,
+        body.step-4-active #questionTypesSidebar,
+        body.step-4-active #propertiesSidebar {
+            display: none !important;
+            visibility: hidden !important;
+            position: absolute !important;
+            left: -9999px !important;
+        }
+        
+        /* Make delivery step take full screen */
+        body.step-4-active .delivery-step {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            z-index: 99999 !important;
+            background: #f8f9fa !important;
         }
 
         .context-help {
@@ -1772,14 +1796,19 @@
                 propertiesSidebar.style.display = 'block';
                 showContextHelp('اضبط خصائص كل سؤال لضمان جودة البيانات المُجمعة');
             } else if (stepNumber === 4) {
-                // Step 4: Delivery Configuration - Hide all builder UI, show only delivery options
-                builderContainer.classList.add('workflow-step-4');
+                // Step 4: Delivery Configuration - Complete UI takeover
+                document.body.classList.add('step-4-active');
+                builderContainer.style.display = 'none';
                 questionTypesSidebar.style.display = 'none';
                 propertiesSidebar.style.display = 'none';
-                document.getElementById('workArea').style.display = 'none';
                 
-                // Hide the entire builder container and show full-screen delivery
-                document.getElementById('builderContainer').style.display = 'none';
+                // Force hide all builder elements
+                const allSidebars = document.querySelectorAll('.sidebar, .question-types-sidebar, .properties-sidebar');
+                allSidebars.forEach(sidebar => {
+                    sidebar.style.display = 'none';
+                    sidebar.style.visibility = 'hidden';
+                });
+                
                 showContextHelp('اختر طريقة توزيع الاستطلاع وحدد المستلمين للحصول على أفضل النتائج');
                 showDeliveryStep();
             }
@@ -1941,10 +1970,19 @@
         }
         
         function goBackToEditing() {
-            // Show the builder interface again
+            // Remove step 4 body class and restore builder
+            document.body.classList.remove('step-4-active');
             document.getElementById('builderContainer').style.display = 'flex';
             document.getElementById('workArea').style.display = 'block';
             document.getElementById('deliveryStep').style.display = 'none';
+            
+            // Restore sidebars
+            const allSidebars = document.querySelectorAll('.sidebar, .question-types-sidebar, .properties-sidebar');
+            allSidebars.forEach(sidebar => {
+                sidebar.style.display = 'block';
+                sidebar.style.visibility = 'visible';
+            });
+            
             transitionToStep(3);
         }
 

@@ -427,6 +427,12 @@ def survey_test_page():
     return render_template('survey_test.html', 
                          title='اختبار نظام الاستطلاعات')
 
+@app.route('/surveys/builder')
+def survey_builder():
+    """Survey builder interface with 4-step workflow"""
+    return render_template('survey_builder.html', 
+                         title='منشئ الاستطلاعات')
+
 # Analytics Routes (Consolidated Dashboard + Insights)
 @app.route('/dashboard')
 def dashboard_redirect():
