@@ -719,18 +719,49 @@
 
         // Load surveys data from API
         async function loadSurveys() {
-            try {
-                const response = await fetch('/api/surveys/list');
-                if (!response.ok) {
-                    throw new Error('Failed to load surveys');
+            console.log('Starting to load surveys...');
+            
+            // Add retry delay to allow page to fully load
+            setTimeout(async () => {
+                try {
+                    console.log('Fetching from /api/surveys/list');
+                    const response = await fetch('/api/surveys/list', {
+                        method: 'GET',
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json'
+                        },
+                        credentials: 'same-origin',
+                        cache: 'no-cache'
+                    });
+                    
+                    console.log('Response received:', response.status, response.statusText);
+                    console.log('Response headers:', response.headers.get('content-type'));
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+                    
+                    const responseText = await response.text();
+                    console.log('Raw response text:', responseText.substring(0, 200) + '...');
+                    
+                    const data = JSON.parse(responseText);
+                    console.log('Parsed data:', data);
+                    
+                    if (data.success && data.surveys) {
+                        console.log(`Rendering ${data.surveys.length} surveys`);
+                        renderSurveys(data.surveys);
+                    } else {
+                        console.log('No surveys found or invalid response format');
+                        renderSurveys([]);
+                    }
+                } catch (error) {
+                    console.error('Error loading surveys:', error);
+                    console.error('Error details:', error.message);
+                    console.error('Stack trace:', error.stack);
+                    showErrorState();
                 }
-                
-                const data = await response.json();
-                renderSurveys(data.surveys || []);
-            } catch (error) {
-                console.error('Error loading surveys:', error);
-                showErrorState();
-            }
+            }, 500); // 500ms delay to ensure page is fully loaded
         }
 
         // Render surveys in table
@@ -919,9 +950,9 @@
             if (loadingRow) {
                 loadingRow.innerHTML = `
                     <td colspan="9" class="text-center py-4 text-danger">
-                        <i class="fas fa-exclamation-triangle me-2"></i>خطأ في تحميل الاستطلاعات
-                        <br><small>يرجى المحاولة مرة أخرى</small>
-                        <br><button class="btn btn-sm btn-outline-primary mt-2" onclick="loadSurveys()">إعادة المحاولة</button>
+                        <i class="fas fa-exclamation-triangle me-2"></i>حدث خطأ في الاتصال يرجى المحاولة مرة أخرى
+                        <br><small>تحقق من اتصال الإنترنت وحاول مرة أخرى</small>
+                        <br><button class="btn btn-sm btn-outline-primary mt-2" onclick="retryLoadSurveys()">إعادة المحاولة</button>
                     </td>
                 `;
             }
@@ -931,6 +962,87 @@
             const table = document.querySelector('.survey-table');
             if (emptyState) emptyState.style.display = 'none';
             if (table) table.style.display = 'block';
+        }
+
+        // Retry mechanism with simplified fetch
+        async function retryLoadSurveys() {
+            console.log('Retrying survey load...');
+            
+            // First try: Direct browser fetch with basic options
+            try {
+                const response = await fetch('/api/surveys/list', {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'same-origin'
+                });
+                
+                console.log('Retry response:', response.status, response.statusText);
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('Retry data:', data);
+                    
+                    if (data.success && data.surveys) {
+                        renderSurveys(data.surveys);
+                        return;
+                    }
+                }
+            } catch (error) {
+                console.error('Retry failed:', error);
+            }
+            
+            // Second try: XMLHttpRequest fallback
+            try {
+                const xhr = new XMLHttpRequest();
+                xhr.open('GET', '/api/surveys/list', true);
+                xhr.setRequestHeader('Accept', 'application/json');
+                
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === 4) {
+                        console.log('XHR response:', xhr.status, xhr.statusText);
+                        
+                        if (xhr.status === 200) {
+                            try {
+                                const data = JSON.parse(xhr.responseText);
+                                console.log('XHR data:', data);
+                                
+                                if (data.success && data.surveys) {
+                                    renderSurveys(data.surveys);
+                                    return;
+                                }
+                            } catch (e) {
+                                console.error('XHR JSON parse error:', e);
+                            }
+                        }
+                        
+                        // If all methods fail, show error
+                        showPersistentError();
+                    }
+                };
+                
+                xhr.send();
+            } catch (error) {
+                console.error('XHR failed:', error);
+                showPersistentError();
+            }
+        }
+
+        function showPersistentError() {
+            const tbody = document.getElementById('surveysTableBody');
+            const loadingRow = document.getElementById('loadingRow');
+            
+            if (loadingRow) {
+                loadingRow.innerHTML = `
+                    <td colspan="9" class="text-center py-4 text-warning">
+                        <i class="fas fa-wifi me-2"></i>مشكلة في الاتصال بالخادم
+                        <br><small>يرجى إعادة تحميل الصفحة أو التحقق من اتصال الإنترنت</small>
+                        <br><button class="btn btn-sm btn-primary mt-2" onclick="window.location.reload()">إعادة تحميل الصفحة</button>
+                    </td>
+                `;
+            }
         }
 
         function handleUrlParameters() {
