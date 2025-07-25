@@ -422,42 +422,47 @@
             border-radius: 20px;
         }
 
-        .delivery-option {
-            background: #f8f9fa;
-            border-radius: 12px;
-            padding: 2rem;
-            text-align: center;
+        .delivery-card {
             border: 2px solid #e9ecef;
             transition: all 0.3s ease;
+            height: 100%;
         }
         
-        .delivery-option:hover {
+        .delivery-card:hover {
             border-color: var(--primary-color);
             transform: translateY(-2px);
             box-shadow: 0 8px 25px rgba(0,0,0,0.1);
         }
         
-        .delivery-icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-        }
-        
-        .delivery-option h4 {
-            color: var(--primary-color);
-            font-weight: 600;
-            margin-bottom: 1rem;
-        }
-        
-        .qr-code-container {
-            background: white;
-            border: 2px dashed #dee2e6;
-            border-radius: 8px;
-            padding: 1rem;
-            text-align: center;
-            min-height: 150px;
+        .delivery-icon-circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--primary-color);
             display: flex;
             align-items: center;
             justify-content: center;
+            margin: 0 auto;
+            color: white;
+            font-size: 2rem;
+        }
+        
+        .delivery-icon-circle.bg-success {
+            background: #28a745;
+        }
+        
+        .qr-preview-container {
+            background: #f8f9fa;
+            border: 2px dashed #dee2e6;
+            border-radius: 8px;
+            min-height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .workflow-step-4 #workArea {
+            display: none !important;
         }
 
         .context-help {
@@ -1456,87 +1461,91 @@
 
         <!-- Step 4: Delivery Configuration -->
         <div class="delivery-step" id="deliveryStep" style="display: none;">
-            <div class="container-fluid p-4">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card-custom mb-4">
-                            <div class="card-header-custom">
-                                <h3 class="card-title">
-                                    <i class="fas fa-paper-plane me-2"></i>
-                                    توزيع الاستطلاع
-                                </h3>
-                                <p class="text-muted mb-0">اختر طريقة توزيع الاستطلاع على العملاء</p>
+            <div class="container-unified">
+                <div class="page-header text-center mb-5">
+                    <h2 class="section-title">توزيع الاستطلاع</h2>
+                    <p class="text-muted">اختر طريقة توزيع الاستطلاع وشاركه مع العملاء</p>
+                </div>
+                
+                <div class="row g-4 justify-content-center">
+                    <!-- Web Link Sharing -->
+                    <div class="col-lg-5 col-md-6">
+                        <div class="card-unified delivery-card">
+                            <div class="text-center mb-4">
+                                <div class="delivery-icon-circle">
+                                    <i class="fas fa-link"></i>
+                                </div>
+                                <h4 class="card-title mt-3">مشاركة رابط الويب</h4>
+                                <p class="text-muted">احصل على رابط مباشر للاستطلاع لمشاركته في وسائل التواصل الاجتماعي</p>
                             </div>
                             
-                            <div class="row g-4">
-                                <!-- Email Distribution -->
-                                <div class="col-md-6">
-                                    <div class="delivery-option">
-                                        <div class="delivery-icon">
-                                            <i class="fas fa-envelope text-primary"></i>
-                                        </div>
-                                        <h4>إرسال عبر البريد الإلكتروني</h4>
-                                        <p>أرسل دعوات شخصية عبر البريد الإلكتروني مع رابط مخصص للاستطلاع</p>
-                                        <div class="form-group mb-3">
-                                            <label class="form-label">قائمة البريد الإلكتروني</label>
-                                            <textarea class="form-control" id="emailList" rows="4" 
-                                                      placeholder="أدخل عناوين البريد الإلكتروني مفصولة بفواصل أو أسطر جديدة&#10;مثال:&#10;customer1@example.com&#10;customer2@example.com"></textarea>
-                                        </div>
-                                        <div class="form-group mb-3">
-                                            <label class="form-label">عنوان البريد</label>
-                                            <input type="text" class="form-control" id="emailSubject" 
-                                                   value="دعوة للمشاركة في استطلاعنا">
-                                        </div>
-                                        <button class="btn btn-primary" onclick="setupEmailDelivery()">
-                                            <i class="fas fa-envelope me-2"></i>تجهيز الإرسال بالبريد
-                                        </button>
-                                    </div>
+                            <div class="form-group mb-3">
+                                <label class="form-label fw-bold">رابط الاستطلاع</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="surveyLink" readonly 
+                                           value="سيتم إنشاء الرابط عند الضغط على الزر أدناه"
+                                           style="font-size: 0.9rem;">
+                                    <button class="btn btn-outline-primary" onclick="copySurveyLink()" title="نسخ الرابط">
+                                        <i class="fas fa-copy"></i>
+                                    </button>
                                 </div>
-                                
-                                <!-- Web Link Sharing -->
-                                <div class="col-md-6">
-                                    <div class="delivery-option">
-                                        <div class="delivery-icon">
-                                            <i class="fas fa-link text-success"></i>
-                                        </div>
-                                        <h4>مشاركة رابط الويب</h4>
-                                        <p>احصل على رابط مباشر للاستطلاع لمشاركته في وسائل التواصل الاجتماعي</p>
-                                        <div class="form-group mb-3">
-                                            <label class="form-label">رابط الاستطلاع</label>
-                                            <div class="input-group">
-                                                <input type="text" class="form-control" id="surveyLink" readonly 
-                                                       value="سيتم إنشاء الرابط تلقائياً عند النشر">
-                                                <button class="btn btn-outline-secondary" onclick="copySurveyLink()">
-                                                    <i class="fas fa-copy"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-                                        <div class="form-group mb-3">
-                                            <label class="form-label">رمز QR للطباعة</label>
-                                            <div class="qr-code-container" id="qrCodeContainer">
-                                                <p class="text-muted">سيتم إنشاء رمز QR تلقائياً عند النشر</p>
-                                            </div>
-                                        </div>
-                                        <button class="btn btn-success" onclick="generateWebLink()">
-                                            <i class="fas fa-link me-2"></i>إنشاء رابط الويب
-                                        </button>
+                            </div>
+                            
+                            <div class="form-group mb-4">
+                                <label class="form-label fw-bold">رمز QR للطباعة</label>
+                                <div class="qr-preview-container" id="qrCodeContainer">
+                                    <div class="text-center text-muted py-4">
+                                        <i class="fas fa-qrcode fa-3x mb-2 opacity-50"></i>
+                                        <p class="mb-0">سيتم إنشاء رمز QR تلقائياً</p>
                                     </div>
                                 </div>
                             </div>
                             
-                            <!-- Action Buttons -->
-                            <div class="row mt-4">
-                                <div class="col-12 text-center">
-                                    <button class="btn btn-secondary me-3" onclick="transitionToStep(3)">
-                                        <i class="fas fa-arrow-right me-2"></i>العودة للتحرير
-                                    </button>
-                                    <button class="btn btn-primary btn-lg" onclick="publishSurvey()">
-                                        <i class="fas fa-rocket me-2"></i>نشر الاستطلاع
-                                    </button>
-                                </div>
-                            </div>
+                            <button class="btn btn-primary btn-lg w-100" onclick="generateWebLink()">
+                                <i class="fas fa-link me-2"></i>إنشاء رابط الويب ورمز QR
+                            </button>
                         </div>
                     </div>
+                    
+                    <!-- Email Distribution -->
+                    <div class="col-lg-5 col-md-6">
+                        <div class="card-unified delivery-card">
+                            <div class="text-center mb-4">
+                                <div class="delivery-icon-circle bg-success">
+                                    <i class="fas fa-envelope text-white"></i>
+                                </div>
+                                <h4 class="card-title mt-3">إرسال عبر البريد الإلكتروني</h4>
+                                <p class="text-muted">أرسل دعوات شخصية عبر البريد الإلكتروني مع رابط مخصص للاستطلاع</p>
+                            </div>
+                            
+                            <div class="form-group mb-3">
+                                <label class="form-label fw-bold">عنوان البريد</label>
+                                <input type="text" class="form-control" id="emailSubject" 
+                                       value="دعوة للمشاركة في استطلاعنا">
+                            </div>
+                            
+                            <div class="form-group mb-4">
+                                <label class="form-label fw-bold">قائمة البريد الإلكتروني</label>
+                                <textarea class="form-control" id="emailList" rows="4" 
+                                          placeholder="أدخل عناوين البريد الإلكتروني مفصولة بفواصل أو أسطر جديدة&#10;مثال:&#10;customer1@example.com&#10;customer2@example.com"></textarea>
+                                <small class="form-text text-muted">يمكنك إدخال عدة عناوين مفصولة بفواصل أو أسطر جديدة</small>
+                            </div>
+                            
+                            <button class="btn btn-success btn-lg w-100" onclick="setupEmailDelivery()">
+                                <i class="fas fa-envelope me-2"></i>تجهيز الإرسال بالبريد
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="text-center mt-5">
+                    <button class="btn btn-outline-secondary btn-lg me-3" onclick="goBackToEditing()">
+                        <i class="fas fa-arrow-right me-2"></i>العودة للتحرير
+                    </button>
+                    <button class="btn btn-primary btn-lg" onclick="publishSurvey()">
+                        <i class="fas fa-rocket me-2"></i>نشر الاستطلاع
+                    </button>
                 </div>
             </div>
         </div>
@@ -1733,10 +1742,11 @@
                 propertiesSidebar.style.display = 'block';
                 showContextHelp('اضبط خصائص كل سؤال لضمان جودة البيانات المُجمعة');
             } else if (stepNumber === 4) {
-                // Step 4: Delivery Configuration - Hide sidebars, show delivery options
+                // Step 4: Delivery Configuration - Hide all builder UI, show only delivery options
                 builderContainer.classList.add('workflow-step-4');
                 questionTypesSidebar.style.display = 'none';
                 propertiesSidebar.style.display = 'none';
+                document.getElementById('workArea').style.display = 'none';
                 showContextHelp('اختر طريقة توزيع الاستطلاع وحدد المستلمين للحصول على أفضل النتائج');
                 showDeliveryStep();
             }
@@ -1847,15 +1857,43 @@
         }
         
         function generateWebLink() {
-            // Generate survey link and QR code
-            const surveyLink = window.location.origin + '/s/' + generateShortId();
-            document.getElementById('surveyLink').value = surveyLink;
+            // Create survey via API first, then generate link
+            const surveyData = {
+                title: document.getElementById('surveyTitle').value || 'استطلاع جديد',
+                description: document.getElementById('surveyDescription').value || 'شاركنا رأيك'
+            };
             
-            // Generate QR code (would integrate with QR library)
-            document.getElementById('qrCodeContainer').innerHTML = 
-                '<div class="alert alert-success">تم إنشاء رابط الاستطلاع ورمز QR بنجاح!</div>';
-                
-            console.log('Survey link generated:', surveyLink);
+            fetch('/api/survey-hosting/create-simple', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(surveyData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const surveyLink = window.location.origin + data.survey.public_url;
+                    document.getElementById('surveyLink').value = surveyLink;
+                    
+                    // Show success message with QR code placeholder
+                    document.getElementById('qrCodeContainer').innerHTML = `
+                        <div class="alert alert-success">
+                            <i class="fas fa-check-circle me-2"></i>
+                            تم إنشاء رابط الاستطلاع بنجاح!<br>
+                            <small>ID: ${data.survey.short_id}</small>
+                        </div>
+                    `;
+                    
+                    console.log('Survey created successfully:', data.survey);
+                } else {
+                    alert('خطأ في إنشاء الاستطلاع: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error creating survey:', error);
+                alert('حدث خطأ في إنشاء الاستطلاع');
+            });
         }
         
         function copySurveyLink() {
@@ -1867,6 +1905,12 @@
         
         function generateShortId() {
             return Math.random().toString(36).substr(2, 8);
+        }
+        
+        function goBackToEditing() {
+            // Show the builder interface again
+            document.getElementById('workArea').style.display = 'block';
+            transitionToStep(3);
         }
 
         // Initialize at step 1 on page load
