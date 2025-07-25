@@ -60,6 +60,12 @@ with app.app_context():
     # Will be re-enabled after refactoring
     from models.survey import Survey, Question, SurveyStatus, QuestionType
     
+    # Import preferences model to ensure table creation
+    try:
+        from models.replit_user_preferences import ReplitUserPreferences
+    except ImportError:
+        pass
+    
     # Create all tables
     db.create_all()
     logger.info("Database tables created successfully")
@@ -70,6 +76,9 @@ import api.survey_management
 # Register executive dashboard API blueprint
 from api.executive_dashboard import executive_bp
 app.register_blueprint(executive_bp, url_prefix='/api/executive-dashboard')
+
+# Import user preferences API
+import api.user_preferences
 
 # Import and register Replit Auth blueprint  
 try:
@@ -300,9 +309,33 @@ def settings_page():
 
 @app.route('/settings/users')
 def settings_users_page():
-    """User management page"""
-    return render_template('settings_users.html', 
-                         title='إدارة المستخدمين')
+    """User management page - Replit Auth users only"""
+    try:
+        from replit_auth import require_login
+        from flask_login import current_user
+        from models.replit_user_preferences import ReplitUserPreferences
+        from replit_auth import ReplitUser
+        
+        # Check if user is authenticated and is admin
+        if not current_user.is_authenticated:
+            return redirect('/auth/replit_auth')
+        
+        user_prefs = ReplitUserPreferences.get_or_create(current_user.id)
+        if not user_prefs.is_admin:
+            return render_template('403.html'), 403
+        
+        # Get all Replit users with their preferences
+        users_with_prefs = db.session.query(ReplitUser, ReplitUserPreferences)\
+            .outerjoin(ReplitUserPreferences, ReplitUser.id == ReplitUserPreferences.user_id)\
+            .all()
+        
+        return render_template('settings_users_replit.html', 
+                             title='إدارة المستخدمين',
+                             users_with_prefs=users_with_prefs,
+                             current_user=current_user)
+    except ImportError:
+        # Fallback for development
+        return render_template('settings_users.html', title='إدارة المستخدمين')
 
 @app.route('/settings/design-system')
 def settings_design_system_page():
@@ -323,9 +356,26 @@ def register_redirect():
 
 @app.route('/profile')
 def profile_page():
-    """User profile page"""
-    return render_template('profile.html', 
-                         title='الملف الشخصي')
+    """User profile page - requires Replit Auth"""
+    try:
+        from replit_auth import require_login
+        from flask_login import current_user
+        from models.replit_user_preferences import ReplitUserPreferences
+        
+        # Check if user is authenticated
+        if not current_user.is_authenticated:
+            return redirect('/auth/replit_auth')
+        
+        # Get or create user preferences
+        preferences = ReplitUserPreferences.get_or_create(current_user.id)
+        
+        return render_template('profile_replit.html', 
+                             title='الملف الشخصي',
+                             user=current_user,
+                             preferences=preferences)
+    except ImportError:
+        # Fallback for development without Replit Auth
+        return render_template('profile.html', title='الملف الشخصي')
 
 @app.route('/api/ai-services-status')
 def ai_services_status():

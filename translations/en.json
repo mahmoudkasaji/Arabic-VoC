@@ -222,6 +222,67 @@
     "security": "Security",
     "notifications": "Notifications"
   },
+  "profile": {
+    "account_info": "Account Information",
+    "replit_id": "Replit ID",
+    "email": "Email",
+    "name": "Name",
+    "joined_date": "Joined",
+    "last_updated": "Last Updated",
+    "account_type": "Account Type",
+    "platform_preferences": "Platform Preferences",
+    "timezone": "Timezone",
+    "theme": "Theme",
+    "dashboard_layout": "Dashboard Layout",
+    "account_management": "Account Management",
+    "replit_managed_notice": "Your account details (name, email, password) are managed by Replit. Use the link below to update them.",
+    "manage_replit_account": "Manage Replit Account"
+  },
+  "theme": {
+    "light": "Light",
+    "dark": "Dark"
+  },
+  "layout": {
+    "standard": "Standard",
+    "compact": "Compact"
+  },
+  "roles": {
+    "user": "User",
+    "analyst": "Analyst", 
+    "admin": "Admin",
+    "super_admin": "Super Admin"
+  },
+  "user_management": {
+    "title": "User Management",
+    "subtitle_replit": "Manage Replit authenticated users and their platform roles",
+    "total_users": "Total Users",
+    "replit_notice_title": "Replit Auth System",
+    "replit_notice_desc": "This system manages users authenticated through Replit. Basic user information (name, email) is managed by Replit and cannot be modified here.",
+    "search_placeholder": "Search by name or email",
+    "admin_level": "Admin Level",
+    "all_levels": "All Levels",
+    "user_info": "User Information",
+    "replit_details": "Replit Details", 
+    "platform_role": "Platform Role",
+    "preferences": "Preferences",
+    "joined_date": "Joined Date",
+    "actions": "Actions",
+    "no_preferences": "No Preferences",
+    "default_prefs": "Default settings", 
+    "remove_admin": "Remove Admin",
+    "make_admin": "Make Admin",
+    "change_role": "Change Role",
+    "replit_managed": "Managed by Replit",
+    "current_user": "Current User",
+    "no_users": "No users found",
+    "migration_notice_title": "Legacy System Migration",
+    "migration_notice_desc": "The previous user management system has been phased out in favor of Replit Auth. All new users will authenticate through Replit.",
+    "confirm_admin_change": "Are you sure you want to change this user's admin status?",
+    "enter_new_role": "Enter new role"
+  },
+  "status": {
+    "active": "Active"
+  },
   "language": {
     "current": "English",
     "switch_to": "العربية",

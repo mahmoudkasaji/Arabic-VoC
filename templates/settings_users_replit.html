@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="{{ get_language_info().code }}" dir="{{ get_language_info().direction }}">
+<head>
+    {% include 'components/head.html' %}
+    <title>{{ title | default('settings_dropdown.user_management' | translate) }} - {{ 'app.name' | translate }}</title>
+</head>
+<body>
+    {% include 'components/unified_navigation.html' %}
+
+    <div class="page-container">
+        <div class="container-unified">
+        <div class="row">
+            <div class="col-12">
+                <!-- Page Header -->
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div>
+                        <h1 class="h3 text-primary mb-0">
+                            <i class="fas fa-users me-2"></i>
+                            {{ 'user_management.title' | translate }}
+                        </h1>
+                        <p class="text-muted mb-0">{{ 'user_management.subtitle_replit' | translate }}</p>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <span class="badge bg-info">{{ users_with_prefs|length }} {{ 'user_management.total_users' | translate }}</span>
+                    </div>
+                </div>
+
+                <!-- System Notice -->
+                <div class="alert alert-info" role="alert">
+                    <i class="fas fa-info-circle me-2"></i>
+                    <strong>{{ 'user_management.replit_notice_title' | translate }}:</strong> 
+                    {{ 'user_management.replit_notice_desc' | translate }}
+                </div>
+
+                <!-- Search and Filtering -->
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <div class="row g-3 align-items-end">
+                            <div class="col-md-6">
+                                <label class="form-label">{{ 'user_management.search_placeholder' | translate }}</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-search"></i></span>
+                                    <input type="search" id="userSearch" class="form-control" placeholder="{{ 'user_management.search_placeholder' | translate }}">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">{{ 'user_management.admin_level' | translate }}</label>
+                                <select id="adminFilter" class="form-select">
+                                    <option value="">{{ 'user_management.all_levels' | translate }}</option>
+                                    <option value="user">{{ 'roles.user' | translate }}</option>
+                                    <option value="analyst">{{ 'roles.analyst' | translate }}</option>
+                                    <option value="admin">{{ 'roles.admin' | translate }}</option>
+                                    <option value="super_admin">{{ 'roles.super_admin' | translate }}</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <button id="clearFilters" class="btn btn-outline-secondary">
+                                    <i class="fas fa-times me-1"></i>{{ 'buttons.clear' | translate }}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Users Table -->
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>{{ 'user_management.user_info' | translate }}</th>
+                                        <th>{{ 'user_management.replit_details' | translate }}</th>
+                                        <th>{{ 'user_management.platform_role' | translate }}</th>
+                                        <th>{{ 'user_management.preferences' | translate }}</th>
+                                        <th>{{ 'user_management.joined_date' | translate }}</th>
+                                        <th>{{ 'user_management.actions' | translate }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="usersTableBody">
+                                    {% for user, preferences in users_with_prefs %}
+                                    <tr data-user-id="{{ user.id }}" data-admin-level="{{ preferences.admin_level if preferences else 'user' }}">
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                {% if user.profile_image_url %}
+                                                    <img src="{{ user.profile_image_url }}" alt="Profile" 
+                                                         class="rounded-circle me-3" style="width: 40px; height: 40px; object-fit: cover;">
+                                                {% else %}
+                                                    <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-3" 
+                                                         style="width: 40px; height: 40px; font-size: 18px;">
+                                                        {{ (user.first_name or 'U')[0] }}
+                                                    </div>
+                                                {% endif %}
+                                                <div>
+                                                    <div class="fw-bold">{{ user.first_name or 'Unknown' }} {{ user.last_name or '' }}</div>
+                                                    <small class="text-muted">{{ user.email or 'No email' }}</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div>
+                                                <small class="text-muted">ID:</small> 
+                                                <code class="small">{{ user.id[:8] }}...</code>
+                                                <br>
+                                                <span class="badge bg-success">Replit Auth</span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            {% if preferences %}
+                                                {% if preferences.is_admin %}
+                                                    <span class="badge bg-warning">{{ preferences.admin_level | title }}</span>
+                                                {% else %}
+                                                    <span class="badge bg-secondary">{{ 'roles.user' | translate }}</span>
+                                                {% endif %}
+                                            {% else %}
+                                                <span class="badge bg-light text-dark">{{ 'user_management.no_preferences' | translate }}</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if preferences %}
+                                                <small>
+                                                    <i class="fas fa-language me-1"></i>{{ preferences.language_preference or 'ar' }}<br>
+                                                    <i class="fas fa-clock me-1"></i>{{ preferences.timezone or 'Asia/Riyadh' }}<br>
+                                                    <i class="fas fa-palette me-1"></i>{{ preferences.theme or 'light' }}
+                                                </small>
+                                            {% else %}
+                                                <small class="text-muted">{{ 'user_management.default_prefs' | translate }}</small>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <small>{{ user.created_at.strftime('%d/%m/%Y') if user.created_at else 'Unknown' }}</small>
+                                        </td>
+                                        <td>
+                                            <div class="dropdown">
+                                                <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                                    {{ 'user_management.actions' | translate }}
+                                                </button>
+                                                <ul class="dropdown-menu">
+                                                    {% if user.id != current_user.id %}
+                                                        <li><a class="dropdown-item" href="#" onclick="toggleAdminStatus('{{ user.id }}', {{ 'true' if not (preferences and preferences.is_admin) else 'false' }})">
+                                                            <i class="fas fa-user-shield me-2"></i>
+                                                            {% if preferences and preferences.is_admin %}
+                                                                {{ 'user_management.remove_admin' | translate }}
+                                                            {% else %}
+                                                                {{ 'user_management.make_admin' | translate }}
+                                                            {% endif %}
+                                                        </a></li>
+                                                        <li><a class="dropdown-item" href="#" onclick="changeRole('{{ user.id }}')">
+                                                            <i class="fas fa-user-cog me-2"></i>
+                                                            {{ 'user_management.change_role' | translate }}
+                                                        </a></li>
+                                                        <li><hr class="dropdown-divider"></li>
+                                                        <li><a class="dropdown-item text-muted" href="#">
+                                                            <i class="fas fa-info-circle me-2"></i>
+                                                            {{ 'user_management.replit_managed' | translate }}
+                                                        </a></li>
+                                                    {% else %}
+                                                        <li><a class="dropdown-item text-muted" href="#">
+                                                            <i class="fas fa-info-circle me-2"></i>
+                                                            {{ 'user_management.current_user' | translate }}
+                                                        </a></li>
+                                                    {% endif %}
+                                                </ul>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% else %}
+                                    <tr>
+                                        <td colspan="6" class="text-center text-muted py-4">
+                                            <i class="fas fa-users fa-2x mb-2"></i><br>
+                                            {{ 'user_management.no_users' | translate }}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Legacy System Notice -->
+                <div class="alert alert-warning mt-4" role="alert">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <strong>{{ 'user_management.migration_notice_title' | translate }}:</strong> 
+                    {{ 'user_management.migration_notice_desc' | translate }}
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+
+    <script>
+    // Search and filter functionality
+    document.getElementById('userSearch').addEventListener('input', filterUsers);
+    document.getElementById('adminFilter').addEventListener('change', filterUsers);
+
+    function filterUsers() {
+        const searchTerm = document.getElementById('userSearch').value.toLowerCase();
+        const adminFilter = document.getElementById('adminFilter').value;
+        const rows = document.querySelectorAll('#usersTableBody tr[data-user-id]');
+
+        rows.forEach(row => {
+            const userInfo = row.querySelector('td:first-child').textContent.toLowerCase();
+            const adminLevel = row.getAttribute('data-admin-level');
+            
+            const matchesSearch = userInfo.includes(searchTerm);
+            const matchesAdmin = !adminFilter || adminLevel === adminFilter;
+            
+            row.style.display = matchesSearch && matchesAdmin ? '' : 'none';
+        });
+    }
+
+    document.getElementById('clearFilters').addEventListener('click', () => {
+        document.getElementById('userSearch').value = '';
+        document.getElementById('adminFilter').value = '';
+        filterUsers();
+    });
+
+    // Admin status toggle
+    function toggleAdminStatus(userId, makeAdmin) {
+        if (!confirm('{{ "user_management.confirm_admin_change" | translate }}')) return;
+        
+        fetch('/api/admin/toggle-admin-status', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ user_id: userId, is_admin: makeAdmin })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                alert('Error: ' + (data.message || 'Unknown error'));
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Network error occurred');
+        });
+    }
+
+    // Role change
+    function changeRole(userId) {
+        const newRole = prompt('{{ "user_management.enter_new_role" | translate }}\n(user, analyst, admin, super_admin):');
+        if (!newRole || !['user', 'analyst', 'admin', 'super_admin'].includes(newRole)) return;
+        
+        fetch('/api/admin/change-role', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ user_id: userId, role: newRole })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                alert('Error: ' + (data.message || 'Unknown error'));
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Network error occurred');
+        });
+    }
+    </script>
+</body>
+</html>

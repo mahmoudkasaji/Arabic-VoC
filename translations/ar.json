@@ -222,6 +222,67 @@
     "security": "الأمان",
     "notifications": "الإشعارات"
   },
+  "profile": {
+    "account_info": "معلومات الحساب",
+    "replit_id": "معرف Replit",
+    "email": "البريد الإلكتروني",
+    "name": "الاسم",
+    "joined_date": "تاريخ الانضمام",
+    "last_updated": "آخر تحديث",
+    "account_type": "نوع الحساب",
+    "platform_preferences": "تفضيلات المنصة",
+    "timezone": "المنطقة الزمنية",
+    "theme": "المظهر",
+    "dashboard_layout": "تخطيط لوحة التحكم",
+    "account_management": "إدارة الحساب",
+    "replit_managed_notice": "تفاصيل حسابك (الاسم، البريد الإلكتروني، كلمة المرور) يتم إدارتها بواسطة Replit. استخدم الرابط أدناه لتحديثها.",
+    "manage_replit_account": "إدارة حساب Replit"
+  },
+  "theme": {
+    "light": "فاتح",
+    "dark": "داكن"
+  },
+  "layout": {
+    "standard": "قياسي",
+    "compact": "مدمج"
+  },
+  "roles": {
+    "user": "مستخدم",
+    "analyst": "محلل",
+    "admin": "مدير",
+    "super_admin": "مدير عام"
+  },
+  "user_management": {
+    "title": "إدارة المستخدمين",
+    "subtitle_replit": "إدارة المستخدمين المصادق عليهم عبر Replit وأدوارهم في المنصة",
+    "total_users": "إجمالي المستخدمين",
+    "replit_notice_title": "نظام مصادقة Replit",
+    "replit_notice_desc": "يدير هذا النظام المستخدمين المصادق عليهم عبر Replit. المعلومات الأساسية للمستخدمين (الاسم، البريد الإلكتروني) يتم إدارتها بواسطة Replit ولا يمكن تعديلها هنا.",
+    "search_placeholder": "البحث بالاسم أو البريد الإلكتروني",
+    "admin_level": "مستوى الإدارة",
+    "all_levels": "جميع المستويات",
+    "user_info": "معلومات المستخدم",
+    "replit_details": "تفاصيل Replit",
+    "platform_role": "دور المنصة",
+    "preferences": "التفضيلات",
+    "joined_date": "تاريخ الانضمام",
+    "actions": "الإجراءات",
+    "no_preferences": "بلا تفضيلات",
+    "default_prefs": "الإعدادات الافتراضية",
+    "remove_admin": "إزالة المدير",
+    "make_admin": "جعله مديرًا",
+    "change_role": "تغيير الدور",
+    "replit_managed": "يُدار بواسطة Replit",
+    "current_user": "المستخدم الحالي",
+    "no_users": "لم يتم العثور على مستخدمين",
+    "migration_notice_title": "ترحيل النظام القديم",
+    "migration_notice_desc": "تم إيقاف نظام إدارة المستخدمين السابق لصالح مصادقة Replit. جميع المستخدمين الجدد سيصادقون عبر Replit.",
+    "confirm_admin_change": "هل أنت متأكد من أنك تريد تغيير حالة المدير لهذا المستخدم؟",
+    "enter_new_role": "أدخل الدور الجديد"
+  },
+  "status": {
+    "active": "نشط"
+  },
   "language": {
     "current": "العربية",
     "switch_to": "English",
