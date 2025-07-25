@@ -17,6 +17,45 @@ const CONFIG = {
     ARABIC_LOCALE: 'ar-SA'
 };
 
+// CRITICAL: Define toggleLanguage function IMMEDIATELY for onclick handlers
+window.toggleLanguage = function() {
+    console.log('toggleLanguage called');
+    
+    // Show loading state if button exists
+    const button = document.querySelector('[onclick="toggleLanguage()"]');
+    const originalContent = button ? button.innerHTML : '';
+    
+    if (button) {
+        button.disabled = true;
+        button.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Loading...';
+    }
+    
+    // Create a simple implementation that works immediately
+    fetch('/api/language/toggle', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({})
+    })
+    .then(response => {
+        if (response.ok) {
+            window.location.reload();
+        } else {
+            console.error('Language toggle failed');
+            if (button) {
+                button.disabled = false;
+                button.innerHTML = originalContent;
+            }
+        }
+    })
+    .catch(error => {
+        console.error('Error toggling language:', error);
+        if (button) {
+            button.disabled = false;
+            button.innerHTML = originalContent;
+        }
+    });
+};
+
 // Utility functions for Arabic text handling
 const ArabicUtils = {
     /**
@@ -901,16 +940,22 @@ const LanguageToggle = {
     }
 };
 
-// Global function for onclick handlers
+// Global function for onclick handlers - Define immediately
 function toggleLanguage() {
-    LanguageToggle.toggleLanguage();
+    if (typeof LanguageToggle !== 'undefined') {
+        LanguageToggle.toggleLanguage();
+    } else {
+        console.error('LanguageToggle not yet loaded');
+    }
 }
 
-// Export functions for global access
+// Make sure toggleLanguage is available globally immediately
+window.toggleLanguage = toggleLanguage;
+
+// Export other functions for global access
 window.FeedbackManager = FeedbackManager;
 window.Dashboard = Dashboard;
 window.API = API;
 window.UI = UI;
 window.ArabicUtils = ArabicUtils;
 window.LanguageToggle = LanguageToggle;
-window.toggleLanguage = toggleLanguage;
