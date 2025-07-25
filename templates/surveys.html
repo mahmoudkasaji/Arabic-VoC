@@ -118,9 +118,14 @@
                                         <a href="/surveys/builder?id={{ survey.id }}" class="btn btn-sm btn-outline-primary" title="تحرير">
                                             <i class="fas fa-edit"></i>
                                         </a>
-                                        <a href="/surveys/responses?id={{ survey.id }}" class="btn btn-sm btn-outline-info" title="النتائج">
+                                        <button class="btn btn-sm btn-outline-info" onclick="toggleResponsePreview({{ survey.id }})" title="النتائج السريعة">
                                             <i class="fas fa-chart-bar"></i>
+                                        </button>
+                                        {% if survey.response_count > 0 %}
+                                        <a href="/surveys/responses?id={{ survey.id }}" class="btn btn-sm btn-outline-success" title="تحليل مفصل">
+                                            <i class="fas fa-analytics"></i>
                                         </a>
+                                        {% endif %}
                                         {% if survey.status == 'published' %}
                                         <button class="btn btn-sm btn-outline-warning" onclick="pauseSurvey({{ survey.id }})" title="إيقاف">
                                             <i class="fas fa-pause"></i>
@@ -129,6 +134,36 @@
                                         <button class="btn btn-sm btn-outline-danger" onclick="deleteSurvey({{ survey.id }})" title="حذف">
                                             <i class="fas fa-trash"></i>
                                         </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <!-- Quick Response Preview Row (Hidden by default) -->
+                            <tr id="responsePreview{{ survey.id }}" class="response-preview-row" style="display: none;">
+                                <td colspan="7" class="bg-light p-3">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <h6 class="mb-2">إحصائيات سريعة</h6>
+                                            <div class="d-flex justify-content-between">
+                                                <small>آخر استجابة:</small>
+                                                <small class="text-muted">منذ ساعتين</small>
+                                            </div>
+                                            <div class="d-flex justify-content-between">
+                                                <small>متوسط التقييم:</small>
+                                                <small class="text-success">4.2/5 ⭐</small>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <h6 class="mb-2">آخر التعليقات</h6>
+                                            <small class="text-muted">"خدمة ممتازة وسرعة في التسليم. أنصح بشدة..."</small>
+                                        </div>
+                                        <div class="col-md-3 text-end">
+                                            <a href="/surveys/responses?id={{ survey.id }}" class="btn btn-sm btn-primary mb-1 d-block">
+                                                <i class="fas fa-eye me-1"></i>عرض الكل
+                                            </a>
+                                            <button class="btn btn-sm btn-outline-secondary d-block" onclick="exportResponses({{ survey.id }})">
+                                                <i class="fas fa-download me-1"></i>تصدير
+                                            </button>
+                                        </div>
                                     </div>
                                 </td>
                             </tr>
@@ -166,6 +201,20 @@
             // Add actual pause functionality here
             console.log('Pause survey:', surveyId);
         }
+    }
+
+    function toggleResponsePreview(surveyId) {
+        const previewRow = document.getElementById(`responsePreview${surveyId}`);
+        if (previewRow.style.display === 'none') {
+            previewRow.style.display = 'table-row';
+        } else {
+            previewRow.style.display = 'none';
+        }
+    }
+
+    function exportResponses(surveyId) {
+        console.log('Export responses for survey:', surveyId);
+        // Add actual export functionality
     }
     </script>
 
