@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    {% include 'components/head.html' %}
+    <title>اختبار التحليلات المحسنة - منصة صوت العميل</title>
+    <style>
+        .test-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .test-section {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .analysis-result {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px 0;
+            border-left: 4px solid #007bff;
+        }
+        
+        .emotion-badge {
+            display: inline-block;
+            background: #e3f2fd;
+            color: #1976d2;
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 0.875rem;
+            margin: 2px;
+        }
+        
+        .topic-badge {
+            display: inline-block;
+            background: #e8f5e8;
+            color: #2e7d32;
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 0.875rem;
+            margin: 2px;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #6c757d;
+        }
+        
+        .btn-test {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            margin: 8px;
+        }
+        
+        .btn-test:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .metric-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            margin: 12px;
+        }
+        
+        .metric-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        
+        .metric-label {
+            color: #666;
+            font-size: 0.875rem;
+        }
+    </style>
+</head>
+<body>
+    {% include 'components/unified_navigation.html' %}
+    
+    <div class="test-container">
+        <div class="test-section">
+            <h1>🧪 اختبار التحليلات المحسنة - المرحلة 3أ</h1>
+            <p>اختبار تحليل المشاعر والمواضيع المحسن على البيانات الحقيقية من الاستطلاعات</p>
+            
+            <div style="display: flex; gap: 16px; margin: 20px 0;">
+                <button class="btn-test" onclick="testRealResponses()">اختبار الإجابات الحقيقية</button>
+                <button class="btn-test" onclick="testTextAnalysis()">اختبار تحليل النصوص</button>
+                <button class="btn-test" onclick="getTopicInsights()">رؤى المواضيع</button>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h2>📊 نتائج التحليل المحسن</h2>
+            <div id="results-container">
+                <div class="loading">اضغط على أحد الأزرار أعلاه لبدء الاختبار</div>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h2>📈 إحصائيات سريعة</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+                <div class="metric-card">
+                    <div class="metric-value" id="total-responses">2</div>
+                    <div class="metric-label">إجمالي الإجابات</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" id="emotions-detected">6</div>
+                    <div class="metric-label">أنواع المشاعر المكتشفة</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" id="topics-identified">3</div>
+                    <div class="metric-label">المواضيع المحددة</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" id="avg-processing">8.2s</div>
+                    <div class="metric-label">متوسط وقت المعالجة</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function testRealResponses() {
+            const container = document.getElementById('results-container');
+            container.innerHTML = '<div class="loading">🔄 جاري تحليل الإجابات الحقيقية...</div>';
+            
+            try {
+                const response = await fetch('/api/enhanced-analytics/historical-analysis?limit=5');
+                const data = await response.json();
+                
+                if (data.success) {
+                    displayHistoricalResults(data.data);
+                } else {
+                    container.innerHTML = `<div class="analysis-result" style="border-left-color: #dc3545; background: #f8d7da;">❌ خطأ: ${data.error}</div>`;
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                container.innerHTML = '<div class="analysis-result" style="border-left-color: #dc3545; background: #f8d7da;">❌ فشل في الاتصال بخدمة التحليل</div>';
+            }
+        }
+        
+        async function testTextAnalysis() {
+            const container = document.getElementById('results-container');
+            container.innerHTML = '<div class="loading">🔄 جاري اختبار تحليل النصوص...</div>';
+            
+            const testTexts = [
+                "شكراً جزيلاً على الخدمة الممتازة",
+                "أنا منزعج من بطء الاستجابة", 
+                "Great service! Very happy with the product quality"
+            ];
+            
+            let results = '<h3>نتائج اختبار تحليل النصوص:</h3>';
+            
+            for (let i = 0; i < testTexts.length; i++) {
+                try {
+                    const response = await fetch('/api/enhanced-analytics/analyze-text', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ text: testTexts[i] })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        results += formatAnalysisResult(data.data, testTexts[i]);
+                    } else {
+                        results += `<div class="analysis-result">❌ فشل تحليل: ${testTexts[i]}</div>`;
+                    }
+                } catch (error) {
+                    results += `<div class="analysis-result">❌ خطأ في تحليل: ${testTexts[i]}</div>`;
+                }
+            }
+            
+            container.innerHTML = results;
+        }
+        
+        async function getTopicInsights() {
+            const container = document.getElementById('results-container');
+            container.innerHTML = '<div class="loading">🔄 جاري استخراج رؤى المواضيع...</div>';
+            
+            try {
+                const response = await fetch('/api/enhanced-analytics/topic-insights?time_range=all');
+                const data = await response.json();
+                
+                if (data.success) {
+                    displayTopicInsights(data.data);
+                } else {
+                    container.innerHTML = `<div class="analysis-result" style="border-left-color: #dc3545;">❌ خطأ: ${data.error}</div>`;
+                }
+            } catch (error) {
+                container.innerHTML = '<div class="analysis-result" style="border-left-color: #dc3545;">❌ فشل في الحصول على رؤى المواضيع</div>';
+            }
+        }
+        
+        function displayHistoricalResults(data) {
+            const container = document.getElementById('results-container');
+            let html = `<h3>📋 تحليل ${data.total_responses} إجابة حقيقية:</h3>`;
+            
+            if (data.analyzed_responses && data.analyzed_responses.length > 0) {
+                data.analyzed_responses.forEach((response, index) => {
+                    const emotion = response.primary_emotion || {};
+                    const sentiment = response.sentiment || {};
+                    const topics = response.topics || [];
+                    
+                    html += `
+                        <div class="analysis-result">
+                            <h4>إجابة ${index + 1} (ID: ${response.response_id})</h4>
+                            <p><strong>النص:</strong> ${response.original_text || 'غير متوفر'}</p>
+                            <p><strong>المشاعر الأساسية:</strong> 
+                                <span class="emotion-badge">${emotion.emotion || 'غير محدد'} (${((emotion.confidence || 0) * 100).toFixed(0)}%)</span>
+                            </p>
+                            <p><strong>المواضيع:</strong> 
+                                ${topics.map(topic => `<span class="topic-badge">${topic.category} (${(topic.relevance * 100).toFixed(0)}%)</span>`).join(' ')}
+                            </p>
+                            <p><strong>التحليل العاطفي:</strong> ${sentiment.label || 'غير محدد'} (${(sentiment.score || 0).toFixed(2)})</p>
+                            <p><strong>وقت المعالجة:</strong> ${response.processing_time || 'غير متوفر'}s</p>
+                        </div>
+                    `;
+                });
+                
+                // Display summary
+                const summary = data.summary || {};
+                html += `
+                    <div class="analysis-result" style="border-left-color: #28a745; background: #d4edda;">
+                        <h4>📊 ملخص التحليل:</h4>
+                        <p><strong>توزيع المشاعر:</strong> ${JSON.stringify(summary.emotion_distribution || {})}</p>
+                        <p><strong>توزيع المواضيع:</strong> ${JSON.stringify(summary.topic_distribution || {})}</p>
+                        <p><strong>متوسط التحليل العاطفي:</strong> ${(summary.sentiment_comparison?.average_sentiment || 0).toFixed(2)}</p>
+                    </div>
+                `;
+            } else {
+                html += '<div class="analysis-result">⚠️ لم يتم العثور على نتائج تحليل</div>';
+            }
+            
+            container.innerHTML = html;
+        }
+        
+        function formatAnalysisResult(analysis, originalText) {
+            const emotion = analysis.primary_emotion || {};
+            const sentiment = analysis.sentiment || {};
+            const topics = analysis.topics || [];
+            const insights = analysis.insights || {};
+            
+            return `
+                <div class="analysis-result">
+                    <h4>النص: "${originalText}"</h4>
+                    <p><strong>المشاعر:</strong> <span class="emotion-badge">${emotion.emotion} (${((emotion.confidence || 0) * 100).toFixed(0)}%)</span></p>
+                    <p><strong>المواضيع:</strong> ${topics.map(t => `<span class="topic-badge">${t.category}</span>`).join(' ')}</p>
+                    <p><strong>التحليل العاطفي:</strong> ${sentiment.label} (${(sentiment.score || 0).toFixed(2)})</p>
+                    <p><strong>الكلمات المفتاحية:</strong> ${(analysis.keywords || []).join(', ')}</p>
+                    <p><strong>اللغة:</strong> ${analysis.language_detected}</p>
+                    <p><strong>وقت المعالجة:</strong> ${analysis.processing_time}s</p>
+                    ${insights.key_points && insights.key_points.length > 0 ? 
+                        `<p><strong>النقاط الرئيسية:</strong> ${insights.key_points.join(', ')}</p>` : ''}
+                </div>
+            `;
+        }
+        
+        function displayTopicInsights(data) {
+            const container = document.getElementById('results-container');
+            const topicInsights = data.topic_insights || {};
+            
+            let html = `<h3>🎯 رؤى المواضيع (${data.total_categories} فئات من ${data.total_responses_analyzed} إجابة):</h3>`;
+            
+            if (Object.keys(topicInsights).length > 0) {
+                Object.entries(topicInsights).forEach(([category, data]) => {
+                    html += `
+                        <div class="analysis-result">
+                            <h4>${category}</h4>
+                            <p><strong>عدد الإشارات:</strong> ${data.total_mentions}</p>
+                            <p><strong>متوسط الصلة:</strong> ${data.avg_relevance}</p>
+                            <p><strong>الكلمات المفتاحية:</strong> ${data.keywords.join(', ')}</p>
+                            <p><strong>الإجابات:</strong> ${data.responses.join(', ')}</p>
+                        </div>
+                    `;
+                });
+            } else {
+                html += '<div class="analysis-result">⚠️ لم يتم العثور على رؤى للمواضيع</div>';
+            }
+            
+            container.innerHTML = html;
+        }
+        
+        // Auto-load real responses on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(testRealResponses, 1000);
+        });
+    </script>
+
+    {% include 'components/scripts.html' %}
+</body>
+</html>

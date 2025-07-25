@@ -113,6 +113,14 @@ try:
 except Exception as e:
     logger.error(f"Could not register Live Analytics API blueprint: {e}")
 
+# Register Enhanced Analytics API - Phase 3A
+try:
+    from api.enhanced_analytics import enhanced_analytics_bp
+    app.register_blueprint(enhanced_analytics_bp)
+    logger.info("Enhanced Analytics API blueprint registered successfully")
+except Exception as e:
+    logger.error(f"Could not register Enhanced Analytics API blueprint: {e}")
+
 @app.route('/')
 def index():
     """Main homepage with Replit Auth and language support"""
@@ -562,6 +570,12 @@ def survey_builder():
     """Survey builder interface with 4-step workflow"""
     return render_template('survey_builder.html', 
                          title='منشئ الاستطلاعات')
+
+@app.route('/analytics/enhanced-test')
+def enhanced_analytics_test():
+    """Enhanced analytics testing page - Phase 3A"""
+    return render_template('enhanced_analytics_test.html', 
+                         title='اختبار التحليلات المحسنة')
 
 # Analytics Routes (Consolidated Dashboard + Insights)
 @app.route('/dashboard')
