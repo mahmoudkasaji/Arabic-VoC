@@ -843,6 +843,15 @@ const LanguageToggle = {
     },
     
     async toggleLanguage() {
+        // Show loading state on button
+        const button = document.querySelector('[onclick="toggleLanguage()"]');
+        const originalContent = button ? button.innerHTML : '';
+        
+        if (button) {
+            button.disabled = true;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Loading...';
+        }
+        
         try {
             const response = await fetch('/api/language/toggle', {
                 method: 'POST',
@@ -857,9 +866,19 @@ const LanguageToggle = {
                 window.location.reload();
             } else {
                 console.error('Language toggle failed');
+                // Restore original button state
+                if (button) {
+                    button.disabled = false;
+                    button.innerHTML = originalContent;
+                }
             }
         } catch (error) {
             console.error('Error toggling language:', error);
+            // Restore original button state
+            if (button) {
+                button.disabled = false;
+                button.innerHTML = originalContent;
+            }
         }
     },
     
@@ -871,7 +890,9 @@ const LanguageToggle = {
                 const button = document.querySelector('[onclick="toggleLanguage()"]');
                 if (button) {
                     const switchText = status.current_language === 'ar' ? 'English' : 'العربية';
+                    const tooltip = status.current_language === 'ar' ? 'Switch to English' : 'تبديل اللغة إلى الإنجليزية';
                     button.innerHTML = `<i class="fas fa-globe me-1"></i>${switchText}`;
+                    button.setAttribute('title', tooltip);
                 }
             }
         } catch (error) {

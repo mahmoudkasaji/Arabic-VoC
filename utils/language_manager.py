@@ -38,21 +38,21 @@ class LanguageManager:
     
     def get_current_language(self) -> str:
         """Get current user's language preference"""
-        # Priority order: URL parameter -> session -> browser preference -> default
+        # Priority order: URL parameter -> session -> browser preference (only if no session) -> default
         
-        # 1. Check URL parameter
+        # 1. Check URL parameter (highest priority)
         if request and request.args.get('lang') in self.supported_languages:
             lang = request.args.get('lang')
             if lang:
                 self.set_language(lang)
                 return lang
         
-        # 2. Check session
+        # 2. Check session (preserve user's explicit choice)
         if 'language' in session and session['language'] in self.supported_languages:
             return session['language']
         
-        # 3. Check browser Accept-Language header
-        if request and request.headers.get('Accept-Language'):
+        # 3. Check browser Accept-Language header (only if no session exists)
+        if request and request.headers.get('Accept-Language') and 'language' not in session:
             accept_lang = request.headers.get('Accept-Language')
             if accept_lang:
                 browser_langs = accept_lang.split(',')
