@@ -19,16 +19,20 @@ const CONFIG = {
 
 // CRITICAL: Define toggleLanguage function IMMEDIATELY for onclick handlers
 window.toggleLanguage = function() {
-    console.log('toggleLanguage called');
+    console.log('🔄 toggleLanguage called');
     
     // Show loading state if button exists
     const button = document.querySelector('[onclick="toggleLanguage()"]');
     const originalContent = button ? button.innerHTML : '';
     
+    console.log('Button found:', button);
+    
     if (button) {
         button.disabled = true;
-        button.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Loading...';
+        button.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>جاري التحميل...';
     }
+    
+    console.log('Sending toggle request to /api/language/toggle');
     
     // Create a simple implementation that works immediately
     fetch('/api/language/toggle', {
@@ -37,10 +41,12 @@ window.toggleLanguage = function() {
         body: JSON.stringify({})
     })
     .then(response => {
+        console.log('Toggle response status:', response.status);
         if (response.ok) {
+            console.log('✅ Toggle successful, reloading page...');
             window.location.reload();
         } else {
-            console.error('Language toggle failed');
+            console.error('❌ Language toggle failed with status:', response.status);
             if (button) {
                 button.disabled = false;
                 button.innerHTML = originalContent;
@@ -48,13 +54,34 @@ window.toggleLanguage = function() {
         }
     })
     .catch(error => {
-        console.error('Error toggling language:', error);
+        console.error('❌ Error toggling language:', error);
         if (button) {
             button.disabled = false;
             button.innerHTML = originalContent;
         }
     });
 };
+
+// Alternative implementation using addEventListener for better compatibility
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('🚀 DOM loaded, setting up bilingual toggle...');
+    
+    // Find all language toggle buttons and add event listeners
+    const toggleButtons = document.querySelectorAll('[onclick="toggleLanguage()"], .language-toggle, #languageToggle');
+    
+    toggleButtons.forEach(button => {
+        console.log('Found toggle button:', button);
+        
+        // Add click event listener as backup
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            console.log('🎯 Button clicked via addEventListener');
+            window.toggleLanguage();
+        });
+    });
+    
+    console.log(`✅ Set up ${toggleButtons.length} language toggle buttons`);
+});
 
 // Utility functions for Arabic text handling
 const ArabicUtils = {

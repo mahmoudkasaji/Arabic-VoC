@@ -6,7 +6,7 @@ Main application with proper Arabic support and WSGI compatibility
 import os
 import logging
 from datetime import datetime, timedelta
-from flask import Flask, render_template, request, jsonify, redirect, url_for, session
+from flask import Flask, render_template, request, jsonify, redirect, url_for, session, render_template_string
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase
 from werkzeug.middleware.proxy_fix import ProxyFix
@@ -65,6 +65,13 @@ def index():
     return render_template('index_simple.html')
 
 # Removed redundant homepage route
+
+@app.route('/debug-bilingual')
+def debug_bilingual():
+    """Debug page for bilingual functionality"""
+    with open('debug_bilingual.html', 'r', encoding='utf-8') as f:
+        content = f.read()
+    return render_template_string(content)
 
 @app.route('/feedback')
 def feedback_page():

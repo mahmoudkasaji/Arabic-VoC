@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Bilingual Toggle</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-8 mx-auto">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>🧪 Bilingual System Debug Test</h3>
+                    </div>
+                    <div class="card-body">
+                        <h5>Current Language Status</h5>
+                        <div id="status" class="alert alert-info">Loading...</div>
+                        
+                        <h5>Language Toggle Button</h5>
+                        <button class="btn btn-primary" onclick="testToggle()" id="toggleBtn">
+                            <i class="fas fa-globe me-1"></i>
+                            Toggle Language
+                        </button>
+                        
+                        <h5 class="mt-4">Debug Log</h5>
+                        <div id="debugLog" class="border p-3" style="background: #f8f9fa; height: 200px; overflow-y: auto;">
+                            <div class="text-muted">Debug output will appear here...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function log(message) {
+            const debugLog = document.getElementById('debugLog');
+            const timestamp = new Date().toLocaleTimeString();
+            debugLog.innerHTML += `<div><strong>[${timestamp}]</strong> ${message}</div>`;
+            debugLog.scrollTop = debugLog.scrollHeight;
+        }
+
+        function updateStatus() {
+            log('Fetching language status...');
+            fetch('/api/language/status')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('status').innerHTML = `
+                        <strong>Current Language:</strong> ${data.current_language}<br>
+                        <strong>Direction:</strong> ${data.direction}<br>
+                        <strong>Opposite:</strong> ${data.opposite_language}
+                    `;
+                    log(`Status updated: ${data.current_language} (${data.direction})`);
+                })
+                .catch(error => {
+                    log(`❌ Error fetching status: ${error}`);
+                });
+        }
+
+        function testToggle() {
+            const btn = document.getElementById('toggleBtn');
+            const originalText = btn.innerHTML;
+            
+            log('🔄 Starting language toggle test...');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Toggling...';
+            
+            fetch('/api/language/toggle', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({})
+            })
+            .then(response => {
+                log(`Toggle response status: ${response.status}`);
+                return response.json();
+            })
+            .then(data => {
+                log(`✅ Toggle successful! New language: ${data.language}`);
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+                
+                // Update status after toggle
+                setTimeout(updateStatus, 500);
+            })
+            .catch(error => {
+                log(`❌ Toggle failed: ${error}`);
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+            });
+        }
+
+        // Load initial status
+        document.addEventListener('DOMContentLoaded', function() {
+            log('🚀 Debug page loaded');
+            updateStatus();
+        });
+    </script>
+</body>
+</html>
