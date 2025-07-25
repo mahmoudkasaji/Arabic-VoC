@@ -121,6 +121,14 @@ try:
 except Exception as e:
     logger.error(f"Could not register Enhanced Analytics API blueprint: {e}")
 
+# Register Professional Reports API - Phase 3B
+try:
+    from api.professional_reports import professional_reports_bp
+    app.register_blueprint(professional_reports_bp)
+    logger.info("Professional Reports API blueprint registered successfully")
+except Exception as e:
+    logger.error(f"Could not register Professional Reports API blueprint: {e}")
+
 @app.route('/')
 def index():
     """Main homepage with Replit Auth and language support"""
@@ -576,6 +584,12 @@ def enhanced_analytics_test():
     """Enhanced analytics testing page - Phase 3A"""
     return render_template('enhanced_analytics_test.html', 
                          title='اختبار التحليلات المحسنة')
+
+@app.route('/analytics/reports')
+def professional_reports():
+    """Professional reports page - Phase 3B"""
+    return render_template('professional_reports.html', 
+                         title='التقارير المهنية')
 
 # Analytics Routes (Consolidated Dashboard + Insights)
 @app.route('/dashboard')
