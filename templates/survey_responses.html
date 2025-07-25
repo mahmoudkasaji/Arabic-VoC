@@ -171,8 +171,8 @@
                                 </td>
                                 <td>
                                     <div class="btn-group" role="group">
-                                        <button class="btn btn-outline-primary btn-sm" onclick="viewResponse(1)" title="عرض التفاصيل">
-                                            <i class="fas fa-eye"></i>
+                                        <button class="btn btn-outline-primary btn-sm" onclick="viewResponse(1)" title="عرض تفاصيل الرد الكامل" data-bs-toggle="tooltip" data-bs-placement="top">
+                                            <i class="fas fa-search-plus"></i>
                                         </button>
                                         <button class="btn btn-outline-success btn-sm" onclick="exportResponse(1)" title="تصدير">
                                             <i class="fas fa-download"></i>
@@ -215,8 +215,8 @@
                                 </td>
                                 <td>
                                     <div class="btn-group" role="group">
-                                        <button class="btn btn-outline-primary btn-sm" onclick="viewResponse(2)" title="عرض التفاصيل">
-                                            <i class="fas fa-eye"></i>
+                                        <button class="btn btn-outline-primary btn-sm" onclick="viewResponse(2)" title="عرض تفاصيل الرد الكامل" data-bs-toggle="tooltip" data-bs-placement="top">
+                                            <i class="fas fa-search-plus"></i>
                                         </button>
                                         <button class="btn btn-outline-success btn-sm" onclick="exportResponse(2)" title="تصدير">
                                             <i class="fas fa-download"></i>
@@ -259,8 +259,8 @@
                                 </td>
                                 <td>
                                     <div class="btn-group" role="group">
-                                        <button class="btn btn-outline-primary btn-sm" onclick="viewResponse(3)" title="عرض التفاصيل">
-                                            <i class="fas fa-eye"></i>
+                                        <button class="btn btn-outline-primary btn-sm" onclick="viewResponse(3)" title="عرض تفاصيل الرد الكامل" data-bs-toggle="tooltip" data-bs-placement="top">
+                                            <i class="fas fa-search-plus"></i>
                                         </button>
                                         <button class="btn btn-outline-success btn-sm" onclick="exportResponse(3)" title="تصدير">
                                             <i class="fas fa-download"></i>
@@ -449,7 +449,7 @@
     {% include 'components/scripts.html' %}
     
     <script>
-        // Initialize standardized navigation
+        // Initialize standardized navigation and tooltips
         document.addEventListener('DOMContentLoaded', function() {
             if (typeof StandardNavigation !== 'undefined') {
                 StandardNavigation.setActiveNav('surveys', 'responses');
@@ -459,6 +459,12 @@
                     { title: 'الردود والنتائج' }
                 ]);
             }
+            
+            // Initialize Bootstrap tooltips
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
         });
 
         // Simple filter functionality
@@ -574,11 +580,16 @@
             }
         });
 
-        // Individual response actions
+        // Enhanced individual response actions with improved modal
         function viewResponse(responseId) {
-            const modal = new bootstrap.Modal(document.getElementById('responseDetailModal'));
+            console.log('Opening detailed response view for ID:', responseId);
             
-            // Sample response data - in real implementation, fetch from API
+            // Show loading state in modal
+            const modal = new bootstrap.Modal(document.getElementById('responseDetailModal'));
+            document.getElementById('responseDetailModalLabel').textContent = 'جاري تحميل التفاصيل...';
+            modal.show();
+            
+            // Enhanced response data with more comprehensive information
             const responseData = {
                 1: {
                     info: {
@@ -588,16 +599,24 @@
                         date: '21 يناير 2025',
                         time: '02:30 مساءً',
                         status: 'مكتمل',
-                        source: 'موقع',
+                        source: 'موقع إلكتروني',
                         rating: 4.8,
-                        duration: '3.2 دقيقة'
+                        duration: '3.2 دقيقة',
+                        device: 'جهاز محمول',
+                        location: 'الرياض، السعودية'
                     },
                     details: [
-                        { question: 'كيف تقيم خدماتنا بشكل عام؟', answer: 'ممتاز جداً، الخدمة سريعة ومميزة', sentiment: 'positive' },
-                        { question: 'ما رأيك في فريق خدمة العملاء؟', answer: 'متعاونين ومفيدين للغاية', sentiment: 'positive' },
-                        { question: 'هل توصي بخدماتنا للآخرين؟', answer: 'نعم بالتأكيد', sentiment: 'positive' },
-                        { question: 'أي تحسينات تقترحها؟', answer: 'ربما تحسين التطبيق المحمول قليلاً', sentiment: 'neutral' }
-                    ]
+                        { question: 'كيف تقيم خدماتنا بشكل عام؟', answer: 'ممتاز جداً، الخدمة سريعة ومميزة والموظفين متعاونين', sentiment: 'positive', confidence: 95 },
+                        { question: 'ما رأيك في فريق خدمة العملاء؟', answer: 'متعاونين ومفيدين للغاية، يستجيبون بسرعة', sentiment: 'positive', confidence: 98 },
+                        { question: 'هل توصي بخدماتنا للآخرين؟', answer: 'نعم بالتأكيد، سأنصح أصدقائي وعائلتي', sentiment: 'positive', confidence: 100 },
+                        { question: 'أي تحسينات تقترحها؟', answer: 'ربما تحسين التطبيق المحمول قليلاً وإضافة المزيد من الميزات', sentiment: 'neutral', confidence: 78 }
+                    ],
+                    aiAnalysis: {
+                        overallSentiment: 'إيجابي',
+                        confidence: 95,
+                        topics: ['خدمة العملاء', 'الجودة', 'التطبيق المحمول'],
+                        recommendation: 'عميل راضي جداً - مرشح ممتاز لدراسة حالة نجاح'
+                    }
                 },
                 2: {
                     info: {
@@ -607,85 +626,176 @@
                         date: '21 يناير 2025',
                         time: '01:15 مساءً',
                         status: 'جزئي',
-                        source: 'تطبيق',
+                        source: 'تطبيق جوال',
                         rating: 3.5,
-                        duration: '1.8 دقيقة'
+                        duration: '1.8 دقيقة',
+                        device: 'آيفون',
+                        location: 'جدة، السعودية'
                     },
                     details: [
-                        { question: 'كيف تقيم المنتج الجديد؟', answer: 'جيد لكن يحتاج بعض التحسينات', sentiment: 'neutral' },
-                        { question: 'ما الميزة التي أعجبتك أكثر؟', answer: 'التصميم الجديد رائع', sentiment: 'positive' },
-                        { question: 'هل واجهت أي مشاكل؟', answer: 'نعم، بطء في التحميل أحياناً', sentiment: 'negative' }
-                    ]
+                        { question: 'كيف تقيم المنتج الجديد؟', answer: 'جيد لكن يحتاج بعض التحسينات في السرعة', sentiment: 'neutral', confidence: 85 },
+                        { question: 'ما الميزة التي أعجبتك أكثر؟', answer: 'التصميم الجديد رائع وسهل الاستخدام', sentiment: 'positive', confidence: 92 },
+                        { question: 'هل واجهت أي مشاكل؟', answer: 'نعم، بطء في التحميل أحياناً خاصة في الصباح', sentiment: 'negative', confidence: 88 }
+                    ],
+                    aiAnalysis: {
+                        overallSentiment: 'متوسط',
+                        confidence: 78,
+                        topics: ['الأداء', 'التصميم', 'تجربة المستخدم'],
+                        recommendation: 'يحتاج متابعة - تحسين الأداء أولوية'
+                    }
+                },
+                3: {
+                    info: {
+                        name: 'محمد سالم',
+                        email: '+966501234567',
+                        survey: 'تقييم جودة الخدمة',
+                        date: '21 يناير 2025',
+                        time: '12:45 مساءً',
+                        status: 'مكتمل',
+                        source: 'واتساب',
+                        rating: 4.2,
+                        duration: '2.7 دقيقة',
+                        device: 'أندرويد',
+                        location: 'الدمام، السعودية'
+                    },
+                    details: [
+                        { question: 'كيف تقيم خدمة العملاء؟', answer: 'جيدة جداً، ردود سريعة ومفيدة', sentiment: 'positive', confidence: 91 },
+                        { question: 'ما مستوى الرضا العام؟', answer: '4/5 - راضي بشكل عام مع وجود مجال للتحسين', sentiment: 'positive', confidence: 82 },
+                        { question: 'اقتراحات للتطوير؟', answer: 'تحسين سرعة الاستجابة في أوقات الذروة', sentiment: 'neutral', confidence: 75 }
+                    ],
+                    aiAnalysis: {
+                        overallSentiment: 'إيجابي',
+                        confidence: 86,
+                        topics: ['خدمة العملاء', 'أوقات الاستجابة', 'التحسين'],
+                        recommendation: 'عميل راضي - فرصة للتحسين المستمر'
+                    }
                 }
             };
 
-            const data = responseData[responseId] || responseData[1];
-            
-            // Populate response info
-            document.getElementById('responseInfo').innerHTML = `
-                <div class="mb-3">
-                    <strong>الاسم:</strong><br>
-                    <span>${data.info.name}</span>
-                </div>
-                <div class="mb-3">
-                    <strong>البريد الإلكتروني:</strong><br>
-                    <span>${data.info.email}</span>
-                </div>
-                <div class="mb-3">
-                    <strong>الاستطلاع:</strong><br>
-                    <span>${data.info.survey}</span>
-                </div>
-                <div class="mb-3">
-                    <strong>التاريخ والوقت:</strong><br>
-                    <span>${data.info.date} - ${data.info.time}</span>
-                </div>
-                <div class="mb-3">
-                    <strong>الحالة:</strong><br>
-                    <span class="badge bg-${data.info.status === 'مكتمل' ? 'success' : 'warning'}">${data.info.status}</span>
-                </div>
-                <div class="mb-3">
-                    <strong>المصدر:</strong><br>
-                    <span class="badge bg-primary">${data.info.source}</span>
-                </div>
-                <div class="mb-3">
-                    <strong>التقييم العام:</strong><br>
-                    <span class="text-success fw-bold">${data.info.rating}</span>
-                </div>
-                <div class="mb-3">
-                    <strong>مدة الاستجابة:</strong><br>
-                    <span>${data.info.duration}</span>
-                </div>
-            `;
-            
-            // Populate response details
-            let detailsHtml = '';
-            data.details.forEach((item, index) => {
-                const sentimentClass = item.sentiment === 'positive' ? 'success' : item.sentiment === 'negative' ? 'danger' : 'warning';
-                const sentimentIcon = item.sentiment === 'positive' ? 'smile' : item.sentiment === 'negative' ? 'frown' : 'meh';
+            // Simulate loading delay for realistic UX
+            setTimeout(() => {
+                const data = responseData[responseId] || responseData[1];
                 
-                detailsHtml += `
-                    <div class="border-bottom pb-3 mb-3">
-                        <h6 class="text-primary mb-2">
-                            <i class="fas fa-question-circle me-1"></i>
-                            السؤال ${index + 1}
-                        </h6>
-                        <p class="mb-2"><strong>${item.question}</strong></p>
-                        <div class="bg-light p-3 rounded">
-                            <div class="d-flex justify-content-between align-items-start">
-                                <p class="mb-0 flex-grow-1">${item.answer}</p>
-                                <span class="badge bg-${sentimentClass} ms-2">
-                                    <i class="fas fa-${sentimentIcon} me-1"></i>
-                                    ${item.sentiment === 'positive' ? 'إيجابي' : item.sentiment === 'negative' ? 'سلبي' : 'محايد'}
-                                </span>
+                // Update modal title
+                document.getElementById('responseDetailModalLabel').textContent = `تفاصيل الرد - ${data.info.survey}`;
+                
+                // Populate enhanced response info
+                document.getElementById('responseInfo').innerHTML = `
+                    <div class="mb-4">
+                        <h6 class="text-primary mb-3"><i class="fas fa-user me-2"></i>معلومات المستجيب</h6>
+                        <div class="row">
+                            <div class="col-sm-6 mb-2">
+                                <strong>الاسم:</strong><br>
+                                <span class="text-muted">${data.info.name}</span>
+                            </div>
+                            <div class="col-sm-6 mb-2">
+                                <strong>التواصل:</strong><br>
+                                <span class="text-muted">${data.info.email}</span>
+                            </div>
+                            <div class="col-sm-6 mb-2">
+                                <strong>التاريخ:</strong><br>
+                                <span class="text-muted">${data.info.date} - ${data.info.time}</span>
+                            </div>
+                            <div class="col-sm-6 mb-2">
+                                <strong>المدة:</strong><br>
+                                <span class="text-muted">${data.info.duration}</span>
+                            </div>
+                            <div class="col-sm-6 mb-2">
+                                <strong>الجهاز:</strong><br>
+                                <span class="badge bg-info">${data.info.device}</span>
+                            </div>
+                            <div class="col-sm-6 mb-2">
+                                <strong>المصدر:</strong><br>
+                                <span class="badge bg-primary">${data.info.source}</span>
+                            </div>
+                        </div>
+                        <div class="mt-3 pt-3 border-top">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong>الحالة:</strong>
+                                    <span class="badge bg-${data.info.status === 'مكتمل' ? 'success' : 'warning'} ms-2">${data.info.status}</span>
+                                </div>
+                                <div>
+                                    <strong>التقييم الإجمالي:</strong>
+                                    <span class="text-success fw-bold ms-2">${data.info.rating}/5</span>
+                                </div>
                             </div>
                         </div>
                     </div>
                 `;
-            });
-            
-            document.getElementById('responseDetails').innerHTML = detailsHtml;
-            
-            modal.show();
+                
+                // Populate enhanced response details with AI analysis
+                let detailsHtml = `
+                    <div class="mb-4">
+                        <h6 class="text-primary mb-3"><i class="fas fa-comments me-2"></i>الأسئلة والأجوبة</h6>
+                `;
+                
+                data.details.forEach((item, index) => {
+                    const sentimentClass = item.sentiment === 'positive' ? 'success' : item.sentiment === 'negative' ? 'danger' : 'warning';
+                    const sentimentIcon = item.sentiment === 'positive' ? 'smile' : item.sentiment === 'negative' ? 'frown' : 'meh';
+                    const sentimentText = item.sentiment === 'positive' ? 'إيجابي' : item.sentiment === 'negative' ? 'سلبي' : 'محايد';
+                    
+                    detailsHtml += `
+                        <div class="border border-2 border-start-0 border-end-0 border-top-0 border-primary ps-3 mb-4">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <h6 class="text-dark mb-1">
+                                    <i class="fas fa-question-circle text-primary me-2"></i>
+                                    السؤال ${index + 1}
+                                </h6>
+                                <div class="d-flex align-items-center">
+                                    <small class="text-muted me-2">الثقة: ${item.confidence}%</small>
+                                    <span class="badge bg-${sentimentClass}">
+                                        <i class="fas fa-${sentimentIcon} me-1"></i>
+                                        ${sentimentText}
+                                    </span>
+                                </div>
+                            </div>
+                            <p class="text-dark mb-2"><strong>${item.question}</strong></p>
+                            <div class="bg-light border-start border-3 border-primary ps-3 py-2 rounded-end">
+                                <i class="fas fa-quote-right text-primary me-2"></i>
+                                <span class="text-muted">${item.answer}</span>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                // Add AI Analysis section
+                detailsHtml += `
+                    </div>
+                    <div class="bg-gradient" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border-radius: 8px; padding: 20px;">
+                        <h6 class="text-info mb-3">
+                            <i class="fas fa-brain me-2"></i>
+                            التحليل الذكي للاستجابة
+                        </h6>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <div class="d-flex align-items-center">
+                                    <strong class="me-2">المشاعر العامة:</strong>
+                                    <span class="badge bg-${data.aiAnalysis.overallSentiment === 'إيجابي' ? 'success' : data.aiAnalysis.overallSentiment === 'سلبي' ? 'danger' : 'warning'} me-2">
+                                        ${data.aiAnalysis.overallSentiment}
+                                    </span>
+                                    <small class="text-muted">(${data.aiAnalysis.confidence}%)</small>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <strong>المواضيع المحددة:</strong>
+                                <div class="mt-1">
+                                    ${data.aiAnalysis.topics.map(topic => `<span class="badge bg-secondary me-1">${topic}</span>`).join('')}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-3 pt-3 border-top border-2">
+                            <strong class="text-primary">
+                                <i class="fas fa-lightbulb me-2"></i>
+                                التوصية:
+                            </strong>
+                            <p class="mb-0 mt-2 text-dark">${data.aiAnalysis.recommendation}</p>
+                        </div>
+                    </div>
+                `;
+                
+                document.getElementById('responseDetails').innerHTML = detailsHtml;
+            }, 600);
         }
 
         // Individual actions
