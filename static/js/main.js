@@ -3,19 +3,21 @@
  * Handles client-side interactions, form submissions, and real-time updates
  */
 
-// Global configuration
-const CONFIG = {
-    API_BASE_URL: '/api',
-    REFRESH_INTERVAL: 30000, // 30 seconds
-    CHART_COLORS: {
-        positive: '#28a745',
-        negative: '#dc3545',
-        neutral: '#6c757d',
-        primary: '#2c5aa0',
-        secondary: '#d4a574'
-    },
-    ARABIC_LOCALE: 'ar-SA'
-};
+// Global configuration (prevent redefinition)
+if (typeof CONFIG === 'undefined') {
+    window.CONFIG = {
+        API_BASE_URL: '/api',
+        REFRESH_INTERVAL: 30000, // 30 seconds
+        CHART_COLORS: {
+            positive: '#28a745',
+            negative: '#dc3545',
+            neutral: '#6c757d',
+            primary: '#2c5aa0',
+            secondary: '#d4a574'
+        },
+        ARABIC_LOCALE: 'ar-SA'
+    };
+}
 
 // CRITICAL: Define toggleLanguage function IMMEDIATELY for onclick handlers
 window.toggleLanguage = function() {
