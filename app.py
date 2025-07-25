@@ -89,6 +89,10 @@ app.register_blueprint(contacts_bp)
 from api.survey_hosting import survey_hosting_bp
 app.register_blueprint(survey_hosting_bp)
 
+# Register surveys API blueprint
+from api.surveys_flask import surveys_bp
+app.register_blueprint(surveys_bp)
+
 # Import user preferences API
 import api.user_preferences
 

@@ -17,55 +17,74 @@ surveys_bp = Blueprint('surveys_api', __name__, url_prefix='/api/surveys')
 
 @surveys_bp.route('/list', methods=['GET'])
 def get_surveys():
-    """Get list of surveys with Arabic support"""
+    """Get list of surveys with Arabic support - live data only"""
     try:
-        # Mock survey data matching the screenshot
-        surveys = [
-            {
-                'id': 1,
-                'title': 'مقياس رضا العملاء الشامل',
-                'title_en': 'Comprehensive Customer Satisfaction Survey',
-                'description': 'استطلاع شامل لقياس مستوى رضا العملاء عن تجربة الخدمة',
-                'description_en': 'Comprehensive survey to measure customer satisfaction with service experience',
-                'status': 'active',
-                'question_count': 3,
-                'response_count': 125,
-                'updated_at': '2025-06-20T15:30:00Z',
-                'days_since_update': 2,
-                'created_at': '2025-06-15T10:00:00Z'
-            },
-            {
-                'id': 2,
-                'title': 'مقياس نقاط الولاء (NPS)',
-                'title_en': 'Net Promoter Score (NPS)',
-                'description': 'قياس مدى ولاء العملاء واحتمالية التوصية',
-                'description_en': 'Measure customer loyalty and likelihood to recommend',
-                'status': 'active',
-                'question_count': 1,
-                'response_count': 89,
-                'updated_at': '2025-06-20T14:20:00Z',
-                'days_since_update': 2,
-                'created_at': '2025-06-18T09:15:00Z'
-            },
-            {
-                'id': 3,
-                'title': 'استطلاع آراء الموظفين',
-                'title_en': 'Employee Opinion Survey',
-                'description': 'قياس مستوى رضا الموظفين وبيئة العمل في المؤسسات',
-                'description_en': 'Measure employee satisfaction and workplace environment in organizations',
-                'status': 'draft',
-                'question_count': 2,
-                'response_count': 0,
-                'updated_at': '2025-06-20T16:45:00Z',
-                'days_since_update': 2,
-                'created_at': '2025-06-19T11:30:00Z'
+        from models.survey_flask import SurveyFlask, QuestionFlask
+        from models.contacts import Contact, ContactDelivery
+        from datetime import datetime, timedelta
+        
+        # Query live surveys from database (exclude test surveys)
+        surveys_query = db.session.query(SurveyFlask).filter(
+            SurveyFlask.title != 'Test Survey',
+            SurveyFlask.title != 'Demo Survey'
+        ).order_by(SurveyFlask.created_at.desc()).all()
+        
+        surveys_data = []
+        for survey in surveys_query:
+            # Calculate contact statistics
+            contact_deliveries = db.session.query(ContactDelivery).filter(
+                ContactDelivery.survey_id == survey.id
+            ).all()
+            
+            # Calculate days since last update
+            days_since_update = 0
+            if survey.updated_at:
+                days_since_update = (datetime.utcnow() - survey.updated_at).days
+            
+            # Get question count
+            question_count = db.session.query(QuestionFlask).filter(
+                QuestionFlask.survey_id == survey.id
+            ).count()
+            
+            # Contact engagement stats
+            total_contacts = len(set(d.contact_id for d in contact_deliveries))
+            delivered_count = len([d for d in contact_deliveries if d.status == 'delivered'])
+            responded_count = len([d for d in contact_deliveries if d.status == 'responded'])
+            
+            # Completion rate calculation
+            completion_rate = 0.0
+            if total_contacts > 0:
+                completion_rate = (responded_count / total_contacts) * 100
+            
+            survey_data = {
+                'id': survey.id,
+                'uuid': survey.uuid,
+                'short_id': survey.short_id,
+                'title': survey.display_title,
+                'title_en': survey.title,
+                'title_ar': survey.title_ar,
+                'description': survey.description_ar or survey.description,
+                'description_en': survey.description,
+                'status': survey.status,
+                'question_count': question_count,
+                'response_count': survey.response_count,
+                'completion_rate': round(completion_rate, 1),
+                'contacts_assigned': total_contacts,
+                'contacts_delivered': delivered_count,
+                'contacts_responded': responded_count,
+                'public_url': survey.public_url,
+                'created_at': survey.created_at.isoformat() if survey.created_at else None,
+                'updated_at': survey.updated_at.isoformat() if survey.updated_at else None,
+                'days_since_update': days_since_update,
+                'is_public': survey.is_public,
+                'primary_language': survey.primary_language
             }
-        ]
+            surveys_data.append(survey_data)
         
         return jsonify({
             'success': True,
-            'surveys': surveys,
-            'total_count': len(surveys)
+            'surveys': surveys_data,
+            'total_count': len(surveys_data)
         })
         
     except Exception as e:
