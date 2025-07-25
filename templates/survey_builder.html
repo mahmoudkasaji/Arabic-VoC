@@ -1483,7 +1483,7 @@
                             </div>
                             
                             <div class="d-grid">
-                                <button class="btn btn-primary btn-lg" onclick="generateSurveyLink()">
+                                <button class="btn btn-primary btn-lg" onclick="generateWebLink()">
                                     <i class="fas fa-magic me-2"></i>
                                     إنشاء رابط الاستطلاع
                                 </button>
@@ -1536,10 +1536,6 @@
                         <button class="btn btn-outline-secondary btn-lg me-3" onclick="goBackToEditing()">
                             <i class="fas fa-arrow-right me-2"></i>
                             العودة للتحرير
-                        </button>
-                        <button class="btn btn-primary btn-lg">
-                            <i class="fas fa-check me-2"></i>
-                            حفظ ونشر الاستطلاع
                         </button>
                     </div>
                 </div>
@@ -2037,6 +2033,69 @@
             linkField.select();
             document.execCommand('copy');
             alert('تم نسخ الرابط إلى الحافظة!');
+        }
+        
+        function sendEmailInvitations() {
+            const emailList = document.getElementById('emailList').value;
+            const emailSubject = document.getElementById('emailSubject').value;
+            const emailMessage = document.getElementById('emailMessage').value;
+            const surveyLink = document.getElementById('surveyLink').value;
+            
+            if (!emailList.trim()) {
+                alert('يرجى إدخال قائمة البريد الإلكتروني');
+                return;
+            }
+            
+            if (surveyLink === 'سيتم إنشاء الرابط عند الضغط على الزر أدناه') {
+                alert('يرجى إنشاء رابط الاستطلاع أولاً');
+                return;
+            }
+            
+            // First create the survey if not already created
+            const surveyData = {
+                title: document.getElementById('surveyTitle').value || 'استطلاع جديد',
+                description: document.getElementById('surveyDescription').value || 'شاركنا رأيك',
+                questions: [] // Add questions if available
+            };
+            
+            const emailData = {
+                survey: surveyData,
+                emails: emailList.split(/[,\n]+/).map(email => email.trim()).filter(email => email),
+                subject: emailSubject,
+                message: emailMessage
+            };
+            
+            const button = event.target;
+            button.disabled = true;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>جاري الإرسال...';
+            
+            fetch('/api/survey-hosting/send-email', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(emailData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(`تم إرسال ${data.sent_count} دعوة بنجاح!`);
+                    // Show success state
+                    button.innerHTML = '<i class="fas fa-check me-2"></i>تم الإرسال';
+                    button.classList.remove('btn-success');
+                    button.classList.add('btn-outline-success');
+                } else {
+                    alert('حدث خطأ في إرسال الدعوات: ' + data.message);
+                    button.disabled = false;
+                    button.innerHTML = '<i class="fas fa-paper-plane me-2"></i>إرسال الدعوات';
+                }
+            })
+            .catch(error => {
+                console.error('Error sending emails:', error);
+                alert('حدث خطأ في إرسال الدعوات');
+                button.disabled = false;
+                button.innerHTML = '<i class="fas fa-paper-plane me-2"></i>إرسال الدعوات';
+            });
         }
         
         function generateShortId() {
