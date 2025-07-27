@@ -304,10 +304,13 @@ def test_email_service():
                 'service_status': gmail_service.get_status()
             }), 400
         
-        # Send test email
+        # Send test email with real survey URL
+        from utils.url_helpers import get_base_url
+        test_survey_url = f"{get_base_url()}/s/nlxjb7kn"  # Use existing survey
+        
         result = gmail_service.send_survey_invitation(
             recipient=test_email,
-            survey_link="https://example.com/test-survey",
+            survey_link=test_survey_url,
             survey_title="Test Survey - Email Configuration",
             sender_name="VoC Platform Test"
         )

@@ -343,8 +343,8 @@
             </div>
         `;
         
-        // Store the actual survey URL from database
-        currentSurveyUrl = surveyData.public_url;
+        // Store the actual survey URL from database (use full live URL)
+        currentSurveyUrl = surveyData.full_public_url || surveyData.public_url;
         
         // Show step 2
         document.getElementById('step2').style.display = 'block';
@@ -358,8 +358,8 @@
             return;
         }
         
-        // Use the real survey URL from the database
-        generatedSurveyUrl = `${window.location.origin}${currentSurveyUrl}`;
+        // Use the real survey URL from the database (already full URL)
+        generatedSurveyUrl = currentSurveyUrl;
         
         // Show generated link
         document.getElementById('generatedUrl').value = generatedSurveyUrl;

@@ -352,9 +352,13 @@ def survey_distribution_page():
         # Get available surveys for selection
         surveys = db.session.query(SurveyFlask).order_by(SurveyFlask.created_at.desc()).all()
         
-        # Prepare survey options
+        # Prepare survey options with live URLs
+        from utils.url_helpers import get_survey_public_url
         survey_options = []
         for survey in surveys:
+            # Generate full public URL using live domain
+            full_public_url = get_survey_public_url(survey.short_id) if survey.short_id else None
+            
             survey_options.append({
                 'id': survey.id,
                 'uuid': survey.uuid,
@@ -362,7 +366,8 @@ def survey_distribution_page():
                 'description': survey.display_description,
                 'status': survey.status,
                 'questions_count': len(survey.questions) if survey.questions else 0,
-                'public_url': survey.public_url,
+                'public_url': survey.public_url,  # Relative URL for frontend
+                'full_public_url': full_public_url,  # Full live URL for emails
                 'short_id': survey.short_id
             })
         
