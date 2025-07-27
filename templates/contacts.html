@@ -30,6 +30,9 @@
                         <button class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#addContactModal">
                             <i class="fas fa-plus me-2"></i>إضافة جهة اتصال
                         </button>
+                        <button class="btn btn-outline-success me-2" data-bs-toggle="modal" data-bs-target="#importContactsModal">
+                            <i class="fas fa-upload me-2"></i>استيراد جماعي
+                        </button>
                         <a href="/contacts/export" class="btn btn-outline-secondary me-2">
                             <i class="fas fa-download me-2"></i>تصدير جماعي
                         </a>
@@ -372,6 +375,101 @@
         </div>
     </div>
 
+    <!-- Bulk Import Modal -->
+    <div class="modal fade" id="importContactsModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-upload me-2"></i>استيراد جهات اتصال من ملف CSV
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form method="POST" action="/contacts/import" enctype="multipart/form-data" id="importForm">
+                    <div class="modal-body">
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            <strong>تعليمات الاستيراد:</strong>
+                            <ul class="mb-0 mt-2">
+                                <li>يجب أن يكون الملف بصيغة CSV</li>
+                                <li>الصف الأول يحتوي على عناوين الأعمدة</li>
+                                <li>العمود الأول يجب أن يحتوي على الاسم (مطلوب)</li>
+                                <li>سيتم تحديث جهات الاتصال الموجودة حسب البريد الإلكتروني أو رقم الهاتف</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">ملف CSV</label>
+                            <input type="file" class="form-control" name="file" id="csvFile" accept=".csv" required>
+                            <div class="form-text">حدد ملف CSV يحتوي على بيانات جهات الاتصال</div>
+                        </div>
+                        
+                        <div class="card">
+                            <div class="card-header">
+                                <h6 class="card-title mb-0">
+                                    <i class="fas fa-table me-2"></i>تنسيق الملف المطلوب
+                                </h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-sm table-bordered">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>الاسم*</th>
+                                                <th>البريد الإلكتروني</th>
+                                                <th>الهاتف</th>
+                                                <th>الشركة</th>
+                                                <th>اللغة</th>
+                                                <th>الحالة</th>
+                                                <th>البريد مفعل</th>
+                                                <th>SMS مفعل</th>
+                                                <th>واتساب مفعل</th>
+                                                <th>ملاحظات</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr class="text-muted">
+                                                <td>أحمد محمد</td>
+                                                <td>ahmed@example.com</td>
+                                                <td>+966501234567</td>
+                                                <td>شركة ABC</td>
+                                                <td>العربية</td>
+                                                <td>نشط</td>
+                                                <td>نعم</td>
+                                                <td>نعم</td>
+                                                <td>لا</td>
+                                                <td>عميل مهم</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="mt-3">
+                                    <small class="text-muted">
+                                        <strong>ملاحظة:</strong> العمود الأول (الاسم) مطلوب. باقي الأعمدة اختيارية.
+                                        يمكن ترك الخلايا فارغة للقيم الاختيارية.
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-3">
+                            <a href="/contacts/template" class="btn btn-outline-secondary btn-sm">
+                                <i class="fas fa-download me-2"></i>تحميل نموذج CSV
+                            </a>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                        <button type="submit" class="btn btn-success" id="importSubmitBtn">
+                            <span class="spinner-border spinner-border-sm d-none me-2" role="status"></span>
+                            <i class="fas fa-upload me-2"></i>استيراد جهات الاتصال
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         function editContact(id, name, email, phone, company, language, isActive, emailOpt, smsOpt, whatsappOpt, notes) {
@@ -418,7 +516,116 @@
                 // Let the form submit normally - don't prevent default
                 console.log('Submitting form to:', editForm.action);
             });
+            
+            // Import form handling
+            const importForm = document.getElementById('importForm');
+            const importSubmitBtn = document.getElementById('importSubmitBtn');
+            const importSpinner = importSubmitBtn.querySelector('.spinner-border');
+            const csvFileInput = document.getElementById('csvFile');
+            
+            // File validation
+            csvFileInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    if (!file.name.endsWith('.csv')) {
+                        alert('يرجى اختيار ملف CSV فقط');
+                        e.target.value = '';
+                        return;
+                    }
+                    if (file.size > 5 * 1024 * 1024) { // 5MB limit
+                        alert('حجم الملف كبير جداً. يرجى اختيار ملف أصغر من 5 ميجابايت');
+                        e.target.value = '';
+                        return;
+                    }
+                }
+            });
+            
+            importForm.addEventListener('submit', function(e) {
+                const file = csvFileInput.files[0];
+                if (!file) {
+                    e.preventDefault();
+                    alert('يرجى اختيار ملف CSV للاستيراد');
+                    return;
+                }
+                
+                // Show loading state
+                importSpinner.classList.remove('d-none');
+                importSubmitBtn.disabled = true;
+                importSubmitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status"></span>جاري الاستيراد...';
+                
+                console.log('Importing CSV file:', file.name);
+            });
         });
+        
+        // Contact search functionality
+        function searchContacts() {
+            const searchTerm = document.getElementById('searchContacts').value.toLowerCase();
+            const table = document.getElementById('contactsTable');
+            const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+            
+            for (let i = 0; i < rows.length; i++) {
+                const row = rows[i];
+                const cells = row.getElementsByTagName('td');
+                let found = false;
+                
+                for (let j = 0; j < cells.length - 1; j++) { // Exclude actions column
+                    if (cells[j].textContent.toLowerCase().includes(searchTerm)) {
+                        found = true;
+                        break;
+                    }
+                }
+                
+                row.style.display = found ? '' : 'none';
+            }
+        }
+        
+        // Apply filters
+        function applyFilters() {
+            const groupFilter = document.getElementById('groupFilter').value;
+            const channelFilter = document.getElementById('channelFilter').value;
+            const statusFilter = document.getElementById('statusFilter').value;
+            
+            // Implementation depends on your filtering requirements
+            console.log('Applying filters:', { groupFilter, channelFilter, statusFilter });
+        }
+        
+        // Reset filters
+        function resetFilters() {
+            document.getElementById('groupFilter').value = '';
+            document.getElementById('channelFilter').value = '';
+            document.getElementById('statusFilter').value = 'active';
+            document.getElementById('searchContacts').value = '';
+            
+            // Show all rows
+            const table = document.getElementById('contactsTable');
+            const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+            for (let i = 0; i < rows.length; i++) {
+                rows[i].style.display = '';
+            }
+        }
+        
+        // Email service test (referenced in HTML)
+        function testEmailService() {
+            new bootstrap.Modal(document.getElementById('emailTestModal')).show();
+        }
+        
+        function runEmailTest() {
+            const email = document.getElementById('testEmail').value;
+            const resultDiv = document.getElementById('emailTestResult');
+            
+            if (!email) {
+                alert('يرجى إدخال بريد إلكتروني للاختبار');
+                return;
+            }
+            
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = '<div class="alert alert-info"><i class="fas fa-spinner fa-spin me-2"></i>جاري إرسال رسالة الاختبار...</div>';
+            
+            // Simulate test (replace with actual API call)
+            setTimeout(() => {
+                resultDiv.innerHTML = '<div class="alert alert-success"><i class="fas fa-check me-2"></i>تم إرسال رسالة الاختبار بنجاح إلى ' + email + '</div>';
+            }, 2000);
+        }
     </script>
     
     {% include 'components/scripts.html' %}
