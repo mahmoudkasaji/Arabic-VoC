@@ -1302,6 +1302,9 @@ def distribute_survey():
         logger.error(f"Survey distribution failed: {e}")
         return jsonify({'error': 'Distribution failed'}), 500
 
+# Import additional contact routes
+import contact_routes  # noqa: F401
+
 # Initialize database tables
 with app.app_context():
     try:

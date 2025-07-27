@@ -1,71 +1,20 @@
-from flask import session
+"""
+Contact management routes for direct database operations
+"""
+
+from flask import request, redirect, url_for, flash, Response
 from app import app, db
-from flask_login import current_user
 try:
     from replit_auth import require_login
 except ImportError:
-    # Fallback decorator if Replit Auth is not available
     def require_login(f):
         return f
-
-# Make session permanent
-@app.before_request
-def make_session_permanent():
-    session.permanent = True
-
-@app.route('/')
-def example_index():
-    # Use flask_login.current_user to check if current user is logged in or anonymous.
-    user = current_user
-    if user.is_authenticated:
-        # User is logged in, show dashboard/home
-        from flask import render_template
-        return render_template('index_simple.html')
-    else:
-        # User is not logged in, show landing page
-        from flask import render_template
-        return render_template('index_simple.html')
-
-@app.route('/example_protected_route')
-@require_login # protected by Replit Auth
-def example_protected_route():
-    user = current_user
-    # Access user properties: user.id, user.email, user.first_name, etc.
-    return f"Hello {user.first_name or 'User'}! Your email is {user.email}"
-
-# Gmail Test Route
-@app.route('/gmail-test')
-def gmail_test():
-    from flask import render_template
-    return render_template('gmail_test.html')
-
-# Survey Builder Route
-@app.route('/surveys/builder')
-@require_login
-def survey_builder():
-    """Survey builder interface"""
-    from flask import render_template
-    return render_template('survey_builder.html')
-
-# Contacts Management Route
-@app.route('/contacts')
-@require_login
-def contacts():
-    """Contacts management page with direct database access"""
-    from flask import render_template, request
-    from models.contacts import Contact
-    
-    # Get all contacts from database
-    contacts = Contact.query.order_by(Contact.created_at.desc()).all()
-    
-    return render_template('contacts.html', contacts=contacts)
 
 # Contact Edit Route
 @app.route('/contacts/edit/<int:contact_id>', methods=['POST'])
 @require_login
 def edit_contact(contact_id):
     """Handle contact edit form submission"""
-    from flask import request, redirect, url_for, flash
     from models.contacts import Contact
     
     contact = Contact.query.get_or_404(contact_id)
@@ -89,19 +38,18 @@ def edit_contact(contact_id):
         db.session.rollback()
         flash('حدث خطأ في تحديث جهة الاتصال', 'error')
     
-    return redirect(url_for('contacts'))
+    return redirect(url_for('contacts_page'))
 
 # Contact Create Route
 @app.route('/contacts/create', methods=['GET', 'POST'])
 @require_login
 def create_contact():
     """Handle contact creation form submission"""
-    from flask import request, redirect, url_for, flash
     from models.contacts import Contact
     
     # If GET request, redirect to contacts page
     if request.method == 'GET':
-        return redirect(url_for('contacts'))
+        return redirect(url_for('contacts_page'))
     
     # Create new contact from form data
     contact = Contact()
@@ -124,14 +72,13 @@ def create_contact():
         db.session.rollback()
         flash('حدث خطأ في إضافة جهة الاتصال', 'error')
     
-    return redirect(url_for('contacts'))
+    return redirect(url_for('contacts_page'))
 
 # Bulk Export Route
 @app.route('/contacts/export')
 @require_login
 def export_contacts():
     """Export all contacts to CSV file"""
-    from flask import Response
     from models.contacts import Contact
     import csv
     import io
@@ -176,7 +123,3 @@ def export_contacts():
     response.headers['Content-Type'] = 'text/csv; charset=utf-8'
     
     return response
-
-# Add any other routes here.
-# Use flask_login.current_user to check if current user is logged in or anonymous.
-# Use db & models to interact with the database.
