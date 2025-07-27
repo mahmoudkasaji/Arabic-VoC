@@ -300,8 +300,73 @@
                     </div>
                 </div>
                 
+                <!-- Sidebar Feedback Widget -->
+                <div class="col-lg-6 mb-4">
+                    <div class="distribution-card">
+                        <div class="distribution-header">
+                            <i class="fas fa-comment text-success-custom"></i>
+                            <h4>أداة التغذية الراجعة الجانبية</h4>
+                        </div>
+                        <div class="distribution-body">
+                            <p class="text-muted mb-3">أنشئ أداة تغذية راجعة تظهر على جانب الموقع لجمع الآراء بشكل مستمر</p>
+                            
+                            <!-- Sidebar Widget Configuration -->
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">موضع الأداة</label>
+                                    <select class="form-select" id="sidebarPosition">
+                                        <option value="bottom-right">أسفل اليمين</option>
+                                        <option value="bottom-left" selected>أسفل اليسار (عربي)</option>
+                                        <option value="center-right">وسط اليمين</option>
+                                        <option value="center-left">وسط اليسار</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">لون الأداة</label>
+                                    <select class="form-select" id="sidebarColor">
+                                        <option value="#2E8B57" selected>أخضر</option>
+                                        <option value="#007bff">أزرق</option>
+                                        <option value="#ff6b35">برتقالي</option>
+                                        <option value="#6f42c1">بنفسجي</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <!-- Generated Sidebar Widget Code -->
+                            <div class="javascript-code-section" id="sidebarCodeSection" style="display: none;">
+                                <label class="form-label fw-bold">كود JavaScript للأداة الجانبية:</label>
+                                <div class="position-relative">
+                                    <textarea class="form-control code-textarea" id="sidebarJavascriptCode" readonly rows="8"></textarea>
+                                    <button class="btn btn-sm btn-outline-secondary position-absolute top-0 end-0 m-2" onclick="copySidebarCode()">
+                                        <i class="fas fa-copy"></i> نسخ
+                                    </button>
+                                </div>
+                                <small class="text-muted mt-2 d-block">
+                                    <i class="fas fa-info-circle me-1"></i>
+                                    انسخ هذا الكود والصقه في أي صفحة HTML لإظهار أداة التغذية الراجعة الجانبية
+                                </small>
+                            </div>
+                            
+                            <!-- Sidebar Preview Section -->
+                            <div class="widget-preview-section mt-3" id="sidebarPreviewSection" style="display: none;">
+                                <label class="form-label fw-bold">معاينة الأداة الجانبية:</label>
+                                <div class="preview-container border rounded p-3 bg-light position-relative" style="height: 200px; overflow: hidden;">
+                                    <div class="preview-sidebar-widget" id="previewSidebarWidget">
+                                        <!-- Sidebar widget preview will appear here -->
+                                    </div>
+                                    <small class="text-muted">معاينة تفاعلية للأداة الجانبية كما ستظهر في الموقع</small>
+                                </div>
+                            </div>
+                            
+                            <button class="btn btn-success-custom w-100 mt-3" onclick="generateSidebarWidget()">
+                                <i class="fas fa-comment me-2"></i>إنشاء أداة التغذية الراجعة الجانبية
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
                 <!-- JavaScript Embed Widget -->
-                <div class="col-lg-12 mb-4">
+                <div class="col-lg-6 mb-4">
                     <div class="distribution-card">
                         <div class="distribution-header">
                             <i class="fas fa-code text-warning"></i>
@@ -405,7 +470,7 @@
             ]
         );
         SurveyNavigation.setActiveNav('surveys');
-        SurveyActions.updateProgress(1, 3, 'اختيار الاستطلاع');
+        SurveyActions.updateProgress(1, 2, 'اختيار الاستطلاع');
     });
     
     // SMS character counter
@@ -493,17 +558,29 @@
             currentSurveyUrl = surveyData.full_public_url || surveyData.public_url || `${window.location.origin}/survey/${surveyData.uuid}`;
             console.log('Survey URL set to:', currentSurveyUrl);
             
-            // Show step 2 and update progress
-            document.getElementById('step2').style.display = 'block';
-            SurveyActions.updateProgress(2, 3, 'إنشاء رابط الاستطلاع');
+            // Skip step 2 and go directly to distribution options
+            // Auto-generate link immediately
+            generatedSurveyUrl = currentSurveyUrl;
             
-            // Auto-generate link to streamline the process
-            setTimeout(() => {
-                generateSurveyLink();
-            }, 500);
+            // Update placeholders in messages
+            updateMessagePlaceholders();
             
-            // Scroll to step 2
-            document.getElementById('step2').scrollIntoView({ behavior: 'smooth' });
+            // Show step 3 directly and update progress to 2-step process
+            document.getElementById('step3').style.display = 'block';
+            SurveyActions.updateProgress(2, 2, 'خيارات التوزيع');
+            
+            // Show generated link section
+            document.getElementById('generatedUrl').value = generatedSurveyUrl;
+            document.getElementById('generatedLinkSection').style.display = 'block';
+            
+            // Generate QR code for the survey
+            generateQRCode(generatedSurveyUrl);
+            
+            // Update embeddable widget code with real survey URL
+            updateEmbeddableWidget();
+            
+            // Scroll to step 3
+            document.getElementById('step3').scrollIntoView({ behavior: 'smooth' });
             showNotification('تم اختيار الاستطلاع بنجاح!', 'success');
             
         } catch (error) {
@@ -804,6 +881,288 @@
         codeTextarea.select();
         document.execCommand('copy');
         showNotification('تم نسخ الكود بنجاح!', 'success');
+    }
+    
+    // Generate Sidebar Feedback Widget
+    function generateSidebarWidget() {
+        if (!generatedSurveyUrl) {
+            alert('يرجى اختيار استطلاع أولاً');
+            return;
+        }
+        
+        const position = document.getElementById('sidebarPosition').value;
+        const color = document.getElementById('sidebarColor').value;
+        
+        // Generate the sidebar feedback widget JavaScript code (self-contained)
+        const sidebarCode = `<!-- Sidebar Feedback Widget -->
+<style>
+:root {
+    --sidebar-primary: ${color};
+    --sidebar-hover: ${adjustColor(color, -20)};
+    --sidebar-text: #ffffff;
+}
+
+.sidebar-feedback-widget {
+    position: fixed;
+    ${position.includes('right') ? 'right: 0;' : 'left: 0;'}
+    ${position.includes('center') ? 'top: 50%; transform: translateY(-50%);' : 'bottom: 100px;'}
+    z-index: 9999;
+    font-family: 'Cairo', sans-serif;
+}
+
+.sidebar-feedback-trigger {
+    background: var(--sidebar-primary);
+    color: var(--sidebar-text);
+    border: none;
+    border-radius: ${position.includes('right') ? '8px 0 0 8px' : '0 8px 8px 0'};
+    padding: 16px 12px;
+    cursor: pointer;
+    box-shadow: ${position.includes('right') ? '-2px 0 10px rgba(0,0,0,0.3)' : '2px 0 10px rgba(0,0,0,0.3)'};
+    transition: all 0.3s ease;
+    writing-mode: vertical-${position.includes('right') ? 'lr' : 'rl'};
+    text-orientation: mixed;
+    min-height: 120px;
+    font-weight: 600;
+    font-size: 12px;
+}
+
+.sidebar-feedback-trigger:hover {
+    background: var(--sidebar-hover);
+    transform: translateX(${position.includes('right') ? '-3px' : '3px'});
+}
+
+.sidebar-feedback-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 10000;
+}
+
+.sidebar-feedback-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 24px;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.sidebar-feedback-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.sidebar-feedback-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #999;
+}
+
+.sidebar-rating {
+    text-align: center;
+    margin-bottom: 16px;
+}
+
+.sidebar-stars {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin: 12px 0;
+}
+
+.sidebar-star {
+    font-size: 28px;
+    cursor: pointer;
+    color: #ddd;
+    transition: color 0.2s;
+}
+
+.sidebar-star.active, .sidebar-star:hover {
+    color: #ffc107;
+}
+
+.sidebar-textarea {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    resize: none;
+    font-family: inherit;
+    margin-bottom: 16px;
+}
+
+.sidebar-submit {
+    background: var(--sidebar-primary);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    cursor: pointer;
+    width: 100%;
+    font-weight: 600;
+}
+
+.sidebar-submit:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+</style>
+
+<div class="sidebar-feedback-widget">
+    <button class="sidebar-feedback-trigger" onclick="openSidebarFeedback()">
+        رأيك
+    </button>
+</div>
+
+<div id="sidebarFeedbackModal" class="sidebar-feedback-modal" onclick="closeSidebarFeedback(event)">
+    <div class="sidebar-feedback-content" onclick="event.stopPropagation()">
+        <div class="sidebar-feedback-header">
+            <h3>شاركنا رأيك في الاستطلاع</h3>
+            <button class="sidebar-feedback-close" onclick="closeSidebarFeedback()">&times;</button>
+        </div>
+        
+        <div class="sidebar-rating">
+            <label>كيف تقيم هذا الاستطلاع؟</label>
+            <div class="sidebar-stars" id="sidebarStars">
+                <span class="sidebar-star" data-rating="1">⭐</span>
+                <span class="sidebar-star" data-rating="2">⭐</span>
+                <span class="sidebar-star" data-rating="3">⭐</span>
+                <span class="sidebar-star" data-rating="4">⭐</span>
+                <span class="sidebar-star" data-rating="5">⭐</span>
+            </div>
+        </div>
+        
+        <textarea class="sidebar-textarea" id="sidebarComment" placeholder="أخبرنا المزيد عن تجربتك مع الاستطلاع..." rows="4"></textarea>
+        
+        <button class="sidebar-submit" id="sidebarSubmitBtn" onclick="submitSidebarFeedback()">
+            إرسال التقييم
+        </button>
+    </div>
+</div>
+
+<script>
+let sidebarRating = 0;
+
+function openSidebarFeedback() {
+    document.getElementById('sidebarFeedbackModal').style.display = 'block';
+}
+
+function closeSidebarFeedback(event) {
+    if (!event || event.target === event.currentTarget) {
+        document.getElementById('sidebarFeedbackModal').style.display = 'none';
+        resetSidebarForm();
+    }
+}
+
+function resetSidebarForm() {
+    sidebarRating = 0;
+    document.getElementById('sidebarComment').value = '';
+    document.querySelectorAll('.sidebar-star').forEach(star => star.classList.remove('active'));
+}
+
+// Star rating functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const stars = document.querySelectorAll('.sidebar-star');
+    stars.forEach(star => {
+        star.addEventListener('click', function() {
+            sidebarRating = parseInt(this.dataset.rating);
+            stars.forEach((s, index) => {
+                s.classList.toggle('active', index < sidebarRating);
+            });
+        });
+    });
+});
+
+function submitSidebarFeedback() {
+    const comment = document.getElementById('sidebarComment').value.trim();
+    
+    if (sidebarRating === 0) {
+        alert('يرجى اختيار تقييم');
+        return;
+    }
+    
+    const submitBtn = document.getElementById('sidebarSubmitBtn');
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'جاري الإرسال...';
+    
+    // Redirect to survey with feedback parameters
+    const surveyUrl = '${generatedSurveyUrl}' + 
+        '?feedback_rating=' + sidebarRating + 
+        '&feedback_comment=' + encodeURIComponent(comment) +
+        '&source=sidebar_widget';
+    
+    // Open survey in new window
+    window.open(surveyUrl, '_blank', 'width=800,height=700');
+    
+    // Close modal and show success
+    setTimeout(() => {
+        closeSidebarFeedback();
+        alert('شكراً لك! تم فتح الاستطلاع في نافذة جديدة');
+    }, 1000);
+}
+</script>`;
+        
+        // Display the code
+        document.getElementById('sidebarJavascriptCode').value = sidebarCode;
+        document.getElementById('sidebarCodeSection').style.display = 'block';
+        document.getElementById('sidebarPreviewSection').style.display = 'block';
+        
+        // Generate preview
+        generateSidebarPreview(position, color);
+        
+        showNotification('تم إنشاء أداة التغذية الراجعة الجانبية بنجاح!', 'success');
+    }
+    
+    // Generate sidebar widget preview
+    function generateSidebarPreview(position, color) {
+        const previewHtml = `
+            <div style="position: absolute; ${position.includes('right') ? 'right: 10px;' : 'left: 10px;'} 
+                        ${position.includes('center') ? 'top: 50%; transform: translateY(-50%);' : 'bottom: 20px;'}">
+                <button style="background: ${color}; color: white; border: none; 
+                              border-radius: ${position.includes('right') ? '8px 0 0 8px' : '0 8px 8px 0'}; 
+                              padding: 16px 12px; writing-mode: vertical-${position.includes('right') ? 'lr' : 'rl'}; 
+                              text-orientation: mixed; min-height: 100px; font-weight: 600; 
+                              font-size: 11px; cursor: pointer;" 
+                        onclick="alert('معاينة: ستفتح نافذة التقييم')">
+                    رأيك
+                </button>
+            </div>
+        `;
+        document.getElementById('previewSidebarWidget').innerHTML = previewHtml;
+    }
+    
+    // Copy sidebar JavaScript code
+    function copySidebarCode() {
+        const codeField = document.getElementById('sidebarJavascriptCode');
+        codeField.select();
+        document.execCommand('copy');
+        showNotification('تم نسخ كود الأداة الجانبية إلى الحافظة', 'info');
+    }
+    
+    // Utility function to adjust color brightness
+    function adjustColor(color, amount) {
+        const usePound = color[0] === '#';
+        const col = usePound ? color.slice(1) : color;
+        const num = parseInt(col, 16);
+        let r = (num >> 16) + amount;
+        let g = (num >> 8 & 0x00FF) + amount;
+        let b = (num & 0x0000FF) + amount;
+        r = r > 255 ? 255 : r < 0 ? 0 : r;
+        g = g > 255 ? 255 : g < 0 ? 0 : g;
+        b = b > 255 ? 255 : b < 0 ? 0 : b;
+        return (usePound ? '#' : '') + (r << 16 | g << 8 | b).toString(16).padStart(6, '0');
     }
     
     // Show notification

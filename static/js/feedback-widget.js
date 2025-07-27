@@ -3,6 +3,9 @@
  * Lightweight, accessible, and culturally appropriate for Arabic users
  */
 
+// Prevent redefinition if already loaded
+if (typeof window.FeedbackWidget === 'undefined') {
+
 class FeedbackWidget {
     constructor(options = {}) {
         this.options = {
@@ -704,3 +707,5 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Export for manual initialization
 window.FeedbackWidget = FeedbackWidget;
+
+} // End of conditional guard for FeedbackWidget definition
