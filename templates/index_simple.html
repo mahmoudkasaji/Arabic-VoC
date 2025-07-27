@@ -689,10 +689,14 @@
                     formData.append('category', feedbackData.category || 'general');
                     formData.append('page_url', window.location.href);
                     formData.append('page_title', document.title);
+                    formData.append('ajax', 'true');
                     
                     // Submit to direct Flask route
                     const response = await fetch('/feedback-widget', {
                         method: 'POST',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        },
                         body: formData
                     });
                     
@@ -719,12 +723,14 @@
                         setTimeout(() => {
                             successMessage.classList.remove('show');
                             form.style.display = 'block';
-                            form.reset();
+                            document.getElementById('footerFeedbackForm').reset();
                             document.getElementById('feedbackSection').classList.remove('show');
                             console.log('🔄 Form reset and ready for new feedback');
                         }, 5000);
                     } else {
-                        throw new Error('Network response was not ok');
+                        // Handle non-200 responses
+                        const errorText = await response.text();
+                        throw new Error(`Server error: ${response.status}`);
                     }
                 } catch (error) {
                     console.error('Error submitting feedback:', error);

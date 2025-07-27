@@ -89,15 +89,15 @@ def submit_feedback_widget():
         print(f"Widget feedback submitted: {feedback.id} by user {current_user.id}")
         
         # Return appropriate response
-        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-            # AJAX request
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest' or request.form.get('ajax') == 'true':
+            # AJAX request - return JSON success
             return jsonify({
                 'success': True,
                 'feedback_id': feedback.id,
                 'message': 'تم إرسال ملاحظتك بنجاح'
             })
         else:
-            # Regular form submission
+            # Regular form submission - redirect back
             flash('تم إرسال ملاحظتك بنجاح. شكراً لك!', 'success')
             return redirect(request.referrer or url_for('index'))
         
