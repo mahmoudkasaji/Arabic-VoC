@@ -36,10 +36,13 @@
                             <i class="fas fa-plus me-2"></i>{{ 'navigation.surveys_dropdown.create_new' | translate }}
                         </a></li>
                         <li><a class="dropdown-item" href="/surveys">
-                            <i class="fas fa-tasks me-2 text-primary"></i>مركز إدارة الاستطلاعات ⭐
-                            <small class="d-block text-muted">إدارة شاملة - إنشاء، توزيع، تحليل</small>
+                            <i class="fas fa-tasks me-2 text-primary"></i>{{ 'navigation.surveys_dropdown.management_center' | translate }} ⭐
+                            <small class="d-block text-muted">{{ 'navigation.surveys_dropdown.management_subtitle' | translate }}</small>
                         </a></li>
-
+                        <li><a class="dropdown-item" href="/surveys/distribution">
+                            <i class="fas fa-share-alt me-2 text-success"></i>توزيع الاستطلاعات
+                            <small class="d-block text-muted">معالج 3 خطوات لتوزيع الاستطلاعات عبر قنوات متعددة</small>
+                        </a></li>
                         <li><hr class="dropdown-divider"></li>
                         <li><h6 class="dropdown-header">{{ 'navigation.surveys_dropdown.analytics_reports' | translate }}</h6></li>
                         <li><a class="dropdown-item" href="/surveys/responses">

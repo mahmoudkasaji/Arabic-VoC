@@ -134,14 +134,6 @@ try:
 except Exception as e:
     logger.error(f"Could not register Professional Reports API blueprint: {e}")
 
-# Register Unified Surveys API - Survey Management Consolidation
-try:
-    from api.surveys_unified import surveys_unified_bp
-    app.register_blueprint(surveys_unified_bp)
-    logger.info("Unified Surveys API blueprint registered successfully")
-except Exception as e:
-    logger.error(f"Could not register Unified Surveys API blueprint: {e}")
-
 # Import simplified feedback widget routes
 try:
     import routes_feedback_widget
@@ -298,8 +290,8 @@ def list_feedback():
 # Removed redundant realtime dashboard route
 
 @app.route('/surveys')
-def surveys_unified_hub():
-    """Unified survey management hub with 3 tabs: Builder, Management, Responses"""
+def surveys_page():
+    """Survey management page - simple database pull"""
     try:
         from models.survey_flask import SurveyFlask
         import json
@@ -354,15 +346,15 @@ def surveys_unified_hub():
             'avg_completion_rate': 0
         }
         
-        return render_template('surveys_unified.html',
-                             title='مركز إدارة الاستطلاعات',
+        return render_template('surveys.html',
+                             title='إدارة الاستطلاعات',
                              surveys=surveys_data,
                              stats=stats)
                              
     except Exception as e:
         logger.error(f"Error loading surveys: {e}")
-        return render_template('surveys_unified.html',
-                             title='مركز إدارة الاستطلاعات',
+        return render_template('surveys.html',
+                             title='إدارة الاستطلاعات',
                              surveys=[],
                              stats={'total_surveys': 0, 'active_surveys': 0, 'total_responses': 0, 'avg_completion_rate': 0})
 
@@ -372,7 +364,6 @@ def surveys_unified_hub():
 
 # Simplified survey routes
 @app.route('/surveys/create')
-@app.route('/surveys/builder')
 @app.route('/survey-builder')
 def survey_create_page():
     """Survey creation page"""
@@ -380,17 +371,68 @@ def survey_create_page():
                          title='إنشاء استطلاع جديد')
 
 @app.route('/surveys/distribution')
-def survey_distribution_redirect():
-    """Redirect old distribution URL to unified surveys hub"""
-    flash('تم دمج إدارة التوزيع في مركز الاستطلاعات الموحد', 'info')
-    return redirect(url_for('surveys_unified_hub'))
+def survey_distribution_page():
+    """Survey distribution hub with campaign management"""
+    try:
+        from models.survey_campaigns import SurveyCampaign
+        from models.survey_flask import SurveyFlask
+        
+        # Get dashboard metrics
+        total_campaigns = SurveyCampaign.query.count()
+        active_campaigns = SurveyCampaign.query.filter_by(status='active').count()
+        
+        # Recent campaigns
+        recent_campaigns = SurveyCampaign.query.order_by(SurveyCampaign.created_at.desc()).limit(5).all()
+        
+        # Calculate total sent and response rates
+        total_sent = db.session.query(db.func.sum(SurveyCampaign.sent_count)).scalar() or 0
+        total_responses = db.session.query(db.func.sum(SurveyCampaign.response_count)).scalar() or 0
+        overall_response_rate = round((total_responses / total_sent) * 100, 1) if total_sent > 0 else 0
+        
+        dashboard_stats = {
+            'total_campaigns': total_campaigns,
+            'active_campaigns': active_campaigns,
+            'total_sent': total_sent,
+            'total_responses': total_responses,
+            'overall_response_rate': overall_response_rate
+        }
+        
+        return render_template('distribution/hub.html',
+                             title='مركز توزيع الاستطلاعات',
+                             dashboard_stats=dashboard_stats,
+                             recent_campaigns=recent_campaigns)
+        
+    except Exception as e:
+        logger.error(f"Error loading distribution hub: {e}")
+        return render_template('distribution/hub.html',
+                             title='مركز توزيع الاستطلاعات',
+                             error='حدث خطأ في تحميل لوحة التحكم')
 
-# Old distribution routes redirected to unified system
+# Add campaign management routes
 @app.route('/surveys/distribution/create-campaign')
-def create_campaign_redirect():
-    """Redirect old campaign creation to unified system"""
-    flash('تم دمج إنشاء الحملات في مركز الاستطلاعات الموحد', 'info')
-    return redirect(url_for('surveys_unified_hub'))
+def create_campaign_form():
+    """Campaign creation form"""
+    try:
+        from models.survey_flask import SurveyFlask
+        # from models_unified import Contact
+        
+        surveys = SurveyFlask.query.filter_by(status='published').all()
+        contact_groups = []  # TODO: Implement contact groups
+        
+        return render_template('distribution/create_campaign.html',
+                             title='إنشاء حملة جديدة',
+                             surveys=surveys,
+                             contact_groups=contact_groups)
+        
+    except Exception as e:
+        logger.error(f"Error loading campaign creation form: {e}")
+        return render_template('distribution/create_campaign.html',
+                             title='إنشاء حملة جديدة',
+                             error='حدث خطأ في تحميل النموذج')
+
+@app.route('/surveys/distribution/create-campaign', methods=['POST'])
+def create_campaign():
+    """Create new campaign - Direct DB operation"""
     try:
         from models.survey_campaigns import SurveyCampaign, DistributionMethod
         
