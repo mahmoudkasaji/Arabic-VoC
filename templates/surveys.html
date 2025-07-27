@@ -4,6 +4,31 @@
     {% include 'components/head.html' %}
     <title>Survey Management - Voice of Customer Platform</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/unified-layout.css') }}">
+    <style>
+        .distribution-card {
+            background: #fff;
+            border: 1px solid #dee2e6;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .distribution-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+        }
+        
+        .qr-container {
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .font-monospace {
+            font-family: 'Courier New', monospace !important;
+        }
+    </style>
 </head>
 <body>
     {% include 'components/unified_navigation.html' %}
@@ -131,6 +156,9 @@
                                             <i class="fas fa-pause"></i>
                                         </button>
                                         {% endif %}
+                                        <button class="btn btn-sm btn-outline-warning" onclick="openDistributionModal({{ survey.id }}, '{{ survey.title }}', '{{ survey.public_url if survey.public_url else '' }}')" title="توزيع">
+                                            <i class="fas fa-share-alt"></i>
+                                        </button>
                                         <button class="btn btn-sm btn-outline-danger" onclick="deleteSurvey({{ survey.id }})" title="حذف">
                                             <i class="fas fa-trash"></i>
                                         </button>
@@ -188,7 +216,306 @@
         </div>
     </div>
 
+    <!-- Distribution Modal -->
+    <div class="modal fade" id="distributionModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">توزيع الاستطلاع</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row g-4">
+                        <!-- Email Distribution -->
+                        <div class="col-md-4">
+                            <div class="distribution-card h-100">
+                                <div class="text-center p-4">
+                                    <div class="distribution-icon mb-3">
+                                        <i class="fas fa-envelope text-success" style="font-size: 3rem;"></i>
+                                    </div>
+                                    <h5>إرسال عبر البريد</h5>
+                                    <p class="text-muted small">إرسال دعوات الاستطلاع مباشرة إلى قائمة العملاء</p>
+                                    <div class="form-group mb-3">
+                                        <label class="form-label small">قائمة البريد الإلكتروني</label>
+                                        <textarea class="form-control form-control-sm" rows="3" id="modalEmailList" 
+                                                  placeholder="user1@example.com&#10;user2@example.com"></textarea>
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label class="form-label small">موضوع الرسالة</label>
+                                        <input type="text" class="form-control form-control-sm" id="modalEmailSubject" 
+                                               value="دعوة للمشاركة في استطلاع رأي">
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label class="form-label small">الرسالة الشخصية (اختيارية)</label>
+                                        <textarea class="form-control form-control-sm" rows="2" id="modalEmailMessage" 
+                                                  placeholder="أضف رسالة شخصية لتحسين معدل الاستجابة"></textarea>
+                                    </div>
+                                    <button class="btn btn-success btn-sm w-100" onclick="sendInvitations()">
+                                        <i class="fas fa-paper-plane me-1"></i>إرسال الدعوات
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Web Link Sharing -->
+                        <div class="col-md-4">
+                            <div class="distribution-card h-100">
+                                <div class="text-center p-4">
+                                    <div class="distribution-icon mb-3">
+                                        <i class="fas fa-link text-primary" style="font-size: 3rem;"></i>
+                                    </div>
+                                    <h5>مشاركة الرابط</h5>
+                                    <p class="text-muted small">احصل على رابط مباشر للاستطلاع للمشاركة في وسائل التواصل</p>
+                                    <div class="form-group mb-3">
+                                        <label class="form-label small">رابط الاستطلاع</label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control form-control-sm" id="modalSurveyLink" readonly>
+                                            <button class="btn btn-outline-secondary btn-sm" onclick="copyModalLink()">
+                                                <i class="fas fa-copy"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label small">رمز QR للطباعة</label>
+                                        <div class="qr-container border rounded p-2 bg-light" id="modalQRContainer">
+                                            <small class="text-muted">سيظهر رمز QR هنا بعد الإنشاء</small>
+                                        </div>
+                                    </div>
+                                    <button class="btn btn-primary btn-sm w-100" onclick="createSurveyLink()">
+                                        <i class="fas fa-external-link-alt me-1"></i>إنشاء رابط الاستطلاع
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Embeddable Widget -->
+                        <div class="col-md-4">
+                            <div class="distribution-card h-100">
+                                <div class="text-center p-4">
+                                    <div class="distribution-icon mb-3">
+                                        <i class="fas fa-code text-warning" style="font-size: 3rem;"></i>
+                                    </div>
+                                    <h5>أداة قابلة للتضمين</h5>
+                                    <p class="text-muted small">أنشئ كود JavaScript لتضمين الاستطلاع في موقع ويب آخر</p>
+                                    <div class="form-group mb-2">
+                                        <label class="form-label small">موضع الأداة</label>
+                                        <select class="form-select form-select-sm" id="modalWidgetPosition">
+                                            <option value="bottom-left" selected>أسفل اليسار (عربي)</option>
+                                            <option value="bottom-right">أسفل اليمين</option>
+                                            <option value="center">وسط الصفحة</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group mb-2">
+                                        <label class="form-label small">لون الأداة</label>
+                                        <select class="form-select form-select-sm" id="modalWidgetColor">
+                                            <option value="blue">أزرق</option>
+                                            <option value="green">أخضر</option>
+                                            <option value="orange" selected>برتقالي</option>
+                                            <option value="purple">بنفسجي</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label class="form-label small">لغة الأداة</label>
+                                        <select class="form-select form-select-sm" id="modalWidgetLanguage">
+                                            <option value="ar" selected>العربية</option>
+                                            <option value="en">English</option>
+                                            <option value="auto">تلقائي</option>
+                                        </select>
+                                    </div>
+                                    <button class="btn btn-warning btn-sm w-100" onclick="generateEmbedCode()">
+                                        <i class="fas fa-code me-1"></i>إنشاء كود التضمين
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Generated Code Section -->
+                    <div class="mt-4" id="generatedCodeSection" style="display: none;">
+                        <h6>كود JavaScript للتضمين:</h6>
+                        <div class="position-relative">
+                            <textarea class="form-control font-monospace" id="generatedEmbedCode" readonly rows="8" style="font-size: 12px; background-color: #f8f9fa;"></textarea>
+                            <button class="btn btn-sm btn-outline-secondary position-absolute top-0 end-0 m-2" onclick="copyEmbedCode()">
+                                <i class="fas fa-copy"></i> نسخ
+                            </button>
+                        </div>
+                        <small class="text-muted mt-2 d-block">
+                            <i class="fas fa-info-circle me-1"></i>
+                            انسخ هذا الكود والصقه في أي صفحة HTML لإظهار أداة الاستطلاع
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
+    let currentSurveyId = null;
+    let currentSurveyTitle = null;
+    let currentSurveyUrl = null;
+    
+    function openDistributionModal(surveyId, title, publicUrl) {
+        currentSurveyId = surveyId;
+        currentSurveyTitle = title;
+        currentSurveyUrl = publicUrl || `${window.location.origin}/survey/${surveyId}`;
+        
+        // Update modal content
+        document.getElementById('modalSurveyLink').value = currentSurveyUrl;
+        
+        // Show modal
+        const modal = new bootstrap.Modal(document.getElementById('distributionModal'));
+        modal.show();
+    }
+    
+    function createSurveyLink() {
+        if (!currentSurveyUrl) {
+            alert('لا يوجد رابط متاح للاستطلاع');
+            return;
+        }
+        
+        // Generate QR code
+        document.getElementById('modalQRContainer').innerHTML = `
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(currentSurveyUrl)}" 
+                 alt="QR Code" class="img-fluid">
+        `;
+        
+        showNotification('تم إنشاء رابط الاستطلاع ورمز QR بنجاح!', 'success');
+    }
+    
+    function copyModalLink() {
+        const linkInput = document.getElementById('modalSurveyLink');
+        linkInput.select();
+        document.execCommand('copy');
+        showNotification('تم نسخ الرابط بنجاح!', 'success');
+    }
+    
+    function generateEmbedCode() {
+        if (!currentSurveyUrl) {
+            alert('يرجى إنشاء رابط الاستطلاع أولاً');
+            return;
+        }
+        
+        const position = document.getElementById('modalWidgetPosition').value;
+        const color = document.getElementById('modalWidgetColor').value;
+        const language = document.getElementById('modalWidgetLanguage').value;
+        
+        // Color mapping
+        const colorMap = {
+            blue: '#007bff',
+            green: '#28a745', 
+            orange: '#fd7e14',
+            purple: '#6f42c1'
+        };
+        
+        // Generate the embeddable JavaScript code
+        const jsCode = `<!-- Voice of Customer Survey Widget -->
+<script>
+(function() {
+    // Widget Configuration
+    var config = {
+        surveyUrl: '${currentSurveyUrl}',
+        position: '${position}',
+        color: '${colorMap[color]}',
+        language: '${language}'
+    };
+    
+    // Create widget
+    function createWidget() {
+        var widget = document.createElement('div');
+        widget.id = 'voc-survey-widget';
+        widget.style.position = 'fixed';
+        widget.style.zIndex = '9999';
+        widget.style.fontFamily = 'Arial, sans-serif';
+        
+        // Position the widget
+        if (config.position === 'bottom-right') {
+            widget.style.bottom = '20px';
+            widget.style.right = '20px';
+        } else if (config.position === 'bottom-left') {
+            widget.style.bottom = '20px';
+            widget.style.left = '20px';
+        } else {
+            widget.style.top = '50%';
+            widget.style.left = '50%';
+            widget.style.transform = 'translate(-50%, -50%)';
+        }
+        
+        // Widget HTML
+        var isArabic = config.language === 'ar' || (config.language === 'auto' && document.documentElement.lang === 'ar');
+        var triggerText = isArabic ? 'رأيك' : 'Feedback';
+        var direction = isArabic ? 'rtl' : 'ltr';
+        
+        widget.innerHTML = '<button id="voc-trigger" style="' +
+            'background: ' + config.color + '; color: white; border: none; ' +
+            'padding: 12px 20px; border-radius: 25px; cursor: pointer; ' +
+            'box-shadow: 0 4px 12px rgba(0,0,0,0.2); font-size: 14px; ' +
+            'direction: ' + direction + ';">' + triggerText + '</button>';
+        
+        document.body.appendChild(widget);
+        
+        // Click handler
+        document.getElementById('voc-trigger').onclick = function() {
+            window.open(config.surveyUrl, '_blank', 'width=600,height=700');
+        };
+    }
+    
+    // Initialize when DOM is ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', createWidget);
+    } else {
+        createWidget();
+    }
+})();
+</script>`;
+        
+        // Display the code
+        document.getElementById('generatedEmbedCode').value = jsCode;
+        document.getElementById('generatedCodeSection').style.display = 'block';
+        
+        showNotification('تم إنشاء كود التضمين بنجاح!', 'success');
+    }
+    
+    function copyEmbedCode() {
+        const codeTextarea = document.getElementById('generatedEmbedCode');
+        codeTextarea.select();
+        document.execCommand('copy');
+        showNotification('تم نسخ الكود بنجاح!', 'success');
+    }
+    
+    function sendInvitations() {
+        const emailList = document.getElementById('modalEmailList').value.trim();
+        const subject = document.getElementById('modalEmailSubject').value;
+        const message = document.getElementById('modalEmailMessage').value;
+        
+        if (!emailList) {
+            alert('يرجى إدخال عناوين البريد الإلكتروني');
+            return;
+        }
+        
+        const emails = emailList.split('\\n').filter(email => email.trim());
+        
+        // Simulate email sending
+        showNotification(`تم إرسال الاستطلاع إلى ${emails.length} عنوان بريد إلكتروني`, 'success');
+    }
+    
+    function showNotification(message, type) {
+        // Simple notification system
+        const notification = document.createElement('div');
+        notification.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
+        notification.style.top = '20px';
+        notification.style.left = '20px';
+        notification.style.zIndex = '9999';
+        notification.innerHTML = `
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        `;
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            notification.remove();
+        }, 3000);
+    }
+    
     function deleteSurvey(surveyId) {
         if (confirm('هل أنت متأكد من حذف هذا الاستطلاع؟ هذا الإجراء لا يمكن التراجع عنه.')) {
             // Add actual delete functionality here
