@@ -184,20 +184,24 @@
                                 </thead>
                                 <tbody>
                                     {% for feedback in live_analytics.recent_feedback %}
-                                    <tr class="response-row" onclick="openResponseModal({{ feedback.id }})" style="cursor: pointer;" 
+                                    <tr class="response-row clickable-row" 
+                                        style="cursor: pointer;" 
                                         data-response-id="{{ feedback.id }}"
-                                        data-content="{{ feedback.content or '' }}"
+                                        data-content="{{ (feedback.content or '') | e }}"
                                         data-rating="{{ feedback.rating or 0 }}"
                                         data-status="{{ feedback.status.value }}"
                                         data-channel="{{ feedback.channel.value }}"
-                                        data-channel-name="{{ feedback.channel.get_arabic_name(feedback.channel) }}"
+                                        data-channel-name="{{ feedback.channel.get_arabic_name(feedback.channel) | e }}"
                                         data-created="{{ feedback.created_at.strftime('%Y-%m-%d %H:%M:%S') }}"
-                                        data-metadata="{{ feedback.channel_metadata | tojson if feedback.channel_metadata else '{}' }}"
-                                        data-ai-summary="{{ feedback.ai_summary or '' }}"
+                                        data-metadata="{{ (feedback.channel_metadata | tojson) if feedback.channel_metadata else '{}' }}"
+                                        data-ai-summary="{{ (feedback.ai_summary or '') | e }}"
                                         data-sentiment="{{ feedback.sentiment_score or 0 }}"
                                         data-confidence="{{ feedback.confidence_score or 0 }}"
-                                        data-customer-id="{{ feedback.customer_id or '' }}"
-                                        title="انقر لعرض التفاصيل الكاملة">
+                                        data-customer-id="{{ (feedback.customer_id or '') | e }}"
+                                        title="انقر لعرض التفاصيل الكاملة"
+                                        onclick="openResponseModal('{{ feedback.id }}')"
+                                        onmouseover="this.style.backgroundColor='#f8f9fa'" 
+                                        onmouseout="this.style.backgroundColor=''">
                                         <td>
                                             {% set channel_name = feedback.channel.get_arabic_name(feedback.channel) %}
                                             {% set channel_color = feedback.channel.get_tag_color(feedback.channel) %}
@@ -386,6 +390,41 @@
     
     {% include 'components/scripts.html' %}
     
+    <style>
+        .clickable-row {
+            transition: background-color 0.2s ease;
+        }
+        
+        .clickable-row:hover {
+            background-color: #f8f9fa !important;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .clickable-row td {
+            position: relative;
+        }
+        
+        .clickable-row::after {
+            content: "انقر للتفاصيل";
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0,123,255,0.1);
+            color: #007bff;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            pointer-events: none;
+        }
+        
+        .clickable-row:hover::after {
+            opacity: 1;
+        }
+    </style>
+    
     <script>
         // Auto-refresh every 30 seconds for live data
         let autoRefreshInterval;
@@ -429,6 +468,18 @@
         document.addEventListener('DOMContentLoaded', function() {
             handleChannelFilter();
             startAutoRefresh();
+            
+            // Add click handlers to response rows
+            document.querySelectorAll('.clickable-row').forEach(row => {
+                row.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const responseId = this.dataset.responseId;
+                    console.log('Row clicked, response ID:', responseId);
+                    openResponseModal(responseId);
+                });
+            });
+            
+            console.log('Found', document.querySelectorAll('.clickable-row').length, 'clickable response rows');
         });
         
         // Stop auto-refresh when user leaves page
@@ -436,6 +487,8 @@
         
         // Response detail modal functionality
         function openResponseModal(responseId) {
+            console.log('Opening modal for response ID:', responseId);
+            
             // Stop auto-refresh when modal is open
             stopAutoRefresh();
             
@@ -443,8 +496,11 @@
             const row = document.querySelector(`tr[data-response-id="${responseId}"]`);
             if (!row) {
                 console.error('Response row not found:', responseId);
+                alert('خطأ: لم يتم العثور على بيانات الاستجابة');
                 return;
             }
+            
+            console.log('Found row:', row);
             
             // Extract data from row attributes
             const data = {
