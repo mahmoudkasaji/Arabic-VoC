@@ -307,6 +307,161 @@
 
     {% include 'components/scripts.html' %}
     
+    <!-- Demo Footer Survey Widget -->
+    <style>
+    .survey-footer-banner {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: #2c3e50;
+        color: white;
+        padding: 16px 20px;
+        box-shadow: 0 -4px 12px rgba(0,0,0,0.15);
+        z-index: 9999;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        transform: translateY(100%);
+        transition: transform 0.3s ease;
+    }
+
+    .survey-footer-banner.show {
+        transform: translateY(0);
+    }
+
+    .survey-footer-content {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        max-width: 1200px;
+        margin: 0 auto;
+        gap: 20px;
+    }
+
+    .survey-footer-text {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .survey-footer-icon {
+        background: rgba(255,255,255,0.2);
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+    }
+
+    .survey-footer-message {
+        flex: 1;
+    }
+
+    .survey-footer-title {
+        font-weight: 600;
+        font-size: 16px;
+        margin-bottom: 4px;
+    }
+
+    .survey-footer-desc {
+        font-size: 14px;
+        opacity: 0.9;
+    }
+
+    .survey-footer-actions {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+    }
+
+    .survey-footer-btn {
+        background: white;
+        color: #2c3e50;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.2s;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .survey-footer-btn:hover {
+        background: rgba(255,255,255,0.9);
+        transform: translateY(-1px);
+    }
+
+    .survey-footer-close {
+        background: transparent;
+        border: 1px solid rgba(255,255,255,0.5);
+        color: white;
+        padding: 8px 16px;
+        border-radius: 4px;
+        font-size: 12px;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .survey-footer-close:hover {
+        background: rgba(255,255,255,0.1);
+        border-color: rgba(255,255,255,0.8);
+    }
+
+    .survey-footer-banner.rtl {
+        direction: rtl;
+        text-align: right;
+    }
+
+    @media (max-width: 768px) {
+        .survey-footer-content {
+            flex-direction: column;
+            text-align: center;
+            gap: 12px;
+        }
+        
+        .survey-footer-text {
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .survey-footer-actions {
+            width: 100%;
+            justify-content: center;
+        }
+        
+        .survey-footer-btn {
+            flex: 1;
+            min-width: 120px;
+        }
+    }
+    </style>
+
+    <div id="surveyFooterBanner" class="survey-footer-banner rtl">
+        <div class="survey-footer-content">
+            <div class="survey-footer-text">
+                <div class="survey-footer-icon">
+                    📋
+                </div>
+                <div class="survey-footer-message">
+                    <div class="survey-footer-title">شاركنا رأيك حول المنصة</div>
+                    <div class="survey-footer-desc">يستغرق 3 دقائق فقط - مثال تطبيقي لشريط الاستطلاع</div>
+                </div>
+            </div>
+            <div class="survey-footer-actions">
+                <a href="/surveys/builder" class="survey-footer-btn" onclick="trackDemoSurveyClick()">
+                    ابدأ الآن
+                </a>
+                <button class="survey-footer-close" onclick="closeDemoSurveyBanner()">
+                    إغلاق
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Set active navigation
@@ -314,6 +469,51 @@
                 StandardNavigation.setActiveNav('home');
             }
         });
+
+        // Demo Survey footer banner functionality
+        (function() {
+            let bannerShown = false;
+            let bannerClosed = localStorage.getItem('demoSurveyBannerClosed');
+            
+            function showDemoSurveyBanner() {
+                if (bannerClosed || bannerShown) return;
+                
+                const banner = document.getElementById('surveyFooterBanner');
+                if (banner) {
+                    // Show banner after 5 seconds on homepage to let users see the main content first
+                    setTimeout(() => {
+                        banner.classList.add('show');
+                        bannerShown = true;
+                    }, 5000);
+                }
+            }
+            
+            window.closeDemoSurveyBanner = function() {
+                const banner = document.getElementById('surveyFooterBanner');
+                if (banner) {
+                    banner.classList.remove('show');
+                    localStorage.setItem('demoSurveyBannerClosed', 'true');
+                }
+            };
+            
+            window.trackDemoSurveyClick = function() {
+                console.log('Demo survey banner clicked - redirecting to survey builder');
+                // Track demo survey click
+                if (typeof gtag !== 'undefined') {
+                    gtag('event', 'demo_survey_banner_clicked', {
+                        'source': 'homepage'
+                    });
+                }
+            };
+            
+            // Initialize demo banner
+            showDemoSurveyBanner();
+            
+            // Reset banner visibility on page navigation (for SPAs)
+            window.addEventListener('beforeunload', function() {
+                bannerShown = false;
+            });
+        })();
     </script>
 </body>
 </html>
