@@ -466,27 +466,34 @@ def survey_responses_page():
                                  responses=responses,
                                  is_single_survey=True)
         else:
-            # Show overview of ALL LIVE FEEDBACK DATA from active sources
-            logger.info("Loading live feedback data for survey responses overview")
+            # Show overview of LIVE FEEDBACK DATA from configured sources only
+            logger.info("Loading live feedback data from active sources: EMAIL (Gmail) and WIDGET (sidebar + footer)")
+            
+            # Filter to only configured sources: EMAIL and WIDGET
+            active_channels = [FeedbackChannel.EMAIL, FeedbackChannel.WIDGET]
             
             # Calculate today's date range
             today = datetime.now().date()
             today_start = datetime.combine(today, datetime.min.time())
             
-            # Get all live feedback data
-            all_feedback = db.session.query(Feedback).order_by(desc(Feedback.created_at)).all()
+            # Get live feedback data from active sources only
+            all_feedback = db.session.query(Feedback).filter(
+                Feedback.channel.in_(active_channels)
+            ).order_by(desc(Feedback.created_at)).all()
             
-            # Calculate live analytics from real data
+            # Calculate live analytics from real configured sources
             today_feedback = db.session.query(Feedback).filter(
-                Feedback.created_at >= today_start
+                Feedback.created_at >= today_start,
+                Feedback.channel.in_(active_channels)
             ).all()
             
             total_responses_today = len(today_feedback)
             total_responses_all_time = len(all_feedback)
             
-            # Calculate completion rate based on processed vs pending
+            # Calculate completion rate based on processed vs pending (active sources only)
             processed_count = db.session.query(Feedback).filter(
-                Feedback.status == FeedbackStatus.PROCESSED
+                Feedback.status == FeedbackStatus.PROCESSED,
+                Feedback.channel.in_(active_channels)
             ).count()
             completion_rate = round((processed_count / total_responses_all_time * 100), 1) if total_responses_all_time > 0 else 0
             
@@ -500,16 +507,18 @@ def survey_responses_page():
             
             avg_response_time = round(sum(response_times) / len(response_times), 1) if response_times else 0.1
             
-            # Get channel distribution
+            # Get channel distribution for active sources only
             channel_stats = db.session.query(
                 Feedback.channel,
                 func.count(Feedback.id).label('count')
+            ).filter(
+                Feedback.channel.in_(active_channels)
             ).group_by(Feedback.channel).all()
             
-            # Get recent feedback with full details
-            recent_feedback = db.session.query(Feedback).order_by(
-                desc(Feedback.created_at)
-            ).limit(20).all()
+            # Get recent feedback from active sources only
+            recent_feedback = db.session.query(Feedback).filter(
+                Feedback.channel.in_(active_channels)
+            ).order_by(desc(Feedback.created_at)).limit(20).all()
             
             # Calculate sentiment distribution  
             sentiment_stats = {
@@ -527,14 +536,15 @@ def survey_responses_page():
                     else:
                         sentiment_stats['neutral'] += 1
             
-            # Calculate yesterday's data for comparison
+            # Calculate yesterday's data for comparison (active sources only)
             yesterday = today - timedelta(days=1)
             yesterday_start = datetime.combine(yesterday, datetime.min.time())
             yesterday_end = datetime.combine(yesterday, datetime.max.time())
             
             yesterday_feedback = db.session.query(Feedback).filter(
                 Feedback.created_at >= yesterday_start,
-                Feedback.created_at <= yesterday_end
+                Feedback.created_at <= yesterday_end,
+                Feedback.channel.in_(active_channels)
             ).count()
             
             # Calculate percentage change

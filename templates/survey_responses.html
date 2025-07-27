@@ -81,16 +81,129 @@
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
-                                <h6 class="card-title mb-1">الاستطلاعات النشطة</h6>
-                                <h2 class="mb-0" id="activeSurveys">12</h2>
-                                <small class="text-light">استطلاع مفتوح</small>
+                                <h6 class="card-title mb-1">المصادر النشطة</h6>
+                                <h2 class="mb-0" id="activeSources">2</h2>
+                                <small class="text-light">Gmail + Widget</small>
                             </div>
-                            <i class="fas fa-poll fa-2x opacity-75"></i>
+                            <i class="fas fa-plug fa-2x opacity-75"></i>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+        
+        <!-- Channel Breakdown for Active Sources -->
+        <div class="row mb-4">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-chart-bar me-2"></i>توزيع المصادر النشطة</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            {% for channel_stat in live_analytics.channel_stats %}
+                            <div class="col-md-6 mb-3">
+                                <div class="d-flex justify-content-between align-items-center p-3 border rounded">
+                                    <div>
+                                        <h6 class="mb-1">
+                                            {% if channel_stat.channel.value == 'WIDGET' %}
+                                                <i class="fas fa-comments me-2"></i>الويدجت (جانبي + تذييل)
+                                            {% elif channel_stat.channel.value == 'EMAIL' %}
+                                                <i class="fas fa-envelope me-2"></i>Gmail
+                                            {% endif %}
+                                        </h6>
+                                        <small class="text-muted">{{ channel_stat.channel.value }}</small>
+                                    </div>
+                                    <span class="badge bg-primary fs-6">{{ channel_stat.count }}</span>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Recent Live Feedback -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-stream me-2"></i>الردود المباشرة الأخيرة</h5>
+                        <small class="text-muted">من Gmail والويدجت فقط</small>
+                    </div>
+                    <div class="card-body">
+                        {% if live_analytics.recent_feedback %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>المصدر</th>
+                                        <th>المحتوى</th>
+                                        <th>التقييم</th>
+                                        <th>الحالة</th>
+                                        <th>التاريخ</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for feedback in live_analytics.recent_feedback %}
+                                    <tr>
+                                        <td>
+                                            {% if feedback.channel.value == 'WIDGET' %}
+                                                <span class="badge bg-info">الويدجت</span>
+                                            {% elif feedback.channel.value == 'EMAIL' %}
+                                                <span class="badge bg-success">Gmail</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <div style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                                {{ feedback.content[:50] }}{% if feedback.content|length > 50 %}...{% endif %}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            {% if feedback.rating %}
+                                                <div class="text-warning">
+                                                    {% for i in range(feedback.rating) %}★{% endfor %}
+                                                    {% for i in range(5 - feedback.rating) %}☆{% endfor %}
+                                                </div>
+                                            {% else %}
+                                                <span class="text-muted">-</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if feedback.status.value == 'PROCESSED' %}
+                                                <span class="badge bg-success">معالج</span>
+                                            {% elif feedback.status.value == 'PROCESSING' %}
+                                                <span class="badge bg-warning">قيد المعالجة</span>
+                                            {% else %}
+                                                <span class="badge bg-secondary">في الانتظار</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <small>{{ feedback.created_at.strftime('%Y-%m-%d %H:%M') }}</small>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% else %}
+                        <div class="text-center p-4">
+                            <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                            <p class="text-muted">لا توجد ردود مباشرة حالياً</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <!-- Fallback for non-live data -->
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle me-2"></i>
+            عذراً، لا يمكن تحميل البيانات المباشرة حالياً.
+        </div>
+        {% endif %}
 
         <!-- Simple Filters -->
         <div class="card mb-4">
