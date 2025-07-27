@@ -108,28 +108,28 @@
 
 /* Success Button - Green background for actions like import/create */
 .btn-success-standard {
-    background-color: #2e7d32;
+    background-color: var(--survey-primary);
     color: white;
-    border-color: #2e7d32;
+    border-color: var(--survey-primary);
     font-weight: 600;
 }
 
 .btn-success-standard:hover:not(:disabled) {
-    background-color: #1b5e20;
-    border-color: #1b5e20;
+    background-color: var(--survey-primary-hover);
+    border-color: var(--survey-primary-hover);
     color: white;
     transform: translateY(-1px);
-    box-shadow: 0 4px 16px rgba(46, 125, 50, 0.4);
+    box-shadow: 0 4px 16px rgba(27, 94, 32, 0.4);
 }
 
 .btn-success-standard:active:not(:disabled) {
     transform: translateY(0);
-    box-shadow: 0 2px 4px rgba(46, 125, 50, 0.2);
+    box-shadow: 0 2px 4px rgba(27, 94, 32, 0.2);
 }
 
 .btn-success-standard:focus {
     outline: none;
-    box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.25);
+    box-shadow: 0 0 0 3px var(--survey-primary-light);
 }
 
 /* Warning Button - Orange/amber background for test actions */

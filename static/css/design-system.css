@@ -1,6 +1,13 @@
 /* Arabic Voice of Customer Platform - Unified Design System */
 /* Created: June 23, 2025 */
 
+/* ===== BOOTSTRAP OVERRIDES ===== */
+:root {
+    /* Override Bootstrap primary colors to match our design system */
+    --bs-primary: #1B5E20;
+    --bs-primary-rgb: 27, 94, 32;
+}
+
 /* ===== DESIGN TOKENS ===== */
 :root {
     /* Primary Color Palette */
