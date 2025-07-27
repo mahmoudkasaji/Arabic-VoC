@@ -423,13 +423,15 @@ def survey_distribution_page():
 
 @app.route('/surveys/responses')
 def survey_responses_page():
-    """Survey responses page with real survey data integration"""
+    """Survey responses page with live feedback data from all sources"""
     try:
+        from models_unified import Feedback, FeedbackChannel, FeedbackStatus
         from models.survey_flask import SurveyFlask, QuestionResponseFlask
-        from models.contacts import Contact
+        from sqlalchemy import func, desc
+        from datetime import datetime, timedelta
         import json
         
-        # Get survey ID from URL parameter
+        # Get survey ID from URL parameter  
         survey_id = request.args.get('id')
         
         if survey_id:
@@ -464,23 +466,107 @@ def survey_responses_page():
                                  responses=responses,
                                  is_single_survey=True)
         else:
-            # Show overview of all surveys and responses
-            surveys = db.session.query(SurveyFlask).all()
-            total_responses_today = 47  # Calculate from actual data
-            overall_completion_rate = 84  # Calculate from actual data
+            # Show overview of ALL LIVE FEEDBACK DATA from active sources
+            logger.info("Loading live feedback data for survey responses overview")
+            
+            # Calculate today's date range
+            today = datetime.now().date()
+            today_start = datetime.combine(today, datetime.min.time())
+            
+            # Get all live feedback data
+            all_feedback = db.session.query(Feedback).order_by(desc(Feedback.created_at)).all()
+            
+            # Calculate live analytics from real data
+            today_feedback = db.session.query(Feedback).filter(
+                Feedback.created_at >= today_start
+            ).all()
+            
+            total_responses_today = len(today_feedback)
+            total_responses_all_time = len(all_feedback)
+            
+            # Calculate completion rate based on processed vs pending
+            processed_count = db.session.query(Feedback).filter(
+                Feedback.status == FeedbackStatus.PROCESSED
+            ).count()
+            completion_rate = round((processed_count / total_responses_all_time * 100), 1) if total_responses_all_time > 0 else 0
+            
+            # Calculate average response time (in hours since submission)
+            now = datetime.now()
+            response_times = []
+            for feedback in all_feedback[:10]:  # Last 10 for average
+                if feedback.processed_at and feedback.created_at:
+                    response_time = (feedback.processed_at - feedback.created_at).total_seconds() / 3600
+                    response_times.append(response_time)
+            
+            avg_response_time = round(sum(response_times) / len(response_times), 1) if response_times else 0.1
+            
+            # Get channel distribution
+            channel_stats = db.session.query(
+                Feedback.channel,
+                func.count(Feedback.id).label('count')
+            ).group_by(Feedback.channel).all()
+            
+            # Get recent feedback with full details
+            recent_feedback = db.session.query(Feedback).order_by(
+                desc(Feedback.created_at)
+            ).limit(20).all()
+            
+            # Calculate sentiment distribution  
+            sentiment_stats = {
+                'positive': 0,
+                'neutral': 0, 
+                'negative': 0
+            }
+            
+            for feedback in all_feedback:
+                if feedback.sentiment_score is not None:
+                    if feedback.sentiment_score > 0.3:
+                        sentiment_stats['positive'] += 1
+                    elif feedback.sentiment_score < -0.3:
+                        sentiment_stats['negative'] += 1
+                    else:
+                        sentiment_stats['neutral'] += 1
+            
+            # Calculate yesterday's data for comparison
+            yesterday = today - timedelta(days=1)
+            yesterday_start = datetime.combine(yesterday, datetime.min.time())
+            yesterday_end = datetime.combine(yesterday, datetime.max.time())
+            
+            yesterday_feedback = db.session.query(Feedback).filter(
+                Feedback.created_at >= yesterday_start,
+                Feedback.created_at <= yesterday_end
+            ).count()
+            
+            # Calculate percentage change
+            if yesterday_feedback > 0:
+                change_percent = round(((total_responses_today - yesterday_feedback) / yesterday_feedback) * 100, 1)
+            else:
+                change_percent = 100 if total_responses_today > 0 else 0
+            
+            live_analytics = {
+                'total_responses_today': total_responses_today,
+                'total_responses_all_time': total_responses_all_time,
+                'completion_rate': completion_rate,
+                'avg_response_time': avg_response_time,
+                'change_percent': change_percent,
+                'channel_stats': channel_stats,
+                'sentiment_stats': sentiment_stats,
+                'recent_feedback': recent_feedback
+            }
+            
+            logger.info(f"Live analytics calculated: {total_responses_today} today, {total_responses_all_time} total, {completion_rate}% completion")
             
             return render_template('survey_responses.html',
-                                 title='الردود والنتائج',
-                                 surveys=surveys,
-                                 total_responses_today=total_responses_today,
-                                 overall_completion_rate=overall_completion_rate,
-                                 is_single_survey=False)
+                                 title='الردود والنتائج - البيانات المباشرة',
+                                 live_analytics=live_analytics,
+                                 is_single_survey=False,
+                                 is_live_data=True)
                                  
     except Exception as e:
-        logger.error(f"Error loading survey responses: {e}")
+        logger.error(f"Error loading live survey responses: {e}")
         return render_template('survey_responses.html', 
                              title='الردود والنتائج',
-                             error='حدث خطأ في تحميل البيانات')
+                             error='حدث خطأ في تحميل البيانات المباشرة')
 
 # Public Survey Routes for Email-to-Web Integration
 @app.route('/survey/<uuid>')

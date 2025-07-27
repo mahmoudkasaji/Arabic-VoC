@@ -29,16 +29,19 @@
             </div>
         </div>
 
-        <!-- Analytics Summary Cards -->
+        <!-- Live Analytics Summary Cards -->
+        {% if is_live_data and live_analytics %}
         <div class="row mb-4">
             <div class="col-md-3">
                 <div class="card bg-primary text-white">
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
-                                <h6 class="card-title mb-1">إجمالي الردود اليوم</h6>
-                                <h2 class="mb-0" id="todayResponses">47</h2>
-                                <small class="text-light">+12% من الأمس</small>
+                                <h6 class="card-title mb-1">الردود المباشرة اليوم</h6>
+                                <h2 class="mb-0" id="todayResponses">{{ live_analytics.total_responses_today }}</h2>
+                                <small class="text-light">
+                                    {% if live_analytics.change_percent > 0 %}+{% endif %}{{ live_analytics.change_percent }}% من الأمس
+                                </small>
                             </div>
                             <i class="fas fa-chart-line fa-2x opacity-75"></i>
                         </div>
@@ -50,9 +53,9 @@
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
-                                <h6 class="card-title mb-1">معدل الإكمال</h6>
-                                <h2 class="mb-0" id="completionRate">84%</h2>
-                                <small class="text-light">من إجمالي المحاولات</small>
+                                <h6 class="card-title mb-1">معدل المعالجة</h6>
+                                <h2 class="mb-0" id="completionRate">{{ live_analytics.completion_rate }}%</h2>
+                                <small class="text-light">من إجمالي {{ live_analytics.total_responses_all_time }} رد</small>
                             </div>
                             <i class="fas fa-check-circle fa-2x opacity-75"></i>
                         </div>
@@ -64,9 +67,9 @@
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
-                                <h6 class="card-title mb-1">متوسط وقت الاستجابة</h6>
-                                <h2 class="mb-0" id="avgResponseTime">3.2</h2>
-                                <small class="text-light">دقائق</small>
+                                <h6 class="card-title mb-1">متوسط وقت المعالجة</h6>
+                                <h2 class="mb-0" id="avgResponseTime">{{ live_analytics.avg_response_time }}</h2>
+                                <small class="text-light">ساعات</small>
                             </div>
                             <i class="fas fa-clock fa-2x opacity-75"></i>
                         </div>
