@@ -47,6 +47,15 @@ def survey_builder():
     from flask import render_template
     return render_template('survey_builder.html')
 
+# Enterprise Architecture Visualization
+@app.route('/architecture')
+@require_login
+def enterprise_architecture():
+    """Enterprise architecture visualization"""
+    from flask import render_template, send_from_directory
+    import os
+    return send_from_directory('.', 'enterprise_architecture_visualization.html')
+
 # Contacts Management Route
 @app.route('/contacts')
 @require_login
