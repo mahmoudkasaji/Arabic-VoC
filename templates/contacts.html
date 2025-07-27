@@ -259,7 +259,7 @@
                 </div>
                 <div class="modal-body">
                     <form method="POST" id="editContactForm">
-                        <input type="hidden" id="editContactId">
+                        <input type="hidden" name="contact_id" id="editContactId">
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
@@ -376,16 +376,17 @@
             document.getElementById('editContactForm').action = `/contacts/edit/${id}`;
             
             // Fill form fields - using the corrected IDs from the modal
-            document.getElementById('editContactName').value = name;
-            document.getElementById('editContactEmail').value = email;
-            document.getElementById('editContactPhone').value = phone;
-            document.getElementById('editContactCompany').value = company;
-            document.getElementById('editContactLanguage').value = language;
-            document.getElementById('editContactStatus').value = isActive;
-            document.getElementById('editEmailOptIn').checked = emailOpt === 'true';
-            document.getElementById('editSmsOptIn').checked = smsOpt === 'true';
-            document.getElementById('editWhatsappOptIn').checked = whatsappOpt === 'true';
-            document.getElementById('editContactNotes').value = notes;
+            document.getElementById('editContactId').value = id;
+            document.getElementById('editContactName').value = name || '';
+            document.getElementById('editContactEmail').value = email || '';
+            document.getElementById('editContactPhone').value = phone || '';
+            document.getElementById('editContactCompany').value = company || '';
+            document.getElementById('editContactLanguage').value = language || 'ar';
+            document.getElementById('editContactStatus').value = isActive ? 'true' : 'false';
+            document.getElementById('editEmailOptIn').checked = emailOpt === true || emailOpt === 'true';
+            document.getElementById('editSmsOptIn').checked = smsOpt === true || smsOpt === 'true';
+            document.getElementById('editWhatsappOptIn').checked = whatsappOpt === true || whatsappOpt === 'true';
+            document.getElementById('editContactNotes').value = notes || '';
             
             // Show modal
             new bootstrap.Modal(document.getElementById('editContactModal')).show();
