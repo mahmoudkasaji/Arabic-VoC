@@ -7,6 +7,7 @@ class FeedbackWidget {
     constructor(options = {}) {
         this.options = {
             position: 'bottom-right', // bottom-left for RTL
+            displayMode: 'slide', // 'slide' or 'center'
             submitEndpoint: '/feedback-widget',
             configEndpoint: '/feedback-widget/config',
             categories: [
@@ -68,9 +69,16 @@ class FeedbackWidget {
             <span class="feedback-text">${this.getLabel('trigger')}</span>
         `;
 
+        // Create backdrop for slide mode (only if not center mode)
+        if (this.options.displayMode === 'slide') {
+            this.backdrop = document.createElement('div');
+            this.backdrop.className = 'feedback-modal-backdrop';
+            document.body.appendChild(this.backdrop);
+        }
+
         // Create modal
         const modal = document.createElement('div');
-        modal.className = 'feedback-modal';
+        modal.className = this.options.displayMode === 'center' ? 'feedback-modal center-popup' : 'feedback-modal';
         modal.setAttribute('role', 'dialog');
         modal.setAttribute('aria-modal', 'true');
         modal.setAttribute('aria-labelledby', 'feedback-title');
@@ -172,10 +180,17 @@ class FeedbackWidget {
         // Close button
         this.modal.querySelector('.feedback-modal-close').addEventListener('click', () => this.closeModal());
 
-        // Modal backdrop click
-        this.modal.addEventListener('click', (e) => {
-            if (e.target === this.modal) this.closeModal();
-        });
+        // Modal backdrop click for center mode
+        if (this.options.displayMode === 'center') {
+            this.modal.addEventListener('click', (e) => {
+                if (e.target === this.modal) this.closeModal();
+            });
+        }
+
+        // Backdrop click for slide mode
+        if (this.backdrop) {
+            this.backdrop.addEventListener('click', () => this.closeModal());
+        }
 
         // Rating stars
         this.modal.querySelectorAll('.rating-star').forEach(star => {
@@ -251,6 +266,9 @@ class FeedbackWidget {
 
     openModal() {
         this.modal.classList.add('active');
+        if (this.backdrop) {
+            this.backdrop.classList.add('active');
+        }
         document.body.style.overflow = 'hidden';
         
         // Focus first element
@@ -264,6 +282,9 @@ class FeedbackWidget {
 
     closeModal() {
         this.modal.classList.remove('active');
+        if (this.backdrop) {
+            this.backdrop.classList.remove('active');
+        }
         document.body.style.overflow = '';
         this.triggerBtn.focus();
         
@@ -434,6 +455,9 @@ class FeedbackWidget {
     destroy() {
         if (this.widget && this.widget.parentNode) {
             this.widget.parentNode.removeChild(this.widget);
+        }
+        if (this.backdrop && this.backdrop.parentNode) {
+            this.backdrop.parentNode.removeChild(this.backdrop);
         }
     }
 
