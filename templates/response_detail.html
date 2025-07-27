@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Survey Response Detail - Voice of Customer Platform</title>
+    {% include 'components/head.html' %}
+</head>
+<body>
+    {% include 'components/unified_navigation.html' %}
+    
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-12">
+                <!-- Header -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h2><i class="fas fa-comment-alt me-2"></i>تفاصيل الاستجابة</h2>
+                        <p class="text-muted">عرض شامل لبيانات الاستجابة والتحليل</p>
+                    </div>
+                    <div>
+                        <a href="/surveys/responses" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-right me-2"></i>العودة للقائمة
+                        </a>
+                        <button class="btn btn-primary" onclick="exportResponseData()">
+                            <i class="fas fa-download me-2"></i>تصدير البيانات
+                        </button>
+                    </div>
+                </div>
+
+                {% if response %}
+                <!-- Response Overview Card -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-info-circle me-2"></i>معلومات عامة
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="fw-bold text-muted">UUID الاستجابة:</label>
+                                    <div class="mt-1">
+                                        <span class="badge bg-primary font-monospace fs-6">{{ response.uuid }}</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="fw-bold text-muted">الاستطلاع:</label>
+                                    <div class="mt-1">
+                                        {% if response.survey %}
+                                            <span class="badge bg-success">{{ response.survey.display_title }}</span>
+                                        {% else %}
+                                            <span class="text-muted">غير محدد</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="fw-bold text-muted">حالة الإكمال:</label>
+                                    <div class="mt-1">
+                                        {% if response.is_complete %}
+                                            <span class="badge bg-success">مكتمل</span>
+                                        {% else %}
+                                            <span class="badge bg-warning">جزئي</span>
+                                        {% endif %}
+                                        <span class="ms-2 text-muted">({{ "%.1f"|format(response.completion_percentage) }}%)</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="fw-bold text-muted">تاريخ البدء:</label>
+                                    <div class="mt-1">{{ response.started_at.strftime('%Y-%m-%d %H:%M:%S') if response.started_at else 'غير محدد' }}</div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="fw-bold text-muted">تاريخ الإكمال:</label>
+                                    <div class="mt-1">{{ response.completed_at.strftime('%Y-%m-%d %H:%M:%S') if response.completed_at else 'لم يكتمل بعد' }}</div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="fw-bold text-muted">مدة الإجابة:</label>
+                                    <div class="mt-1">
+                                        {% if response.duration_minutes %}
+                                            {{ "%.1f"|format(response.duration_minutes) }} دقيقة
+                                        {% else %}
+                                            غير محدد
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Survey Answers -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-list me-2"></i>إجابات الاستطلاع
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        {% if response.answers %}
+                            {% set answers = response.answers | fromjson %}
+                            {% for question_id, answer in answers.items() %}
+                            <div class="mb-4 p-3 border rounded">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <label class="fw-bold text-primary">سؤال #{{ question_id }}</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        {% if answer is string %}
+                                            <div class="answer-text">{{ answer }}</div>
+                                        {% elif answer is number %}
+                                            <div class="answer-rating">
+                                                <span class="badge bg-warning">{{ answer }}</span>
+                                                {% if answer <= 5 %}
+                                                    <div class="mt-1">
+                                                        {% for i in range(answer) %}★{% endfor %}
+                                                        {% for i in range(5 - answer) %}☆{% endfor %}
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                        {% else %}
+                                            <div class="answer-complex">{{ answer | string }}</div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="text-center text-muted p-4">
+                                <i class="fas fa-question-circle fa-2x mb-3"></i>
+                                <p>لا توجد إجابات مسجلة</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- AI Analysis -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-robot me-2"></i>تحليل الذكاء الاصطناعي
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="fw-bold text-muted">درجة المشاعر:</label>
+                                    <div class="mt-1">
+                                        {% if response.sentiment_score %}
+                                            <span class="badge bg-{{ 'success' if response.sentiment_score > 0.7 else 'warning' if response.sentiment_score > 0.4 else 'danger' }}">
+                                                {{ "%.1f"|format(response.sentiment_score * 100) }}%
+                                            </span>
+                                            <div class="progress mt-2" style="height: 8px;">
+                                                <div class="progress-bar bg-{{ 'success' if response.sentiment_score > 0.7 else 'warning' if response.sentiment_score > 0.4 else 'danger' }}" 
+                                                     style="width: {{ response.sentiment_score * 100 }}%"></div>
+                                            </div>
+                                        {% else %}
+                                            <span class="text-muted">لم يتم التحليل</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="fw-bold text-muted">درجة الثقة:</label>
+                                    <div class="mt-1">
+                                        {% if response.confidence_score %}
+                                            <span class="badge bg-info">{{ "%.1f"|format(response.confidence_score * 100) }}%</span>
+                                            <div class="progress mt-2" style="height: 8px;">
+                                                <div class="progress-bar bg-info" style="width: {{ response.confidence_score * 100 }}%"></div>
+                                            </div>
+                                        {% else %}
+                                            <span class="text-muted">لم يتم التحليل</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="fw-bold text-muted">الكلمات المفتاحية:</label>
+                                    <div class="mt-1">
+                                        {% if response.keywords %}
+                                            {% set keywords = response.keywords | fromjson %}
+                                            {% for keyword in keywords %}
+                                                <span class="badge bg-secondary me-1 mb-1">{{ keyword }}</span>
+                                            {% endfor %}
+                                        {% else %}
+                                            <span class="text-muted">لا توجد كلمات مفتاحية</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Technical Information -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-cogs me-2"></i>معلومات تقنية
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="fw-bold text-muted">عنوان IP:</label>
+                                    <div class="mt-1">{{ response.ip_address or 'غير محدد' }}</div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="fw-bold text-muted">نوع الجهاز:</label>
+                                    <div class="mt-1">{{ response.device_type or 'غير محدد' }}</div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="fw-bold text-muted">المتصفح:</label>
+                                    <div class="mt-1">{{ response.browser or 'غير محدد' }}</div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="fw-bold text-muted">اللغة المستخدمة:</label>
+                                    <div class="mt-1">
+                                        <span class="badge bg-info">{{ response.language_used or 'ar' }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        {% if response.user_agent %}
+                        <div class="mb-3">
+                            <label class="fw-bold text-muted">وكيل المستخدم:</label>
+                            <div class="mt-1">
+                                <code class="small text-muted">{{ response.user_agent }}</code>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                {% else %}
+                <!-- Response Not Found -->
+                <div class="card">
+                    <div class="card-body text-center py-5">
+                        <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
+                        <h4>الاستجابة غير موجودة</h4>
+                        <p class="text-muted">لم يتم العثور على الاستجابة المطلوبة أو تم حذفها.</p>
+                        <a href="/surveys/responses" class="btn btn-primary">
+                            <i class="fas fa-arrow-right me-2"></i>العودة للقائمة
+                        </a>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    {% include 'components/scripts.html' %}
+    
+    <script>
+        function exportResponseData() {
+            {% if response %}
+            const responseData = {
+                uuid: "{{ response.uuid }}",
+                survey_title: "{{ response.survey.display_title if response.survey else 'غير محدد' }}",
+                completion_status: "{{ 'مكتمل' if response.is_complete else 'جزئي' }}",
+                completion_percentage: {{ response.completion_percentage }},
+                started_at: "{{ response.started_at.isoformat() if response.started_at else '' }}",
+                completed_at: "{{ response.completed_at.isoformat() if response.completed_at else '' }}",
+                duration_minutes: {{ response.duration_minutes or 'null' }},
+                answers: {{ response.answers | tojson if response.answers else 'null' }},
+                sentiment_score: {{ response.sentiment_score or 'null' }},
+                confidence_score: {{ response.confidence_score or 'null' }},
+                keywords: {{ response.keywords | tojson if response.keywords else 'null' }},
+                language_used: "{{ response.language_used or 'ar' }}",
+                device_type: "{{ response.device_type or '' }}",
+                browser: "{{ response.browser or '' }}",
+                ip_address: "{{ response.ip_address or '' }}",
+                user_agent: "{{ response.user_agent or '' }}"
+            };
+            
+            const dataStr = JSON.stringify(responseData, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            const url = URL.createObjectURL(dataBlob);
+            
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `survey-response-${responseData.uuid}.json`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+            {% endif %}
+        }
+    </script>
+</body>
+</html>

@@ -7,7 +7,8 @@ import os
 import json
 import logging
 from datetime import datetime, timedelta
-from flask import Flask, render_template, request, jsonify, redirect, url_for, session, render_template_string
+from flask import Flask, render_template, request, jsonify, redirect, url_for, session, render_template_string, flash
+from flask_login import login_required
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase
 from werkzeug.middleware.proxy_fix import ProxyFix
@@ -421,6 +422,31 @@ def survey_distribution_page():
                              title='توزيع الاستطلاعات',
                              surveys=[])
 
+@app.route('/response/<uuid>')
+@login_required
+def response_detail(uuid):
+    """Individual response detail page"""
+    try:
+        from models.survey_flask import ResponseFlask
+        
+        # Find response by UUID
+        response = ResponseFlask.query.filter_by(uuid=uuid).first()
+        
+        if not response:
+            flash('لم يتم العثور على الاستجابة المطلوبة', 'error')
+            return redirect(url_for('survey_responses_page'))
+        
+        logger.info(f"Loading response detail for UUID: {uuid}")
+        
+        return render_template('response_detail.html', 
+                             response=response,
+                             page_title='تفاصيل الاستجابة')
+        
+    except Exception as e:
+        logger.error(f"Error loading response detail {uuid}: {e}")
+        flash('حدث خطأ في تحميل تفاصيل الاستجابة', 'error')
+        return redirect(url_for('survey_responses_page'))
+
 @app.route('/surveys/responses')
 def survey_responses_page():
     """Survey responses page with live feedback data from all sources"""
@@ -490,7 +516,15 @@ def survey_responses_page():
             today = datetime.now().date()
             today_start = datetime.combine(today, datetime.min.time())
             
-            # Get live feedback data from active sources only
+            # COMBINED APPROACH: Get both survey responses AND feedback data
+            from models.survey_flask import ResponseFlask
+            
+            # 1. Get actual survey responses (these have real UUIDs)
+            survey_responses_query = db.session.query(ResponseFlask).join(
+                SurveyFlask, ResponseFlask.survey_id == SurveyFlask.id, isouter=True
+            )
+            
+            # 2. Get feedback data from active sources
             feedback_query = db.session.query(Feedback).filter(
                 Feedback.channel.in_(active_channels)
             )
@@ -514,16 +548,70 @@ def survey_responses_page():
                 except ValueError:
                     pass  # Invalid date format, ignore
                     
+            # Apply date filters to BOTH queries
+            if date_from:
+                try:
+                    from_date = datetime.strptime(date_from, '%Y-%m-%d').date()
+                    survey_responses_query = survey_responses_query.filter(
+                        func.date(ResponseFlask.created_at) >= from_date
+                    )
+                except ValueError:
+                    pass
+            
+            if date_to:
+                try:
+                    to_date = datetime.strptime(date_to, '%Y-%m-%d').date()
+                    survey_responses_query = survey_responses_query.filter(
+                        func.date(ResponseFlask.created_at) <= to_date
+                    )
+                except ValueError:
+                    pass
+            
+            # Get actual data
+            survey_responses = survey_responses_query.order_by(desc(ResponseFlask.created_at)).all()
             all_feedback = feedback_query.order_by(desc(Feedback.created_at)).all()
             
-            # Calculate live analytics from real configured sources
+            # Combine and convert survey responses to look like feedback for template compatibility
+            combined_data = []
+            
+            # Add actual survey responses first (they have real UUIDs)
+            for response in survey_responses:
+                # Create a feedback-like object for template compatibility
+                fake_feedback = type('obj', (object,), {
+                    'id': response.id,
+                    'uuid': response.uuid,  # This is the real survey response UUID
+                    'content': (response.answers or '')[:200] if response.answers else 'لا يوجد محتوى',
+                    'rating': 5 if response.completion_percentage > 80 else 3,  # Estimate from completion
+                    'status': type('status', (object,), {'value': 'completed' if response.is_complete else 'partial'})(),
+                    'channel': type('channel', (object,), {
+                        'value': 'survey',
+                        'get_arabic_name': lambda self, x=None: 'استطلاع',
+                        'get_tag_color': lambda self, x=None: 'success'
+                    })(),
+                    'created_at': response.created_at,
+                    'channel_metadata': {'source_type': 'SURVEY_RESPONSE', 'survey_title': response.survey.display_title if response.survey else 'غير محدد'},
+                    'ai_summary': f'استجابة مكتملة بنسبة {response.completion_percentage}%',
+                    'sentiment_score': response.sentiment_score or 0.8,
+                    'confidence_score': response.confidence_score or 0.9,
+                    'customer_id': response.respondent_email or f'user_{response.id}'
+                })()
+                combined_data.append(fake_feedback)
+            
+            # Add feedback data
+            combined_data.extend(all_feedback)
+            
+            # Calculate live analytics from COMBINED data (survey responses + feedback)
+            today_survey_responses = db.session.query(ResponseFlask).filter(
+                ResponseFlask.created_at >= today_start
+            ).all()
+            
             today_feedback = db.session.query(Feedback).filter(
                 Feedback.created_at >= today_start,
                 Feedback.channel.in_(active_channels)
             ).all()
             
-            total_responses_today = len(today_feedback)
-            total_responses_all_time = len(all_feedback)
+            total_responses_today = len(today_survey_responses) + len(today_feedback)
+            total_responses_all_time = len(survey_responses) + len(all_feedback)
             
             # Calculate completion rate based on processed vs pending (active sources only)
             processed_count = db.session.query(Feedback).filter(
@@ -550,19 +638,17 @@ def survey_responses_page():
                 Feedback.channel.in_(active_channels)
             ).group_by(Feedback.channel).all()
             
-            # Get recent feedback from active sources only
-            recent_feedback = db.session.query(Feedback).filter(
-                Feedback.channel.in_(active_channels)
-            ).order_by(desc(Feedback.created_at)).limit(20).all()
+            # Use combined data instead of just feedback - this includes survey responses with UUIDs!
+            recent_feedback = sorted(combined_data, key=lambda x: x.created_at, reverse=True)[:20]
             
-            # Calculate sentiment distribution  
+            # Calculate sentiment distribution from combined data
             sentiment_stats = {
                 'positive': 0,
                 'neutral': 0, 
                 'negative': 0
             }
             
-            for feedback in all_feedback:
+            for feedback in combined_data:
                 if feedback.sentiment_score is not None:
                     if feedback.sentiment_score > 0.3:
                         sentiment_stats['positive'] += 1
@@ -588,11 +674,16 @@ def survey_responses_page():
             else:
                 change_percent = 100 if total_responses_today > 0 else 0
             
-            # Prepare channel filter options for template
+            # Prepare channel filter options for template - include survey responses
+            email_count = sum([stat.count for stat in channel_stats if stat.channel == FeedbackChannel.EMAIL])
+            widget_count = sum([stat.count for stat in channel_stats if stat.channel == FeedbackChannel.WIDGET])
+            survey_count = len(survey_responses)
+            
             available_channels = [
                 {'value': 'all', 'label': 'جميع المصادر', 'count': total_responses_all_time},
-                {'value': 'email', 'label': 'Gmail', 'count': sum([stat.count for stat in channel_stats if stat.channel == FeedbackChannel.EMAIL])},
-                {'value': 'widget', 'label': 'الويدجت', 'count': sum([stat.count for stat in channel_stats if stat.channel == FeedbackChannel.WIDGET])}
+                {'value': 'email', 'label': 'Gmail', 'count': email_count},
+                {'value': 'widget', 'label': 'الويدجت', 'count': widget_count},
+                {'value': 'survey', 'label': 'الاستطلاعات', 'count': survey_count}
             ]
             
             live_analytics = {

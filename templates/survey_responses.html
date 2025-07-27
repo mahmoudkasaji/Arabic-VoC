@@ -199,12 +199,12 @@
                                         data-confidence="{{ feedback.confidence_score or 0 }}"
                                         data-customer-id="{{ (feedback.customer_id or '') | e }}">
                                         <td>
-                                            <span class="clickable-id badge bg-primary" 
-                                                  style="cursor: pointer; font-family: monospace;" 
-                                                  onclick="openResponseModal('{{ feedback.id }}')"
-                                                  title="انقر لعرض التفاصيل الكاملة">
-                                                #{{ feedback.id }}
-                                            </span>
+                                            <a href="/response/{{ feedback.uuid if feedback.uuid else feedback.id }}" 
+                                               class="clickable-id badge bg-primary text-decoration-none" 
+                                               style="font-family: monospace;" 
+                                               title="انقر لعرض التفاصيل الكاملة">
+                                                {{ feedback.uuid[:8] if feedback.uuid else '#' + feedback.id|string }}...
+                                            </a>
                                         </td>
                                         <td>
                                             {% set channel_name = feedback.channel.get_arabic_name(feedback.channel) %}
