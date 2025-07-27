@@ -39,9 +39,14 @@
                         <p>اختر من الاستطلاعات المحفوظة لديك</p>
                         <select class="form-select mb-3" id="existingSurvey">
                             <option value="">اختر استطلاع...</option>
-                            <option value="customer-satisfaction">استطلاع رضا العملاء</option>
-                            <option value="product-feedback">تقييم المنتج الجديد</option>
-                            <option value="service-quality">جودة الخدمة</option>
+                            {% for survey in surveys %}
+                            <option value="{{ survey.id }}" data-survey='{{ survey | tojson }}'>
+                                {{ survey.title }} ({{ survey.questions_count }} أسئلة)
+                            </option>
+                            {% endfor %}
+                            {% if not surveys %}
+                            <option disabled>لا توجد استطلاعات متاحة - قم بإنشاء استطلاع أولاً</option>
+                            {% endif %}
                         </select>
                         <button class="btn btn-success-custom" onclick="selectSurvey()">
                             <i class="fas fa-check me-2"></i>اختيار هذا الاستطلاع
@@ -256,6 +261,7 @@
     <script>
     let selectedSurveyId = null;
     let generatedSurveyUrl = null;
+    let currentSurveyUrl = null;
     
     // Initialize survey navigation
     document.addEventListener('DOMContentLoaded', function() {
@@ -292,40 +298,30 @@
             return;
         }
         
-        // Show survey info
-        const surveyInfo = {
-            'customer-satisfaction': {
-                title: 'استطلاع رضا العملاء',
-                description: 'استطلاع شامل لقياس مستوى رضا العملاء عن الخدمات',
-                questions: 8,
-                estimatedTime: '3-5 دقائق'
-            },
-            'product-feedback': {
-                title: 'تقييم المنتج الجديد',
-                description: 'جمع آراء العملاء حول المنتج الجديد وميزاته',
-                questions: 6,
-                estimatedTime: '2-3 دقائق'
-            },
-            'service-quality': {
-                title: 'جودة الخدمة',
-                description: 'تقييم جودة خدمة العملاء وسرعة الاستجابة',
-                questions: 5,
-                estimatedTime: '2 دقيقة'
-            }
-        };
+        // Get survey data from select option
+        const selectedOption = surveySelect.options[surveySelect.selectedIndex];
+        const surveyData = JSON.parse(selectedOption.getAttribute('data-survey'));
         
-        const survey = surveyInfo[selectedSurveyId];
+        // Calculate estimated time (1 minute per 2 questions)
+        const estimatedMinutes = Math.max(1, Math.ceil(surveyData.questions_count / 2));
+        const estimatedTime = estimatedMinutes === 1 ? 'دقيقة واحدة' : `${estimatedMinutes} دقائق`;
+        
+        // Show survey info
         document.getElementById('selectedSurveyInfo').innerHTML = `
             <div class="selected-survey-card">
-                <h6><i class="fas fa-poll me-2"></i>${survey.title}</h6>
-                <p class="text-muted mb-2">${survey.description}</p>
+                <h6><i class="fas fa-poll me-2"></i>${surveyData.title}</h6>
+                <p class="text-muted mb-2">${surveyData.description || 'استطلاع مخصص'}</p>
                 <div class="row">
                     <div class="col-md-6">
-                        <small class="text-muted"><i class="fas fa-question-circle me-1"></i>${survey.questions} أسئلة</small>
+                        <small class="text-muted"><i class="fas fa-question-circle me-1"></i>${surveyData.questions_count} أسئلة</small>
                     </div>
                     <div class="col-md-6">
-                        <small class="text-muted"><i class="fas fa-clock me-1"></i>${survey.estimatedTime}</small>
+                        <small class="text-muted"><i class="fas fa-clock me-1"></i>${estimatedTime}</small>
                     </div>
+                </div>
+                <div class="mt-2">
+                    <small class="badge bg-${surveyData.status === 'published' ? 'success' : 'warning'}">${surveyData.status === 'published' ? 'منشور' : 'مسودة'}</small>
+                    <small class="text-muted ms-2">ID: ${surveyData.short_id || surveyData.uuid.substring(0, 8)}</small>
                 </div>
             </div>
         `;
@@ -333,15 +329,22 @@
         // Show survey preview
         document.getElementById('surveyPreview').innerHTML = `
             <div class="survey-preview-content">
-                <h6>${survey.title}</h6>
-                <p class="small text-muted">${survey.description}</p>
-                <div class="preview-questions">
-                    <div class="preview-question">1. كيف تقيم خدمتنا بشكل عام؟</div>
-                    <div class="preview-question">2. ما مدى احتمالية توصيتك لنا؟</div>
-                    <div class="preview-question">3. ${survey.questions > 2 ? 'ما هي اقتراحاتك للتحسين؟' : ''}</div>
+                <h6>${surveyData.title}</h6>
+                <p class="small text-muted">${surveyData.description || 'استطلاع مخصص تم إنشاؤه باستخدام منشئ الاستطلاعات'}</p>
+                <div class="preview-info">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="badge bg-primary">${surveyData.questions_count} أسئلة</span>
+                        <span class="small text-muted">${estimatedTime}</span>
+                    </div>
+                    <div class="mt-2">
+                        <small class="text-success">✓ تم إنشاؤه باستخدام منشئ الاستطلاعات</small>
+                    </div>
                 </div>
             </div>
         `;
+        
+        // Store the actual survey URL from database
+        currentSurveyUrl = surveyData.public_url;
         
         // Show step 2
         document.getElementById('step2').style.display = 'block';
@@ -355,14 +358,8 @@
             return;
         }
         
-        const customSlug = document.getElementById('customSlug').value;
-        const expiryDate = document.getElementById('expiryDate').value;
-        const requirePassword = document.getElementById('requirePassword').checked;
-        const password = document.getElementById('surveyPassword').value;
-        
-        // Generate survey URL
-        const surveyId = customSlug || `survey-${Date.now()}`;
-        generatedSurveyUrl = `${window.location.origin}/s/${surveyId}`;
+        // Use the real survey URL from the database
+        generatedSurveyUrl = `${window.location.origin}${currentSurveyUrl}`;
         
         // Show generated link
         document.getElementById('generatedUrl').value = generatedSurveyUrl;
@@ -376,7 +373,7 @@
         document.getElementById('step3').scrollIntoView({ behavior: 'smooth' });
         
         // Show success message
-        showNotification('تم إنشاء رابط الاستطلاع بنجاح!', 'success');
+        showNotification('رابط الاستطلاع جاهز للتوزيع!', 'success');
     }
     
     // Update message placeholders

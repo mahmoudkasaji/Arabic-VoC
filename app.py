@@ -4,6 +4,7 @@ Main application with Replit Auth integration and Arabic support
 """
 
 import os
+import json
 import logging
 from datetime import datetime, timedelta
 from flask import Flask, render_template, request, jsonify, redirect, url_for, session, render_template_string
@@ -343,17 +344,37 @@ def survey_create_page():
                          title='إنشاء استطلاع جديد')
 
 @app.route('/surveys/distribution')
-def survey_distribution_redirect():
-    """Redirect distribution to integrated survey management hub"""
-    survey_id = request.args.get('survey')
-    channel = request.args.get('channel')
-    
-    if survey_id:
-        # Redirect to survey management with distribution context
-        return redirect(f'/surveys?action=distribute&survey={survey_id}&channel={channel or ""}')
-    else:
-        # Redirect to main survey management hub
-        return redirect('/surveys?tab=distribution')
+def survey_distribution_page():
+    """Survey delivery page with real survey data"""
+    try:
+        from models.survey_flask import SurveyFlask
+        
+        # Get available surveys for selection
+        surveys = db.session.query(SurveyFlask).order_by(SurveyFlask.created_at.desc()).all()
+        
+        # Prepare survey options
+        survey_options = []
+        for survey in surveys:
+            survey_options.append({
+                'id': survey.id,
+                'uuid': survey.uuid,
+                'title': survey.display_title,
+                'description': survey.display_description,
+                'status': survey.status,
+                'questions_count': len(survey.questions) if survey.questions else 0,
+                'public_url': survey.public_url,
+                'short_id': survey.short_id
+            })
+        
+        return render_template('survey_delivery_mvp.html',
+                             title='توزيع الاستطلاعات',
+                             surveys=survey_options)
+                             
+    except Exception as e:
+        logger.error(f"Error loading survey delivery page: {e}")
+        return render_template('survey_delivery_mvp.html',
+                             title='توزيع الاستطلاعات',
+                             surveys=[])
 
 @app.route('/surveys/responses')
 def survey_responses_page():
@@ -1184,6 +1205,77 @@ def get_survey_campaigns():
     except Exception as e:
         logger.error(f"Campaign listing failed: {e}")
         return jsonify({'error': 'Failed to fetch campaigns'}), 500
+
+@app.route('/api/surveys/create', methods=['POST'])
+def create_survey_from_builder():
+    """Create a new survey from builder data"""
+    try:
+        data = request.get_json() or {}
+        
+        # Validate required fields
+        if not data.get('title') and not data.get('title_ar'):
+            return jsonify({'error': 'عنوان الاستطلاع مطلوب'}), 400
+        
+        if not data.get('questions') or len(data['questions']) == 0:
+            return jsonify({'error': 'يجب إضافة سؤال واحد على الأقل'}), 400
+        
+        from models.survey_flask import SurveyFlask, QuestionFlask
+        from replit_auth import current_user
+        
+        # Create survey
+        survey = SurveyFlask(
+            title=data.get('title', ''),
+            title_ar=data.get('title_ar', ''),
+            description=data.get('description', ''),
+            description_ar=data.get('description_ar', ''),
+            created_by=current_user.id if current_user else 'anonymous',
+            status='draft'
+        )
+        
+        # Generate short ID for easy sharing
+        survey.generate_short_id()
+        
+        db.session.add(survey)
+        db.session.flush()  # Get survey ID
+        
+        # Create questions
+        for index, question_data in enumerate(data['questions']):
+            question = QuestionFlask(
+                survey_id=survey.id,
+                text=question_data.get('text', ''),
+                text_ar=question_data.get('text_ar', ''),
+                type=question_data.get('type', 'text'),
+                is_required=question_data.get('is_required', False),
+                order_index=index,
+                options=json.dumps(question_data.get('options', {})),
+                min_value=question_data.get('min_value'),
+                max_value=question_data.get('max_value'),
+                step_value=question_data.get('step_value')
+            )
+            db.session.add(question)
+        
+        db.session.commit()
+        
+        logger.info(f"Survey created successfully: {survey.uuid}")
+        
+        return jsonify({
+            'status': 'success',
+            'message': 'تم إنشاء الاستطلاع بنجاح',
+            'survey': {
+                'id': survey.id,
+                'uuid': str(survey.uuid),
+                'short_id': survey.short_id,
+                'title': survey.display_title,
+                'public_url': survey.public_url,
+                'status': survey.status,
+                'questions_count': len(data['questions'])
+            }
+        }), 201
+        
+    except Exception as e:
+        db.session.rollback()
+        logger.error(f"Error creating survey: {e}")
+        return jsonify({'error': f'خطأ في إنشاء الاستطلاع: {str(e)}'}), 500
 
 @app.route('/api/surveys/distribute', methods=['POST'])
 def distribute_survey():

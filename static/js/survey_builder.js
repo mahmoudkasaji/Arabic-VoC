@@ -836,15 +836,47 @@ async function saveSurvey() {
     
     try {
         console.log('Survey data to save:', surveyData);
-        alert('تم حفظ الاستطلاع بنجاح كمسودة');
         
-        if (confirm('هل تريد العودة إلى صفحة الاستطلاعات؟')) {
-            window.location.href = '/surveys';
+        // Show saving status
+        const saveBtn = document.querySelector('[onclick="saveSurvey()"]');
+        if (saveBtn) {
+            saveBtn.disabled = true;
+            saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>جاري الحفظ...';
+        }
+        
+        const response = await fetch('/api/surveys/create', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(surveyData)
+        });
+        
+        const result = await response.json();
+        
+        if (response.ok && result.status === 'success') {
+            alert(`تم حفظ الاستطلاع بنجاح!\n\nرابط الاستطلاع: ${window.location.origin}${result.survey.public_url}\nالرقم المختصر: ${result.survey.short_id}`);
+            
+            // Store survey info for potential use
+            window.savedSurvey = result.survey;
+            
+            if (confirm('هل تريد العودة إلى صفحة الاستطلاعات؟')) {
+                window.location.href = '/surveys';
+            }
+        } else {
+            throw new Error(result.error || 'خطأ في حفظ الاستطلاع');
         }
         
     } catch (error) {
         console.error('Error saving survey:', error);
         alert('خطأ في حفظ الاستطلاع: ' + error.message);
+    } finally {
+        // Reset save button
+        const saveBtn = document.querySelector('[onclick="saveSurvey()"]');
+        if (saveBtn) {
+            saveBtn.disabled = false;
+            saveBtn.innerHTML = '<i class="fas fa-save me-2"></i>حفظ الاستطلاع';
+        }
     }
 }
 
