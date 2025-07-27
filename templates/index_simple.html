@@ -354,7 +354,11 @@
                         </div>
 
                         <div id="successMessage" class="success-message">
-                            شكراً لك! تم إرسال ملاحظاتك بنجاح. نقدر وقتك ومساهمتك في تحسين المنصة.
+                            <div class="success-content">
+                                <i class="fas fa-check-circle" style="font-size: 48px; color: #10b981; margin-bottom: 16px;"></i>
+                                <h3 style="margin: 0 0 12px 0; color: #e2e8f0; font-size: 20px;">Thank you for sharing your feedback with us.</h3>
+                                <p style="margin: 0; color: #94a3b8; font-size: 14px;">Your input helps us improve the platform for everyone.</p>
+                            </div>
                         </div>
                     </form>
                 </div>
@@ -554,17 +558,23 @@
 
     .success-message {
         display: none;
-        background: #d1fae5;
+        background: #1e293b;
         border: 1px solid #10b981;
-        color: #065f46;
-        padding: 16px;
-        border-radius: 6px;
+        padding: 32px;
+        border-radius: 12px;
+        margin-top: 16px;
         text-align: center;
-        font-weight: 500;
+        min-height: 200px;
+        align-items: center;
+        justify-content: center;
     }
 
     .success-message.show {
-        display: block;
+        display: flex;
+    }
+
+    .success-content {
+        text-align: center;
     }
 
     @media (max-width: 768px) {
@@ -692,9 +702,12 @@
                     });
                     
                     if (response.ok) {
-                        // Show success message
-                        document.getElementById('feedbackSection').style.display = 'none';
-                        document.getElementById('successMessage').classList.add('show');
+                        // Hide the entire form and show success message
+                        const form = document.getElementById('footerFeedbackForm');
+                        const successMessage = document.getElementById('successMessage');
+                        
+                        form.style.display = 'none';
+                        successMessage.classList.add('show');
                         
                         // Track success
                         if (typeof gtag !== 'undefined') {
@@ -705,7 +718,16 @@
                             });
                         }
                         
-                        console.log('Footer feedback submitted successfully');
+                        console.log('✅ Footer feedback submitted successfully - showing thank you message');
+                        
+                        // Reset after 5 seconds to allow form reuse
+                        setTimeout(() => {
+                            successMessage.classList.remove('show');
+                            form.style.display = 'block';
+                            form.reset();
+                            document.getElementById('feedbackSection').classList.remove('show');
+                            console.log('🔄 Form reset and ready for new feedback');
+                        }, 5000);
                     } else {
                         throw new Error('Network response was not ok');
                     }
