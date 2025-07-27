@@ -25,16 +25,18 @@
             --border-color: #dee2e6;
         }
 
-        * {
+        /* Modern CSS Reset for Full Width Layout */
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
             box-sizing: border-box;
         }
 
         html, body {
             width: 100%;
-            max-width: 100%;
+            min-height: 100vh;
             margin: 0;
             padding: 0;
-            overflow-x: hidden;
         }
 
         body {
@@ -45,55 +47,69 @@
             text-align: right;
         }
 
+        /* Full width main container */
+        .main-wrapper {
+            width: 100%;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
         .builder-container {
             display: grid;
             grid-template-columns: 300px 1fr 350px;
             gap: 20px;
-            height: calc(100vh - 80px);
-            padding: 12px 6px;
+            flex: 1;
+            width: 100%;
             margin: 0;
-            width: 100vw;
-            max-width: 100vw;
+            padding: 20px;
         }
 
-        /* Responsive breakpoints for full-width utilization */
+        /* Mobile-first responsive breakpoints */
+        @media (min-width: 768px) {
+            .builder-container {
+                padding: 16px;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .builder-container {
+                padding: 20px;
+                gap: 24px;
+            }
+        }
+
+        @media (min-width: 1200px) {
+            .builder-container {
+                grid-template-columns: 280px 1fr 320px;
+                padding: 24px;
+                gap: 28px;
+            }
+        }
+
+        @media (min-width: 1400px) {
+            .builder-container {
+                grid-template-columns: 320px 1fr 350px;
+                padding: 28px;
+                gap: 32px;
+            }
+        }
+
+        @media (min-width: 1600px) {
+            .builder-container {
+                grid-template-columns: 350px 1fr 380px;
+                padding: 32px;
+                gap: 36px;
+            }
+        }
+
         @media (min-width: 1800px) {
             .builder-container {
                 grid-template-columns: 380px 1fr 420px;
-                gap: 28px;
-                padding: 16px 8px;
-            }
-        }
-
-        @media (min-width: 1600px) and (max-width: 1799px) {
-            .builder-container {
-                grid-template-columns: 350px 1fr 380px;
-                gap: 24px;
-                padding: 14px 6px;
-            }
-        }
-
-        @media (min-width: 1400px) and (max-width: 1599px) {
-            .builder-container {
-                grid-template-columns: 320px 1fr 350px;
-                gap: 22px;
-                padding: 12px 6px;
-            }
-        }
-
-        @media (min-width: 1200px) and (max-width: 1399px) {
-            .builder-container {
-                grid-template-columns: 280px 1fr 320px;
-                gap: 18px;
-                padding: 10px 4px;
-            }
-        }
-
-        @media (max-width: 1199px) and (min-width: 992px) {
-            .builder-container {
-                grid-template-columns: 260px 1fr 280px;
-                gap: 16px;
-                padding: 8px 4px;
+                padding: 36px;
+                gap: 40px;
             }
         }
 
@@ -1319,23 +1335,27 @@
             pointer-events: auto;
         }
 
-        @media (max-width: 1200px) {
+        @media (max-width: 767px) {
             .builder-container {
                 grid-template-columns: 1fr;
                 grid-template-rows: auto auto 1fr;
+                padding: 12px;
+                gap: 16px;
             }
             
             .sidebar {
                 height: auto;
+                max-height: 300px;
+                overflow-y: auto;
             }
         }
     </style>
 </head>
 <body>
-    {% include 'components/unified_navigation.html' %}
-
-
-    <div class="builder-container" id="builderContainer">
+    <div class="main-wrapper">
+        {% include 'components/unified_navigation.html' %}
+        
+        <div class="builder-container" id="builderContainer">
         <!-- Progressive Question Types Sidebar -->
         <div class="sidebar question-types-sidebar" id="questionTypesSidebar">
             <h5 class="mb-4">أنواع الأسئلة</h5>
@@ -2432,5 +2452,6 @@
             }, 3000);
         }
     </script>
+    </div> <!-- End main-wrapper -->
 </body>
 </html>
