@@ -52,8 +52,14 @@ def survey_builder():
 @require_login
 def enterprise_architecture():
     """Enterprise architecture visualization"""
-    from flask import render_template, send_from_directory
-    import os
+    from flask import send_from_directory
+    return send_from_directory('.', 'enterprise_architecture_visualization.html')
+
+# Public Architecture Visualization (no auth required)
+@app.route('/public/architecture')
+def public_enterprise_architecture():
+    """Public enterprise architecture visualization"""
+    from flask import send_from_directory
     return send_from_directory('.', 'enterprise_architecture_visualization.html')
 
 # Contacts Management Route
