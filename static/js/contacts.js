@@ -9,8 +9,14 @@ let contactGroups = [];
 
 // Initialize page
 document.addEventListener('DOMContentLoaded', function() {
-    loadContacts();
-    loadContactGroups();
+    // Add error handling for DOM operations
+    try {
+        loadContacts();
+        loadContactGroups();
+    } catch (error) {
+        console.error('Error initializing contacts page:', error);
+        showAlert('error', 'حدث خطأ في تحميل الصفحة');
+    }
 });
 
 // Load contacts from API
@@ -52,6 +58,10 @@ async function loadContactGroups() {
 // Render contacts table
 function renderContactsTable() {
     const tbody = document.getElementById('contactsTableBody');
+    if (!tbody) {
+        console.error('Contact table body not found');
+        return;
+    }
     
     if (filteredContacts.length === 0) {
         tbody.innerHTML = `
@@ -141,12 +151,20 @@ function renderContactsTable() {
 
 // Update contact count
 function updateContactCount() {
-    document.getElementById('contactCount').textContent = filteredContacts.length;
+    const countElement = document.getElementById('contactCount');
+    if (countElement) {
+        countElement.textContent = filteredContacts.length;
+    }
 }
 
 // Populate group filter
 function populateGroupFilter() {
     const groupFilter = document.getElementById('groupFilter');
+    if (!groupFilter) {
+        console.error('Group filter element not found');
+        return;
+    }
+    
     groupFilter.innerHTML = '<option value="">جميع المجموعات</option>';
     
     contactGroups.forEach(group => {
@@ -462,8 +480,13 @@ function showAlert(type, message) {
 }
 
 // Search on Enter key
-document.getElementById('searchContacts').addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') {
-        searchContacts();
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('searchContacts');
+    if (searchInput) {
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchContacts();
+            }
+        });
     }
 });
