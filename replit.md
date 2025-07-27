@@ -206,9 +206,11 @@ A multi-channel feedback processing platform with Arabic language support, built
   - Two distinct user flows: positive feedback (suggestions, compliments, features) vs negative feedback (confusing, broken, missing info)
   - Self-contained styling with dark theme matching existing footer design
   - Form validation and error handling with Arabic language support
-  - Backend integration via existing `/api/feedback/widget` endpoint with FOOTER_WIDGET channel
+  - Backend integration via direct Flask route `/feedback-widget` with FormData submission (converted from API for better embedded form experience)
+  - Direct database storage using unified Feedback model with 'widget' channel
   - Debug logging for troubleshooting and user experience optimization
 - **User Experience**: No popups or interruptions, always accessible, smooth animations, mobile responsive
+- **Post-Submission Behavior**: Form completely disappears and shows persistent thank you message until page reload (no auto-reset)
 - **Distribution Integration**: Added to survey delivery system as embeddable widget option alongside sidebar feedback widget
 
 ### Persistent Feedback Widget Implementation Complete (July 27, 2025)

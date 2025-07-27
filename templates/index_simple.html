@@ -717,16 +717,7 @@
                             });
                         }
                         
-                        console.log('✅ Footer feedback submitted successfully - showing thank you message');
-                        
-                        // Reset after 5 seconds to allow form reuse
-                        setTimeout(() => {
-                            successMessage.classList.remove('show');
-                            form.style.display = 'block';
-                            document.getElementById('footerFeedbackForm').reset();
-                            document.getElementById('feedbackSection').classList.remove('show');
-                            console.log('🔄 Form reset and ready for new feedback');
-                        }, 5000);
+                        console.log('✅ Footer feedback submitted successfully - thank you message will persist until page reload');
                     } else {
                         // Handle non-200 responses
                         const errorText = await response.text();
