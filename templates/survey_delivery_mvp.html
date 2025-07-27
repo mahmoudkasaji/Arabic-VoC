@@ -3,6 +3,66 @@
 <head>
     {% include 'components/head.html' %}
     <title>Survey Delivery - Voice of Customer Platform</title>
+    
+    <style>
+        .code-textarea {
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+        }
+        
+        .javascript-code-section {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+        
+        .preview-container {
+            background: linear-gradient(45deg, #f8f9fa 25%, transparent 25%), 
+                        linear-gradient(-45deg, #f8f9fa 25%, transparent 25%), 
+                        linear-gradient(45deg, transparent 75%, #f8f9fa 75%), 
+                        linear-gradient(-45deg, transparent 75%, #f8f9fa 75%);
+            background-size: 10px 10px;
+            background-position: 0 0, 0 5px, 5px -5px, -5px 0px;
+        }
+        
+        .distribution-card {
+            background: #fff;
+            border: 1px solid #dee2e6;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: transform 0.2s ease;
+        }
+        
+        .distribution-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+        
+        .distribution-header {
+            padding: 20px 20px 10px;
+            border-bottom: 1px solid #f1f3f4;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .distribution-header i {
+            font-size: 1.5rem;
+        }
+        
+        .distribution-header h4 {
+            margin: 0;
+            color: #2c3e50;
+        }
+        
+        .distribution-body {
+            padding: 20px;
+        }
+    </style>
 </head>
 <body>
     {% include 'components/unified_navigation.html' %}
@@ -235,6 +295,78 @@
                             </button>
                             <button class="btn btn-outline-info-custom w-100" onclick="downloadQR()" style="display: none;" id="downloadQRBtn">
                                 <i class="fas fa-download me-2"></i>تحميل الرمز
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- JavaScript Embed Widget -->
+                <div class="col-lg-12 mb-4">
+                    <div class="distribution-card">
+                        <div class="distribution-header">
+                            <i class="fas fa-code text-warning"></i>
+                            <h4>أداة قابلة للتضمين</h4>
+                        </div>
+                        <div class="distribution-body">
+                            <p class="text-muted mb-3">أنشئ كود JavaScript لتضمين الاستطلاع في موقع ويب آخر</p>
+                            
+                            <!-- Widget Configuration -->
+                            <div class="row mb-3">
+                                <div class="col-md-4">
+                                    <label class="form-label">موضع الأداة</label>
+                                    <select class="form-select" id="widgetPosition">
+                                        <option value="bottom-right">أسفل اليمين</option>
+                                        <option value="bottom-left" selected>أسفل اليسار (عربي)</option>
+                                        <option value="center">وسط الصفحة</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">لون الأداة</label>
+                                    <select class="form-select" id="widgetColor">
+                                        <option value="blue">أزرق</option>
+                                        <option value="green">أخضر</option>
+                                        <option value="orange" selected>برتقالي</option>
+                                        <option value="purple">بنفسجي</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">لغة الأداة</label>
+                                    <select class="form-select" id="widgetLanguage">
+                                        <option value="ar" selected>العربية</option>
+                                        <option value="en">English</option>
+                                        <option value="auto">تلقائي</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <!-- Generated JavaScript Code -->
+                            <div class="javascript-code-section" id="jsCodeSection" style="display: none;">
+                                <label class="form-label fw-bold">كود JavaScript للتضمين:</label>
+                                <div class="position-relative">
+                                    <textarea class="form-control code-textarea" id="javascriptCode" readonly rows="8"></textarea>
+                                    <button class="btn btn-sm btn-outline-secondary position-absolute top-0 end-0 m-2" onclick="copyJSCode()">
+                                        <i class="fas fa-copy"></i> نسخ
+                                    </button>
+                                </div>
+                                <small class="text-muted mt-2 d-block">
+                                    <i class="fas fa-info-circle me-1"></i>
+                                    انسخ هذا الكود والصقه في أي صفحة HTML لإظهار أداة الاستطلاع
+                                </small>
+                            </div>
+                            
+                            <!-- Preview Section -->
+                            <div class="widget-preview-section mt-3" id="previewSection" style="display: none;">
+                                <label class="form-label fw-bold">معاينة الأداة:</label>
+                                <div class="preview-container border rounded p-3 bg-light position-relative" style="height: 200px;">
+                                    <div class="preview-widget" id="previewWidget">
+                                        <!-- Widget preview will appear here -->
+                                    </div>
+                                    <small class="text-muted">معاينة تفاعلية للأداة كما ستظهر في الموقع</small>
+                                </div>
+                            </div>
+                            
+                            <button class="btn btn-warning w-100 mt-3" onclick="generateJSWidget()">
+                                <i class="fas fa-code me-2"></i>إنشاء كود التضمين
                             </button>
                         </div>
                     </div>
@@ -504,6 +636,131 @@
         
         resultsSection.style.display = 'block';
         resultsSection.scrollIntoView({ behavior: 'smooth' });
+    }
+    
+    // Generate JavaScript Widget
+    function generateJSWidget() {
+        if (!generatedSurveyUrl) {
+            alert('يرجى إنشاء رابط الاستطلاع أولاً');
+            return;
+        }
+        
+        const position = document.getElementById('widgetPosition').value;
+        const color = document.getElementById('widgetColor').value;
+        const language = document.getElementById('widgetLanguage').value;
+        
+        // Color mapping
+        const colorMap = {
+            blue: '#007bff',
+            green: '#28a745', 
+            orange: '#fd7e14',
+            purple: '#6f42c1'
+        };
+        
+        // Generate the embeddable JavaScript code
+        const jsCode = `<!-- Voice of Customer Survey Widget -->
+<script>
+(function() {
+    // Widget Configuration
+    var config = {
+        surveyUrl: '${generatedSurveyUrl}',
+        position: '${position}',
+        color: '${colorMap[color]}',
+        language: '${language}'
+    };
+    
+    // Create widget
+    function createWidget() {
+        var widget = document.createElement('div');
+        widget.id = 'voc-survey-widget';
+        widget.style.position = 'fixed';
+        widget.style.zIndex = '9999';
+        widget.style.fontFamily = 'Arial, sans-serif';
+        
+        // Position the widget
+        if (config.position === 'bottom-right') {
+            widget.style.bottom = '20px';
+            widget.style.right = '20px';
+        } else if (config.position === 'bottom-left') {
+            widget.style.bottom = '20px';
+            widget.style.left = '20px';
+        } else {
+            widget.style.top = '50%';
+            widget.style.left = '50%';
+            widget.style.transform = 'translate(-50%, -50%)';
+        }
+        
+        // Widget HTML
+        var isArabic = config.language === 'ar' || (config.language === 'auto' && document.documentElement.lang === 'ar');
+        var triggerText = isArabic ? 'رأيك' : 'Feedback';
+        var direction = isArabic ? 'rtl' : 'ltr';
+        
+        widget.innerHTML = '<button id="voc-trigger" style="' +
+            'background: ' + config.color + '; color: white; border: none; ' +
+            'padding: 12px 20px; border-radius: 25px; cursor: pointer; ' +
+            'box-shadow: 0 4px 12px rgba(0,0,0,0.2); font-size: 14px; ' +
+            'direction: ' + direction + ';">' + triggerText + '</button>';
+        
+        document.body.appendChild(widget);
+        
+        // Click handler
+        document.getElementById('voc-trigger').onclick = function() {
+            window.open(config.surveyUrl, '_blank', 'width=600,height=700');
+        };
+    }
+    
+    // Initialize when DOM is ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', createWidget);
+    } else {
+        createWidget();
+    }
+})();
+</script>`;
+        
+        // Display the code
+        document.getElementById('javascriptCode').value = jsCode;
+        document.getElementById('jsCodeSection').style.display = 'block';
+        document.getElementById('previewSection').style.display = 'block';
+        
+        // Generate preview
+        generatePreview(position, colorMap[color], language);
+        
+        showNotification('تم إنشاء كود التضمين بنجاح!', 'success');
+    }
+    
+    // Generate widget preview
+    function generatePreview(position, color, language) {
+        const isArabic = language === 'ar';
+        const triggerText = isArabic ? 'رأيك' : 'Feedback';
+        const direction = isArabic ? 'rtl' : 'ltr';
+        
+        let previewStyle = 'position: absolute; ';
+        if (position === 'bottom-right') {
+            previewStyle += 'bottom: 10px; right: 10px;';
+        } else if (position === 'bottom-left') {
+            previewStyle += 'bottom: 10px; left: 10px;';
+        } else {
+            previewStyle += 'top: 50%; left: 50%; transform: translate(-50%, -50%);';
+        }
+        
+        document.getElementById('previewWidget').innerHTML = `
+            <button style="${previewStyle} background: ${color}; color: white; border: none; 
+                          padding: 12px 20px; border-radius: 25px; cursor: pointer; 
+                          box-shadow: 0 4px 12px rgba(0,0,0,0.2); font-size: 14px; 
+                          direction: ${direction};" 
+                    onclick="alert('${isArabic ? 'معاينة: سيفتح الاستطلاع في نافذة جديدة' : 'Preview: Survey would open in new window'}')">
+                ${triggerText}
+            </button>
+        `;
+    }
+    
+    // Copy JavaScript code to clipboard
+    function copyJSCode() {
+        const codeTextarea = document.getElementById('javascriptCode');
+        codeTextarea.select();
+        document.execCommand('copy');
+        showNotification('تم نسخ الكود بنجاح!', 'success');
     }
     
     // Show notification
