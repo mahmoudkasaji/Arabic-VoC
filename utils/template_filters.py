@@ -16,3 +16,4 @@ def from_json(value):
 def register_filters(app):
     """Register custom template filters"""
     app.jinja_env.filters['from_json'] = from_json
+    app.jinja_env.filters['fromjson'] = from_json  # Alias for template compatibility

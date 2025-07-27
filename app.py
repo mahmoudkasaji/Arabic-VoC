@@ -423,7 +423,6 @@ def survey_distribution_page():
                              surveys=[])
 
 @app.route('/response/<uuid>')
-@login_required
 def response_detail(uuid):
     """Individual response detail page"""
     try:
@@ -433,8 +432,9 @@ def response_detail(uuid):
         response = ResponseFlask.query.filter_by(uuid=uuid).first()
         
         if not response:
-            flash('لم يتم العثور على الاستجابة المطلوبة', 'error')
-            return redirect(url_for('survey_responses_page'))
+            return render_template('response_detail.html', 
+                                 response=None, 
+                                 page_title='الاستجابة غير موجودة'), 404
         
         logger.info(f"Loading response detail for UUID: {uuid}")
         
@@ -444,8 +444,10 @@ def response_detail(uuid):
         
     except Exception as e:
         logger.error(f"Error loading response detail {uuid}: {e}")
-        flash('حدث خطأ في تحميل تفاصيل الاستجابة', 'error')
-        return redirect(url_for('survey_responses_page'))
+        return render_template('response_detail.html', 
+                             response=None, 
+                             page_title='خطأ في التحميل',
+                             error=str(e)), 500
 
 @app.route('/surveys/responses')
 def survey_responses_page():
