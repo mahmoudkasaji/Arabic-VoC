@@ -19,35 +19,57 @@ def edit_contact(contact_id):
     import logging
     
     logger = logging.getLogger(__name__)
-    logger.info(f"Edit contact route called for contact_id: {contact_id}")
-    logger.info(f"Form data received: {dict(request.form)}")
-    
-    contact = Contact.query.get_or_404(contact_id)
-    logger.info(f"Found contact: {contact.name} ({contact.email})")
-    
-    # Update contact fields from form
-    contact.name = request.form.get('name', '').strip()
-    contact.email = request.form.get('email', '').strip() or None
-    contact.phone = request.form.get('phone', '').strip() or None
-    contact.company = request.form.get('company', '').strip() or None
-    contact.language_preference = request.form.get('language_preference', 'ar')
-    contact.is_active = request.form.get('is_active') == 'true'
-    contact.email_opt_in = request.form.get('email_opt_in') == 'on'
-    contact.sms_opt_in = request.form.get('sms_opt_in') == 'on'
-    contact.whatsapp_opt_in = request.form.get('whatsapp_opt_in') == 'on'
-    contact.notes = request.form.get('notes', '').strip() or None
+    logger.info(f"=== EDIT CONTACT ROUTE START ===")
+    logger.info(f"Contact ID: {contact_id}")
+    logger.info(f"Request method: {request.method}")
+    logger.info(f"Form data: {dict(request.form)}")
+    logger.info(f"Request headers: {dict(request.headers)}")
     
     try:
-        db.session.commit()
-        logger.info(f"Contact {contact_id} updated successfully: {contact.name}")
-        flash('تم تحديث جهة الاتصال بنجاح', 'success')
-    except Exception as e:
-        db.session.rollback()
-        logger.error(f"Error updating contact {contact_id}: {e}")
-        flash('حدث خطأ في تحديث جهة الاتصال', 'error')
+        contact = Contact.query.get_or_404(contact_id)
+        logger.info(f"Found contact: {contact.name} ({contact.email})")
+        
+        # Store original values for logging
+        original_name = contact.name
+        original_email = contact.email
     
-    logger.info("Redirecting back to contacts page")
-    return redirect(url_for('contacts_page'))
+        # Update contact fields from form
+        contact.name = request.form.get('name', '').strip() or contact.name
+        contact.email = request.form.get('email', '').strip() or None
+        contact.phone = request.form.get('phone', '').strip() or None
+        contact.company = request.form.get('company', '').strip() or None
+        contact.language_preference = request.form.get('language_preference', 'ar')
+        contact.is_active = request.form.get('is_active') == 'true'
+        contact.email_opt_in = request.form.get('email_opt_in') == 'on'
+        contact.sms_opt_in = request.form.get('sms_opt_in') == 'on'
+        contact.whatsapp_opt_in = request.form.get('whatsapp_opt_in') == 'on'
+        contact.notes = request.form.get('notes', '').strip() or None
+        
+        logger.info(f"Updated values - Name: {original_name} -> {contact.name}")
+        logger.info(f"Updated values - Email: {original_email} -> {contact.email}")
+        
+        # Validate required fields
+        if not contact.name:
+            flash('اسم جهة الاتصال مطلوب', 'error')
+            return redirect(url_for('contacts_page'))
+    
+        try:
+            db.session.commit()
+            logger.info(f"SUCCESS: Contact {contact_id} updated successfully")
+            logger.info(f"Final values - Name: {contact.name}, Email: {contact.email}")
+            flash('تم تحديث جهة الاتصال بنجاح', 'success')
+        except Exception as e:
+            db.session.rollback()
+            logger.error(f"DATABASE ERROR: Failed to update contact {contact_id}: {e}")
+            flash('حدث خطأ في تحديث جهة الاتصال', 'error')
+        
+        logger.info("=== REDIRECTING TO CONTACTS PAGE ===")
+        return redirect(url_for('contacts_page'))
+        
+    except Exception as e:
+        logger.error(f"CRITICAL ERROR in edit_contact: {e}")
+        flash('حدث خطأ غير متوقع', 'error')
+        return redirect(url_for('contacts_page'))
 
 # Contact Create Route
 @app.route('/contacts/create', methods=['GET', 'POST'])
