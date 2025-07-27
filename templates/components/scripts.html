@@ -18,21 +18,92 @@
 <!-- Fix dropdown initialization -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize Bootstrap components
-    if (typeof bootstrap !== 'undefined') {
-        // Initialize dropdowns
-        var dropdownElementList = [].slice.call(document.querySelectorAll('.dropdown-toggle'));
-        var dropdownList = dropdownElementList.map(function (dropdownToggleEl) {
-            return new bootstrap.Dropdown(dropdownToggleEl);
-        });
-        
-        // Initialize tooltips if they exist
-        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-            return new bootstrap.Tooltip(tooltipTriggerEl);
-        });
+    console.log('🔧 Initializing Bootstrap components...');
+    
+    // Initialize Bootstrap components with error handling
+    try {
+        if (typeof bootstrap !== 'undefined') {
+            console.log('✅ Bootstrap found, initializing dropdowns...');
+            
+            // Initialize dropdowns with explicit options
+            var dropdownElementList = [].slice.call(document.querySelectorAll('.dropdown-toggle'));
+            console.log(`Found ${dropdownElementList.length} dropdown toggles`);
+            
+            var dropdownList = dropdownElementList.map(function (dropdownToggleEl) {
+                try {
+                    return new bootstrap.Dropdown(dropdownToggleEl, {
+                        boundary: 'viewport',
+                        display: 'dynamic'
+                    });
+                } catch (e) {
+                    console.error('Error initializing dropdown:', e);
+                    return null;
+                }
+            }).filter(dropdown => dropdown !== null);
+            
+            console.log(`✅ Initialized ${dropdownList.length} dropdowns successfully`);
+            
+            // Initialize tooltips if they exist
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                try {
+                    return new bootstrap.Tooltip(tooltipTriggerEl);
+                } catch (e) {
+                    console.error('Error initializing tooltip:', e);
+                    return null;
+                }
+            }).filter(tooltip => tooltip !== null);
+            
+            console.log(`✅ Initialized ${tooltipList.length} tooltips successfully`);
+        } else {
+            console.error('❌ Bootstrap not found!');
+            // Fallback: Initialize manual dropdown functionality
+            initManualDropdowns();
+        }
+    } catch (error) {
+        console.error('❌ Error initializing Bootstrap components:', error);
+        // Fallback: Initialize manual dropdown functionality
+        initManualDropdowns();
     }
 });
+
+// Manual dropdown functionality as fallback
+function initManualDropdowns() {
+    console.log('🔄 Initializing manual dropdown fallback...');
+    
+    const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
+    
+    dropdownToggles.forEach(toggle => {
+        toggle.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            // Close all other dropdowns first
+            document.querySelectorAll('.dropdown-menu').forEach(menu => {
+                if (menu !== this.nextElementSibling) {
+                    menu.classList.remove('show');
+                }
+            });
+            
+            // Toggle current dropdown
+            const dropdownMenu = this.nextElementSibling;
+            if (dropdownMenu && dropdownMenu.classList.contains('dropdown-menu')) {
+                dropdownMenu.classList.toggle('show');
+            }
+        });
+    });
+    
+    // Close dropdowns when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.dropdown')) {
+            document.querySelectorAll('.dropdown-menu.show').forEach(menu => {
+                menu.classList.remove('show');
+            });
+        }
+    });
+    
+    console.log(`✅ Manual dropdown fallback initialized for ${dropdownToggles.length} toggles`);
+}
 </script>
 
 <!-- Feedback Widget Initialization (for authenticated users) -->
