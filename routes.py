@@ -92,12 +92,16 @@ def edit_contact(contact_id):
     return redirect(url_for('contacts'))
 
 # Contact Create Route
-@app.route('/contacts/create', methods=['POST'])
+@app.route('/contacts/create', methods=['GET', 'POST'])
 @require_login
 def create_contact():
     """Handle contact creation form submission"""
     from flask import request, redirect, url_for, flash
     from models.contacts import Contact
+    
+    # If GET request, redirect to contacts page
+    if request.method == 'GET':
+        return redirect(url_for('contacts'))
     
     # Create new contact from form data
     contact = Contact(
