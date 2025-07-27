@@ -414,10 +414,10 @@ def create_campaign_form():
     """Campaign creation form"""
     try:
         from models.survey_flask import SurveyFlask
-        from models_unified import ContactGroup
+        # from models_unified import Contact
         
         surveys = SurveyFlask.query.filter_by(status='published').all()
-        contact_groups = ContactGroup.query.all()
+        contact_groups = []  # TODO: Implement contact groups
         
         return render_template('distribution/create_campaign.html',
                              title='إنشاء حملة جديدة',

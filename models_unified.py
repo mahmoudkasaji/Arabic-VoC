@@ -71,6 +71,19 @@ class FeedbackStatus(str, enum.Enum):
     FAILED = "failed"
     ARCHIVED = "archived"
 
+class Contact(Base):
+    """Contact model for distribution system"""
+    __tablename__ = 'contacts'
+    
+    id = Column(Integer, primary_key=True)
+    email = Column(String(255), nullable=False)
+    first_name = Column(String(100))
+    last_name = Column(String(100))
+    phone = Column(String(20))
+    preferred_language = Column(String(10), default='ar')
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
 class Feedback(Base):
     """
     Main feedback model with Arabic text support
