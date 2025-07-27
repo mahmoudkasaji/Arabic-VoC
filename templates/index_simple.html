@@ -452,7 +452,7 @@
                 </div>
             </div>
             <div class="survey-footer-actions">
-                <a href="/surveys/builder" class="survey-footer-btn" onclick="trackDemoSurveyClick()">
+                <a href="/s/nlxjb7kn" target="_blank" class="survey-footer-btn" onclick="trackDemoSurveyClick()">
                     ابدأ الآن
                 </a>
                 <button class="survey-footer-close" onclick="closeDemoSurveyBanner()">
@@ -497,11 +497,12 @@
             };
             
             window.trackDemoSurveyClick = function() {
-                console.log('Demo survey banner clicked - redirecting to survey builder');
+                console.log('Demo survey banner clicked - opening web survey');
                 // Track demo survey click
                 if (typeof gtag !== 'undefined') {
                     gtag('event', 'demo_survey_banner_clicked', {
-                        'source': 'homepage'
+                        'source': 'homepage',
+                        'survey_id': 'nlxjb7kn'
                     });
                 }
             };
