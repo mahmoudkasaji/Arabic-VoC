@@ -153,7 +153,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px 24px 16px;
+    padding: 16px 24px 12px;
     border-bottom: 1px solid #f0f0f0;
     flex-shrink: 0;
 }
@@ -182,30 +182,36 @@
 }
 
 .feedback-modal-body {
-    padding: 24px;
+    padding: 20px 24px;
     flex: 1;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    max-height: calc(100vh - 80px);
 }
 
 /* Form container */
 .feedback-form {
     display: flex;
     flex-direction: column;
-    height: 100%;
-    gap: 20px;
+    width: 100%;
+    max-width: 360px;
+    gap: 18px;
+    justify-content: center;
+    min-height: calc(100vh - 120px);
 }
 
 /* Submit button area */
 .feedback-submit {
-    margin-top: auto;
-    padding-bottom: 10px;
+    margin-top: 8px;
 }
 
 /* Quick Rating Section */
 .feedback-rating {
-    margin-bottom: 20px;
+    margin-bottom: 16px;
+    text-align: center;
 }
 
 .feedback-rating-label {
@@ -244,7 +250,8 @@
 
 /* Category Selection */
 .feedback-category {
-    margin-bottom: 20px;
+    margin-bottom: 16px;
+    text-align: center;
 }
 
 .category-buttons {
@@ -283,7 +290,8 @@
 
 /* Comment Section */
 .feedback-comment {
-    margin-bottom: 20px;
+    margin-bottom: 12px;
+    text-align: center;
 }
 
 .feedback-textarea {
