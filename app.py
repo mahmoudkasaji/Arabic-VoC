@@ -361,8 +361,8 @@ def surveys_unified_hub():
                              
     except Exception as e:
         logger.error(f"Error loading surveys: {e}")
-        return render_template('surveys.html',
-                             title='إدارة الاستطلاعات',
+        return render_template('surveys_unified.html',
+                             title='مركز إدارة الاستطلاعات',
                              surveys=[],
                              stats={'total_surveys': 0, 'active_surveys': 0, 'total_responses': 0, 'avg_completion_rate': 0})
 
@@ -372,6 +372,7 @@ def surveys_unified_hub():
 
 # Simplified survey routes
 @app.route('/surveys/create')
+@app.route('/surveys/builder')
 @app.route('/survey-builder')
 def survey_create_page():
     """Survey creation page"""

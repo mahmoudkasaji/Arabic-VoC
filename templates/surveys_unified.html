@@ -1,768 +1,534 @@
-{% extends 'components/base.html' %}
-
-{% block head %}
+<!DOCTYPE html>
+<html lang="{{ get_language_info().code }}" dir="{{ get_language_info().direction }}">
+<head>
+    {% include 'components/head.html' %}
+    <title>{{ title }} - Voice of Customer Platform</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/unified-layout.css') }}">
 <style>
-    .survey-hub-container {
-        max-width: 1400px;
-        margin: 0 auto;
-        padding: 2rem 1rem;
-    }
-    
-    .hub-header {
-        background: linear-gradient(135deg, #2E8B57 0%, #3cb371 100%);
-        color: white;
-        padding: 2rem;
-        border-radius: 16px;
-        margin-bottom: 2rem;
-        text-align: center;
-    }
-    
-    .hub-tabs {
-        background: white;
-        border-radius: 12px;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        margin-bottom: 2rem;
-        overflow: hidden;
-    }
-    
-    .tab-nav {
-        display: flex;
-        background: #f8f9fa;
-        border-bottom: 1px solid #dee2e6;
-    }
-    
-    .tab-nav button {
-        flex: 1;
-        padding: 1rem 2rem;
-        border: none;
-        background: transparent;
-        font-size: 1.1rem;
-        font-weight: 600;
-        color: #6c757d;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        position: relative;
-    }
-    
-    .tab-nav button.active {
-        color: #2E8B57;
-        background: white;
-        box-shadow: 0 -2px 0 #2E8B57 inset;
-    }
-    
-    .tab-nav button:hover:not(.active) {
-        background: #e9ecef;
-        color: #495057;
-    }
-    
-    .tab-content {
-        padding: 2rem;
-        min-height: 600px;
-    }
-    
-    .tab-panel {
-        display: none;
-    }
-    
-    .tab-panel.active {
-        display: block;
-    }
-    
-    .dashboard-stats {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 1.5rem;
-        margin-bottom: 2rem;
-    }
-    
-    .stat-card {
-        background: white;
-        padding: 1.5rem;
-        border-radius: 12px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-        border-left: 4px solid #2E8B57;
-        transition: transform 0.2s ease;
-    }
-    
-    .stat-card:hover {
-        transform: translateY(-2px);
-    }
-    
-    .stat-number {
-        font-size: 2.5rem;
-        font-weight: 700;
-        color: #2E8B57;
-        margin-bottom: 0.5rem;
-    }
-    
-    .stat-label {
-        color: #6c757d;
-        font-size: 0.9rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-    
-    .survey-card {
-        background: white;
-        border-radius: 12px;
-        padding: 1.5rem;
-        margin-bottom: 1rem;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-        border: 1px solid #f1f3f4;
-        transition: all 0.3s ease;
-    }
-    
-    .survey-card:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(0,0,0,0.12);
-    }
-    
-    .survey-header {
-        display: flex;
-        justify-content: between;
-        align-items: flex-start;
-        margin-bottom: 1rem;
-    }
-    
-    .survey-title {
-        font-size: 1.25rem;
-        font-weight: 600;
-        color: #2c3e50;
-        margin: 0;
-        flex-grow: 1;
-    }
-    
-    .survey-status {
-        padding: 0.25rem 0.75rem;
-        border-radius: 20px;
-        font-size: 0.8rem;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-    
-    .survey-status.published {
-        background: #d4edda;
-        color: #155724;
-    }
-    
-    .survey-status.draft {
-        background: #fff3cd;
-        color: #856404;
-    }
-    
-    .survey-status.paused {
-        background: #f8d7da;
-        color: #721c24;
-    }
-    
-    .survey-metrics {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-        gap: 1rem;
-        margin: 1rem 0;
-        padding: 1rem;
-        background: #f8f9fa;
-        border-radius: 8px;
-    }
-    
-    .metric-item {
-        text-align: center;
-    }
-    
-    .metric-value {
-        font-size: 1.5rem;
-        font-weight: 700;
-        color: #2E8B57;
-    }
-    
-    .metric-label {
-        font-size: 0.8rem;
-        color: #6c757d;
-        margin-top: 0.25rem;
-    }
-    
-    .survey-actions {
-        display: flex;
-        gap: 0.5rem;
-        flex-wrap: wrap;
-        justify-content: flex-end;
-        margin-top: 1rem;
-        padding-top: 1rem;
-        border-top: 1px solid #e9ecef;
-    }
-    
-    .action-btn {
-        padding: 0.5rem 1rem;
-        border: 1px solid #dee2e6;
-        border-radius: 6px;
-        background: white;
-        color: #495057;
-        text-decoration: none;
-        font-size: 0.9rem;
-        font-weight: 500;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-    
-    .action-btn:hover {
-        background: #f8f9fa;
-        color: #2E8B57;
-        border-color: #2E8B57;
-        text-decoration: none;
-    }
-    
-    .action-btn.primary {
-        background: #2E8B57;
-        color: white;
-        border-color: #2E8B57;
-    }
-    
-    .action-btn.primary:hover {
-        background: #267347;
-        color: white;
-    }
-    
-    .distribution-panel {
-        background: #f8f9fa;
-        border-radius: 8px;
-        padding: 1.5rem;
-        margin-top: 1rem;
-        display: none;
-    }
-    
-    .distribution-panel.active {
-        display: block;
-    }
-    
-    .quick-share-options {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 1rem;
-        margin-bottom: 2rem;
-    }
-    
-    .share-option {
-        background: white;
-        padding: 1rem;
-        border-radius: 8px;
-        border: 1px solid #dee2e6;
-        text-align: center;
-        cursor: pointer;
-        transition: all 0.2s ease;
-    }
-    
-    .share-option:hover {
-        border-color: #2E8B57;
-        background: #f0f8f4;
-    }
-    
-    .share-icon {
-        font-size: 2rem;
-        color: #2E8B57;
-        margin-bottom: 0.5rem;
-    }
-    
-    .modal-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(0,0,0,0.5);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 1050;
-    }
-    
-    .modal-content {
-        background: white;
-        border-radius: 12px;
-        padding: 2rem;
-        max-width: 600px;
-        width: 90%;
-        max-height: 80vh;
-        overflow-y: auto;
-    }
-    
-    .loading-spinner {
-        display: inline-block;
-        width: 20px;
-        height: 20px;
-        border: 2px solid #f3f3f3;
-        border-top: 2px solid #2E8B57;
-        border-radius: 50%;
-        animation: spin 1s linear infinite;
-    }
-    
-    @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-    }
-    
-    .notification {
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        padding: 1rem 1.5rem;
-        border-radius: 8px;
-        color: white;
-        font-weight: 500;
-        z-index: 1100;
-        animation: slideIn 0.3s ease;
-    }
-    
-    .notification.success {
-        background: #28a745;
-    }
-    
-    .notification.error {
-        background: #dc3545;
-    }
-    
-    @keyframes slideIn {
-        from { transform: translateX(100%); opacity: 0; }
-        to { transform: translateX(0); opacity: 1; }
-    }
-    
-    @media (max-width: 768px) {
-        .survey-hub-container {
-            padding: 1rem 0.5rem;
-        }
-        
-        .tab-nav {
-            flex-direction: column;
-        }
-        
-        .survey-actions {
-            justify-content: center;
-        }
-        
-        .quick-share-options {
-            grid-template-columns: 1fr;
-        }
-    }
-</style>
-{% endblock %}
+/* Unified Survey Hub Styles */
+.survey-hub-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem;
+}
 
-{% block content %}
+.tab-navigation {
+    display: flex;
+    border-bottom: 2px solid #e2e8f0;
+    margin-bottom: 2rem;
+    gap: 1rem;
+}
+
+.tab-button {
+    padding: 1rem 2rem;
+    background: none;
+    border: none;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #64748b;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.tab-button.active {
+    color: #3b82f6;
+}
+
+.tab-button.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: #3b82f6;
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+.dashboard-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    border: 1px solid #e2e8f0;
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 0.5rem;
+}
+
+.stat-label {
+    color: #64748b;
+    font-size: 0.9rem;
+}
+
+.survey-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+
+.survey-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    border: 1px solid #e2e8f0;
+    transition: all 0.3s ease;
+}
+
+.survey-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+}
+
+.survey-header {
+    display: flex;
+    justify-content: between;
+    align-items: start;
+    margin-bottom: 1rem;
+}
+
+.survey-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 0.5rem;
+}
+
+.survey-meta {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+    color: #64748b;
+}
+
+.survey-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.btn-unified {
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    border: none;
+}
+
+.btn-primary {
+    background: #3b82f6;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #2563eb;
+    color: white;
+}
+
+.btn-success {
+    background: #10b981;
+    color: white;
+}
+
+.btn-success:hover {
+    background: #059669;
+    color: white;
+}
+
+.btn-outline {
+    background: transparent;
+    color: #64748b;
+    border: 1px solid #e2e8f0;
+}
+
+.btn-outline:hover {
+    background: #f8fafc;
+    color: #1e293b;
+}
+
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.status-published {
+    background: #dcfce7;
+    color: #16a34a;
+}
+
+.status-draft {
+    background: #fef3c7;
+    color: #d97706;
+}
+
+.quick-actions {
+    margin-top: 2rem;
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.create-new-card {
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+    color: white;
+    border-radius: 12px;
+    padding: 2rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+    width: 100%;
+    max-width: 350px;
+}
+
+.create-new-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(59, 130, 246, 0.3);
+}
+
+.create-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.create-title {
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.create-subtitle {
+    font-size: 0.9rem;
+    opacity: 0.9;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 3rem;
+    color: #64748b;
+}
+
+.empty-state i {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    color: #cbd5e1;
+}
+</style>
+</head>
+<body>
+    {% include 'components/unified_navigation.html' %}
 <div class="survey-hub-container">
-    <div class="hub-header">
-        <h1>مركز إدارة الاستطلاعات</h1>
-        <p>إدارة شاملة للاستطلاعات والتوزيع والتحليلات</p>
+    <!-- Page Header -->
+    <div class="page-header mb-4">
+        <h1 class="page-title">مركز إدارة الاستطلاعات</h1>
+        <p class="page-subtitle">إدارة شاملة - إنشاء، توزيع، تحليل</p>
     </div>
-    
-    <div class="hub-tabs">
-        <div class="tab-nav">
-            <button class="tab-button active" data-tab="builder">
-                <i class="fas fa-tools me-2"></i>منشئ الاستطلاعات
-            </button>
-            <button class="tab-button" data-tab="management">
-                <i class="fas fa-tasks me-2"></i>الإدارة والتوزيع
-            </button>
-            <button class="tab-button" data-tab="responses">
-                <i class="fas fa-chart-line me-2"></i>الاستجابات والتحليلات
+
+    <!-- Dashboard Statistics -->
+    <div class="dashboard-stats">
+        <div class="stat-card">
+            <div class="stat-value">{{ stats.total_surveys }}</div>
+            <div class="stat-label">إجمالي الاستطلاعات</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">{{ stats.active_surveys }}</div>
+            <div class="stat-label">الاستطلاعات النشطة</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">{{ stats.total_responses }}</div>
+            <div class="stat-label">إجمالي الاستجابات</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">{{ "%.1f"|format(stats.avg_completion_rate) }}%</div>
+            <div class="stat-label">معدل الإكمال</div>
+        </div>
+    </div>
+
+    <!-- Tab Navigation -->
+    <div class="tab-navigation">
+        <button class="tab-button active" data-tab="management">
+            <i class="fas fa-tasks me-2"></i>إدارة الاستطلاعات
+        </button>
+        <button class="tab-button" data-tab="builder">
+            <i class="fas fa-plus me-2"></i>منشئ الاستطلاعات
+        </button>
+        <button class="tab-button" data-tab="responses">
+            <i class="fas fa-chart-bar me-2"></i>الاستجابات والتحليلات
+        </button>
+    </div>
+
+    <!-- Management Tab -->
+    <div class="tab-content active" id="management-tab">
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+            <button class="create-new-card" onclick="window.location.href='/surveys/builder'">
+                <div class="create-icon">
+                    <i class="fas fa-plus-circle"></i>
+                </div>
+                <div class="create-title">إنشاء استطلاع جديد</div>
+                <div class="create-subtitle">ابدأ في إنشاء استطلاع تفاعلي جديد</div>
             </button>
         </div>
-        
-        <div class="tab-content">
-            <!-- Builder Tab -->
-            <div class="tab-panel active" id="builder-panel">
-                <div class="text-center">
-                    <h3>منشئ الاستطلاعات</h3>
-                    <p>إنشاء وتحرير الاستطلاعات باستخدام الأدوات المتقدمة</p>
-                    <a href="/surveys/builder" class="btn btn-primary btn-lg">
-                        <i class="fas fa-plus me-2"></i>إنشاء استطلاع جديد
-                    </a>
-                </div>
-                
-                <div class="mt-4" id="recent-drafts">
-                    <!-- Recent drafts will be loaded here -->
-                </div>
-            </div>
-            
-            <!-- Management Tab -->
-            <div class="tab-panel" id="management-panel">
-                <div class="dashboard-stats" id="dashboard-stats">
-                    <!-- Stats loaded via JavaScript -->
-                </div>
-                
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h3>الاستطلاعات المنشورة</h3>
-                    <div class="d-flex gap-2">
-                        <button class="btn btn-outline-secondary btn-sm" onclick="refreshSurveys()">
-                            <i class="fas fa-refresh"></i> تحديث
+
+        <!-- Survey Grid -->
+        <div class="survey-grid">
+            {% if surveys %}
+                {% for survey in surveys %}
+                <div class="survey-card" data-survey-id="{{ survey.id }}">
+                    <div class="survey-header">
+                        <div>
+                            <div class="survey-title">{{ survey.title }}</div>
+                            <div class="survey-meta">
+                                <span><i class="fas fa-questions me-1"></i>{{ survey.question_count }} سؤال</span>
+                                <span><i class="fas fa-users me-1"></i>{{ survey.response_count }} استجابة</span>
+                                <span class="status-badge status-{{ survey.status }}">
+                                    {% if survey.status == 'published' %}منشور{% else %}مسودة{% endif %}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {% if survey.description %}
+                    <p class="text-muted mb-3">{{ survey.description[:100] }}{% if survey.description|length > 100 %}...{% endif %}</p>
+                    {% endif %}
+                    
+                    <div class="survey-actions">
+                        <a href="/surveys/builder?id={{ survey.id }}" class="btn-unified btn-outline">
+                            <i class="fas fa-edit"></i>تحرير
+                        </a>
+                        {% if survey.public_url %}
+                        <a href="{{ survey.public_url }}" target="_blank" class="btn-unified btn-success">
+                            <i class="fas fa-external-link-alt"></i>معاينة
+                        </a>
+                        {% endif %}
+                        <button class="btn-unified btn-primary" onclick="showDistributionPanel('{{ survey.id }}')">
+                            <i class="fas fa-share-alt"></i>توزيع
                         </button>
-                        <a href="/surveys/builder" class="btn btn-primary btn-sm">
-                            <i class="fas fa-plus"></i> إنشاء جديد
+                        <a href="/surveys/responses?survey_id={{ survey.id }}" class="btn-unified btn-outline">
+                            <i class="fas fa-chart-line"></i>التحليلات
                         </a>
                     </div>
                 </div>
-                
-                <div id="surveys-list">
-                    <!-- Surveys loaded via JavaScript -->
+                {% endfor %}
+            {% else %}
+                <div class="empty-state">
+                    <i class="fas fa-poll"></i>
+                    <h3>لا توجد استطلاعات حتى الآن</h3>
+                    <p>ابدأ في إنشاء أول استطلاع لك</p>
+                    <button class="btn-unified btn-primary mt-3" onclick="window.location.href='/surveys/builder'">
+                        <i class="fas fa-plus me-2"></i>إنشاء استطلاع جديد
+                    </button>
                 </div>
-            </div>
-            
-            <!-- Responses Tab -->
-            <div class="tab-panel" id="responses-panel">
-                <div class="text-center">
-                    <h3>الاستجابات والتحليلات</h3>
-                    <p>عرض وتحليل استجابات الاستطلاعات</p>
-                    <a href="/surveys/responses" class="btn btn-success btn-lg">
-                        <i class="fas fa-chart-bar me-2"></i>عرض جميع الاستجابات
-                    </a>
-                </div>
-                
-                <div class="mt-4" id="response-summary">
-                    <!-- Response summary will be loaded here -->
-                </div>
-            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Builder Tab -->
+    <div class="tab-content" id="builder-tab">
+        <div class="text-center py-5">
+            <h3>منشئ الاستطلاعات</h3>
+            <p class="text-muted mb-4">أنشئ استطلاعات تفاعلية باستخدام أدوات السحب والإفلات</p>
+            <button class="btn-unified btn-primary" onclick="window.location.href='/surveys/builder'">
+                <i class="fas fa-plus me-2"></i>ابدأ الإنشاء الآن
+            </button>
+        </div>
+    </div>
+
+    <!-- Responses Tab -->
+    <div class="tab-content" id="responses-tab">
+        <div class="text-center py-5">
+            <h3>الاستجابات والتحليلات</h3>
+            <p class="text-muted mb-4">عرض وتحليل استجابات الاستطلاعات</p>
+            <button class="btn-unified btn-primary" onclick="window.location.href='/surveys/responses'">
+                <i class="fas fa-chart-bar me-2"></i>عرض التحليلات
+            </button>
         </div>
     </div>
 </div>
 
 <!-- Distribution Modal -->
-<div id="distribution-modal" class="modal-overlay" style="display: none;">
-    <div class="modal-content">
-        <div class="modal-header d-flex justify-content-between align-items-center mb-3">
-            <h4 id="distribution-modal-title">توزيع الاستطلاع</h4>
-            <button class="btn btn-sm btn-outline-secondary" onclick="closeDistributionModal()">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-        <div id="distribution-modal-body">
-            <!-- Distribution options loaded dynamically -->
+<div class="modal fade" id="distributionModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">توزيع الاستطلاع</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>مشاركة سريعة</h6>
+                        <div class="mb-3">
+                            <label class="form-label">رابط الاستطلاع</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="surveyLink" readonly>
+                                <button class="btn btn-outline-secondary" onclick="copyToClipboard('surveyLink')">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <button class="btn btn-success me-2" onclick="generateQRCode()">
+                                <i class="fas fa-qrcode me-1"></i>رمز QR
+                            </button>
+                            <button class="btn btn-primary" onclick="emailBlast()">
+                                <i class="fas fa-envelope me-1"></i>إرسال بالبريد
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>حملة متقدمة</h6>
+                        <p class="text-muted small">إنشاء حملة مخصصة مع جدولة وتتبع متقدم</p>
+                        <button class="btn btn-primary" onclick="createAdvancedCampaign()">
+                            <i class="fas fa-rocket me-1"></i>إنشاء حملة
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
-
+    {% include 'components/scripts.html' %}
 <script>
+// Unified Survey Hub JavaScript
 class SurveyHub {
     constructor() {
-        this.currentTab = 'builder';
-        this.surveys = [];
-        this.dashboardStats = {};
+        this.currentSurveyId = null;
         this.init();
     }
-    
-    async init() {
-        this.bindEvents();
-        await this.loadDashboardStats();
-        if (this.currentTab === 'management') {
-            await this.loadSurveys();
-        }
-    }
-    
-    bindEvents() {
+
+    init() {
         // Tab switching
         document.querySelectorAll('.tab-button').forEach(button => {
             button.addEventListener('click', (e) => {
-                const tab = e.target.dataset.tab;
-                this.switchTab(tab);
+                this.switchTab(e.target.dataset.tab);
             });
         });
+
+        // Initialize modals
+        this.distributionModal = new bootstrap.Modal(document.getElementById('distributionModal'));
     }
-    
-    async switchTab(tab) {
-        // Update tab navigation
+
+    switchTab(tabName) {
+        // Update button states
         document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
-        document.querySelectorAll('.tab-panel').forEach(panel => panel.classList.remove('active'));
-        
-        document.querySelector(`[data-tab="${tab}"]`).classList.add('active');
-        document.getElementById(`${tab}-panel`).classList.add('active');
-        
-        this.currentTab = tab;
-        
-        // Load data for active tab
-        if (tab === 'management') {
-            await this.loadSurveys();
-        } else if (tab === 'responses') {
-            await this.loadResponseSummary();
-        }
+        document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+
+        // Show content
+        document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+        document.getElementById(`${tabName}-tab`).classList.add('active');
     }
-    
+
     async loadDashboardStats() {
         try {
             const response = await fetch('/api/surveys/dashboard-stats');
-            this.dashboardStats = await response.json();
-            this.renderDashboardStats();
-        } catch (error) {
-            console.error('Failed to load dashboard stats:', error);
-        }
-    }
-    
-    renderDashboardStats() {
-        const container = document.getElementById('dashboard-stats');
-        const stats = this.dashboardStats;
-        
-        container.innerHTML = `
-            <div class="stat-card">
-                <div class="stat-number">${stats.surveys?.total || 0}</div>
-                <div class="stat-label">إجمالي الاستطلاعات</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number">${stats.surveys?.active || 0}</div>
-                <div class="stat-label">الاستطلاعات النشطة</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number">${stats.responses?.total || 0}</div>
-                <div class="stat-label">إجمالي الاستجابات</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number">${stats.campaigns?.active || 0}</div>
-                <div class="stat-label">الحملات النشطة</div>
-            </div>
-        `;
-    }
-    
-    async loadSurveys() {
-        try {
-            const response = await fetch('/api/surveys/list');
             const data = await response.json();
-            this.surveys = data.surveys || [];
-            this.renderSurveys();
+            this.updateStatsDisplay(data);
         } catch (error) {
-            console.error('Failed to load surveys:', error);
+            console.error('Error loading dashboard stats:', error);
         }
     }
-    
-    renderSurveys() {
-        const container = document.getElementById('surveys-list');
-        
-        if (this.surveys.length === 0) {
-            container.innerHTML = `
-                <div class="text-center py-5">
-                    <i class="fas fa-poll fa-3x text-muted mb-3"></i>
-                    <h4>لا توجد استطلاعات منشورة</h4>
-                    <p class="text-muted">ابدأ بإنشاء استطلاع جديد</p>
-                    <a href="/surveys/builder" class="btn btn-primary">إنشاء استطلاع</a>
-                </div>
-            `;
-            return;
-        }
-        
-        container.innerHTML = this.surveys.map(survey => this.renderSurveyCard(survey)).join('');
-    }
-    
-    renderSurveyCard(survey) {
-        const statusClass = survey.status === 'published' ? 'published' : 
-                           survey.status === 'draft' ? 'draft' : 'paused';
-        const statusText = survey.status === 'published' ? 'منشور' : 
-                          survey.status === 'draft' ? 'مسودة' : 'متوقف';
-        
-        const distributionStatus = survey.distribution?.status || 'none';
-        const distributionIcon = distributionStatus === 'active' ? 'fas fa-broadcast-tower text-success' :
-                                distributionStatus === 'completed' ? 'fas fa-check-circle text-info' :
-                                distributionStatus === 'ready' ? 'fas fa-share-alt text-warning' :
-                                'fas fa-share-alt text-muted';
-        
-        return `
-            <div class="survey-card" data-survey-id="${survey.id}">
-                <div class="survey-header">
-                    <h3 class="survey-title">${survey.title}</h3>
-                    <span class="survey-status ${statusClass}">${statusText}</span>
-                </div>
-                
-                <div class="survey-metrics">
-                    <div class="metric-item">
-                        <div class="metric-value">${survey.question_count}</div>
-                        <div class="metric-label">أسئلة</div>
-                    </div>
-                    <div class="metric-item">
-                        <div class="metric-value">${survey.response_count}</div>
-                        <div class="metric-label">استجابة</div>
-                    </div>
-                    <div class="metric-item">
-                        <div class="metric-value">${survey.distribution?.campaign_count || 0}</div>
-                        <div class="metric-label">حملات</div>
-                    </div>
-                    <div class="metric-item">
-                        <div class="metric-value">${survey.distribution?.total_sent || 0}</div>
-                        <div class="metric-label">تم الإرسال</div>
-                    </div>
-                </div>
-                
-                <div class="survey-actions">
-                    <a href="/surveys/builder?id=${survey.id}" class="action-btn">
-                        <i class="fas fa-edit"></i> تحرير
-                    </a>
-                    <button class="action-btn" onclick="surveyHub.showQuickShare(${survey.id})">
-                        <i class="fas fa-link"></i> مشاركة سريعة
-                    </button>
-                    <button class="action-btn primary" onclick="surveyHub.showDistributionPanel(${survey.id})">
-                        <i class="${distributionIcon}"></i> إدارة التوزيع
-                    </button>
-                    <a href="/surveys/responses?id=${survey.id}" class="action-btn">
-                        <i class="fas fa-chart-line"></i> التحليلات
-                    </a>
-                    ${survey.status === 'published' ? 
-                        `<button class="action-btn" onclick="surveyHub.pauseSurvey(${survey.id})">
-                            <i class="fas fa-pause"></i> إيقاف
-                        </button>` :
-                        `<button class="action-btn" onclick="surveyHub.activateSurvey(${survey.id})">
-                            <i class="fas fa-play"></i> تفعيل
-                        </button>`
-                    }
-                </div>
-            </div>
-        `;
-    }
-    
-    async showDistributionPanel(surveyId) {
-        try {
-            const response = await fetch(`/api/surveys/${surveyId}/overview`);
-            const data = await response.json();
-            
-            document.getElementById('distribution-modal-title').textContent = `توزيع: ${data.survey.title}`;
-            document.getElementById('distribution-modal-body').innerHTML = this.renderDistributionOptions(data);
-            document.getElementById('distribution-modal').style.display = 'flex';
-        } catch (error) {
-            this.showNotification('فشل في تحميل خيارات التوزيع', 'error');
-        }
-    }
-    
-    renderDistributionOptions(data) {
-        const survey = data.survey;
-        const distribution = data.distribution;
-        
-        return `
-            <div class="quick-share-options">
-                <div class="share-option" onclick="surveyHub.copyLink('${survey.public_url}')">
-                    <div class="share-icon"><i class="fas fa-link"></i></div>
-                    <h5>نسخ الرابط</h5>
-                    <p>مشاركة سريعة</p>
-                </div>
-                <div class="share-option" onclick="surveyHub.downloadQR('${survey.public_url}')">
-                    <div class="share-icon"><i class="fas fa-qrcode"></i></div>
-                    <h5>رمز QR</h5>
-                    <p>للطباعة</p>
-                </div>
-                <div class="share-option" onclick="surveyHub.showEmailForm(${survey.id})">
-                    <div class="share-icon"><i class="fas fa-envelope"></i></div>
-                    <h5>إرسال بريد</h5>
-                    <p>إرسال سريع</p>
-                </div>
-                <div class="share-option" onclick="surveyHub.createCampaign(${survey.id})">
-                    <div class="share-icon"><i class="fas fa-bullhorn"></i></div>
-                    <h5>حملة متقدمة</h5>
-                    <p>توزيع شامل</p>
-                </div>
-            </div>
-            
-            ${data.campaigns.length > 0 ? `
-                <h5>الحملات الحالية</h5>
-                <div class="campaigns-list">
-                    ${data.campaigns.map(campaign => `
-                        <div class="campaign-item d-flex justify-content-between align-items-center p-2 border rounded mb-2">
-                            <div>
-                                <strong>${campaign.name}</strong>
-                                <span class="badge badge-${campaign.status === 'active' ? 'success' : 'secondary'}">${campaign.status}</span>
-                            </div>
-                            <div class="text-muted">
-                                ${campaign.sent_count} إرسال | ${campaign.response_count} استجابة
-                            </div>
-                        </div>
-                    `).join('')}
-                </div>
-            ` : ''}
-        `;
-    }
-    
-    async copyLink(url) {
-        try {
-            await navigator.clipboard.writeText(url);
-            this.showNotification('تم نسخ الرابط بنجاح', 'success');
-            this.closeDistributionModal();
-        } catch (error) {
-            this.showNotification('فشل في نسخ الرابط', 'error');
-        }
-    }
-    
-    downloadQR(url) {
-        const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(url)}`;
-        const link = document.createElement('a');
-        link.href = qrUrl;
-        link.download = 'survey-qr-code.png';
-        link.click();
-        this.showNotification('جاري تحميل رمز QR', 'success');
-        this.closeDistributionModal();
-    }
-    
-    closeDistributionModal() {
-        document.getElementById('distribution-modal').style.display = 'none';
-    }
-    
-    async pauseSurvey(surveyId) {
-        try {
-            const response = await fetch(`/api/surveys/${surveyId}/pause`, {
-                method: 'POST'
-            });
-            
-            if (response.ok) {
-                this.showNotification('تم إيقاف الاستطلاع بنجاح', 'success');
-                await this.loadSurveys();
-            } else {
-                throw new Error('Failed to pause survey');
-            }
-        } catch (error) {
-            this.showNotification('فشل في إيقاف الاستطلاع', 'error');
-        }
-    }
-    
-    async activateSurvey(surveyId) {
-        try {
-            const response = await fetch(`/api/surveys/${surveyId}/activate`, {
-                method: 'POST'
-            });
-            
-            if (response.ok) {
-                this.showNotification('تم تفعيل الاستطلاع بنجاح', 'success');
-                await this.loadSurveys();
-            } else {
-                throw new Error('Failed to activate survey');
-            }
-        } catch (error) {
-            this.showNotification('فشل في تفعيل الاستطلاع', 'error');
-        }
-    }
-    
-    showNotification(message, type) {
-        const notification = document.createElement('div');
-        notification.className = `notification ${type}`;
-        notification.textContent = message;
-        document.body.appendChild(notification);
-        
-        setTimeout(() => notification.remove(), 3000);
-    }
-    
-    async loadResponseSummary() {
-        // Load response summary for responses tab
-        const container = document.getElementById('response-summary');
-        container.innerHTML = `
-            <div class="text-center">
-                <div class="loading-spinner"></div>
-                <p>جاري تحميل ملخص الاستجابات...</p>
-            </div>
-        `;
-        
-        // Implement response summary loading
+
+    updateStatsDisplay(stats) {
+        // Update stat cards with real data
+        document.querySelector('.stat-card:nth-child(1) .stat-value').textContent = stats.total_surveys;
+        document.querySelector('.stat-card:nth-child(2) .stat-value').textContent = stats.active_surveys;
+        document.querySelector('.stat-card:nth-child(3) .stat-value').textContent = stats.total_responses;
+        document.querySelector('.stat-card:nth-child(4) .stat-value').textContent = stats.avg_completion_rate + '%';
     }
 }
 
-// Global functions for onclick handlers
-function refreshSurveys() {
-    surveyHub.loadSurveys();
+// Distribution functions
+function showDistributionPanel(surveyId) {
+    window.surveyHub.currentSurveyId = surveyId;
+    
+    // Get survey public URL
+    const surveyCard = document.querySelector(`[data-survey-id="${surveyId}"]`);
+    const publicUrl = surveyCard.querySelector('.btn-success')?.href || '';
+    
+    document.getElementById('surveyLink').value = publicUrl;
+    window.surveyHub.distributionModal.show();
 }
 
-// Initialize survey hub
-let surveyHub;
+function copyToClipboard(elementId) {
+    const element = document.getElementById(elementId);
+    element.select();
+    document.execCommand('copy');
+    
+    // Show success message
+    const btn = element.nextElementSibling;
+    const originalHTML = btn.innerHTML;
+    btn.innerHTML = '<i class="fas fa-check"></i>';
+    setTimeout(() => {
+        btn.innerHTML = originalHTML;
+    }, 2000);
+}
+
+function generateQRCode() {
+    const surveyLink = document.getElementById('surveyLink').value;
+    if (surveyLink) {
+        window.open(`https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(surveyLink)}`, '_blank');
+    }
+}
+
+function emailBlast() {
+    const surveyId = window.surveyHub.currentSurveyId;
+    if (surveyId) {
+        window.location.href = `/contacts?action=email-blast&survey_id=${surveyId}`;
+    }
+}
+
+function createAdvancedCampaign() {
+    const surveyId = window.surveyHub.currentSurveyId;
+    if (surveyId) {
+        window.location.href = `/surveys/campaigns/create?survey_id=${surveyId}`;
+    }
+}
+
+// Initialize on DOM ready
 document.addEventListener('DOMContentLoaded', () => {
-    surveyHub = new SurveyHub();
+    window.surveyHub = new SurveyHub();
+    
+    // Load real-time stats
+    window.surveyHub.loadDashboardStats();
+    
+    // Refresh stats every 30 seconds
+    setInterval(() => {
+        window.surveyHub.loadDashboardStats();
+    }, 30000);
 });
 </script>
-{% endblock %}
+</body>
+</html>
