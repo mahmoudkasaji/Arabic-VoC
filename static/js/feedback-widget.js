@@ -15,7 +15,7 @@ class FeedbackWidget {
             ],
             labels: {
                 ar: {
-                    trigger: 'ملاحظاتك تهمنا',
+                    trigger: 'رأيك',
                     title: 'شاركنا رأيك',
                     rating: 'كيف تقيم تجربتك؟',
                     category: 'ما نوع الملاحظة؟',
@@ -25,7 +25,7 @@ class FeedbackWidget {
                     successMessage: 'تم إرسال ملاحظتك بنجاح. سنعمل على تحسين تجربتك.'
                 },
                 en: {
-                    trigger: 'Give Feedback',
+                    trigger: 'Feedback',
                     title: 'Share Your Feedback',
                     rating: 'How would you rate your experience?',
                     category: 'What type of feedback?',
@@ -65,7 +65,7 @@ class FeedbackWidget {
         trigger.setAttribute('aria-label', this.getLabel('trigger'));
         trigger.innerHTML = `
             <i class="fas fa-comment feedback-icon" aria-hidden="true"></i>
-            <span>${this.getLabel('trigger')}</span>
+            <span class="feedback-text">${this.getLabel('trigger')}</span>
         `;
 
         // Create modal
