@@ -275,6 +275,12 @@ class FeedbackWidget {
     }
 
     closeModal() {
+        // Clear any active countdown interval immediately
+        if (this.countdownInterval) {
+            clearInterval(this.countdownInterval);
+            this.countdownInterval = null;
+        }
+        
         this.modal.classList.remove('active');
         if (this.backdrop) {
             this.backdrop.classList.remove('active');
@@ -459,32 +465,132 @@ class FeedbackWidget {
     }
     
     autoCloseWithCountdown() {
-        // Auto-close with countdown visual feedback
-        const countdown = 3; // 3 seconds countdown
+        // Auto-close with countdown visual feedback (UX best practice: 4 seconds)
+        const countdown = 4;
         let timeLeft = countdown;
+        let countdownInterval;
+        let isPaused = false;
         
         // Get success message elements
+        const successContainer = this.modal.querySelector('.feedback-success');
         const successMessage = this.modal.querySelector('.feedback-success-message');
         const originalMessage = successMessage.textContent;
         
-        // Update message with countdown
-        const countdownInterval = setInterval(() => {
-            if (timeLeft > 0) {
-                const closeText = this.currentLang === 'ar' 
-                    ? `${originalMessage} سيتم إغلاق النافذة خلال ${timeLeft} ثوان...`
-                    : `${originalMessage} Closing in ${timeLeft} seconds...`;
-                successMessage.textContent = closeText;
+        // Create countdown display
+        const countdownDisplay = document.createElement('div');
+        countdownDisplay.className = 'auto-close-countdown';
+        countdownDisplay.style.cssText = `
+            margin-top: 16px;
+            text-align: center;
+            font-size: 14px;
+            color: #666;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        `;
+        
+        // Create manual close button
+        const manualCloseBtn = document.createElement('button');
+        manualCloseBtn.textContent = this.currentLang === 'ar' ? 'إغلاق الآن' : 'Close Now';
+        manualCloseBtn.className = 'manual-close-btn';
+        manualCloseBtn.style.cssText = `
+            background: transparent;
+            border: 1px solid #ddd;
+            color: #666;
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            margin-left: 8px;
+        `;
+        manualCloseBtn.onclick = () => {
+            clearInterval(countdownInterval);
+            this.closeModal();
+            setTimeout(() => this.resetForm(), 400);
+        };
+        
+        // Create progress bar
+        const progressBar = document.createElement('div');
+        progressBar.style.cssText = `
+            width: 100%;
+            height: 3px;
+            background: #f0f0f0;
+            border-radius: 2px;
+            margin-top: 12px;
+            overflow: hidden;
+        `;
+        
+        const progressFill = document.createElement('div');
+        progressFill.style.cssText = `
+            height: 100%;
+            background: linear-gradient(90deg, #28a745, #20c997);
+            width: 100%;
+            transition: width 1s linear;
+            border-radius: 2px;
+        `;
+        progressBar.appendChild(progressFill);
+        
+        // Add countdown elements to success container
+        countdownDisplay.appendChild(manualCloseBtn);
+        successContainer.appendChild(countdownDisplay);
+        successContainer.appendChild(progressBar);
+        
+        // Pause/resume functions for accessibility
+        const pauseCountdown = () => {
+            isPaused = true;
+            countdownDisplay.style.opacity = '0.7';
+        };
+        
+        const resumeCountdown = () => {
+            isPaused = false;
+            countdownDisplay.style.opacity = '1';
+        };
+        
+        // Add hover/focus listeners for accessibility
+        successContainer.addEventListener('mouseenter', pauseCountdown);
+        successContainer.addEventListener('mouseleave', resumeCountdown);
+        successContainer.addEventListener('focusin', pauseCountdown);
+        successContainer.addEventListener('focusout', resumeCountdown);
+        
+        // Update countdown display
+        const updateCountdown = () => {
+            const countdownText = this.currentLang === 'ar' 
+                ? `إغلاق تلقائي خلال ${timeLeft} ثوان`
+                : `Auto-closing in ${timeLeft} seconds`;
+            countdownDisplay.querySelector('span').textContent = countdownText;
+            
+            // Update progress bar
+            const progressPercent = ((countdown - timeLeft) / countdown) * 100;
+            progressFill.style.width = `${100 - progressPercent}%`;
+        };
+        
+        // Add countdown text element first
+        const countdownText = document.createElement('span');
+        countdownDisplay.insertBefore(countdownText, manualCloseBtn);
+        
+        // Initial countdown display
+        updateCountdown();
+        
+        // Start countdown interval
+        countdownInterval = setInterval(() => {
+            if (!isPaused) {
                 timeLeft--;
-            } else {
-                clearInterval(countdownInterval);
-                this.closeModal();
-                // Reset form after closing
-                setTimeout(() => {
-                    this.resetForm();
-                    successMessage.textContent = originalMessage; // Restore original message
-                }, 400);
+                updateCountdown();
+                
+                if (timeLeft <= 0) {
+                    clearInterval(countdownInterval);
+                    this.closeModal();
+                    // Reset form after closing
+                    setTimeout(() => {
+                        this.resetForm();
+                    }, 400);
+                }
             }
         }, 1000);
+        
+        // Store interval reference for cleanup
+        this.countdownInterval = countdownInterval;
     }
 
     showErrorMessage() {
@@ -510,6 +616,12 @@ class FeedbackWidget {
         this.rating = 0;
         this.category = '';
         
+        // Clear any active countdown interval
+        if (this.countdownInterval) {
+            clearInterval(this.countdownInterval);
+            this.countdownInterval = null;
+        }
+        
         // Reset UI
         this.modal.querySelectorAll('.rating-star').forEach(star => {
             star.classList.remove('active');
@@ -523,6 +635,13 @@ class FeedbackWidget {
             existingFeedback.remove();
         }
         
+        // Clean up countdown elements
+        const successContainer = this.modal.querySelector('.feedback-success');
+        const countdownDisplay = successContainer.querySelector('.auto-close-countdown');
+        const progressBar = successContainer.querySelector('div[style*="progress"]');
+        if (countdownDisplay) countdownDisplay.remove();
+        if (progressBar) progressBar.remove();
+        
         this.modal.querySelector('#category-select').selectedIndex = 0;
         
         this.modal.querySelector('.feedback-textarea').value = '';
@@ -530,7 +649,7 @@ class FeedbackWidget {
         
         // Reset success message
         this.form.style.display = 'block';
-        this.modal.querySelector('.feedback-success').style.display = 'none';
+        successContainer.style.display = 'none';
         
         // Reset submit button
         const submitBtn = this.modal.querySelector('.feedback-submit');
