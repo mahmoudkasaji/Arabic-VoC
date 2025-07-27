@@ -9,8 +9,6 @@
     <!-- Enhanced Drag Styles -->
     <link href="/static/css/drag_enhancements.css" rel="stylesheet">
     
-
-    
     <!-- Sortable JS -->
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
     
@@ -27,17 +25,6 @@
             --border-color: #dee2e6;
         }
 
-        html, body {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            box-sizing: border-box;
-        }
-
-        *, *::before, *::after {
-            box-sizing: border-box;
-        }
-
         body {
             font-family: 'Cairo', sans-serif;
             background-color: var(--bg-color);
@@ -46,46 +33,27 @@
             text-align: right;
         }
 
-        .main-wrapper {
-            width: 100%;
-            min-height: 100vh;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-        }
-
         .builder-container {
             display: grid;
-            grid-template-columns: 280px 1fr 320px;
-            gap: 20px;
-            flex: 1;
-            width: 100%;
-            margin: 0;
-            padding: 20px;
+            grid-template-columns: 240px 1fr 340px;
+            gap: 12px;
+            height: calc(100vh - 80px);
+            padding: 12px;
+            max-width: 1800px;
+            margin: 0 auto;
         }
 
-        @media (min-width: 1200px) {
+        @media (max-width: 1400px) {
             .builder-container {
-                grid-template-columns: 300px 1fr 340px;
-                padding: 24px;
-                gap: 24px;
+                grid-template-columns: 220px 1fr 320px;
+                gap: 10px;
             }
         }
 
-        @media (min-width: 1400px) {
+        @media (max-width: 1200px) {
             .builder-container {
-                grid-template-columns: 320px 1fr 360px;
-                padding: 28px;
-                gap: 28px;
-            }
-        }
-
-        @media (min-width: 1600px) {
-            .builder-container {
-                grid-template-columns: 350px 1fr 380px;
-                padding: 32px;
-                gap: 32px;
+                grid-template-columns: 200px 1fr 300px;
+                gap: 8px;
             }
         }
 
@@ -280,29 +248,13 @@
             gap: 8px;
         }
 
-        /* Progressive Disclosure Styles - Enhanced for Desktop */
+        /* Progressive Disclosure Styles */
         .guided-flow-container {
             background: white;
-            border-radius: 16px;
-            padding: 36px;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.06);
-            margin-bottom: 28px;
-        }
-
-        /* Ultra-wide specific enhancements */
-        @media (min-width: 2000px) {
-            .guided-flow-container {
-                padding: 48px;
-                margin-bottom: 36px;
-            }
-        }
-
-        /* Large desktop enhancements */
-        @media (min-width: 1600px) {
-            .guided-flow-container {
-                padding: 42px;
-                margin-bottom: 32px;
-            }
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
         }
 
         .workflow-progress {
@@ -356,17 +308,9 @@
 
         .survey-setup-section {
             background: #f8f9fa;
-            border-radius: 12px;
-            padding: 32px;
-            margin-bottom: 32px;
-        }
-
-        /* Enhanced spacing for ultra-wide displays */
-        @media (min-width: 2000px) {
-            .survey-setup-section {
-                padding: 40px;
-                margin-bottom: 40px;
-            }
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 25px;
         }
 
         .setup-title {
@@ -381,17 +325,9 @@
 
         .template-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 20px;
-            margin-top: 24px;
-        }
-
-        /* Template section compact styling */
-        .template-section-compact {
-            background: #f1f3f4;
-            border-radius: 8px;
-            padding: 16px;
-            border-left: 4px solid var(--primary-color);
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
         }
 
         .template-card {
@@ -405,23 +341,6 @@
         }
 
         .template-card:hover {
-            border-color: var(--primary-color);
-            box-shadow: 0 4px 15px rgba(46, 139, 87, 0.1);
-            transform: translateY(-2px);
-        }
-
-        .template-card-modal {
-            background: white;
-            border: 2px solid #e9ecef;
-            border-radius: 8px;
-            padding: 20px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            height: 100%;
-        }
-
-        .template-card-modal:hover {
             border-color: var(--primary-color);
             box-shadow: 0 4px 15px rgba(46, 139, 87, 0.1);
             transform: translateY(-2px);
@@ -949,26 +868,15 @@
 
         .form-control-modern {
             border: 2px solid var(--border-color);
-            border-radius: 10px;
-            padding: 14px 18px;
+            border-radius: 8px;
+            padding: 12px 15px;
             font-family: 'Cairo', sans-serif;
             transition: all 0.3s ease;
-            font-size: 1rem;
         }
 
         .form-control-modern:focus {
             border-color: var(--primary-color);
-            box-shadow: 0 0 0 4px rgba(46, 139, 87, 0.12);
-            outline: none;
-        }
-
-        /* Enhanced form controls for wider displays */
-        @media (min-width: 1600px) {
-            .form-control-modern {
-                padding: 16px 20px;
-                font-size: 1.05rem;
-                border-radius: 12px;
-            }
+            box-shadow: 0 0 0 3px rgba(46, 139, 87, 0.1);
         }
 
         .btn-primary-custom {
@@ -1311,27 +1219,23 @@
             pointer-events: auto;
         }
 
-        @media (max-width: 767px) {
+        @media (max-width: 1200px) {
             .builder-container {
                 grid-template-columns: 1fr;
                 grid-template-rows: auto auto 1fr;
-                padding: 12px;
-                gap: 16px;
             }
             
             .sidebar {
                 height: auto;
-                max-height: 300px;
-                overflow-y: auto;
             }
         }
     </style>
 </head>
 <body>
-    <div class="main-wrapper">
-        {% include 'components/unified_navigation.html' %}
-        
-        <div class="builder-container" id="builderContainer">
+    {% include 'components/unified_navigation.html' %}
+
+
+    <div class="builder-container" id="builderContainer">
         <!-- Progressive Question Types Sidebar -->
         <div class="sidebar question-types-sidebar" id="questionTypesSidebar">
             <h5 class="mb-4">أنواع الأسئلة</h5>
@@ -1450,32 +1354,24 @@
                         معلومات الاستطلاع الأساسية
                     </h5>
                     
-                    <div style="display: flex; gap: 24px; align-items: flex-start;">
-                        <div style="flex: 2;">
+                    <div class="row">
+                        <div class="col-md-8">
                             <div class="form-group mb-4">
-                                <label for="surveyTitle" class="form-label fw-bold" style="font-size: 1.1rem; margin-bottom: 8px;">عنوان الاستطلاع</label>
+                                <label for="surveyTitle" class="form-label fw-bold">عنوان الاستطلاع</label>
                                 <input type="text" class="form-control form-control-modern" id="surveyTitle" 
-                                       placeholder="مثال: استطلاع رضا العملاء لعام 2025"
-                                       style="padding: 18px 20px; font-size: 1.05rem; width: 100%;">
+                                       placeholder="مثال: استطلاع رضا العملاء لعام 2025">
                             </div>
                             
                             <div class="form-group mb-4">
-                                <label for="surveyDescription" class="form-label fw-bold" style="font-size: 1.1rem; margin-bottom: 8px;">وصف الاستطلاع</label>
-                                <textarea class="form-control form-control-modern" id="surveyDescription" rows="4"
-                                          placeholder="اكتب وصفاً مختصراً يوضح الهدف من الاستطلاع وأهميته للمشاركين"
-                                          style="padding: 18px 20px; font-size: 1.05rem; line-height: 1.6; width: 100%;"></textarea>
+                                <label for="surveyDescription" class="form-label fw-bold">وصف الاستطلاع</label>
+                                <textarea class="form-control form-control-modern" id="surveyDescription" rows="3"
+                                          placeholder="اكتب وصفاً مختصراً يوضح الهدف من الاستطلاع وأهميته للمشاركين"></textarea>
                             </div>
                         </div>
-                        <div style="flex: 1;">
-                            <div class="context-help" style="padding: 20px; border-radius: 12px; background: linear-gradient(135deg, #e8f5e8, #f0f8f0);">
-                                <i class="fas fa-lightbulb" style="font-size: 1.5rem; color: var(--primary-color); margin-bottom: 12px; display: block;"></i>
-                                <h6 style="color: var(--primary-color); font-weight: 700; margin-bottom: 12px;">نصائح مهمة:</h6>
-                                <ul style="margin-bottom: 0; padding-right: 20px; line-height: 1.7; font-size: 0.95rem;">
-                                    <li style="margin-bottom: 6px;">عنوان واضح يزيد معدل الاستجابة بـ 40%</li>
-                                    <li style="margin-bottom: 6px;">وصف مختصر يوضح قيمة المشاركة</li>
-                                    <li style="margin-bottom: 6px;">استخدم لغة مألوفة وودودة</li>
-                                    <li>توقع وقت الإكمال لطمأنة المشاركين</li>
-                                </ul>
+                        <div class="col-md-4">
+                            <div class="context-help">
+                                <i class="fas fa-lightbulb"></i>
+                                <strong>نصيحة:</strong> عنوان واضح ووصف مقنع يزيد من معدل الاستجابة بنسبة تصل إلى 40%
                             </div>
                         </div>
                     </div>
@@ -1488,19 +1384,38 @@
                     </div>
                 </div>
                 
-                <!-- Template Options - Compact Design -->
-                <div class="template-section-compact">
-                    <div class="d-flex align-items-center justify-content-between mb-3">
-                        <h6 class="mb-0" style="color: var(--primary-color); font-weight: 600;">
-                            <i class="fas fa-magic me-2"></i>
-                            أو استخدم قالباً جاهزاً
-                        </h6>
-                        <button class="btn btn-outline-primary btn-sm" id="showTemplatesBtn" onclick="showTemplateModal()">
-                            <i class="fas fa-list me-2"></i>
-                            اختر قالب
-                        </button>
+                <!-- Template Options -->
+                <div class="survey-setup-section mt-4">
+                    <h5 class="setup-title">
+                        <i class="fas fa-magic"></i>
+                        أو استخدم قالباً جاهزاً
+                    </h5>
+                    
+                    <div class="template-grid">
+                        <div class="template-card" data-template="satisfaction">
+                            <i class="fas fa-smile fa-2x mb-3" style="color: var(--primary-color);"></i>
+                            <h6>استطلاع رضا العملاء</h6>
+                            <p class="small text-muted">قياس مستوى الرضا العام مع أسئلة NPS والتقييم</p>
+                        </div>
+                        
+                        <div class="template-card" data-template="feedback">
+                            <i class="fas fa-comments fa-2x mb-3" style="color: var(--secondary-color);"></i>
+                            <h6>جمع التعليقات</h6>
+                            <p class="small text-muted">أسئلة مفتوحة لجمع آراء مفصلة حول المنتج أو الخدمة</p>
+                        </div>
+                        
+                        <div class="template-card" data-template="event">
+                            <i class="fas fa-calendar-check fa-2x mb-3" style="color: var(--accent-color);"></i>
+                            <h6>تقييم الأحداث</h6>
+                            <p class="small text-muted">تقييم شامل للمؤتمرات والفعاليات والدورات التدريبية</p>
+                        </div>
+                        
+                        <div class="template-card" data-template="employee">
+                            <i class="fas fa-users fa-2x mb-3" style="color: #e74c3c;"></i>
+                            <h6>استطلاع الموظفين</h6>
+                            <p class="small text-muted">قياس رضا الموظفين ومستوى المشاركة في العمل</p>
+                        </div>
                     </div>
-                    <p class="text-muted small mb-0">قوالب جاهزة لتوفير الوقت وضمان أفضل الممارسات</p>
                 </div>
             </div>
 
@@ -1779,56 +1694,6 @@
                         <i class="fas fa-arrow-left me-2"></i>
                         التالي: إعداد التوزيع
                     </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Template Selection Modal -->
-    <div class="modal fade" id="templateModal" tabindex="-1">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">
-                        <i class="fas fa-magic me-2"></i>
-                        اختر قالب الاستطلاع
-                    </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <div class="template-card-modal" data-template="satisfaction" onclick="applyTemplate('satisfaction')">
-                                <i class="fas fa-smile fa-2x mb-3" style="color: var(--primary-color);"></i>
-                                <h6>استطلاع رضا العملاء</h6>
-                                <p class="small text-muted">قياس مستوى الرضا العام مع أسئلة NPS والتقييم</p>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="template-card-modal" data-template="feedback" onclick="applyTemplate('feedback')">
-                                <i class="fas fa-comments fa-2x mb-3" style="color: var(--secondary-color);"></i>
-                                <h6>جمع التعليقات</h6>
-                                <p class="small text-muted">أسئلة مفتوحة لجمع آراء مفصلة حول المنتج أو الخدمة</p>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="template-card-modal" data-template="event" onclick="applyTemplate('event')">
-                                <i class="fas fa-calendar-check fa-2x mb-3" style="color: var(--accent-color);"></i>
-                                <h6>تقييم الأحداث</h6>
-                                <p class="small text-muted">تقييم شامل للمؤتمرات والفعاليات والدورات التدريبية</p>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="template-card-modal" data-template="employee" onclick="applyTemplate('employee')">
-                                <i class="fas fa-users fa-2x mb-3" style="color: #e74c3c;"></i>
-                                <h6>استطلاع الموظفين</h6>
-                                <p class="small text-muted">قياس رضا الموظفين ومستوى المشاركة في العمل</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
                 </div>
             </div>
         </div>
@@ -2366,68 +2231,6 @@
                 }, 200);
             }
         }
-
-        // Template modal functions
-        function showTemplateModal() {
-            const templateModal = new bootstrap.Modal(document.getElementById('templateModal'));
-            templateModal.show();
-        }
-
-        function applyTemplate(templateType) {
-            // Apply template data to form
-            const templates = {
-                satisfaction: {
-                    title: 'استطلاع رضا العملاء لعام 2025',
-                    description: 'نود معرفة رأيكم في خدماتنا لتحسين جودة ما نقدمه'
-                },
-                feedback: {
-                    title: 'مشاركة آرائكم وتعليقاتكم',
-                    description: 'ساعدونا في تطوير خدماتنا من خلال مشاركة تجربتكم معنا'
-                },
-                event: {
-                    title: 'تقييم الفعالية والمؤتمر',
-                    description: 'نرحب بتقييمكم للفعالية لتحسين تجربة المشاركين'
-                },
-                employee: {
-                    title: 'استطلاع رضا الموظفين',
-                    description: 'نود معرفة آرائكم حول بيئة العمل ومستوى الرضا الوظيفي'
-                }
-            };
-
-            const template = templates[templateType];
-            if (template) {
-                document.getElementById('surveyTitle').value = template.title;
-                document.getElementById('surveyDescription').value = template.description;
-            }
-
-            // Close modal
-            const templateModal = bootstrap.Modal.getInstance(document.getElementById('templateModal'));
-            templateModal.hide();
-
-            // Show success message
-            showNotification('تم تطبيق القالب بنجاح!', 'success');
-        }
-
-        function showNotification(message, type = 'info') {
-            // Create notification element
-            const notification = document.createElement('div');
-            notification.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
-            notification.style.cssText = 'top: 20px; left: 50%; transform: translateX(-50%); z-index: 9999; min-width: 300px;';
-            notification.innerHTML = `
-                ${message}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            `;
-            
-            document.body.appendChild(notification);
-            
-            // Auto remove after 3 seconds
-            setTimeout(() => {
-                if (notification.parentNode) {
-                    notification.remove();
-                }
-            }, 3000);
-        }
     </script>
-    </div> <!-- End main-wrapper -->
 </body>
 </html>
