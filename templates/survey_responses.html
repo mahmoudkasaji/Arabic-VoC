@@ -185,7 +185,7 @@
                                 <tbody>
                                     {% for feedback in live_analytics.recent_feedback %}
                                     <tr class="response-row clickable-row" 
-                                        style="cursor: pointer;" 
+                                        style="cursor: pointer; border-left: 3px solid #007bff;" 
                                         data-response-id="{{ feedback.id }}"
                                         data-content="{{ (feedback.content or '') | e }}"
                                         data-rating="{{ feedback.rating or 0 }}"
@@ -199,9 +199,9 @@
                                         data-confidence="{{ feedback.confidence_score or 0 }}"
                                         data-customer-id="{{ (feedback.customer_id or '') | e }}"
                                         title="انقر لعرض التفاصيل الكاملة"
-                                        onclick="openResponseModal('{{ feedback.id }}')"
-                                        onmouseover="this.style.backgroundColor='#f8f9fa'" 
-                                        onmouseout="this.style.backgroundColor=''">
+                                        onclick="alert('Row clicked! ID: {{ feedback.id }}'); openResponseModal('{{ feedback.id }}');"
+                                        onmouseover="this.style.backgroundColor='#e3f2fd'; console.log('Hover on row {{ feedback.id }}');" 
+                                        onmouseout="this.style.backgroundColor=''; console.log('Hover off row {{ feedback.id }}');"
                                         <td>
                                             {% set channel_name = feedback.channel.get_arabic_name(feedback.channel) %}
                                             {% set channel_color = feedback.channel.get_tag_color(feedback.channel) %}
@@ -214,6 +214,7 @@
                                             <div style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
                                                 {{ feedback.content[:50] }}{% if feedback.content|length > 50 %}...{% endif %}
                                             </div>
+                                            <small class="text-primary">👆 انقر هنا للتفاصيل</small>
                                         </td>
                                         <td>
                                             {% if feedback.rating %}
@@ -404,24 +405,33 @@
             position: relative;
         }
         
-        .clickable-row::after {
-            content: "انقر للتفاصيل";
-            position: absolute;
-            right: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: rgba(0,123,255,0.1);
-            color: #007bff;
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 11px;
-            opacity: 0;
-            transition: opacity 0.2s ease;
-            pointer-events: none;
+        .clickable-row {
+            position: relative;
         }
         
-        .clickable-row:hover::after {
-            opacity: 1;
+        .clickable-row::before {
+            content: "👆 انقر للتفاصيل";
+            position: absolute;
+            right: 5px;
+            top: 5px;
+            background: #007bff;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+            z-index: 10;
+        }
+        
+        .clickable-row:hover::before {
+            opacity: 0.9;
+        }
+        
+        .response-row:hover {
+            background-color: #e3f2fd !important;
+            cursor: pointer !important;
         }
     </style>
     
@@ -470,16 +480,34 @@
             startAutoRefresh();
             
             // Add click handlers to response rows
-            document.querySelectorAll('.clickable-row').forEach(row => {
+            const clickableRows = document.querySelectorAll('.clickable-row');
+            console.log('Found', clickableRows.length, 'clickable response rows');
+            
+            clickableRows.forEach((row, index) => {
+                console.log(`Setting up row ${index} with ID:`, row.dataset.responseId);
+                
                 row.addEventListener('click', function(e) {
                     e.preventDefault();
+                    e.stopPropagation();
                     const responseId = this.dataset.responseId;
                     console.log('Row clicked, response ID:', responseId);
                     openResponseModal(responseId);
                 });
+                
+                // Add visual feedback
+                row.style.transition = 'all 0.2s ease';
+                row.addEventListener('mouseenter', function() {
+                    this.style.backgroundColor = '#e3f2fd';
+                    this.style.transform = 'scale(1.01)';
+                    this.style.boxShadow = '0 2px 8px rgba(0,0,0,0.15)';
+                });
+                
+                row.addEventListener('mouseleave', function() {
+                    this.style.backgroundColor = '';
+                    this.style.transform = 'scale(1)';
+                    this.style.boxShadow = '';
+                });
             });
-            
-            console.log('Found', document.querySelectorAll('.clickable-row').length, 'clickable response rows');
         });
         
         // Stop auto-refresh when user leaves page
