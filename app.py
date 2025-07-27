@@ -130,13 +130,12 @@ try:
 except Exception as e:
     logger.error(f"Could not register Professional Reports API blueprint: {e}")
 
-# Register Feedback Widget API
+# Import simplified feedback widget routes
 try:
-    from api.feedback_widget import feedback_widget_api
-    app.register_blueprint(feedback_widget_api)
-    logger.info("Feedback Widget API blueprint registered successfully")
+    import routes_feedback_widget
+    logger.info("Feedback Widget routes imported successfully")
 except Exception as e:
-    logger.error(f"Could not register Feedback Widget API blueprint: {e}")
+    logger.error(f"Could not import Feedback Widget routes: {e}")
 
 @app.route('/')
 def index():

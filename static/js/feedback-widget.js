@@ -7,7 +7,8 @@ class FeedbackWidget {
     constructor(options = {}) {
         this.options = {
             position: 'bottom-right', // bottom-left for RTL
-            apiEndpoint: '/api/feedback-widget',
+            submitEndpoint: '/feedback-widget',
+            configEndpoint: '/feedback-widget/config',
             categories: [
                 'تحسين المنتج', 'مشكلة تقنية', 'اقتراح ميزة', 
                 'سهولة الاستخدام', 'الأداء', 'أخرى'
@@ -98,7 +99,13 @@ class FeedbackWidget {
                     </button>
                 </div>
                 <div class="feedback-modal-body">
-                    <form class="feedback-form" role="form">
+                    <form class="feedback-form" role="form" method="POST" action="/feedback-widget">
+                        <!-- Hidden fields for tracking -->
+                        <input type="hidden" name="page_url" id="page-url" value="">
+                        <input type="hidden" name="page_title" id="page-title" value="">
+                        <input type="hidden" name="rating" id="selected-rating" value="">
+                        <input type="hidden" name="category" id="selected-category" value="">
+                        
                         <!-- Rating Section -->
                         <div class="feedback-rating">
                             <label class="feedback-rating-label">${labels.rating}</label>
@@ -315,31 +322,33 @@ class FeedbackWidget {
         submitSpinner.style.display = 'inline-block';
 
         try {
-            const formData = {
-                rating: this.rating,
-                category: this.category,
-                comment: this.modal.querySelector('.feedback-textarea').value.trim(),
-                page_url: window.location.href,
-                page_title: document.title,
-                user_agent: navigator.userAgent,
-                timestamp: new Date().toISOString(),
-                language: this.currentLang
-            };
+            // Update hidden form fields
+            document.getElementById('page-url').value = window.location.href;
+            document.getElementById('page-title').value = document.title;
+            document.getElementById('selected-rating').value = this.rating;
+            document.getElementById('selected-category').value = this.category;
 
-            const response = await fetch(this.options.apiEndpoint, {
+            // Create FormData from the form
+            const formData = new FormData(this.form);
+
+            const response = await fetch(this.options.submitEndpoint, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
                     'X-Requested-With': 'XMLHttpRequest'
                 },
-                body: JSON.stringify(formData)
+                body: formData
             });
 
-            if (response.ok) {
+            const result = await response.json();
+
+            if (response.ok && result.success) {
                 this.showSuccessMessage();
-                this.trackEvent('feedback_submitted_success', formData);
+                this.trackEvent('feedback_submitted_success', { 
+                    rating: this.rating, 
+                    category: this.category 
+                });
             } else {
-                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                throw new Error(result.error || `HTTP ${response.status}: ${response.statusText}`);
             }
 
         } catch (error) {

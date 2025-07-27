@@ -4,8 +4,8 @@
 <script>
 // Initialize feedback widget after page load
 document.addEventListener('DOMContentLoaded', function() {
-    // Fetch widget configuration from API
-    fetch('/api/feedback-widget/config')
+    // Fetch widget configuration from simplified endpoint
+    fetch('/feedback-widget/config')
         .then(response => response.json())
         .then(config => {
             if (config.success && config.config.enabled) {
