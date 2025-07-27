@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="{{ get_language_info().code }}" dir="{{ get_language_info().direction }}">
+<head>
+    {% include 'components/head.html' %}
+    <title>{{ title }} - Voice of Customer Platform</title>
+</head>
+<body>
+    {% include 'components/unified_navigation.html' %}
+    
+    <div class="page-container">
+        <div class="page-header">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1>{{ title }}</h1>
+                    <p class="text-muted">إنشاء حملة توزيع جديدة للاستطلاع</p>
+                </div>
+                <a href="{{ url_for('survey_distribution_page') }}" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-right me-2"></i>العودة
+                </a>
+            </div>
+        </div>
+        
+        <!-- Campaign Creation Form -->
+        <div class="card-unified">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-plus-circle me-2"></i>تفاصيل الحملة الجديدة
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if error %}
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-triangle me-2"></i>{{ error }}
+                </div>
+                {% endif %}
+                
+                <form method="POST" action="{{ url_for('create_campaign') }}">
+                    <!-- Step 1: Basic Information -->
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="name" class="form-label">اسم الحملة *</label>
+                                <input type="text" class="form-control" id="name" name="name" required 
+                                       placeholder="مثال: حملة رضا العملاء - يناير 2025">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="survey_id" class="form-label">الاستطلاع *</label>
+                                <select class="form-select" id="survey_id" name="survey_id" required>
+                                    <option value="">اختر الاستطلاع...</option>
+                                    {% for survey in surveys %}
+                                    <option value="{{ survey.id }}">
+                                        {{ survey.display_title }} 
+                                        ({{ survey.questions_count }} سؤال)
+                                    </option>
+                                    {% endfor %}
+                                    {% if not surveys %}
+                                    <option disabled>لا توجد استطلاعات منشورة - قم بإنشاء استطلاع أولاً</option>
+                                    {% endif %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="description" class="form-label">وصف الحملة</label>
+                        <textarea class="form-control" id="description" name="description" rows="3" 
+                                  placeholder="وصف مختصر عن أهداف هذه الحملة..."></textarea>
+                    </div>
+                    
+                    <!-- Step 2: Distribution Method -->
+                    <hr class="my-4">
+                    <h6 class="mb-3">
+                        <i class="fas fa-share-alt me-2"></i>طريقة التوزيع
+                    </h6>
+                    
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <div class="card border">
+                                <div class="card-body text-center">
+                                    <input type="radio" class="btn-check" name="method_type" id="email_method" value="email" autocomplete="off" checked>
+                                    <label class="btn btn-outline-primary w-100" for="email_method">
+                                        <i class="fas fa-envelope mb-2 d-block fs-4"></i>
+                                        البريد الإلكتروني
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="card border">
+                                <div class="card-body text-center">
+                                    <input type="radio" class="btn-check" name="method_type" id="qr_method" value="qr_code" autocomplete="off">
+                                    <label class="btn btn-outline-primary w-100" for="qr_method">
+                                        <i class="fas fa-qrcode mb-2 d-block fs-4"></i>
+                                        رمز QR
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Target Audience -->
+                    <div class="mb-3" id="target_audience_section">
+                        <label for="target_audience" class="form-label">الجمهور المستهدف</label>
+                        <select class="form-select" id="target_audience" name="target_audience" multiple>
+                            <option value="all">جميع جهات الاتصال</option>
+                            {% for group in contact_groups %}
+                            <option value="{{ group.id }}">{{ group.name }} ({{ group.contact_count }} جهة اتصال)</option>
+                            {% endfor %}
+                        </select>
+                        <div class="form-text">اختر مجموعة أو أكثر، أو اترك فارغاً لإرسال لجميع جهات الاتصال</div>
+                    </div>
+                    
+                    <!-- Step 3: Scheduling -->
+                    <hr class="my-4">
+                    <h6 class="mb-3">
+                        <i class="fas fa-calendar me-2"></i>جدولة الإرسال
+                    </h6>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="radio" name="schedule_type" id="send_now" value="now" checked>
+                                <label class="form-check-label" for="send_now">
+                                    إرسال فوري
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="radio" name="schedule_type" id="send_scheduled" value="scheduled">
+                                <label class="form-check-label" for="send_scheduled">
+                                    جدولة للإرسال لاحقاً
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3" id="schedule_date_section" style="display: none;">
+                        <label for="schedule_date" class="form-label">تاريخ ووقت الإرسال</label>
+                        <input type="datetime-local" class="form-control" id="schedule_date" name="schedule_date">
+                    </div>
+                    
+                    <!-- Action Buttons -->
+                    <div class="d-flex gap-2 justify-content-end">
+                        <a href="{{ url_for('survey_distribution_page') }}" class="btn btn-outline-secondary">
+                            إلغاء
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-2"></i>إنشاء الحملة
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    {% include 'components/scripts.html' %}
+    
+    <script>
+        // Show/hide schedule date input
+        document.querySelectorAll('input[name="schedule_type"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                const scheduleSection = document.getElementById('schedule_date_section');
+                if (this.value === 'scheduled') {
+                    scheduleSection.style.display = 'block';
+                    document.getElementById('schedule_date').required = true;
+                } else {
+                    scheduleSection.style.display = 'none';
+                    document.getElementById('schedule_date').required = false;
+                }
+            });
+        });
+        
+        // Show/hide target audience based on method
+        document.querySelectorAll('input[name="method_type"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                const targetSection = document.getElementById('target_audience_section');
+                if (this.value === 'qr_code' || this.value === 'embed_widget') {
+                    targetSection.style.display = 'none';
+                } else {
+                    targetSection.style.display = 'block';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

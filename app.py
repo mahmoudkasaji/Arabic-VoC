@@ -66,6 +66,9 @@ with app.app_context():
     # Import contact models for survey delivery
     from models.contacts import Contact, ContactGroup, ContactGroupMembership, ContactDelivery
     
+    # Import survey campaign models
+    from models.survey_campaigns import SurveyCampaign, DistributionMethod
+    
     # Import preferences model to ensure table creation
     try:
         from models.replit_user_preferences import ReplitUserPreferences
@@ -145,6 +148,14 @@ try:
     logger.info("Feedback Widget API blueprint registered successfully")
 except Exception as e:
     logger.error(f"Could not register Feedback Widget API blueprint: {e}")
+
+# Register distribution routes blueprint - Temporarily disabled due to conflicts
+# try:
+#     from routes.distribution import distribution_bp
+#     app.register_blueprint(distribution_bp)
+#     logger.info("Distribution routes blueprint registered successfully")
+# except Exception as e:
+#     logger.error(f"Could not register Distribution routes blueprint: {e}")
 
 @app.route('/')
 def index():
@@ -361,66 +372,120 @@ def survey_create_page():
 
 @app.route('/surveys/distribution')
 def survey_distribution_page():
-    """Survey delivery page with real survey data"""
+    """Survey distribution hub with campaign management"""
+    try:
+        from models.survey_campaigns import SurveyCampaign
+        from models.survey_flask import SurveyFlask
+        
+        # Get dashboard metrics
+        total_campaigns = SurveyCampaign.query.count()
+        active_campaigns = SurveyCampaign.query.filter_by(status='active').count()
+        
+        # Recent campaigns
+        recent_campaigns = SurveyCampaign.query.order_by(SurveyCampaign.created_at.desc()).limit(5).all()
+        
+        # Calculate total sent and response rates
+        total_sent = db.session.query(db.func.sum(SurveyCampaign.sent_count)).scalar() or 0
+        total_responses = db.session.query(db.func.sum(SurveyCampaign.response_count)).scalar() or 0
+        overall_response_rate = round((total_responses / total_sent) * 100, 1) if total_sent > 0 else 0
+        
+        dashboard_stats = {
+            'total_campaigns': total_campaigns,
+            'active_campaigns': active_campaigns,
+            'total_sent': total_sent,
+            'total_responses': total_responses,
+            'overall_response_rate': overall_response_rate
+        }
+        
+        return render_template('distribution/hub.html',
+                             title='مركز توزيع الاستطلاعات',
+                             dashboard_stats=dashboard_stats,
+                             recent_campaigns=recent_campaigns)
+        
+    except Exception as e:
+        logger.error(f"Error loading distribution hub: {e}")
+        return render_template('distribution/hub.html',
+                             title='مركز توزيع الاستطلاعات',
+                             error='حدث خطأ في تحميل لوحة التحكم')
+
+# Add campaign management routes
+@app.route('/surveys/distribution/create-campaign')
+def create_campaign_form():
+    """Campaign creation form"""
     try:
         from models.survey_flask import SurveyFlask
-        from utils.url_helpers import get_survey_public_url, get_survey_full_url
+        from models_unified import ContactGroup
         
-        # Get available surveys for selection
-        surveys = db.session.query(SurveyFlask).order_by(SurveyFlask.created_at.desc()).all()
+        surveys = SurveyFlask.query.filter_by(status='published').all()
+        contact_groups = ContactGroup.query.all()
         
-        # Prepare survey options with live URLs
-        survey_options = []
-        for survey in surveys:
-            try:
-                # Generate full public URL using live domain
-                full_public_url = None
-                if survey.short_id:
-                    full_public_url = get_survey_public_url(survey.short_id)
-                elif survey.uuid:
-                    full_public_url = get_survey_full_url(survey.uuid)
-                
-                # Count questions properly
-                questions_count = 0
-                if hasattr(survey, 'questions') and survey.questions:
-                    if isinstance(survey.questions, str):
-                        import json
-                        try:
-                            questions_data = json.loads(survey.questions)
-                            questions_count = len(questions_data) if isinstance(questions_data, list) else 0
-                        except:
-                            questions_count = 0
-                    else:
-                        questions_count = len(survey.questions)
-                
-                survey_options.append({
-                    'id': survey.id,
-                    'uuid': survey.uuid,
-                    'title': survey.display_title or 'استطلاع بدون عنوان',
-                    'description': survey.display_description or 'استطلاع مخصص',
-                    'status': survey.status or 'draft',
-                    'questions_count': questions_count,
-                    'public_url': f'/survey/{survey.uuid}',  # Relative URL for frontend
-                    'full_public_url': full_public_url,  # Full live URL for emails
-                    'short_id': survey.short_id
-                })
-                logger.info(f"Prepared survey: {survey.display_title}, {questions_count} questions, URL: {full_public_url}")
-                
-            except Exception as e:
-                logger.error(f"Error processing survey {survey.id}: {e}")
-                continue
+        return render_template('distribution/create_campaign.html',
+                             title='إنشاء حملة جديدة',
+                             surveys=surveys,
+                             contact_groups=contact_groups)
         
-        logger.info(f"Loaded {len(survey_options)} surveys for distribution")
-        
-        return render_template('survey_delivery_mvp.html',
-                             title='توزيع الاستطلاعات',
-                             surveys=survey_options)
-                             
     except Exception as e:
-        logger.error(f"Error loading survey delivery page: {e}")
-        return render_template('survey_delivery_mvp.html',
-                             title='توزيع الاستطلاعات',
-                             surveys=[])
+        logger.error(f"Error loading campaign creation form: {e}")
+        return render_template('distribution/create_campaign.html',
+                             title='إنشاء حملة جديدة',
+                             error='حدث خطأ في تحميل النموذج')
+
+@app.route('/surveys/distribution/create-campaign', methods=['POST'])
+def create_campaign():
+    """Create new campaign - Direct DB operation"""
+    try:
+        from models.survey_campaigns import SurveyCampaign, DistributionMethod
+        
+        # Get form data
+        campaign_name = request.form.get('name')
+        survey_id = request.form.get('survey_id')
+        description = request.form.get('description', '')
+        method_type = request.form.get('method_type')
+        target_audience = request.form.getlist('target_audience')
+        schedule_type = request.form.get('schedule_type', 'now')
+        schedule_date = request.form.get('schedule_date')
+        
+        # Validation
+        if not campaign_name or not survey_id or not method_type:
+            flash('يرجى ملء جميع الحقول المطلوبة', 'error')
+            return redirect(url_for('create_campaign_form'))
+            
+        # Create campaign
+        campaign = SurveyCampaign(
+            name=campaign_name,
+            survey_id=int(survey_id),
+            created_by='demo@replit.com',  # TODO: Get from session
+            description=description,
+            status='draft'
+        )
+        
+        # Set schedule if specified
+        if schedule_type == 'scheduled' and schedule_date:
+            from datetime import datetime
+            campaign.scheduled_at = datetime.fromisoformat(schedule_date)
+            
+        db.session.add(campaign)
+        db.session.flush()  # Get campaign ID
+        
+        # Create distribution method
+        distribution_method = DistributionMethod(
+            campaign_id=campaign.id,
+            method_type=method_type,
+            target_audience={'groups': target_audience} if target_audience else {'all': True},
+            status='pending'
+        )
+        
+        db.session.add(distribution_method)
+        db.session.commit()
+        
+        flash(f'تم إنشاء الحملة "{campaign_name}" بنجاح', 'success')
+        return redirect(url_for('survey_distribution_page'))
+        
+    except Exception as e:
+        logger.error(f"Error creating campaign: {e}")
+        db.session.rollback()
+        flash('حدث خطأ في إنشاء الحملة', 'error')
+        return redirect(url_for('create_campaign_form'))
 
 @app.route('/response/<uuid>')
 def response_detail(uuid):
@@ -880,11 +945,7 @@ def survey_test_page():
     return render_template('survey_test.html', 
                          title='اختبار نظام الاستطلاعات')
 
-@app.route('/surveys/builder')
-def survey_builder():
-    """Survey builder interface with 4-step workflow"""
-    return render_template('survey_builder.html', 
-                         title='منشئ الاستطلاعات')
+# Removed duplicate survey_builder route - already exists above
 
 @app.route('/analytics/enhanced-test')
 def enhanced_analytics_test():
