@@ -589,9 +589,15 @@ def submit_survey_response(uuid):
 
 @app.route('/contacts')
 def contacts_page():
-    """Contact management page"""
+    """Contact management page with all contacts from database"""
+    from models.contacts import Contact
+    
+    # Get all contacts from database
+    contacts = Contact.query.order_by(Contact.created_at.desc()).all()
+    
     return render_template('contacts.html', 
-                         title='إدارة جهات الاتصال')
+                         title='إدارة جهات الاتصال',
+                         contacts=contacts)
 
 @app.route('/survey-test')
 def survey_test_page():
