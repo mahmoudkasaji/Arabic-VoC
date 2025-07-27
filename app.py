@@ -436,14 +436,14 @@ def response_detail(uuid):
                                  response=None, 
                                  page_title='الاستجابة غير موجودة'), 404
         
-        logger.info(f"Loading response detail for identifier: {identifier} (UUID: {response.uuid})")
+        logger.info(f"Loading response detail for UUID: {uuid}")
         
         return render_template('response_detail.html', 
                              response=response,
                              page_title='تفاصيل الاستجابة')
         
     except Exception as e:
-        logger.error(f"Error loading response detail {identifier}: {e}")
+        logger.error(f"Error loading response detail UUID {uuid}: {e}")
         return render_template('response_detail.html', 
                              response=None, 
                              page_title='خطأ في التحميل',
