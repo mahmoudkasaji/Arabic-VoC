@@ -8,75 +8,105 @@
     {% include 'components/unified_navigation.html' %}
     
     <div class="container-custom">
-        <!-- Header -->
+        <!-- Enhanced Header with Statistics -->
         <div class="page-header mb-4">
-            <h1 class="page-title">إدارة جهات الاتصال</h1>
-            <p class="page-description">إدارة قائمة جهات الاتصال لتوزيع الاستطلاعات</p>
-        </div>
-
-        <!-- Actions Bar -->
-        <div class="card-unified mb-4">
-            <div class="card-body">
-                <div class="row align-items-center">
-                    <div class="col-md-6">
-                        <div class="input-group">
-                            <input type="text" class="form-control" id="searchContacts" placeholder="البحث في جهات الاتصال...">
-                            <button class="btn btn-outline-secondary" type="button" onclick="searchContacts()">
-                                <i class="fas fa-search"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="col-md-6 text-end">
-                        <button class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#addContactModal">
-                            <i class="fas fa-plus me-2"></i>إضافة جهة اتصال
-                        </button>
-                        <button class="btn btn-outline-success me-2" data-bs-toggle="modal" data-bs-target="#importContactsModal">
-                            <i class="fas fa-upload me-2"></i>استيراد جماعي
-                        </button>
-                        <a href="/contacts/export" class="btn btn-outline-secondary me-2">
-                            <i class="fas fa-download me-2"></i>تصدير جماعي
-                        </a>
-                        <button class="btn btn-outline-secondary" onclick="testEmailService()">
-                            <i class="fas fa-envelope me-2"></i>اختبار البريد الإلكتروني
-                        </button>
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1 class="page-title mb-2">
+                        <i class="fas fa-address-book text-primary me-3"></i>إدارة جهات الاتصال
+                    </h1>
+                    <p class="page-description text-muted mb-0">إدارة وتنظيم قائمة جهات الاتصال لتوزيع الاستطلاعات</p>
+                </div>
+                <div class="col-md-4 text-end">
+                    <div class="badge bg-primary fs-6 px-3 py-2">
+                        <i class="fas fa-users me-2"></i>{{ contacts|length if contacts else 0 }} جهة اتصال
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Filters -->
-        <div class="card-unified mb-4">
+        <!-- Enhanced Actions Bar with Improved Layout -->
+        <div class="card-unified mb-4 shadow-sm">
             <div class="card-body">
-                <div class="row">
+                <div class="row align-items-center g-3">
+                    <!-- Search Section -->
+                    <div class="col-lg-5">
+                        <div class="input-group input-group-lg">
+                            <span class="input-group-text bg-light">
+                                <i class="fas fa-search text-muted"></i>
+                            </span>
+                            <input type="text" class="form-control" id="searchContacts" 
+                                   placeholder="البحث في جهات الاتصال..." onkeyup="searchContacts()">
+                        </div>
+                    </div>
+                    
+                    <!-- Action Buttons Section -->
+                    <div class="col-lg-7">
+                        <div class="d-flex flex-wrap justify-content-end gap-2">
+                            <!-- Primary Action - Add Contact -->
+                            <button class="btn btn-primary btn-lg shadow-sm" data-bs-toggle="modal" data-bs-target="#addContactModal">
+                                <i class="fas fa-plus me-2"></i>إضافة جهة اتصال
+                            </button>
+                            
+                            <!-- Import/Export Actions Group -->
+                            <div class="btn-group shadow-sm" role="group" aria-label="Import/Export Actions">
+                                <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#importContactsModal" 
+                                        title="استيراد جهات اتصال من ملف CSV">
+                                    <i class="fas fa-upload me-2"></i>استيراد
+                                </button>
+                                <a href="/contacts/export" class="btn btn-info" 
+                                   title="تصدير جميع جهات الاتصال إلى ملف CSV">
+                                    <i class="fas fa-download me-2"></i>تصدير
+                                </a>
+                            </div>
+                            
+                            <!-- Test Action -->
+                            <button class="btn btn-outline-warning shadow-sm" onclick="testEmailService()" 
+                                    title="اختبار اتصال خدمة البريد الإلكتروني">
+                                <i class="fas fa-envelope-circle-check me-2"></i>اختبار البريد
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Enhanced Filters Section -->
+        <div class="card-unified mb-4 border-0 bg-light">
+            <div class="card-body">
+                <div class="row g-3 align-items-end">
                     <div class="col-md-3">
-                        <label class="form-label">المجموعة</label>
-                        <select class="form-select" id="groupFilter" onchange="applyFilters()">
+                        <label class="form-label fw-semibold text-muted">
+                            <i class="fas fa-layer-group me-2"></i>المجموعة
+                        </label>
+                        <select class="form-select form-select-sm" id="groupFilter" onchange="applyFilters()">
                             <option value="">جميع المجموعات</option>
                         </select>
                     </div>
                     <div class="col-md-3">
-                        <label class="form-label">القناة</label>
-                        <select class="form-select" id="channelFilter" onchange="applyFilters()">
+                        <label class="form-label fw-semibold text-muted">
+                            <i class="fas fa-broadcast-tower me-2"></i>القناة
+                        </label>
+                        <select class="form-select form-select-sm" id="channelFilter" onchange="applyFilters()">
                             <option value="">جميع القنوات</option>
-                            <option value="email">البريد الإلكتروني</option>
-                            <option value="sms">الرسائل النصية</option>
-                            <option value="whatsapp">واتساب</option>
+                            <option value="email">📧 البريد الإلكتروني</option>
+                            <option value="sms">📱 الرسائل النصية</option>
+                            <option value="whatsapp">💬 واتساب</option>
                         </select>
                     </div>
                     <div class="col-md-3">
-                        <label class="form-label">الحالة</label>
-                        <select class="form-select" id="statusFilter" onchange="applyFilters()">
-                            <option value="active">نشط</option>
-                            <option value="all">الكل</option>
+                        <label class="form-label fw-semibold text-muted">
+                            <i class="fas fa-toggle-on me-2"></i>الحالة
+                        </label>
+                        <select class="form-select form-select-sm" id="statusFilter" onchange="applyFilters()">
+                            <option value="active">✅ نشط</option>
+                            <option value="all">📋 الكل</option>
                         </select>
                     </div>
                     <div class="col-md-3">
-                        <label class="form-label">&nbsp;</label>
-                        <div>
-                            <button class="btn btn-outline-secondary w-100" onclick="resetFilters()">
-                                <i class="fas fa-undo me-2"></i>إعادة تعيين
-                            </button>
-                        </div>
+                        <button class="btn btn-outline-secondary btn-sm w-100 shadow-sm" onclick="resetFilters()">
+                            <i class="fas fa-refresh me-2"></i>إعادة تعيين الفلاتر
+                        </button>
                     </div>
                 </div>
             </div>
@@ -472,6 +502,66 @@
             </div>
         </div>
     </div>
+
+    <!-- Custom CSS for Enhanced Styling -->
+    <style>
+        .card-unified {
+            border: 1px solid #e9ecef;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+        
+        .card-unified:hover {
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .btn-group .btn {
+            border-radius: 0;
+        }
+        
+        .btn-group .btn:first-child {
+            border-top-left-radius: 6px;
+            border-bottom-left-radius: 6px;
+        }
+        
+        .btn-group .btn:last-child {
+            border-top-right-radius: 6px;
+            border-bottom-right-radius: 6px;
+        }
+        
+        .input-group-lg .input-group-text {
+            border-top-left-radius: 8px;
+            border-bottom-left-radius: 8px;
+        }
+        
+        .input-group-lg .form-control {
+            border-top-right-radius: 8px;
+            border-bottom-right-radius: 8px;
+        }
+        
+        .page-title {
+            font-weight: 700;
+            color: #2c3e50;
+        }
+        
+        .badge {
+            border-radius: 8px;
+        }
+        
+        .btn {
+            border-radius: 6px;
+            font-weight: 500;
+        }
+        
+        .btn-lg {
+            padding: 0.7rem 1.5rem;
+            border-radius: 8px;
+        }
+        
+        .shadow-sm {
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08) !important;
+        }
+    </style>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
