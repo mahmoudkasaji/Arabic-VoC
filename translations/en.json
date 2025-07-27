@@ -47,6 +47,9 @@
     },
     "back_to_home": "Back to Home"
   },
+  "contacts": {
+    "title": "Contact Management"
+  },
   "buttons": {
     "create": "Create",
     "save": "Save",
