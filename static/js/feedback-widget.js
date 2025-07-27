@@ -180,54 +180,73 @@ class FeedbackWidget {
     }
 
     attachEventListeners() {
-        // Trigger button
-        this.triggerBtn.addEventListener('click', () => this.openModal());
+        // Trigger button - check if exists
+        if (this.triggerBtn) {
+            this.triggerBtn.addEventListener('click', () => this.openModal());
+        }
 
-        // Close button
-        this.modal.querySelector('.feedback-modal-close').addEventListener('click', () => this.closeModal());
+        // Close button - check if exists
+        const closeBtn = this.modal?.querySelector('.feedback-modal-close');
+        if (closeBtn) {
+            closeBtn.addEventListener('click', () => this.closeModal());
+        }
 
-        // Backdrop click to close
-        this.backdrop.addEventListener('click', () => this.closeModal());
+        // Backdrop click to close - check if exists
+        if (this.backdrop) {
+            this.backdrop.addEventListener('click', () => this.closeModal());
+        }
 
-        // Rating stars
-        this.modal.querySelectorAll('.rating-star').forEach(star => {
-            star.addEventListener('click', () => this.setRating(parseInt(star.dataset.rating)));
-            star.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    this.setRating(parseInt(star.dataset.rating));
-                }
+        // Rating stars - check if they exist
+        const ratingStars = this.modal?.querySelectorAll('.rating-star');
+        if (ratingStars && ratingStars.length > 0) {
+            ratingStars.forEach(star => {
+                star.addEventListener('click', () => this.setRating(parseInt(star.dataset.rating)));
+                star.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        this.setRating(parseInt(star.dataset.rating));
+                    }
+                });
             });
-        });
+        }
 
-        // Category dropdown
-        this.modal.querySelector('#category-select').addEventListener('change', (e) => {
-            this.setCategory(e.target.value);
-        });
+        // Category dropdown - check if exists
+        const categorySelect = this.modal?.querySelector('#category-select');
+        if (categorySelect) {
+            categorySelect.addEventListener('change', (e) => {
+                this.setCategory(e.target.value);
+            });
+        }
 
-        // Form submission
-        this.form.addEventListener('submit', (e) => {
-            e.preventDefault();
-            this.submitFeedback();
-        });
+        // Form submission - check if exists
+        if (this.form) {
+            this.form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                this.submitFeedback();
+            });
+        }
 
-        // Character counter
-        const textarea = this.modal.querySelector('.feedback-textarea');
-        const charCount = this.modal.querySelector('#char-count');
-        textarea.addEventListener('input', () => {
-            const count = textarea.value.length;
-            charCount.textContent = `${count}/500 حرف`;
-        });
+        // Character counter - check if elements exist
+        const textarea = this.modal?.querySelector('.feedback-textarea');
+        const charCount = this.modal?.querySelector('#char-count');
+        if (textarea && charCount) {
+            textarea.addEventListener('input', () => {
+                const count = textarea.value.length;
+                charCount.textContent = `${count}/500 حرف`;
+            });
+        }
 
         // Keyboard navigation
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && this.modal.classList.contains('active')) {
+            if (e.key === 'Escape' && this.modal?.classList.contains('active')) {
                 this.closeModal();
             }
         });
 
-        // Form validation
-        this.modal.addEventListener('input', () => this.validateForm());
+        // Form validation - check if modal exists
+        if (this.modal) {
+            this.modal.addEventListener('input', () => this.validateForm());
+        }
     }
 
     setupAccessibility() {
