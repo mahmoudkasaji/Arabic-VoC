@@ -92,11 +92,14 @@
     backdrop-filter: blur(4px);
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
     z-index: 10000;
     opacity: 0;
     visibility: hidden;
     transition: all 0.3s ease;
+    padding: 20px;
+    box-sizing: border-box;
+    overflow-y: auto;
 }
 
 .feedback-modal.active {
@@ -108,12 +111,14 @@
     background: white;
     border-radius: 16px;
     max-width: 500px;
-    width: 90%;
-    max-height: 80vh;
-    overflow-y: auto;
-    transform: scale(0.7) translateY(100px);
+    width: 100%;
+    min-height: auto;
+    max-height: none;
+    margin: auto;
+    transform: scale(0.7) translateY(50px);
     transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+    position: relative;
 }
 
 .feedback-modal.active .feedback-modal-content {
@@ -124,8 +129,9 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 24px 24px 16px;
+    padding: 20px 24px 16px;
     border-bottom: 1px solid #f0f0f0;
+    flex-shrink: 0;
 }
 
 .feedback-modal-title {
@@ -152,7 +158,9 @@
 }
 
 .feedback-modal-body {
-    padding: 24px;
+    padding: 20px 24px 24px;
+    flex: 1;
+    overflow-y: visible;
 }
 
 /* Quick Rating Section */
@@ -201,13 +209,13 @@
 
 .category-buttons {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    grid-template-columns: repeat(2, 1fr);
     gap: 8px;
     margin-top: 8px;
 }
 
 .category-btn {
-    padding: 8px 12px;
+    padding: 10px 12px;
     border: 2px solid #e9ecef;
     background: white;
     border-radius: 8px;
@@ -217,6 +225,9 @@
     text-align: center;
     transition: all 0.2s ease;
     color: #6c757d;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .category-btn:hover {
@@ -232,12 +243,13 @@
 
 /* Comment Section */
 .feedback-comment {
-    margin-bottom: 24px;
+    margin-bottom: 20px;
 }
 
 .feedback-textarea {
     width: 100%;
-    min-height: 100px;
+    min-height: 80px;
+    max-height: 120px;
     padding: 12px;
     border: 2px solid #e9ecef;
     border-radius: 8px;
@@ -245,6 +257,7 @@
     font-family: 'Cairo', sans-serif;
     font-size: 14px;
     transition: border-color 0.2s ease;
+    box-sizing: border-box;
 }
 
 .feedback-textarea:focus {
@@ -375,10 +388,16 @@
         text-transform: none;
     }
     
+    .feedback-modal {
+        padding: 10px;
+        align-items: flex-start;
+    }
+    
     .feedback-modal-content {
-        width: 95%;
-        margin: 10px;
-        max-height: 85vh;
+        width: 100%;
+        margin: 20px auto;
+        max-height: none;
+        min-height: auto;
     }
     
     .feedback-modal-header,
