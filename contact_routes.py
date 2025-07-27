@@ -16,8 +16,14 @@ except ImportError:
 def edit_contact(contact_id):
     """Handle contact edit form submission"""
     from models.contacts import Contact
+    import logging
+    
+    logger = logging.getLogger(__name__)
+    logger.info(f"Edit contact route called for contact_id: {contact_id}")
+    logger.info(f"Form data received: {dict(request.form)}")
     
     contact = Contact.query.get_or_404(contact_id)
+    logger.info(f"Found contact: {contact.name} ({contact.email})")
     
     # Update contact fields from form
     contact.name = request.form.get('name', '').strip()
@@ -33,11 +39,14 @@ def edit_contact(contact_id):
     
     try:
         db.session.commit()
+        logger.info(f"Contact {contact_id} updated successfully: {contact.name}")
         flash('تم تحديث جهة الاتصال بنجاح', 'success')
     except Exception as e:
         db.session.rollback()
+        logger.error(f"Error updating contact {contact_id}: {e}")
         flash('حدث خطأ في تحديث جهة الاتصال', 'error')
     
+    logger.info("Redirecting back to contacts page")
     return redirect(url_for('contacts_page'))
 
 # Contact Create Route
