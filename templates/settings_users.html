@@ -2,6 +2,7 @@
 <html lang="{{ get_language_info().code }}" dir="{{ get_language_info().direction }}">
 <head>
     {% include 'components/head.html' %}
+    {% include 'components/standard_buttons.html' %}
     <title>{{ title | default('settings_dropdown.user_management' | translate) }} - {{ 'app.name' | translate }}</title>
 </head>
 <body>
@@ -58,11 +59,11 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="d-flex gap-2">
-                                    <button id="clearFilters" class="btn btn-outline-secondary">
-                                        <i class="fas fa-times me-1"></i>مسح الفلاتر
+                                    <button id="clearFilters" class="btn-standard btn-secondary-standard btn-md-standard">
+                                        <i class="fas fa-times"></i>مسح الفلاتر
                                     </button>
-                                    <button id="exportUsers" class="btn btn-outline-success">
-                                        <i class="fas fa-download me-1"></i>تصدير
+                                    <button id="exportUsers" class="btn-standard btn-primary-standard btn-md-standard">
+                                        <i class="fas fa-download"></i>تصدير
                                     </button>
                                 </div>
                             </div>

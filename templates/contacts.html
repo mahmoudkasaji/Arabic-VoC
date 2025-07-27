@@ -2,6 +2,7 @@
 <html lang="{{ get_language_info().code }}" dir="{{ get_language_info().direction }}">
 <head>
     {% include 'components/head.html' %}
+    {% include 'components/standard_buttons.html' %}
     <title>Contact Management - Voice of Customer Platform</title>
 </head>
 <body>
@@ -50,13 +51,13 @@
                             
                             <!-- Import/Export Actions Group -->
                             <div class="btn-group shadow-sm" role="group" aria-label="Import/Export Actions">
-                                <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#importContactsModal" 
+                                <button class="btn-standard btn-primary-standard btn-md-standard" data-bs-toggle="modal" data-bs-target="#importContactsModal" 
                                         title="استيراد جهات اتصال من ملف CSV">
-                                    <i class="fas fa-upload me-2"></i>استيراد
+                                    <i class="fas fa-upload"></i>استيراد
                                 </button>
-                                <a href="/contacts/export" class="btn btn-info" 
+                                <a href="/contacts/export" class="btn-standard btn-secondary-standard btn-md-standard" 
                                    title="تصدير جميع جهات الاتصال إلى ملف CSV">
-                                    <i class="fas fa-download me-2"></i>تصدير
+                                    <i class="fas fa-download"></i>تصدير
                                 </a>
                             </div>
                             
