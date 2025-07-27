@@ -27,12 +27,12 @@
                         </div>
                     </div>
                     <div class="col-md-6 text-end">
-                        <button class="btn btn-primary me-2" onclick="showAddContactModal()">
+                        <button class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#addContactModal">
                             <i class="fas fa-plus me-2"></i>إضافة جهة اتصال
                         </button>
-                        <button class="btn btn-outline-primary me-2" onclick="showBulkImportModal()">
-                            <i class="fas fa-upload me-2"></i>استيراد جماعي
-                        </button>
+                        <a href="/contacts/export" class="btn btn-outline-secondary me-2">
+                            <i class="fas fa-download me-2"></i>تصدير جماعي
+                        </a>
                         <button class="btn btn-outline-secondary" onclick="testEmailService()">
                             <i class="fas fa-envelope me-2"></i>اختبار البريد الإلكتروني
                         </button>
@@ -162,18 +162,18 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="addContactForm">
+                    <form method="POST" action="/contacts/create" id="addContactForm">
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label class="form-label">الاسم *</label>
-                                    <input type="text" class="form-control" id="contactName" required>
+                                    <input type="text" class="form-control" name="name" id="contactName" required>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label class="form-label">الشركة</label>
-                                    <input type="text" class="form-control" id="contactCompany">
+                                    <input type="text" class="form-control" name="company" id="contactCompany">
                                 </div>
                             </div>
                         </div>
@@ -181,13 +181,13 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label class="form-label">البريد الإلكتروني</label>
-                                    <input type="email" class="form-control" id="contactEmail">
+                                    <input type="email" class="form-control" name="email" id="contactEmail">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label class="form-label">رقم الهاتف</label>
-                                    <input type="tel" class="form-control" id="contactPhone" placeholder="+966xxxxxxxxx">
+                                    <input type="tel" class="form-control" name="phone" id="contactPhone" placeholder="+966xxxxxxxxx">
                                 </div>
                             </div>
                         </div>
@@ -195,7 +195,7 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label class="form-label">اللغة المفضلة</label>
-                                    <select class="form-select" id="contactLanguage">
+                                    <select class="form-select" name="language_preference" id="contactLanguage">
                                         <option value="ar">العربية</option>
                                         <option value="en">English</option>
                                     </select>
@@ -204,7 +204,7 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label class="form-label">الحالة</label>
-                                    <select class="form-select" id="contactStatus">
+                                    <select class="form-select" name="is_active" id="contactStatus">
                                         <option value="true">نشط</option>
                                         <option value="false">غير نشط</option>
                                     </select>
@@ -216,19 +216,19 @@
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="emailOptIn" checked>
+                                        <input class="form-check-input" type="checkbox" name="email_opt_in" id="emailOptIn" checked>
                                         <label class="form-check-label" for="emailOptIn">البريد الإلكتروني</label>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="smsOptIn" checked>
+                                        <input class="form-check-input" type="checkbox" name="sms_opt_in" id="smsOptIn" checked>
                                         <label class="form-check-label" for="smsOptIn">الرسائل النصية</label>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="whatsappOptIn" checked>
+                                        <input class="form-check-input" type="checkbox" name="whatsapp_opt_in" id="whatsappOptIn" checked>
                                         <label class="form-check-label" for="whatsappOptIn">واتساب</label>
                                     </div>
                                 </div>
@@ -236,13 +236,14 @@
                         </div>
                         <div class="mb-3">
                             <label class="form-label">ملاحظات</label>
-                            <textarea class="form-control" id="contactNotes" rows="3"></textarea>
+                            <textarea class="form-control" name="notes" id="contactNotes" rows="3"></textarea>
                         </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                        <button type="submit" class="btn btn-primary">حفظ</button>
+                    </div>
                     </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
-                    <button type="button" class="btn btn-primary" onclick="saveContact()">حفظ</button>
                 </div>
             </div>
         </div>
