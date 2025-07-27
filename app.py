@@ -355,28 +355,53 @@ def survey_distribution_page():
     """Survey delivery page with real survey data"""
     try:
         from models.survey_flask import SurveyFlask
+        from utils.url_helpers import get_survey_public_url, get_survey_full_url
         
         # Get available surveys for selection
         surveys = db.session.query(SurveyFlask).order_by(SurveyFlask.created_at.desc()).all()
         
         # Prepare survey options with live URLs
-        from utils.url_helpers import get_survey_public_url
         survey_options = []
         for survey in surveys:
-            # Generate full public URL using live domain
-            full_public_url = get_survey_public_url(survey.short_id) if survey.short_id else None
-            
-            survey_options.append({
-                'id': survey.id,
-                'uuid': survey.uuid,
-                'title': survey.display_title,
-                'description': survey.display_description,
-                'status': survey.status,
-                'questions_count': len(survey.questions) if survey.questions else 0,
-                'public_url': survey.public_url,  # Relative URL for frontend
-                'full_public_url': full_public_url,  # Full live URL for emails
-                'short_id': survey.short_id
-            })
+            try:
+                # Generate full public URL using live domain
+                full_public_url = None
+                if survey.short_id:
+                    full_public_url = get_survey_public_url(survey.short_id)
+                elif survey.uuid:
+                    full_public_url = get_survey_full_url(survey.uuid)
+                
+                # Count questions properly
+                questions_count = 0
+                if hasattr(survey, 'questions') and survey.questions:
+                    if isinstance(survey.questions, str):
+                        import json
+                        try:
+                            questions_data = json.loads(survey.questions)
+                            questions_count = len(questions_data) if isinstance(questions_data, list) else 0
+                        except:
+                            questions_count = 0
+                    else:
+                        questions_count = len(survey.questions)
+                
+                survey_options.append({
+                    'id': survey.id,
+                    'uuid': survey.uuid,
+                    'title': survey.display_title or 'استطلاع بدون عنوان',
+                    'description': survey.display_description or 'استطلاع مخصص',
+                    'status': survey.status or 'draft',
+                    'questions_count': questions_count,
+                    'public_url': f'/survey/{survey.uuid}',  # Relative URL for frontend
+                    'full_public_url': full_public_url,  # Full live URL for emails
+                    'short_id': survey.short_id
+                })
+                logger.info(f"Prepared survey: {survey.display_title}, {questions_count} questions, URL: {full_public_url}")
+                
+            except Exception as e:
+                logger.error(f"Error processing survey {survey.id}: {e}")
+                continue
+        
+        logger.info(f"Loaded {len(survey_options)} surveys for distribution")
         
         return render_template('survey_delivery_mvp.html',
                              title='توزيع الاستطلاعات',

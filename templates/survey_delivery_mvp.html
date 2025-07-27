@@ -442,6 +442,11 @@
             const surveyData = JSON.parse(surveyDataAttr);
             console.log('Selected survey data:', surveyData);
             
+            // Validate required data
+            if (!surveyData.uuid) {
+                throw new Error('بيانات الاستطلاع غير مكتملة - معرف الاستطلاع مفقود');
+            }
+            
             // Calculate estimated time (1 minute per 2 questions)
             const questionsCount = surveyData.questions_count || 0;
             const estimatedMinutes = Math.max(1, Math.ceil(questionsCount / 2));
