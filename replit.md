@@ -210,7 +210,7 @@ A multi-channel feedback processing platform with Arabic language support, built
   - Direct database storage using unified Feedback model with 'widget' channel
   - Debug logging for troubleshooting and user experience optimization
 - **User Experience**: No popups or interruptions, always accessible, smooth animations, mobile responsive
-- **Post-Submission Behavior**: Form completely disappears and shows persistent thank you message until page reload (no auto-reset)
+- **Post-Submission Behavior**: Form completely disappears and shows persistent Arabic thank you message ("شكراً لمشاركة ملاحظاتك معنا") until page reload (no auto-reset)
 - **Distribution Integration**: Added to survey delivery system as embeddable widget option alongside sidebar feedback widget
 
 ### Persistent Feedback Widget Implementation Complete (July 27, 2025)
