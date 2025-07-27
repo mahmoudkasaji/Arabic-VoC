@@ -35,25 +35,53 @@
 
         .builder-container {
             display: grid;
-            grid-template-columns: 240px 1fr 340px;
-            gap: 12px;
+            grid-template-columns: 280px 1fr 400px;
+            gap: 20px;
             height: calc(100vh - 80px);
-            padding: 12px;
-            max-width: 1800px;
+            padding: 20px;
+            max-width: 2200px;
             margin: 0 auto;
+        }
+
+        /* Ultra-wide displays */
+        @media (min-width: 2000px) {
+            .builder-container {
+                grid-template-columns: 320px 1fr 450px;
+                gap: 24px;
+                padding: 24px;
+            }
+        }
+
+        /* Large desktop displays */
+        @media (max-width: 1800px) {
+            .builder-container {
+                grid-template-columns: 260px 1fr 380px;
+                gap: 18px;
+                padding: 18px;
+            }
+        }
+
+        @media (max-width: 1600px) {
+            .builder-container {
+                grid-template-columns: 240px 1fr 340px;
+                gap: 16px;
+                padding: 16px;
+            }
         }
 
         @media (max-width: 1400px) {
             .builder-container {
                 grid-template-columns: 220px 1fr 320px;
-                gap: 10px;
+                gap: 14px;
+                padding: 14px;
             }
         }
 
         @media (max-width: 1200px) {
             .builder-container {
                 grid-template-columns: 200px 1fr 300px;
-                gap: 8px;
+                gap: 12px;
+                padding: 12px;
             }
         }
 
@@ -248,13 +276,29 @@
             gap: 8px;
         }
 
-        /* Progressive Disclosure Styles */
+        /* Progressive Disclosure Styles - Enhanced for Desktop */
         .guided-flow-container {
             background: white;
-            border-radius: 12px;
-            padding: 24px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-            margin-bottom: 20px;
+            border-radius: 16px;
+            padding: 36px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+            margin-bottom: 28px;
+        }
+
+        /* Ultra-wide specific enhancements */
+        @media (min-width: 2000px) {
+            .guided-flow-container {
+                padding: 48px;
+                margin-bottom: 36px;
+            }
+        }
+
+        /* Large desktop enhancements */
+        @media (min-width: 1600px) {
+            .guided-flow-container {
+                padding: 42px;
+                margin-bottom: 32px;
+            }
         }
 
         .workflow-progress {
@@ -308,9 +352,17 @@
 
         .survey-setup-section {
             background: #f8f9fa;
-            border-radius: 10px;
-            padding: 25px;
-            margin-bottom: 25px;
+            border-radius: 12px;
+            padding: 32px;
+            margin-bottom: 32px;
+        }
+
+        /* Enhanced spacing for ultra-wide displays */
+        @media (min-width: 2000px) {
+            .survey-setup-section {
+                padding: 40px;
+                margin-bottom: 40px;
+            }
         }
 
         .setup-title {
@@ -325,9 +377,26 @@
 
         .template-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-top: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-top: 24px;
+        }
+
+        /* Enhanced template grid for wider displays */
+        @media (min-width: 1600px) {
+            .template-grid {
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 24px;
+                margin-top: 28px;
+            }
+        }
+
+        @media (min-width: 2000px) {
+            .template-grid {
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+                gap: 28px;
+                margin-top: 32px;
+            }
         }
 
         .template-card {
@@ -868,15 +937,26 @@
 
         .form-control-modern {
             border: 2px solid var(--border-color);
-            border-radius: 8px;
-            padding: 12px 15px;
+            border-radius: 10px;
+            padding: 14px 18px;
             font-family: 'Cairo', sans-serif;
             transition: all 0.3s ease;
+            font-size: 1rem;
         }
 
         .form-control-modern:focus {
             border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(46, 139, 87, 0.1);
+            box-shadow: 0 0 0 4px rgba(46, 139, 87, 0.12);
+            outline: none;
+        }
+
+        /* Enhanced form controls for wider displays */
+        @media (min-width: 1600px) {
+            .form-control-modern {
+                padding: 16px 20px;
+                font-size: 1.05rem;
+                border-radius: 12px;
+            }
         }
 
         .btn-primary-custom {
@@ -1354,24 +1434,31 @@
                         معلومات الاستطلاع الأساسية
                     </h5>
                     
-                    <div class="row">
-                        <div class="col-md-8">
+                    <div class="row g-4">
+                        <div class="col-lg-7 col-md-8">
                             <div class="form-group mb-4">
-                                <label for="surveyTitle" class="form-label fw-bold">عنوان الاستطلاع</label>
+                                <label for="surveyTitle" class="form-label fw-bold" style="font-size: 1.1rem;">عنوان الاستطلاع</label>
                                 <input type="text" class="form-control form-control-modern" id="surveyTitle" 
-                                       placeholder="مثال: استطلاع رضا العملاء لعام 2025">
+                                       placeholder="مثال: استطلاع رضا العملاء لعام 2025"
+                                       style="padding: 16px 20px; font-size: 1.05rem;">
                             </div>
                             
                             <div class="form-group mb-4">
-                                <label for="surveyDescription" class="form-label fw-bold">وصف الاستطلاع</label>
-                                <textarea class="form-control form-control-modern" id="surveyDescription" rows="3"
-                                          placeholder="اكتب وصفاً مختصراً يوضح الهدف من الاستطلاع وأهميته للمشاركين"></textarea>
+                                <label for="surveyDescription" class="form-label fw-bold" style="font-size: 1.1rem;">وصف الاستطلاع</label>
+                                <textarea class="form-control form-control-modern" id="surveyDescription" rows="4"
+                                          placeholder="اكتب وصفاً مختصراً يوضح الهدف من الاستطلاع وأهميته للمشاركين"
+                                          style="padding: 16px 20px; font-size: 1.05rem; line-height: 1.6;"></textarea>
                             </div>
                         </div>
-                        <div class="col-md-4">
-                            <div class="context-help">
-                                <i class="fas fa-lightbulb"></i>
-                                <strong>نصيحة:</strong> عنوان واضح ووصف مقنع يزيد من معدل الاستجابة بنسبة تصل إلى 40%
+                        <div class="col-lg-5 col-md-4">
+                            <div class="context-help" style="padding: 24px; border-radius: 12px; background: linear-gradient(135deg, #e8f5e8, #f0f8f0);">
+                                <i class="fas fa-lightbulb" style="font-size: 1.5rem; color: var(--primary-color); margin-bottom: 12px;"></i>
+                                <h6 style="color: var(--primary-color); font-weight: 700; margin-bottom: 12px;">نصائح مهمة:</h6>
+                                <ul style="margin-bottom: 0; padding-right: 20px; line-height: 1.7;">
+                                    <li>عنوان واضح يزيد معدل الاستجابة بـ 40%</li>
+                                    <li>وصف مختصر يوضح قيمة المشاركة</li>
+                                    <li>استخدم لغة مألوفة وودودة</li>
+                                </ul>
                             </div>
                         </div>
                     </div>
