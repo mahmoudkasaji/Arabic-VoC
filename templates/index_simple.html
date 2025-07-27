@@ -682,8 +682,8 @@
                 submitBtn.textContent = 'جاري الإرسال...';
                 
                 try {
-                    // Submit feedback to backend
-                    const response = await fetch('/api/feedback/widget', {
+                    // Submit feedback to backend  
+                    const response = await fetch('/api/feedback-widget', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -691,13 +691,11 @@
                         body: JSON.stringify({
                             rating: feedbackData.helpful === 'yes' ? 5 : 2,
                             comment: `${feedbackData.category ? '[' + feedbackData.category + '] ' : ''}${feedbackData.text || ''}`,
-                            channel: 'FOOTER_WIDGET',
-                            source: feedbackData.source,
-                            metadata: {
-                                helpful: feedbackData.helpful,
-                                category: feedbackData.category,
-                                timestamp: feedbackData.timestamp
-                            }
+                            category: feedbackData.category || 'general',
+                            page_url: window.location.href,
+                            page_title: document.title,
+                            user_agent: navigator.userAgent,
+                            language: 'ar'
                         })
                     });
                     

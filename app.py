@@ -137,6 +137,14 @@ try:
 except Exception as e:
     logger.error(f"Could not import Feedback Widget routes: {e}")
 
+# Import and register feedback widget API blueprint
+try:
+    from api.feedback_widget import feedback_widget_api
+    app.register_blueprint(feedback_widget_api)
+    logger.info("Feedback Widget API blueprint registered successfully")
+except Exception as e:
+    logger.error(f"Could not register Feedback Widget API blueprint: {e}")
+
 @app.route('/')
 def index():
     """Main homepage with Replit Auth and language support"""
