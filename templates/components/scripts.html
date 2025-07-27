@@ -12,6 +12,9 @@
 <!-- Main Application JavaScript -->
 <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 
+<!-- Persistent Feedback Widget JavaScript -->
+<script src="{{ url_for('static', filename='js/feedback-widget.js') }}"></script>
+
 <!-- Fix dropdown initialization -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -31,5 +34,10 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 </script>
+
+<!-- Feedback Widget Initialization (for authenticated users) -->
+{% if current_user.is_authenticated %}
+{% include 'components/feedback_widget.html' %}
+{% endif %}
 
 <!-- Page-specific JavaScript can be added via blocks in individual templates -->

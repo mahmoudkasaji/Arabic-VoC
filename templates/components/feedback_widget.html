@@ -1,0 +1,27 @@
+<!-- Persistent Feedback Widget Component -->
+<!-- Only show for authenticated users -->
+{% if current_user.is_authenticated %}
+<script>
+// Initialize feedback widget after page load
+document.addEventListener('DOMContentLoaded', function() {
+    // Fetch widget configuration from API
+    fetch('/api/feedback-widget/config')
+        .then(response => response.json())
+        .then(config => {
+            if (config.success && config.config.enabled) {
+                // Initialize widget with user-specific configuration
+                window.feedbackWidget = new FeedbackWidget({
+                    position: config.config.position,
+                    categories: config.config.categories,
+                    currentLang: config.config.language
+                });
+            }
+        })
+        .catch(error => {
+            console.log('Feedback widget config failed, using defaults');
+            // Fallback to default initialization
+            window.feedbackWidget = new FeedbackWidget();
+        });
+});
+</script>
+{% endif %}
