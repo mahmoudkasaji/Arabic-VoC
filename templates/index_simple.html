@@ -330,7 +330,7 @@
     }
 
     .feedback-body {
-        padding: 24px 0;
+        padding: 24px 20px;
         max-width: 800px;
         margin: 0 auto;
         direction: rtl;
@@ -351,9 +351,13 @@
 
     .radio-group {
         display: flex;
-        gap: 20px;
+        gap: 30px;
         margin-bottom: 20px;
-        justify-content: flex-end;
+        justify-content: center;
+        padding: 16px;
+        background: rgba(255, 255, 255, 0.5);
+        border-radius: 8px;
+        border: 1px solid #e2e8f0;
     }
 
     .radio-option {
@@ -367,6 +371,8 @@
         width: 18px;
         height: 18px;
         margin: 0;
+        transform: scale(1.2);
+        margin-left: 8px;
     }
 
     .radio-option label {
@@ -521,52 +527,54 @@
             <h3>هل وجدت ما تبحث عنه اليوم؟</h3>
         </div>
         <div class="feedback-body">
-            <form id="footerFeedbackForm">
-                <div class="feedback-question">
-                    <div class="radio-group">
-                        <div class="radio-option">
-                            <input type="radio" id="helpful-yes" name="helpful" value="yes" onchange="handleHelpfulResponse('yes')">
-                            <label for="helpful-yes">نعم</label>
-                        </div>
-                        <div class="radio-option">
-                            <input type="radio" id="helpful-no" name="helpful" value="no" onchange="handleHelpfulResponse('no')">
-                            <label for="helpful-no">لا</label>
+            <div class="container">
+                <form id="footerFeedbackForm">
+                    <div class="feedback-question">
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" id="helpful-yes" name="helpful" value="yes" onchange="handleHelpfulResponse('yes')">
+                                <label for="helpful-yes">نعم</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="helpful-no" name="helpful" value="no" onchange="handleHelpfulResponse('no')">
+                                <label for="helpful-no">لا</label>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <div id="feedbackSection" class="conditional-section">
-                    <div class="feedback-question">
-                        <label>نحن نقدر ملاحظاتك</label>
-                        <p style="font-size: 14px; color: #6b7280; margin-bottom: 16px;">ما الذي ترغب في مشاركته حول تجربتك؟</p>
+                    <div id="feedbackSection" class="conditional-section">
+                        <div class="feedback-question">
+                            <label>نحن نقدر ملاحظاتك</label>
+                            <p style="font-size: 14px; color: #6b7280; margin-bottom: 16px;">ما الذي ترغب في مشاركته حول تجربتك؟</p>
+                            
+                            <div class="category-options" id="categoryOptions">
+                                <!-- Categories will be populated by JavaScript -->
+                            </div>
+                        </div>
+
+                        <div class="feedback-question">
+                            <label for="feedbackText">أخبرنا المزيد عن تجربتك:</label>
+                            <textarea 
+                                id="feedbackText" 
+                                name="feedbackText" 
+                                class="feedback-textarea" 
+                                placeholder="يرجى عدم تضمين معلومات شخصية في رسالتك. سيتم حذف أي معلومات شخصية مقدمة."
+                            ></textarea>
+                        </div>
+
+                        <button type="submit" class="feedback-submit">إرسال الملاحظات</button>
                         
-                        <div class="category-options" id="categoryOptions">
-                            <!-- Categories will be populated by JavaScript -->
+                        <div class="privacy-notice">
+                            يرجى عدم تضمين معلومات شخصية في رسالتك. أي معلومات شخصية مقدمة سيتم حذفها. 
+                            إذا كان لديك أسئلة حول خدمات المنصة، يرجى <a href="/contact">التواصل معنا</a>.
                         </div>
                     </div>
 
-                    <div class="feedback-question">
-                        <label for="feedbackText">أخبرنا المزيد عن تجربتك:</label>
-                        <textarea 
-                            id="feedbackText" 
-                            name="feedbackText" 
-                            class="feedback-textarea" 
-                            placeholder="يرجى عدم تضمين معلومات شخصية في رسالتك. سيتم حذف أي معلومات شخصية مقدمة."
-                        ></textarea>
+                    <div id="successMessage" class="success-message">
+                        شكراً لك! تم إرسال ملاحظاتك بنجاح. نقدر وقتك ومساهمتك في تحسين المنصة.
                     </div>
-
-                    <button type="submit" class="feedback-submit">إرسال الملاحظات</button>
-                    
-                    <div class="privacy-notice">
-                        يرجى عدم تضمين معلومات شخصية في رسالتك. أي معلومات شخصية مقدمة سيتم حذفها. 
-                        إذا كان لديك أسئلة حول خدمات المنصة، يرجى <a href="/contact">التواصل معنا</a>.
-                    </div>
-                </div>
-
-                <div id="successMessage" class="success-message">
-                    شكراً لك! تم إرسال ملاحظاتك بنجاح. نقدر وقتك ومساهمتك في تحسين المنصة.
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
     </div>
 
@@ -580,6 +588,7 @@
 
         // Persistent Footer Feedback Form Functionality
         (function() {
+            console.log('🎯 Initializing persistent footer feedback form...');
             const categoryOptionsConfig = {
                 yes: [
                     { value: 'suggestion', text: 'لدي اقتراح أو فكرة' },
@@ -594,11 +603,23 @@
             };
 
             window.handleHelpfulResponse = function(response) {
+                console.log('👍 Helpful response triggered:', response);
                 const feedbackSection = document.getElementById('feedbackSection');
                 const categoryOptions = document.getElementById('categoryOptions');
                 
+                if (!feedbackSection) {
+                    console.error('❌ feedbackSection not found');
+                    return;
+                }
+                
+                if (!categoryOptions) {
+                    console.error('❌ categoryOptions not found');
+                    return;
+                }
+                
                 // Show the feedback section
                 feedbackSection.classList.add('show');
+                console.log('✅ Added show class to feedback section');
                 
                 // Clear existing categories
                 categoryOptions.innerHTML = '';
@@ -615,8 +636,11 @@
                     categoryOptions.innerHTML += categoryHtml;
                 });
                 
+                console.log('✅ Added', categories.length, 'category options');
+                
                 // Scroll to the feedback section smoothly
                 feedbackSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                console.log('✅ Scrolled to feedback section');
             };
 
             // Handle form submission
