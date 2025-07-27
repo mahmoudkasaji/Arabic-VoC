@@ -233,22 +233,33 @@
 }
 
 .rating-star {
-    font-size: 28px;
+    font-size: 32px;
     cursor: pointer;
     color: #e4e5e9;
-    transition: all 0.2s ease;
+    transition: all 0.3s ease;
     user-select: none;
+    padding: 4px;
+    border-radius: 6px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .rating-star:hover,
 .rating-star.active {
     color: #ffc107;
-    transform: scale(1.1);
+    transform: scale(1.15);
+    text-shadow: 0 2px 8px rgba(255, 193, 7, 0.4);
 }
 
 .rating-star:hover ~ .rating-star {
     color: #e4e5e9;
     transform: scale(1);
+}
+
+.rating-star:focus {
+    outline: 2px solid var(--feedback-primary);
+    outline-offset: 2px;
 }
 
 /* Category Selection */
@@ -349,6 +360,23 @@
     transform: none;
 }
 
+.feedback-submit.incomplete {
+    background: #f8f9fa;
+    color: #6c757d;
+    border: 2px dashed #dee2e6;
+}
+
+.feedback-submit.submitting {
+    background: var(--feedback-primary);
+    opacity: 0.7;
+    cursor: wait;
+}
+
+.feedback-submit.success {
+    background: #28a745;
+    color: white;
+}
+
 .submit-spinner {
     width: 16px;
     height: 16px;
@@ -366,25 +394,61 @@
 /* Success Message */
 .feedback-success {
     text-align: center;
-    padding: 40px 24px;
+    padding: 50px 30px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
 }
 
 .feedback-success-icon {
-    font-size: 48px;
+    font-size: 64px;
     color: #28a745;
-    margin-bottom: 16px;
+    margin-bottom: 20px;
+    animation: successPulse 0.6s ease-out;
 }
 
 .feedback-success-title {
-    font-size: 18px;
-    font-weight: 600;
-    color: #2c3e50;
-    margin-bottom: 8px;
+    font-size: 22px;
+    font-weight: 700;
+    color: #28a745;
+    margin-bottom: 16px;
+    animation: slideInUp 0.5s ease-out 0.1s both;
 }
 
 .feedback-success-message {
-    color: #6c757d;
-    font-size: 14px;
+    color: #495057;
+    font-size: 15px;
+    line-height: 1.6;
+    max-width: 280px;
+    animation: slideInUp 0.5s ease-out 0.2s both;
+}
+
+@keyframes successPulse {
+    0% { 
+        transform: scale(0.3);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes slideInUp {
+    0% {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
 }
 
 /* Mobile Responsive */

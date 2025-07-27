@@ -19,20 +19,26 @@ class FeedbackWidget {
                     title: 'شاركنا رأيك',
                     rating: 'كيف تقيم تجربتك؟',
                     category: 'ما نوع الملاحظة؟',
-                    comment: 'اكتب ملاحظتك هنا...',
+                    whyLabel: 'لماذا؟ أخبرنا المزيد',
+                    comment: 'شاركنا تفاصيل تجربتك...',
+                    characters: 'حرف',
                     submit: 'إرسال الملاحظة',
-                    success: 'شكراً لك!',
-                    successMessage: 'تم إرسال ملاحظتك بنجاح. سنعمل على تحسين تجربتك.'
+                    submitting: 'جاري الإرسال...',
+                    success: '✓ تم الإرسال بنجاح!',
+                    successMessage: 'شكراً لك على مشاركة رأيك. سنعمل على تحسين تجربتك بناءً على ملاحظاتك.'
                 },
                 en: {
                     trigger: 'Feedback',
                     title: 'Share Your Feedback',
                     rating: 'How would you rate your experience?',
                     category: 'What type of feedback?',
-                    comment: 'Write your feedback here...',
+                    whyLabel: 'Why? Tell us more',
+                    comment: 'Share details about your experience...',
+                    characters: 'chars',
                     submit: 'Submit Feedback',
-                    success: 'Thank You!',
-                    successMessage: 'Your feedback has been submitted successfully. We value your input.'
+                    submitting: 'Submitting...',
+                    success: '✓ Successfully Submitted!',
+                    successMessage: 'Thank you for sharing your feedback. We\'ll use your input to improve your experience.'
                 }
             },
             ...options
@@ -142,18 +148,19 @@ class FeedbackWidget {
 
                         <!-- Comment Section -->
                         <div class="feedback-comment">
-                            <label class="feedback-rating-label" for="feedback-text">تفاصيل إضافية (اختياري)</label>
+                            <label class="feedback-rating-label" for="feedback-text">${labels.whyLabel}</label>
                             <textarea class="feedback-textarea" 
                                       id="feedback-text"
                                       name="comment"
                                       placeholder="${labels.comment}"
                                       maxlength="500"
+                                      required
                                       aria-describedby="char-count"></textarea>
-                            <small id="char-count" class="text-muted">0/500 حرف</small>
+                            <small id="char-count" class="text-muted">0/500 ${labels.characters}</small>
                         </div>
 
                         <!-- Submit Button -->
-                        <button type="submit" class="feedback-submit" disabled>
+                        <button type="submit" class="feedback-submit incomplete" disabled>
                             <span class="submit-text">${labels.submit}</span>
                             <div class="submit-spinner" style="display: none;"></div>
                         </button>
@@ -312,22 +319,40 @@ class FeedbackWidget {
     }
 
     validateForm() {
-        const isValid = this.rating > 0 && this.category;
+        const comment = this.modal.querySelector('.feedback-textarea').value.trim();
+        const isValid = this.rating > 0 && this.category && comment.length > 0;
         const submitBtn = this.modal.querySelector('.feedback-submit');
         submitBtn.disabled = !isValid;
+        
+        // Update submit button text based on validation
+        const submitText = submitBtn.querySelector('.submit-text');
+        if (isValid) {
+            submitText.textContent = this.getLabel('submit');
+            submitBtn.classList.remove('incomplete');
+        } else {
+            submitBtn.classList.add('incomplete');
+        }
     }
 
     async submitFeedback() {
         if (this.isSubmitting) return;
+
+        // Validate all required fields
+        const comment = this.modal.querySelector('.feedback-textarea').value.trim();
+        if (!this.rating || !this.category || !comment) {
+            return;
+        }
 
         this.isSubmitting = true;
         const submitBtn = this.modal.querySelector('.feedback-submit');
         const submitText = submitBtn.querySelector('.submit-text');
         const submitSpinner = submitBtn.querySelector('.submit-spinner');
 
-        // Update UI
+        // Show enhanced submitting state
         submitBtn.disabled = true;
-        submitText.style.display = 'none';
+        submitBtn.classList.add('submitting');
+        submitBtn.classList.remove('incomplete');
+        submitText.textContent = this.getLabel('submitting') || 'جاري الإرسال...';
         submitSpinner.style.display = 'inline-block';
 
         try {
@@ -351,11 +376,20 @@ class FeedbackWidget {
             const result = await response.json();
 
             if (response.ok && result.success) {
-                this.showSuccessMessage();
-                this.trackEvent('feedback_submitted_success', { 
-                    rating: this.rating, 
-                    category: this.category 
-                });
+                // Show success button state briefly
+                submitBtn.classList.remove('submitting');
+                submitBtn.classList.add('success');
+                submitText.textContent = this.getLabel('success');
+                submitSpinner.style.display = 'none';
+                
+                // Show success message after brief delay
+                setTimeout(() => {
+                    this.showSuccessMessage();
+                    this.trackEvent('feedback_submitted_success', { 
+                        rating: this.rating, 
+                        category: this.category 
+                    });
+                }, 600);
             } else {
                 throw new Error(result.error || `HTTP ${response.status}: ${response.statusText}`);
             }
@@ -373,29 +407,33 @@ class FeedbackWidget {
         this.form.style.display = 'none';
         this.modal.querySelector('.feedback-success').style.display = 'block';
         
-        // Auto-close after 2 seconds and reset
+        // Auto-close after 3 seconds with enhanced timing and reset
         setTimeout(() => {
             this.closeModal();
             // Reset form after closing
             setTimeout(() => {
                 this.resetForm();
             }, 500);
-        }, 2000);
+        }, 3000);
     }
 
     showErrorMessage() {
-        // Reset submit button
+        // Reset submit button with enhanced states
         const submitBtn = this.modal.querySelector('.feedback-submit');
         const submitText = submitBtn.querySelector('.submit-text');
         const submitSpinner = submitBtn.querySelector('.submit-spinner');
         
         submitBtn.disabled = false;
-        submitText.style.display = 'inline';
+        submitBtn.classList.remove('submitting', 'success');
+        submitBtn.classList.add('incomplete');
+        submitText.textContent = this.getLabel('retry') || 'حاول مرة أخرى';
         submitSpinner.style.display = 'none';
-        submitText.textContent = 'حاول مرة أخرى';
         
-        // Show error message
-        alert('عذراً، حدث خطأ في إرسال الملاحظة. يرجى المحاولة مرة أخرى.');
+        // Show user-friendly error message
+        const errorMsg = this.getCurrentLanguage() === 'ar' 
+            ? 'عذراً، حدث خطأ في إرسال الملاحظة. يرجى المحاولة مرة أخرى.' 
+            : 'Sorry, there was an error submitting your feedback. Please try again.';
+        alert(errorMsg);
     }
 
     resetForm() {
