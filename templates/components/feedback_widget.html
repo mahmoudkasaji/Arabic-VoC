@@ -1,13 +1,16 @@
 <!-- Persistent Feedback Widget Component -->
 <!-- Only show for authenticated users -->
 {% if current_user.is_authenticated %}
+<script src="/static/js/feedback-widget.js?v=2025072717"></script>
 <script>
 // Initialize feedback widget after page load
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('🎯 Initializing feedback widget...');
     // Fetch widget configuration from simplified endpoint
     fetch('/feedback-widget/config')
         .then(response => response.json())
         .then(config => {
+            console.log('📋 Widget config:', config);
             if (config.success && config.config.enabled) {
                 // Initialize widget with user-specific configuration
                 window.feedbackWidget = new FeedbackWidget({
@@ -15,12 +18,18 @@ document.addEventListener('DOMContentLoaded', function() {
                     categories: config.config.categories,
                     currentLang: config.config.language
                 });
+                console.log('✅ Feedback widget initialized with config');
             }
         })
         .catch(error => {
-            console.log('Feedback widget config failed, using defaults');
+            console.log('⚠️ Feedback widget config failed, using defaults:', error);
             // Fallback to default initialization
-            window.feedbackWidget = new FeedbackWidget();
+            if (typeof FeedbackWidget !== 'undefined') {
+                window.feedbackWidget = new FeedbackWidget();
+                console.log('✅ Feedback widget initialized with defaults');
+            } else {
+                console.error('❌ FeedbackWidget class not found');
+            }
         });
 });
 </script>
