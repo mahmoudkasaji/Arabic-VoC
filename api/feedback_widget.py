@@ -49,7 +49,8 @@ def submit_widget_feedback():
         if comment:
             try:
                 analyzer = SimpleArabicAnalyzer()
-                ai_analysis = analyzer.analyze_feedback(comment)
+                import asyncio
+                ai_analysis = asyncio.run(analyzer.analyze_feedback(comment))
             except Exception as e:
                 print(f"AI analysis failed: {e}")
                 # Continue without AI analysis
