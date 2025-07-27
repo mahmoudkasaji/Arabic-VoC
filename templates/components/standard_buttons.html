@@ -106,6 +106,58 @@
     box-shadow: 0 0 0 3px var(--survey-status-error-bg);
 }
 
+/* Success Button - Green background for actions like import/create */
+.btn-success-standard {
+    background-color: #2e7d32;
+    color: white;
+    border-color: #2e7d32;
+    font-weight: 600;
+}
+
+.btn-success-standard:hover:not(:disabled) {
+    background-color: #1b5e20;
+    border-color: #1b5e20;
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(46, 125, 50, 0.4);
+}
+
+.btn-success-standard:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(46, 125, 50, 0.2);
+}
+
+.btn-success-standard:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.25);
+}
+
+/* Warning Button - Orange/amber background for test actions */
+.btn-warning-standard {
+    background-color: #ff8f00;
+    color: white;
+    border-color: #ff8f00;
+    font-weight: 600;
+}
+
+.btn-warning-standard:hover:not(:disabled) {
+    background-color: #ef6c00;
+    border-color: #ef6c00;
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(255, 143, 0, 0.4);
+}
+
+.btn-warning-standard:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(255, 143, 0, 0.2);
+}
+
+.btn-warning-standard:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(255, 143, 0, 0.25);
+}
+
 /* Button Sizes */
 .btn-sm-standard {
     padding: 0.375rem 1rem;
@@ -179,6 +231,31 @@
 .btn-group-standard .btn-standard {
     flex: 1;
     min-width: 0;
+}
+
+/* Button Container - Ensures consistent spacing and alignment */
+.btn-container-standard {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.btn-container-standard .btn-standard {
+    height: 2.5rem; /* Fixed height for consistency */
+    min-width: auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Ensure all buttons in container have same typography */
+.btn-container-standard .btn-standard {
+    font-family: 'Cairo', sans-serif !important;
+    font-weight: 600 !important;
+    font-size: 0.875rem !important;
+    line-height: 1.25 !important;
 }
 
 /* Responsive Button Adjustments */
