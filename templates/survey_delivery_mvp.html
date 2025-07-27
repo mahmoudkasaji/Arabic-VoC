@@ -430,63 +430,92 @@
             return;
         }
         
-        // Get survey data from select option
-        const selectedOption = surveySelect.options[surveySelect.selectedIndex];
-        const surveyData = JSON.parse(selectedOption.getAttribute('data-survey'));
-        
-        // Calculate estimated time (1 minute per 2 questions)
-        const estimatedMinutes = Math.max(1, Math.ceil(surveyData.questions_count / 2));
-        const estimatedTime = estimatedMinutes === 1 ? 'دقيقة واحدة' : `${estimatedMinutes} دقائق`;
-        
-        // Show survey info
-        document.getElementById('selectedSurveyInfo').innerHTML = `
-            <div class="selected-survey-card">
-                <h6><i class="fas fa-poll me-2"></i>${surveyData.title}</h6>
-                <p class="text-muted mb-2">${surveyData.description || 'استطلاع مخصص'}</p>
-                <div class="row">
-                    <div class="col-md-6">
-                        <small class="text-muted"><i class="fas fa-question-circle me-1"></i>${surveyData.questions_count} أسئلة</small>
-                    </div>
-                    <div class="col-md-6">
-                        <small class="text-muted"><i class="fas fa-clock me-1"></i>${estimatedTime}</small>
-                    </div>
-                </div>
-                <div class="mt-2">
-                    <small class="badge bg-${surveyData.status === 'published' ? 'success' : 'warning'}">${surveyData.status === 'published' ? 'منشور' : 'مسودة'}</small>
-                    <small class="text-muted ms-2">ID: ${surveyData.short_id || surveyData.uuid.substring(0, 8)}</small>
-                </div>
-            </div>
-        `;
-        
-        // Show survey preview
-        document.getElementById('surveyPreview').innerHTML = `
-            <div class="survey-preview-content">
-                <h6>${surveyData.title}</h6>
-                <p class="small text-muted">${surveyData.description || 'استطلاع مخصص تم إنشاؤه باستخدام منشئ الاستطلاعات'}</p>
-                <div class="preview-info">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <span class="badge bg-primary">${surveyData.questions_count} أسئلة</span>
-                        <span class="small text-muted">${estimatedTime}</span>
+        try {
+            // Get survey data from select option
+            const selectedOption = surveySelect.options[surveySelect.selectedIndex];
+            const surveyDataAttr = selectedOption.getAttribute('data-survey');
+            
+            if (!surveyDataAttr) {
+                throw new Error('بيانات الاستطلاع غير متوفرة');
+            }
+            
+            const surveyData = JSON.parse(surveyDataAttr);
+            console.log('Selected survey data:', surveyData);
+            
+            // Calculate estimated time (1 minute per 2 questions)
+            const questionsCount = surveyData.questions_count || 0;
+            const estimatedMinutes = Math.max(1, Math.ceil(questionsCount / 2));
+            const estimatedTime = estimatedMinutes === 1 ? 'دقيقة واحدة' : `${estimatedMinutes} دقائق`;
+            
+            // Show survey info with better styling
+            document.getElementById('selectedSurveyInfo').innerHTML = `
+                <div class="selected-survey-card border rounded p-3 bg-light">
+                    <h6><i class="fas fa-poll me-2 text-primary"></i>${surveyData.title || 'استطلاع بدون عنوان'}</h6>
+                    <p class="text-muted mb-2">${surveyData.description || 'استطلاع مخصص'}</p>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <small class="text-muted"><i class="fas fa-question-circle me-1"></i>${questionsCount} أسئلة</small>
+                        </div>
+                        <div class="col-md-6">
+                            <small class="text-muted"><i class="fas fa-clock me-1"></i>${estimatedTime}</small>
+                        </div>
                     </div>
                     <div class="mt-2">
-                        <small class="text-success">✓ تم إنشاؤه باستخدام منشئ الاستطلاعات</small>
+                        <small class="badge bg-${surveyData.status === 'published' ? 'success' : 'warning'}">${surveyData.status === 'published' ? 'منشور' : 'مسودة'}</small>
+                        <small class="text-muted ms-2">ID: ${surveyData.short_id || (surveyData.uuid ? surveyData.uuid.substring(0, 8) : 'غير محدد')}</small>
                     </div>
                 </div>
-            </div>
-        `;
-        
-        // Store the actual survey URL from database (use full live URL)
-        currentSurveyUrl = surveyData.full_public_url || surveyData.public_url;
-        
-        // Show step 2
-        document.getElementById('step2').style.display = 'block';
-        document.getElementById('step2').scrollIntoView({ behavior: 'smooth' });
+            `;
+            
+            // Show survey preview
+            document.getElementById('surveyPreview').innerHTML = `
+                <div class="survey-preview-content">
+                    <h6>${surveyData.title || 'استطلاع بدون عنوان'}</h6>
+                    <p class="small text-muted">${surveyData.description || 'استطلاع مخصص تم إنشاؤه باستخدام منشئ الاستطلاعات'}</p>
+                    <div class="preview-info">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="badge bg-primary">${questionsCount} أسئلة</span>
+                            <span class="small text-muted">${estimatedTime}</span>
+                        </div>
+                        <div class="mt-2">
+                            <small class="text-success">✓ جاهز للتوزيع</small>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Store the actual survey URL from database (use full live URL or construct one)
+            currentSurveyUrl = surveyData.full_public_url || surveyData.public_url || `${window.location.origin}/survey/${surveyData.uuid}`;
+            console.log('Survey URL set to:', currentSurveyUrl);
+            
+            // Show step 2 and update progress
+            document.getElementById('step2').style.display = 'block';
+            SurveyActions.updateProgress(2, 3, 'إنشاء رابط الاستطلاع');
+            
+            // Auto-generate link to streamline the process
+            setTimeout(() => {
+                generateSurveyLink();
+            }, 500);
+            
+            // Scroll to step 2
+            document.getElementById('step2').scrollIntoView({ behavior: 'smooth' });
+            showNotification('تم اختيار الاستطلاع بنجاح!', 'success');
+            
+        } catch (error) {
+            console.error('خطأ في اختيار الاستطلاع:', error);
+            alert('حدث خطأ في تحديد بيانات الاستطلاع. يرجى المحاولة مرة أخرى.');
+        }
     }
     
     // Generate survey link
     function generateSurveyLink() {
         if (!selectedSurveyId) {
             alert('يرجى اختيار استطلاع أولاً');
+            return;
+        }
+        
+        if (!currentSurveyUrl) {
+            alert('لم يتم العثور على رابط الاستطلاع');
             return;
         }
         
@@ -500,12 +529,21 @@
         // Update placeholders in messages
         updateMessagePlaceholders();
         
-        // Show step 3
+        // Show step 3 and update progress
         document.getElementById('step3').style.display = 'block';
+        SurveyActions.updateProgress(3, 3, 'خيارات التوزيع');
+        
+        // Generate QR code for the survey
+        generateQRCode(generatedSurveyUrl);
+        
+        // Update embeddable widget code with real survey URL
+        updateEmbeddableWidget();
+        
+        // Scroll to step 3
         document.getElementById('step3').scrollIntoView({ behavior: 'smooth' });
         
         // Show success message
-        showNotification('رابط الاستطلاع جاهز للتوزيع!', 'success');
+        showNotification('رابط الاستطلاع جاهز للتوزيع! يمكنك الآن اختيار طريقة التوزيع', 'success');
     }
     
     // Update message placeholders
@@ -780,6 +818,49 @@
         setTimeout(() => {
             notification.remove();
         }, 3000);
+    }
+    
+    // Update embeddable widget with real survey URL
+    function updateEmbeddableWidget() {
+        if (!generatedSurveyUrl) return;
+        
+        // Update the widget code generator with the actual survey URL
+        const widgetScript = document.getElementById('widgetScript');
+        if (widgetScript) {
+            const currentCode = widgetScript.value;
+            const updatedCode = currentCode.replace(/surveyUrl:\s*['"][^'"]*['"]/, `surveyUrl: '${generatedSurveyUrl}'`);
+            widgetScript.value = updatedCode;
+        }
+        
+        console.log('Updated embeddable widget with survey URL:', generatedSurveyUrl);
+    }
+    
+    // Generate QR Code
+    function generateQRCode(url) {
+        const qrContainer = document.getElementById('qrcode');
+        if (qrContainer && url) {
+            // Clear existing QR code
+            qrContainer.innerHTML = '';
+            
+            // Generate new QR code
+            try {
+                new QRCode(qrContainer, {
+                    text: url,
+                    width: 200,
+                    height: 200,
+                    colorDark: "#000000",
+                    colorLight: "#ffffff",
+                    correctLevel: QRCode.CorrectLevel.M
+                });
+                console.log('QR code generated for:', url);
+            } catch (error) {
+                console.log('QR code library not available, showing text fallback');
+                qrContainer.innerHTML = `<div class="text-center p-3 border rounded">
+                    <i class="fas fa-qrcode fa-3x text-muted mb-2"></i>
+                    <p class="small text-muted">رمز QR غير متاح<br/>استخدم الرابط المباشر</p>
+                </div>`;
+            }
+        }
     }
     </script>
 </body>
