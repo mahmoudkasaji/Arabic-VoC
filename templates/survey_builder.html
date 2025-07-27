@@ -9,6 +9,9 @@
     <!-- Enhanced Drag Styles -->
     <link href="/static/css/drag_enhancements.css" rel="stylesheet">
     
+    <!-- Force Full Width Override -->
+    <link href="/static/css/force-fullwidth.css" rel="stylesheet">
+    
     <!-- Sortable JS -->
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
     
@@ -25,21 +28,23 @@
             --border-color: #dee2e6;
         }
 
-        /* Modern CSS Reset for Full Width Layout */
-        *, *::before, *::after {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        /* Aggressive CSS Reset - Force Full Width */
+        * {
+            margin: 0 !important;
+            padding: 0 !important;
+            box-sizing: border-box !important;
         }
 
-        html, body {
-            width: 100%;
-            min-height: 100vh;
-            margin: 0;
-            padding: 0;
+        html {
+            width: 100% !important;
+            height: 100% !important;
         }
 
         body {
+            width: 100% !important;
+            min-height: 100vh !important;
+            margin: 0 !important;
+            padding: 0 !important;
             font-family: 'Cairo', sans-serif;
             background-color: var(--bg-color);
             color: var(--text-color);
@@ -47,69 +52,87 @@
             text-align: right;
         }
 
+        /* Override Bootstrap container */
+        .container-fluid {
+            width: 100% !important;
+            max-width: none !important;
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+            margin: 0 !important;
+        }
+
+        /* Force navbar full width */
+        .navbar {
+            width: 100% !important;
+            margin: 0 !important;
+            padding-left: 15px !important;
+            padding-right: 15px !important;
+        }
+
         /* Full width main container */
         .main-wrapper {
-            width: 100%;
-            min-height: 100vh;
-            margin: 0;
-            padding: 0;
+            width: 100% !important;
+            min-height: 100vh !important;
+            margin: 0 !important;
+            padding: 0 !important;
             display: flex;
             flex-direction: column;
         }
 
         .builder-container {
             display: grid;
-            grid-template-columns: 300px 1fr 350px;
-            gap: 20px;
+            grid-template-columns: 280px 1fr 320px;
+            gap: 16px;
             flex: 1;
-            width: 100%;
-            margin: 0;
-            padding: 20px;
+            width: 100% !important;
+            margin: 0 !important;
+            padding: 12px !important;
         }
 
-        /* Mobile-first responsive breakpoints */
+        /* Force full width on all screen sizes */
         @media (min-width: 768px) {
             .builder-container {
-                padding: 16px;
+                padding: 16px !important;
+                gap: 18px !important;
             }
         }
 
         @media (min-width: 1024px) {
             .builder-container {
-                padding: 20px;
-                gap: 24px;
+                padding: 20px !important;
+                gap: 20px !important;
             }
         }
 
         @media (min-width: 1200px) {
             .builder-container {
-                grid-template-columns: 280px 1fr 320px;
-                padding: 24px;
-                gap: 28px;
+                grid-template-columns: 300px 1fr 340px !important;
+                padding: 24px !important;
+                gap: 24px !important;
             }
         }
 
         @media (min-width: 1400px) {
             .builder-container {
-                grid-template-columns: 320px 1fr 350px;
-                padding: 28px;
-                gap: 32px;
+                grid-template-columns: 320px 1fr 360px !important;
+                padding: 28px !important;
+                gap: 28px !important;
             }
         }
 
         @media (min-width: 1600px) {
             .builder-container {
-                grid-template-columns: 350px 1fr 380px;
-                padding: 32px;
-                gap: 36px;
+                grid-template-columns: 350px 1fr 380px !important;
+                padding: 32px !important;
+                gap: 32px !important;
             }
         }
 
         @media (min-width: 1800px) {
             .builder-container {
-                grid-template-columns: 380px 1fr 420px;
-                padding: 36px;
-                gap: 40px;
+                grid-template-columns: 380px 1fr 400px !important;
+                padding: 36px !important;
+                gap: 36px !important;
             }
         }
 
