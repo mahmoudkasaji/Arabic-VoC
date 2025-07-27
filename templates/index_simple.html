@@ -303,24 +303,81 @@
                 Voice of Customer Platform. Licensed under MIT License © 2025
             </div>
         </div>
+        
+        <!-- Persistent Footer Feedback Form -->
+        <div class="persistent-footer-feedback">
+            <div class="feedback-header">
+                <h3>هل وجدت ما تبحث عنه اليوم؟</h3>
+            </div>
+            <div class="feedback-body">
+                <div class="container">
+                    <form id="footerFeedbackForm">
+                        <div class="feedback-question">
+                            <div class="radio-group">
+                                <div class="radio-option">
+                                    <input type="radio" id="helpful-yes" name="helpful" value="yes" onchange="handleHelpfulResponse('yes')">
+                                    <label for="helpful-yes">نعم</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" id="helpful-no" name="helpful" value="no" onchange="handleHelpfulResponse('no')">
+                                    <label for="helpful-no">لا</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="feedbackSection" class="conditional-section">
+                            <div class="feedback-question">
+                                <label>نحن نقدر ملاحظاتك</label>
+                                <p style="font-size: 14px; color: #94a3b8; margin-bottom: 16px;">ما الذي ترغب في مشاركته حول تجربتك؟</p>
+                                
+                                <div class="category-options" id="categoryOptions">
+                                    <!-- Categories will be populated by JavaScript -->
+                                </div>
+                            </div>
+
+                            <div class="feedback-question">
+                                <label for="feedbackText">أخبرنا المزيد عن تجربتك:</label>
+                                <textarea 
+                                    id="feedbackText" 
+                                    name="feedbackText" 
+                                    class="feedback-textarea" 
+                                    placeholder="يرجى عدم تضمين معلومات شخصية في رسالتك. سيتم حذف أي معلومات شخصية مقدمة."
+                                ></textarea>
+                            </div>
+
+                            <button type="submit" class="feedback-submit">إرسال الملاحظات</button>
+                            
+                            <div class="privacy-notice">
+                                يرجى عدم تضمين معلومات شخصية في رسالتك. أي معلومات شخصية مقدمة سيتم حذفها. 
+                                إذا كان لديك أسئلة حول خدمات المنصة، يرجى <a href="/contact">التواصل معنا</a>.
+                            </div>
+                        </div>
+
+                        <div id="successMessage" class="success-message">
+                            شكراً لك! تم إرسال ملاحظاتك بنجاح. نقدر وقتك ومساهمتك في تحسين المنصة.
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </footer>
 
     {% include 'components/scripts.html' %}
     
-    <!-- Persistent Footer Feedback Form -->
+    <!-- Persistent Footer Feedback Form Styles -->
     <style>
     .persistent-footer-feedback {
-        background: #f8f9fa;
-        border-top: 1px solid #e9ecef;
-        margin-top: 3rem;
+        background: #0f172a;
+        margin: 0;
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     }
 
     .feedback-header {
-        background: #1e3a8a;
+        background: #1e293b;
         color: white;
         padding: 16px 0;
         text-align: center;
+        border-top: 1px solid #334155;
     }
 
     .feedback-header h3 {
@@ -335,6 +392,7 @@
         margin: 0 auto;
         direction: rtl;
         text-align: right;
+        background: #0f172a;
     }
 
     .feedback-question {
@@ -345,7 +403,7 @@
         display: block;
         font-weight: 600;
         font-size: 16px;
-        color: #2d3748;
+        color: #e2e8f0;
         margin-bottom: 12px;
     }
 
@@ -355,9 +413,9 @@
         margin-bottom: 20px;
         justify-content: center;
         padding: 16px;
-        background: rgba(255, 255, 255, 0.5);
+        background: rgba(30, 41, 59, 0.5);
         border-radius: 8px;
-        border: 1px solid #e2e8f0;
+        border: 1px solid #475569;
     }
 
     .radio-option {
@@ -380,12 +438,13 @@
         font-weight: 500;
         font-size: 15px;
         cursor: pointer;
+        color: #e2e8f0;
     }
 
     .conditional-section {
         display: none;
         animation: slideDown 0.3s ease-out;
-        border-top: 1px solid #e2e8f0;
+        border-top: 1px solid #475569;
         padding-top: 20px;
         margin-top: 20px;
     }
@@ -430,19 +489,21 @@
         font-weight: 400;
         font-size: 14px;
         cursor: pointer;
-        color: #4a5568;
+        color: #cbd5e1;
     }
 
     .feedback-textarea {
         width: 100%;
         min-height: 120px;
         padding: 12px;
-        border: 1px solid #d1d5db;
+        border: 1px solid #475569;
         border-radius: 6px;
         font-family: inherit;
         font-size: 14px;
         resize: vertical;
         direction: rtl;
+        background: #1e293b;
+        color: #e2e8f0;
     }
 
     .feedback-textarea:focus {
@@ -477,7 +538,7 @@
 
     .privacy-notice {
         font-size: 12px;
-        color: #6b7280;
+        color: #94a3b8;
         margin-top: 12px;
         line-height: 1.4;
     }
@@ -522,61 +583,7 @@
     }
     </style>
 
-    <div class="persistent-footer-feedback">
-        <div class="feedback-header">
-            <h3>هل وجدت ما تبحث عنه اليوم؟</h3>
-        </div>
-        <div class="feedback-body">
-            <div class="container">
-                <form id="footerFeedbackForm">
-                    <div class="feedback-question">
-                        <div class="radio-group">
-                            <div class="radio-option">
-                                <input type="radio" id="helpful-yes" name="helpful" value="yes" onchange="handleHelpfulResponse('yes')">
-                                <label for="helpful-yes">نعم</label>
-                            </div>
-                            <div class="radio-option">
-                                <input type="radio" id="helpful-no" name="helpful" value="no" onchange="handleHelpfulResponse('no')">
-                                <label for="helpful-no">لا</label>
-                            </div>
-                        </div>
-                    </div>
 
-                    <div id="feedbackSection" class="conditional-section">
-                        <div class="feedback-question">
-                            <label>نحن نقدر ملاحظاتك</label>
-                            <p style="font-size: 14px; color: #6b7280; margin-bottom: 16px;">ما الذي ترغب في مشاركته حول تجربتك؟</p>
-                            
-                            <div class="category-options" id="categoryOptions">
-                                <!-- Categories will be populated by JavaScript -->
-                            </div>
-                        </div>
-
-                        <div class="feedback-question">
-                            <label for="feedbackText">أخبرنا المزيد عن تجربتك:</label>
-                            <textarea 
-                                id="feedbackText" 
-                                name="feedbackText" 
-                                class="feedback-textarea" 
-                                placeholder="يرجى عدم تضمين معلومات شخصية في رسالتك. سيتم حذف أي معلومات شخصية مقدمة."
-                            ></textarea>
-                        </div>
-
-                        <button type="submit" class="feedback-submit">إرسال الملاحظات</button>
-                        
-                        <div class="privacy-notice">
-                            يرجى عدم تضمين معلومات شخصية في رسالتك. أي معلومات شخصية مقدمة سيتم حذفها. 
-                            إذا كان لديك أسئلة حول خدمات المنصة، يرجى <a href="/contact">التواصل معنا</a>.
-                        </div>
-                    </div>
-
-                    <div id="successMessage" class="success-message">
-                        شكراً لك! تم إرسال ملاحظاتك بنجاح. نقدر وقتك ومساهمتك في تحسين المنصة.
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -643,8 +650,10 @@
                 console.log('✅ Scrolled to feedback section');
             };
 
-            // Handle form submission
-            document.getElementById('footerFeedbackForm').addEventListener('submit', async function(e) {
+            // Handle form submission - wait for DOM to be ready
+            const form = document.getElementById('footerFeedbackForm');
+            if (form) {
+                form.addEventListener('submit', async function(e) {
                 e.preventDefault();
                 
                 const formData = new FormData(this);
@@ -708,7 +717,10 @@
                     submitBtn.disabled = false;
                     submitBtn.textContent = originalText;
                 }
-            });
+                });
+            } else {
+                console.error('❌ footerFeedbackForm not found in DOM');
+            }
         })();
     </script>
 </body>
