@@ -251,6 +251,7 @@ An enterprise-grade Voice of Customer platform built as a sophisticated 6-layer 
 - **Progressive Enhancement**: Works with and without JavaScript, graceful degradation for accessibility
 
 ### Contact Management Direct Database Operations Complete (July 27, 2025)
+- **Navigation Simplification**: Removed redundant "Distribution tools" dropdown items since bulk import and email testing are now integrated directly into the contacts page
 - **Data Field Synchronization**: Aligned bulk import/export CSV headers with exact Contact model field names
   - CSV headers now use database field names: 'name', 'email', 'phone', 'company', 'language_preference', 'is_active', etc.
   - Import logic matches model defaults exactly (language_preference: 'ar', all opt-ins: true by default)
