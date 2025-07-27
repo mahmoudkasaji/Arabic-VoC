@@ -291,15 +291,67 @@ class FeedbackWidget {
     setRating(rating) {
         this.rating = rating;
         
-        // Update UI
+        // Update UI with enhanced visual feedback
         this.modal.querySelectorAll('.rating-star').forEach((star, index) => {
             star.classList.toggle('active', index < rating);
             star.setAttribute('aria-checked', index < rating ? 'true' : 'false');
+            
+            // Add selection feedback animation
+            if (index < rating) {
+                star.style.animation = 'none';
+                setTimeout(() => {
+                    star.style.animation = `starSelection 0.3s ease-out ${index * 0.05}s both`;
+                }, 10);
+            } else {
+                star.style.animation = '';
+            }
         });
 
+        // Show rating confirmation
+        this.showRatingFeedback(rating);
+        
         // Update validation
         this.validateForm();
         this.trackEvent('feedback_rating_set', { rating });
+    }
+    
+    showRatingFeedback(rating) {
+        const ratingLabels = {
+            ar: ['', 'ضعيف جداً', 'ضعيف', 'متوسط', 'جيد', 'ممتاز'],
+            en: ['', 'Very Poor', 'Poor', 'Average', 'Good', 'Excellent']
+        };
+        
+        const ratingLabel = ratingLabels[this.currentLang][rating] || ratingLabels['ar'][rating];
+        const ratingSection = this.modal.querySelector('.feedback-rating');
+        
+        // Remove existing feedback
+        const existingFeedback = ratingSection.querySelector('.rating-feedback');
+        if (existingFeedback) {
+            existingFeedback.remove();
+        }
+        
+        // Add new feedback
+        const feedbackDiv = document.createElement('div');
+        feedbackDiv.className = 'rating-feedback';
+        feedbackDiv.textContent = ratingLabel;
+        feedbackDiv.style.cssText = `
+            color: #ff8c00;
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 4px;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+        `;
+        
+        ratingSection.appendChild(feedbackDiv);
+        
+        // Animate in
+        setTimeout(() => {
+            feedbackDiv.style.opacity = '1';
+            feedbackDiv.style.transform = 'translateY(0)';
+        }, 50);
     }
 
     setCategory(category) {
@@ -377,13 +429,16 @@ class FeedbackWidget {
                 submitText.textContent = this.getLabel('success');
                 submitSpinner.style.display = 'none';
                 
-                // Show success message after brief delay
+                // Show success message and auto-close after brief delay
                 setTimeout(() => {
                     this.showSuccessMessage();
                     this.trackEvent('feedback_submitted_success', { 
                         rating: this.rating, 
                         category: this.category 
                     });
+                    
+                    // Auto-close after success message
+                    this.autoCloseWithCountdown();
                 }, 500);
             } else {
                 throw new Error(result.error || `HTTP ${response.status}: ${response.statusText}`);
@@ -401,15 +456,35 @@ class FeedbackWidget {
     showSuccessMessage() {
         this.form.style.display = 'none';
         this.modal.querySelector('.feedback-success').style.display = 'block';
+    }
+    
+    autoCloseWithCountdown() {
+        // Auto-close with countdown visual feedback
+        const countdown = 3; // 3 seconds countdown
+        let timeLeft = countdown;
         
-        // Auto-close after 1.5 seconds (faster for better UX)
-        setTimeout(() => {
-            this.closeModal();
-            // Reset form after closing
-            setTimeout(() => {
-                this.resetForm();
-            }, 400);
-        }, 1500);
+        // Get success message elements
+        const successMessage = this.modal.querySelector('.feedback-success-message');
+        const originalMessage = successMessage.textContent;
+        
+        // Update message with countdown
+        const countdownInterval = setInterval(() => {
+            if (timeLeft > 0) {
+                const closeText = this.currentLang === 'ar' 
+                    ? `${originalMessage} سيتم إغلاق النافذة خلال ${timeLeft} ثوان...`
+                    : `${originalMessage} Closing in ${timeLeft} seconds...`;
+                successMessage.textContent = closeText;
+                timeLeft--;
+            } else {
+                clearInterval(countdownInterval);
+                this.closeModal();
+                // Reset form after closing
+                setTimeout(() => {
+                    this.resetForm();
+                    successMessage.textContent = originalMessage; // Restore original message
+                }, 400);
+            }
+        }, 1000);
     }
 
     showErrorMessage() {
@@ -439,7 +514,14 @@ class FeedbackWidget {
         this.modal.querySelectorAll('.rating-star').forEach(star => {
             star.classList.remove('active');
             star.setAttribute('aria-checked', 'false');
+            star.style.animation = ''; // Clear animations
         });
+        
+        // Remove rating feedback
+        const existingFeedback = this.modal.querySelector('.rating-feedback');
+        if (existingFeedback) {
+            existingFeedback.remove();
+        }
         
         this.modal.querySelector('#category-select').selectedIndex = 0;
         
@@ -453,6 +535,8 @@ class FeedbackWidget {
         // Reset submit button
         const submitBtn = this.modal.querySelector('.feedback-submit');
         submitBtn.disabled = true;
+        submitBtn.classList.remove('submitting', 'success');
+        submitBtn.classList.add('incomplete');
         submitBtn.querySelector('.submit-text').textContent = this.getLabel('submit');
     }
 
