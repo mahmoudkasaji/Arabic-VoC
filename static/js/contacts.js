@@ -264,10 +264,87 @@ function resetFilters() {
     loadContacts();
 }
 
-// Edit contact (placeholder)
+// Edit contact
 function editContact(contactId) {
-    // TODO: Implement edit functionality
-    showAlert('info', 'ميزة التعديل قيد التطوير');
+    // Find the contact in the contacts array
+    const contact = contacts.find(c => c.id === contactId);
+    if (!contact) {
+        showAlert('error', 'لم يتم العثور على جهة الاتصال');
+        return;
+    }
+    
+    // Populate the edit form with contact data
+    document.getElementById('editContactId').value = contact.id;
+    document.getElementById('editContactName').value = contact.name || '';
+    document.getElementById('editContactEmail').value = contact.email || '';
+    document.getElementById('editContactPhone').value = contact.phone || '';
+    document.getElementById('editContactCompany').value = contact.company || '';
+    document.getElementById('editContactLanguage').value = contact.language_preference || 'ar';
+    document.getElementById('editContactStatus').value = contact.is_active ? 'true' : 'false';
+    document.getElementById('editEmailOptIn').checked = contact.email_opt_in;
+    document.getElementById('editSmsOptIn').checked = contact.sms_opt_in;
+    document.getElementById('editWhatsappOptIn').checked = contact.whatsapp_opt_in;
+    document.getElementById('editContactNotes').value = contact.notes || '';
+    
+    // Show the edit modal
+    const modal = new bootstrap.Modal(document.getElementById('editContactModal'));
+    modal.show();
+}
+
+// Update contact
+async function updateContact() {
+    try {
+        const contactId = document.getElementById('editContactId').value;
+        const formData = {
+            name: document.getElementById('editContactName').value,
+            email: document.getElementById('editContactEmail').value || null,
+            phone: document.getElementById('editContactPhone').value || null,
+            company: document.getElementById('editContactCompany').value || null,
+            language_preference: document.getElementById('editContactLanguage').value,
+            is_active: document.getElementById('editContactStatus').value === 'true',
+            email_opt_in: document.getElementById('editEmailOptIn').checked,
+            sms_opt_in: document.getElementById('editSmsOptIn').checked,
+            whatsapp_opt_in: document.getElementById('editWhatsappOptIn').checked,
+            notes: document.getElementById('editContactNotes').value || null
+        };
+        
+        // Validation
+        if (!formData.name.trim()) {
+            showAlert('error', 'الاسم مطلوب');
+            return;
+        }
+        
+        if (!formData.email && !formData.phone) {
+            showAlert('error', 'البريد الإلكتروني أو رقم الهاتف مطلوب');
+            return;
+        }
+        
+        const response = await fetch(`/api/contacts/${contactId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        });
+        
+        const data = await response.json();
+        
+        if (data.status === 'success') {
+            showAlert('success', 'تم تحديث جهة الاتصال بنجاح');
+            
+            // Close modal
+            const modal = bootstrap.Modal.getInstance(document.getElementById('editContactModal'));
+            modal.hide();
+            
+            // Reload contacts
+            loadContacts();
+        } else {
+            showAlert('error', data.error || 'فشل في تحديث جهة الاتصال');
+        }
+    } catch (error) {
+        console.error('Error updating contact:', error);
+        showAlert('error', 'حدث خطأ أثناء تحديث جهة الاتصال');
+    }
 }
 
 // Delete contact
