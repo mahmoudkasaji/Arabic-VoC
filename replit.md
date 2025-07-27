@@ -251,6 +251,12 @@ An enterprise-grade Voice of Customer platform built as a sophisticated 6-layer 
 - **Progressive Enhancement**: Works with and without JavaScript, graceful degradation for accessibility
 
 ### Contact Management Direct Database Operations Complete (July 27, 2025)
+- **Data Field Synchronization**: Aligned bulk import/export CSV headers with exact Contact model field names
+  - CSV headers now use database field names: 'name', 'email', 'phone', 'company', 'language_preference', 'is_active', etc.
+  - Import logic matches model defaults exactly (language_preference: 'ar', all opt-ins: true by default)
+  - Export function outputs exact field values ('true'/'false' for booleans, 'ar'/'en' for language)
+  - Template download provides proper field mapping for seamless data import
+  - Eliminated field mapping discrepancies that could cause import failures
 - **Direct Database Integration**: Converted all contact operations from API calls to direct database operations using Flask routes
 - **Route Registration Fix**: Created separate contact_routes.py file and properly imported to avoid route conflicts with existing app.py
 - **Complete CRUD Functionality**: 

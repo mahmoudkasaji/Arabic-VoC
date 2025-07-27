@@ -415,16 +415,16 @@
                                     <table class="table table-sm table-bordered">
                                         <thead class="table-light">
                                             <tr>
-                                                <th>الاسم*</th>
-                                                <th>البريد الإلكتروني</th>
-                                                <th>الهاتف</th>
-                                                <th>الشركة</th>
-                                                <th>اللغة</th>
-                                                <th>الحالة</th>
-                                                <th>البريد مفعل</th>
-                                                <th>SMS مفعل</th>
-                                                <th>واتساب مفعل</th>
-                                                <th>ملاحظات</th>
+                                                <th>name*</th>
+                                                <th>email</th>
+                                                <th>phone</th>
+                                                <th>company</th>
+                                                <th>language_preference</th>
+                                                <th>is_active</th>
+                                                <th>email_opt_in</th>
+                                                <th>sms_opt_in</th>
+                                                <th>whatsapp_opt_in</th>
+                                                <th>notes</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -433,11 +433,11 @@
                                                 <td>ahmed@example.com</td>
                                                 <td>+966501234567</td>
                                                 <td>شركة ABC</td>
-                                                <td>العربية</td>
-                                                <td>نشط</td>
-                                                <td>نعم</td>
-                                                <td>نعم</td>
-                                                <td>لا</td>
+                                                <td>ar</td>
+                                                <td>true</td>
+                                                <td>true</td>
+                                                <td>true</td>
+                                                <td>false</td>
                                                 <td>عميل مهم</td>
                                             </tr>
                                         </tbody>
@@ -445,8 +445,11 @@
                                 </div>
                                 <div class="mt-3">
                                     <small class="text-muted">
-                                        <strong>ملاحظة:</strong> العمود الأول (الاسم) مطلوب. باقي الأعمدة اختيارية.
-                                        يمكن ترك الخلايا فارغة للقيم الاختيارية.
+                                        <strong>ملاحظة:</strong> العمود الأول (name) مطلوب. باقي الأعمدة اختيارية.
+                                        <br><strong>القيم المقبولة:</strong>
+                                        <br>• language_preference: 'ar' أو 'en'
+                                        <br>• is_active, email_opt_in, sms_opt_in, whatsapp_opt_in: 'true' أو 'false'
+                                        <br>• يمكن ترك الخلايا فارغة للحصول على القيم الافتراضية
                                     </small>
                                 </div>
                             </div>

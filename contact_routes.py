@@ -121,27 +121,29 @@ def export_contacts():
     output = io.StringIO()
     writer = csv.writer(output)
     
-    # Write header
+    # Write header (matching Contact model fields exactly)
     writer.writerow([
-        'الاسم', 'البريد الإلكتروني', 'الهاتف', 'الشركة', 
-        'اللغة المفضلة', 'الحالة', 'البريد الإلكتروني مفعل', 
-        'الرسائل النصية مفعل', 'واتساب مفعل', 'ملاحظات', 'تاريخ الإنشاء'
+        'name', 'email', 'phone', 'company', 
+        'language_preference', 'is_active', 'email_opt_in', 
+        'sms_opt_in', 'whatsapp_opt_in', 'notes',
+        'created_at', 'updated_at'
     ])
     
-    # Write contact data
+    # Write contact data (matching exact model fields)
     for contact in contacts:
         writer.writerow([
             contact.name,
             contact.email or '',
             contact.phone or '',
             contact.company or '',
-            'العربية' if contact.language_preference == 'ar' else 'English',
-            'نشط' if contact.is_active else 'غير نشط',
-            'نعم' if contact.email_opt_in else 'لا',
-            'نعم' if contact.sms_opt_in else 'لا',
-            'نعم' if contact.whatsapp_opt_in else 'لا',
+            contact.language_preference,
+            'true' if contact.is_active else 'false',
+            'true' if contact.email_opt_in else 'false',
+            'true' if contact.sms_opt_in else 'false',
+            'true' if contact.whatsapp_opt_in else 'false',
             contact.notes or '',
-            contact.created_at.strftime('%Y-%m-%d %H:%M') if contact.created_at else ''
+            contact.created_at.strftime('%Y-%m-%d %H:%M:%S') if contact.created_at else '',
+            contact.updated_at.strftime('%Y-%m-%d %H:%M:%S') if contact.updated_at else ''
         ])
     
     # Create response
@@ -199,16 +201,16 @@ def import_contacts():
                     error_count += 1
                     continue
                 
-                # Extract data from row
+                # Extract data from row (matching Contact model fields exactly)
                 name = row[0].strip() if len(row) > 0 and row[0] else None
                 email = row[1].strip() if len(row) > 1 and row[1] else None
                 phone = row[2].strip() if len(row) > 2 and row[2] else None
                 company = row[3].strip() if len(row) > 3 and row[3] else None
-                language = 'ar' if len(row) > 4 and row[4] in ['العربية', 'ar'] else 'en'
-                is_active = True if len(row) <= 5 or row[5] in ['نشط', 'active', 'true', '1'] else False
-                email_opt_in = True if len(row) <= 6 or row[6] in ['نعم', 'yes', 'true', '1'] else False
-                sms_opt_in = True if len(row) <= 7 or row[7] in ['نعم', 'yes', 'true', '1'] else False
-                whatsapp_opt_in = True if len(row) <= 8 or row[8] in ['نعم', 'yes', 'true', '1'] else False
+                language = row[4].strip() if len(row) > 4 and row[4] else 'ar'  # Default to 'ar' like model
+                is_active = row[5].strip().lower() in ['true', '1', 'نشط', 'active'] if len(row) > 5 and row[5] else True  # Default True like model
+                email_opt_in = row[6].strip().lower() in ['true', '1', 'نعم', 'yes'] if len(row) > 6 and row[6] else True  # Default True like model
+                sms_opt_in = row[7].strip().lower() in ['true', '1', 'نعم', 'yes'] if len(row) > 7 and row[7] else True  # Default True like model
+                whatsapp_opt_in = row[8].strip().lower() in ['true', '1', 'نعم', 'yes'] if len(row) > 8 and row[8] else True  # Default True like model
                 notes = row[9].strip() if len(row) > 9 and row[9] else None
                 
                 # Validate required fields
@@ -290,17 +292,17 @@ def download_csv_template():
     output = io.StringIO()
     writer = csv.writer(output)
     
-    # Write header
+    # Write header (matching Contact model fields exactly)
     writer.writerow([
-        'الاسم', 'البريد الإلكتروني', 'الهاتف', 'الشركة', 
-        'اللغة المفضلة', 'الحالة', 'البريد الإلكتروني مفعل', 
-        'الرسائل النصية مفعل', 'واتساب مفعل', 'ملاحظات'
+        'name', 'email', 'phone', 'company', 
+        'language_preference', 'is_active', 'email_opt_in', 
+        'sms_opt_in', 'whatsapp_opt_in', 'notes'
     ])
     
-    # Add sample row
+    # Add sample row with values that match model defaults
     writer.writerow([
         'أحمد محمد', 'ahmed@example.com', '+966501234567', 'شركة ABC',
-        'العربية', 'نشط', 'نعم', 'نعم', 'لا', 'عميل مهم'
+        'ar', 'true', 'true', 'true', 'false', 'عميل مهم'
     ])
     
     # Create response
