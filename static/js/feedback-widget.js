@@ -384,7 +384,7 @@ class FeedbackWidget {
                         rating: this.rating, 
                         category: this.category 
                     });
-                }, 600);
+                }, 500);
             } else {
                 throw new Error(result.error || `HTTP ${response.status}: ${response.statusText}`);
             }
@@ -402,14 +402,14 @@ class FeedbackWidget {
         this.form.style.display = 'none';
         this.modal.querySelector('.feedback-success').style.display = 'block';
         
-        // Auto-close after 3 seconds with enhanced timing and reset
+        // Auto-close after 1.5 seconds (faster for better UX)
         setTimeout(() => {
             this.closeModal();
             // Reset form after closing
             setTimeout(() => {
                 this.resetForm();
-            }, 500);
-        }, 3000);
+            }, 400);
+        }, 1500);
     }
 
     showErrorMessage() {
