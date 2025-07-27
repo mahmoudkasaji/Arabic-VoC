@@ -12,7 +12,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Initialize widget with user-specific configuration
                 window.feedbackWidget = new FeedbackWidget({
                     position: config.config.position,
-                    displayMode: config.config.displayMode || 'slide',
                     categories: config.config.categories,
                     currentLang: config.config.language
                 });
@@ -21,9 +20,7 @@ document.addEventListener('DOMContentLoaded', function() {
         .catch(error => {
             console.log('Feedback widget config failed, using defaults');
             // Fallback to default initialization
-            window.feedbackWidget = new FeedbackWidget({
-                displayMode: 'slide' // Default to slide mode
-            });
+            window.feedbackWidget = new FeedbackWidget();
         });
 });
 </script>

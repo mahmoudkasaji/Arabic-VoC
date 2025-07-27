@@ -7,7 +7,6 @@ class FeedbackWidget {
     constructor(options = {}) {
         this.options = {
             position: 'bottom-right', // bottom-left for RTL
-            displayMode: 'slide', // 'slide' or 'center'
             submitEndpoint: '/feedback-widget',
             configEndpoint: '/feedback-widget/config',
             categories: [
@@ -69,16 +68,14 @@ class FeedbackWidget {
             <span class="feedback-text">${this.getLabel('trigger')}</span>
         `;
 
-        // Create backdrop for slide mode (only if not center mode)
-        if (this.options.displayMode === 'slide') {
-            this.backdrop = document.createElement('div');
-            this.backdrop.className = 'feedback-modal-backdrop';
-            document.body.appendChild(this.backdrop);
-        }
+        // Create backdrop for slide mode
+        this.backdrop = document.createElement('div');
+        this.backdrop.className = 'feedback-modal-backdrop';
+        document.body.appendChild(this.backdrop);
 
         // Create modal
         const modal = document.createElement('div');
-        modal.className = this.options.displayMode === 'center' ? 'feedback-modal center-popup' : 'feedback-modal';
+        modal.className = 'feedback-modal';
         modal.setAttribute('role', 'dialog');
         modal.setAttribute('aria-modal', 'true');
         modal.setAttribute('aria-labelledby', 'feedback-title');
@@ -180,17 +177,8 @@ class FeedbackWidget {
         // Close button
         this.modal.querySelector('.feedback-modal-close').addEventListener('click', () => this.closeModal());
 
-        // Modal backdrop click for center mode
-        if (this.options.displayMode === 'center') {
-            this.modal.addEventListener('click', (e) => {
-                if (e.target === this.modal) this.closeModal();
-            });
-        }
-
-        // Backdrop click for slide mode
-        if (this.backdrop) {
-            this.backdrop.addEventListener('click', () => this.closeModal());
-        }
+        // Backdrop click to close
+        this.backdrop.addEventListener('click', () => this.closeModal());
 
         // Rating stars
         this.modal.querySelectorAll('.rating-star').forEach(star => {
@@ -385,10 +373,14 @@ class FeedbackWidget {
         this.form.style.display = 'none';
         this.modal.querySelector('.feedback-success').style.display = 'block';
         
-        // Auto-close after 3 seconds
+        // Auto-close after 2 seconds and reset
         setTimeout(() => {
             this.closeModal();
-        }, 3000);
+            // Reset form after closing
+            setTimeout(() => {
+                this.resetForm();
+            }, 500);
+        }, 2000);
     }
 
     showErrorMessage() {

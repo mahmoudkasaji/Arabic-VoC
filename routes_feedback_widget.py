@@ -127,11 +127,6 @@ def submit_feedback_widget():
 def get_feedback_widget_config():
     """Get widget configuration (public endpoint for JavaScript)"""
     try:
-        # Check for URL parameter to override display mode
-        display_mode = request.args.get('widget_mode', 'slide')  # Default to slide
-        if display_mode not in ['slide', 'center']:
-            display_mode = 'slide'
-        
         # Default configuration
         config = {
             'categories': [
@@ -144,7 +139,6 @@ def get_feedback_widget_config():
             ],
             'language': 'ar',
             'position': 'bottom-left',  # RTL default
-            'displayMode': display_mode,  # 'slide' or 'center'
             'enabled': True
         }
         
