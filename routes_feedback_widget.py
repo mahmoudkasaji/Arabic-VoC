@@ -51,30 +51,33 @@ def submit_feedback_widget():
         if comment:
             try:
                 analyzer = SimpleArabicAnalyzer()
-                ai_analysis = analyzer.analyze_feedback(comment)
+                import asyncio
+                ai_analysis = asyncio.run(analyzer.analyze_feedback(comment))
             except Exception as e:
                 print(f"AI analysis failed: {e}")
                 # Continue without AI analysis
         
-        # Create feedback entry
+        # Create feedback entry using the correct model fields
         feedback = Feedback(
-            id=str(uuid.uuid4()),
-            user_id=current_user.id,
-            original_text=comment,
-            processed_text=comment,
+            content=comment,
+            processed_content=comment,
             channel='widget',
-            source=f"Widget - {page_title}",
             rating=rating,
-            category=category,
-            metadata=json.dumps({
+            customer_id=str(current_user.id),
+            ai_summary=ai_analysis.get('summary', '') if ai_analysis else None,
+            ai_categories=ai_analysis.get('categories', []) if ai_analysis else None,
+            sentiment_score=ai_analysis.get('sentiment_score', 0.0) if ai_analysis else None,
+            confidence_score=ai_analysis.get('confidence_score', 0.0) if ai_analysis else None,
+            channel_metadata={
                 'page_url': page_url,
                 'page_title': page_title,
                 'user_agent': request.headers.get('User-Agent', ''),
-                'language': 'ar',  # Default to Arabic
+                'language': 'ar',
                 'widget_version': '2.0',
-                'submission_type': 'persistent_widget'
-            }),
-            ai_analysis=json.dumps(ai_analysis) if ai_analysis else None,
+                'submission_type': 'persistent_widget',
+                'category': category
+            },
+            language_detected='ar',
             created_at=datetime.utcnow(),
             status='processed'
         )
