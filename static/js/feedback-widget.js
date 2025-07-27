@@ -22,6 +22,7 @@ class FeedbackWidget {
                     whyLabel: 'لماذا؟ أخبرنا المزيد',
                     comment: 'شاركنا تفاصيل تجربتك...',
                     characters: 'حرف',
+                    selectCategory: 'اختر نوع الملاحظة...',
                     submit: 'إرسال الملاحظة',
                     submitting: 'جاري الإرسال...',
                     success: '✓ تم الإرسال بنجاح!',
@@ -35,6 +36,7 @@ class FeedbackWidget {
                     whyLabel: 'Why? Tell us more',
                     comment: 'Share details about your experience...',
                     characters: 'chars',
+                    selectCategory: 'Select feedback type...',
                     submit: 'Submit Feedback',
                     submitting: 'Submitting...',
                     success: '✓ Successfully Submitted!',
@@ -134,16 +136,13 @@ class FeedbackWidget {
 
                         <!-- Category Section -->
                         <div class="feedback-category">
-                            <label class="feedback-rating-label">${labels.category}</label>
-                            <div class="category-buttons" role="radiogroup" aria-label="${labels.category}">
+                            <label class="feedback-rating-label" for="category-select">${labels.category}</label>
+                            <select class="category-dropdown" id="category-select" required>
+                                <option value="">${labels.selectCategory || 'اختر نوع الملاحظة...'}</option>
                                 ${categories.map(cat => `
-                                    <button type="button" 
-                                            class="category-btn" 
-                                            data-category="${cat}"
-                                            role="radio"
-                                            aria-checked="false">${cat}</button>
+                                    <option value="${cat}">${cat}</option>
                                 `).join('')}
-                            </div>
+                            </select>
                         </div>
 
                         <!-- Comment Section -->
@@ -198,9 +197,9 @@ class FeedbackWidget {
             });
         });
 
-        // Category buttons
-        this.modal.querySelectorAll('.category-btn').forEach(btn => {
-            btn.addEventListener('click', () => this.setCategory(btn.dataset.category));
+        // Category dropdown
+        this.modal.querySelector('#category-select').addEventListener('change', (e) => {
+            this.setCategory(e.target.value);
         });
 
         // Form submission
@@ -306,12 +305,8 @@ class FeedbackWidget {
     setCategory(category) {
         this.category = category;
         
-        // Update UI
-        this.modal.querySelectorAll('.category-btn').forEach(btn => {
-            const isActive = btn.dataset.category === category;
-            btn.classList.toggle('active', isActive);
-            btn.setAttribute('aria-checked', isActive ? 'true' : 'false');
-        });
+        // Update dropdown value
+        this.modal.querySelector('#category-select').value = category;
 
         // Update validation
         this.validateForm();
@@ -446,10 +441,7 @@ class FeedbackWidget {
             star.setAttribute('aria-checked', 'false');
         });
         
-        this.modal.querySelectorAll('.category-btn').forEach(btn => {
-            btn.classList.remove('active');
-            btn.setAttribute('aria-checked', 'false');
-        });
+        this.modal.querySelector('#category-select').selectedIndex = 0;
         
         this.modal.querySelector('.feedback-textarea').value = '';
         this.modal.querySelector('#char-count').textContent = '0/500 حرف';

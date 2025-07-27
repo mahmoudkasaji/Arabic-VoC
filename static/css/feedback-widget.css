@@ -200,15 +200,15 @@
     flex-direction: column;
     width: 100%;
     max-width: 360px;
-    gap: 20px;
-    padding-top: 20px;
+    gap: 16px;
+    padding-top: 16px;
 }
 
 /* Submit button area - styles defined below */
 
 /* Quick Rating Section */
 .feedback-rating {
-    margin-bottom: 16px;
+    margin-bottom: 12px;
     text-align: center;
 }
 
@@ -222,19 +222,19 @@
 
 .rating-stars {
     display: flex;
-    gap: 4px;
+    gap: 2px;
     justify-content: center;
-    margin-bottom: 16px;
+    margin-bottom: 12px;
 }
 
 .rating-star {
-    font-size: 32px;
+    font-size: 24px;
     cursor: pointer;
     color: #e4e5e9;
     transition: all 0.3s ease;
     user-select: none;
-    padding: 4px;
-    border-radius: 6px;
+    padding: 2px;
+    border-radius: 4px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -243,8 +243,8 @@
 .rating-star:hover,
 .rating-star.active {
     color: #ffc107;
-    transform: scale(1.15);
-    text-shadow: 0 2px 8px rgba(255, 193, 7, 0.4);
+    transform: scale(1.1);
+    text-shadow: 0 2px 6px rgba(255, 193, 7, 0.3);
 }
 
 .rating-star:hover ~ .rating-star {
@@ -257,44 +257,39 @@
     outline-offset: 2px;
 }
 
-/* Category Selection */
+/* Category Dropdown */
 .feedback-category {
-    margin-bottom: 16px;
+    margin-bottom: 12px;
     text-align: center;
 }
 
-.category-buttons {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 8px;
-    margin-top: 8px;
-}
-
-.category-btn {
+.category-dropdown {
+    width: 100%;
     padding: 10px 12px;
     border: 2px solid #e9ecef;
     background: white;
     border-radius: 8px;
-    cursor: pointer;
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 500;
-    text-align: center;
+    color: #495057;
+    cursor: pointer;
     transition: all 0.2s ease;
-    color: #6c757d;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    margin-top: 8px;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 8px center;
+    background-repeat: no-repeat;
+    background-size: 16px;
+    padding-right: 32px;
 }
 
-.category-btn:hover {
+.category-dropdown:focus {
+    outline: none;
     border-color: var(--feedback-primary);
-    color: var(--feedback-primary);
 }
 
-.category-btn.active {
-    background: var(--feedback-primary);
+.category-dropdown:hover {
     border-color: var(--feedback-primary);
-    color: white;
 }
 
 /* Comment Section */
@@ -305,12 +300,12 @@
 
 .feedback-textarea {
     width: 100%;
-    min-height: 80px;
-    max-height: 120px;
-    padding: 12px;
+    min-height: 70px;
+    max-height: 90px;
+    padding: 10px 12px;
     border: 2px solid #e9ecef;
     border-radius: 8px;
-    resize: vertical;
+    resize: none;
     font-family: 'Cairo', sans-serif;
     font-size: 14px;
     transition: border-color 0.2s ease;
@@ -342,8 +337,8 @@
     align-items: center;
     justify-content: center;
     gap: 8px;
-    margin-top: 20px;
-    min-height: 48px;
+    margin-top: 16px;
+    min-height: 44px;
 }
 
 .feedback-submit:hover {
