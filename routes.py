@@ -47,6 +47,50 @@ def survey_builder():
     from flask import render_template
     return render_template('survey_builder.html')
 
+# Contacts Management Route
+@app.route('/contacts')
+@require_login
+def contacts():
+    """Contacts management page with direct database access"""
+    from flask import render_template, request
+    from models.contacts import Contact
+    
+    # Get all contacts from database
+    contacts = Contact.query.order_by(Contact.created_at.desc()).all()
+    
+    return render_template('contacts.html', contacts=contacts)
+
+# Contact Edit Route
+@app.route('/contacts/edit/<int:contact_id>', methods=['POST'])
+@require_login
+def edit_contact(contact_id):
+    """Handle contact edit form submission"""
+    from flask import request, redirect, url_for, flash
+    from models.contacts import Contact
+    
+    contact = Contact.query.get_or_404(contact_id)
+    
+    # Update contact fields from form
+    contact.name = request.form.get('name', '').strip()
+    contact.email = request.form.get('email', '').strip() or None
+    contact.phone = request.form.get('phone', '').strip() or None
+    contact.company = request.form.get('company', '').strip() or None
+    contact.language_preference = request.form.get('language_preference', 'ar')
+    contact.is_active = request.form.get('is_active') == 'true'
+    contact.email_opt_in = request.form.get('email_opt_in') == 'on'
+    contact.sms_opt_in = request.form.get('sms_opt_in') == 'on'
+    contact.whatsapp_opt_in = request.form.get('whatsapp_opt_in') == 'on'
+    contact.notes = request.form.get('notes', '').strip() or None
+    
+    try:
+        db.session.commit()
+        flash('تم تحديث جهة الاتصال بنجاح', 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash('حدث خطأ في تحديث جهة الاتصال', 'error')
+    
+    return redirect(url_for('contacts'))
+
 # Add any other routes here.
 # Use flask_login.current_user to check if current user is logged in or anonymous.
 # Use db & models to interact with the database.
