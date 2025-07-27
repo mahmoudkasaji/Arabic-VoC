@@ -74,7 +74,7 @@ def submit_feedback_widget():
                 'user_agent': request.headers.get('User-Agent', ''),
                 'language': 'ar',
                 'widget_version': '2.0',
-                'submission_type': 'persistent_widget',
+                'submission_type': 'footer_widget',
                 'category': category
             },
             language_detected='ar',

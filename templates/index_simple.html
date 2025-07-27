@@ -682,21 +682,18 @@
                 submitBtn.textContent = 'جاري الإرسال...';
                 
                 try {
-                    // Submit feedback to backend  
-                    const response = await fetch('/api/feedback-widget', {
+                    // Create form data for direct Flask submission
+                    const formData = new FormData();
+                    formData.append('rating', feedbackData.helpful === 'yes' ? 5 : 2);
+                    formData.append('comment', `${feedbackData.category ? '[' + feedbackData.category + '] ' : ''}${feedbackData.text || ''}`);
+                    formData.append('category', feedbackData.category || 'general');
+                    formData.append('page_url', window.location.href);
+                    formData.append('page_title', document.title);
+                    
+                    // Submit to direct Flask route
+                    const response = await fetch('/feedback-widget', {
                         method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            rating: feedbackData.helpful === 'yes' ? 5 : 2,
-                            comment: `${feedbackData.category ? '[' + feedbackData.category + '] ' : ''}${feedbackData.text || ''}`,
-                            category: feedbackData.category || 'general',
-                            page_url: window.location.href,
-                            page_title: document.title,
-                            user_agent: navigator.userAgent,
-                            language: 'ar'
-                        })
+                        body: formData
                     });
                     
                     if (response.ok) {
