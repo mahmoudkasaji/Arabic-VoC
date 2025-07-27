@@ -185,14 +185,13 @@
 }
 
 .feedback-modal-body {
-    padding: 20px 24px;
+    padding: 24px;
     flex: 1;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
-    min-height: calc(100vh - 80px);
 }
 
 /* Form container */
@@ -202,14 +201,10 @@
     width: 100%;
     max-width: 360px;
     gap: 20px;
-    justify-content: center;
+    padding-top: 20px;
 }
 
-/* Submit button area */
-.feedback-submit {
-    margin-top: 16px;
-    align-self: stretch;
-}
+/* Submit button area - styles defined below */
 
 /* Quick Rating Section */
 .feedback-rating {
@@ -347,6 +342,8 @@
     align-items: center;
     justify-content: center;
     gap: 8px;
+    margin-top: 20px;
+    min-height: 48px;
 }
 
 .feedback-submit:hover {
