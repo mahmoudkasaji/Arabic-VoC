@@ -365,38 +365,31 @@
                     </div>
                 </div>
                 
-                <!-- JavaScript Embed Widget -->
+                <!-- Footer Survey Widget -->
                 <div class="col-lg-6 mb-4">
                     <div class="distribution-card">
                         <div class="distribution-header">
-                            <i class="fas fa-code text-warning"></i>
-                            <h4>أداة قابلة للتضمين</h4>
+                            <i class="fas fa-window-maximize text-warning"></i>
+                            <h4>أداة الاستطلاع في التذييل</h4>
                         </div>
                         <div class="distribution-body">
-                            <p class="text-muted mb-3">أنشئ كود JavaScript لتضمين الاستطلاع في موقع ويب آخر</p>
+                            <p class="text-muted mb-3">إنشاء شريط استطلاع يظهر في أسفل الصفحة مثل المواقع الحكومية (pa.gov)</p>
                             
-                            <!-- Widget Configuration -->
+                            <!-- Footer Widget Configuration -->
                             <div class="row mb-3">
-                                <div class="col-md-4">
-                                    <label class="form-label">موضع الأداة</label>
-                                    <select class="form-select" id="widgetPosition">
-                                        <option value="bottom-right">أسفل اليمين</option>
-                                        <option value="bottom-left" selected>أسفل اليسار (عربي)</option>
-                                        <option value="center">وسط الصفحة</option>
+                                <div class="col-md-6">
+                                    <label class="form-label">لون الخلفية</label>
+                                    <select class="form-select" id="footerBackgroundColor">
+                                        <option value="#2c3e50" selected>أزرق داكن</option>
+                                        <option value="#28a745">أخضر</option>
+                                        <option value="#dc3545">أحمر</option>
+                                        <option value="#6f42c1">بنفسجي</option>
+                                        <option value="#fd7e14">برتقالي</option>
                                     </select>
                                 </div>
-                                <div class="col-md-4">
-                                    <label class="form-label">لون الأداة</label>
-                                    <select class="form-select" id="widgetColor">
-                                        <option value="blue">أزرق</option>
-                                        <option value="green">أخضر</option>
-                                        <option value="orange" selected>برتقالي</option>
-                                        <option value="purple">بنفسجي</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-4">
+                                <div class="col-md-6">
                                     <label class="form-label">لغة الأداة</label>
-                                    <select class="form-select" id="widgetLanguage">
+                                    <select class="form-select" id="footerLanguage">
                                         <option value="ar" selected>العربية</option>
                                         <option value="en">English</option>
                                         <option value="auto">تلقائي</option>
@@ -404,34 +397,54 @@
                                 </div>
                             </div>
                             
-                            <!-- Generated JavaScript Code -->
-                            <div class="javascript-code-section" id="jsCodeSection" style="display: none;">
-                                <label class="form-label fw-bold">كود JavaScript للتضمين:</label>
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">نص الدعوة</label>
+                                    <input type="text" class="form-control" id="footerCallToAction" value="شاركنا رأيك">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">نص الوصف</label>
+                                    <input type="text" class="form-control" id="footerDescription" value="يستغرق 3 دقائق فقط">
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="footerCloseable" checked>
+                                    <label class="form-check-label" for="footerCloseable">
+                                        السماح للمستخدمين بإغلاق الشريط
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <!-- Generated Footer Widget Code -->
+                            <div class="javascript-code-section" id="footerCodeSection" style="display: none;">
+                                <label class="form-label fw-bold">كود أداة التذييل:</label>
                                 <div class="position-relative">
-                                    <textarea class="form-control code-textarea" id="javascriptCode" readonly rows="8"></textarea>
-                                    <button class="btn btn-sm btn-outline-secondary position-absolute top-0 end-0 m-2" onclick="copyJSCode()">
+                                    <textarea class="form-control code-textarea" id="footerJavascriptCode" readonly rows="12"></textarea>
+                                    <button class="btn btn-sm btn-outline-secondary position-absolute top-0 end-0 m-2" onclick="copyFooterCode()">
                                         <i class="fas fa-copy"></i> نسخ
                                     </button>
                                 </div>
                                 <small class="text-muted mt-2 d-block">
                                     <i class="fas fa-info-circle me-1"></i>
-                                    انسخ هذا الكود والصقه في أي صفحة HTML لإظهار أداة الاستطلاع
+                                    انسخ هذا الكود والصقه قبل إغلاق tag &lt;/body&gt; في أي صفحة HTML
                                 </small>
                             </div>
                             
-                            <!-- Preview Section -->
-                            <div class="widget-preview-section mt-3" id="previewSection" style="display: none;">
-                                <label class="form-label fw-bold">معاينة الأداة:</label>
-                                <div class="preview-container border rounded p-3 bg-light position-relative" style="height: 200px;">
-                                    <div class="preview-widget" id="previewWidget">
-                                        <!-- Widget preview will appear here -->
+                            <!-- Footer Preview Section -->
+                            <div class="widget-preview-section mt-3" id="footerPreviewSection" style="display: none;">
+                                <label class="form-label fw-bold">معاينة شريط التذييل:</label>
+                                <div class="preview-container border rounded bg-light position-relative" style="height: 200px; overflow: hidden;">
+                                    <div class="preview-footer-widget" id="previewFooterWidget">
+                                        <!-- Footer widget preview will appear here -->
                                     </div>
-                                    <small class="text-muted">معاينة تفاعلية للأداة كما ستظهر في الموقع</small>
+                                    <small class="text-muted position-absolute top-0 start-0 p-2">معاينة شريط الاستطلاع كما سيظهر في أسفل الموقع</small>
                                 </div>
                             </div>
                             
-                            <button class="btn btn-warning w-100 mt-3" onclick="generateJSWidget()">
-                                <i class="fas fa-code me-2"></i>إنشاء كود التضمين
+                            <button class="btn btn-warning w-100 mt-3" onclick="generateFooterWidget()">
+                                <i class="fas fa-window-maximize me-2"></i>إنشاء شريط التذييل
                             </button>
                         </div>
                     </div>
@@ -758,16 +771,288 @@
         resultsSection.scrollIntoView({ behavior: 'smooth' });
     }
     
-    // Generate JavaScript Widget
-    function generateJSWidget() {
+    // Generate Footer Survey Widget
+    function generateFooterWidget() {
         if (!generatedSurveyUrl) {
-            alert('يرجى إنشاء رابط الاستطلاع أولاً');
+            alert('يرجى اختيار استطلاع أولاً');
             return;
         }
         
-        const position = document.getElementById('widgetPosition').value;
-        const color = document.getElementById('widgetColor').value;
-        const language = document.getElementById('widgetLanguage').value;
+        const backgroundColor = document.getElementById('footerBackgroundColor').value;
+        const language = document.getElementById('footerLanguage').value;
+        const callToAction = document.getElementById('footerCallToAction').value;
+        const description = document.getElementById('footerDescription').value;
+        const closeable = document.getElementById('footerCloseable').checked;
+        
+        // Generate government-style footer survey widget
+        const footerCode = `<!-- Footer Survey Widget (pa.gov style) -->
+<style>
+.survey-footer-banner {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: ${backgroundColor};
+    color: white;
+    padding: 16px 20px;
+    box-shadow: 0 -4px 12px rgba(0,0,0,0.15);
+    z-index: 9999;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+}
+
+.survey-footer-banner.show {
+    transform: translateY(0);
+}
+
+.survey-footer-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: 0 auto;
+    gap: 20px;
+}
+
+.survey-footer-text {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.survey-footer-icon {
+    background: rgba(255,255,255,0.2);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+}
+
+.survey-footer-message {
+    flex: 1;
+}
+
+.survey-footer-title {
+    font-weight: 600;
+    font-size: 16px;
+    margin-bottom: 4px;
+}
+
+.survey-footer-desc {
+    font-size: 14px;
+    opacity: 0.9;
+}
+
+.survey-footer-actions {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.survey-footer-btn {
+    background: white;
+    color: ${backgroundColor};
+    border: none;
+    padding: 12px 24px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.survey-footer-btn:hover {
+    background: rgba(255,255,255,0.9);
+    transform: translateY(-1px);
+}
+
+.survey-footer-close {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.5);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.survey-footer-close:hover {
+    background: rgba(255,255,255,0.1);
+    border-color: rgba(255,255,255,0.8);
+}
+
+.survey-footer-banner.rtl {
+    direction: rtl;
+    text-align: right;
+}
+
+@media (max-width: 768px) {
+    .survey-footer-content {
+        flex-direction: column;
+        text-align: center;
+        gap: 12px;
+    }
+    
+    .survey-footer-text {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .survey-footer-actions {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .survey-footer-btn {
+        flex: 1;
+        min-width: 120px;
+    }
+}
+</style>
+
+<div id="surveyFooterBanner" class="survey-footer-banner ${language === 'ar' ? 'rtl' : ''}">
+    <div class="survey-footer-content">
+        <div class="survey-footer-text">
+            <div class="survey-footer-icon">
+                📋
+            </div>
+            <div class="survey-footer-message">
+                <div class="survey-footer-title">${callToAction}</div>
+                <div class="survey-footer-desc">${description}</div>
+            </div>
+        </div>
+        <div class="survey-footer-actions">
+            <a href="${generatedSurveyUrl}" target="_blank" class="survey-footer-btn" onclick="trackSurveyClick()">
+                ${language === 'ar' ? 'ابدأ الآن' : 'Take Survey'}
+            </a>
+            ${closeable ? `<button class="survey-footer-close" onclick="closeSurveyBanner()">
+                ${language === 'ar' ? 'إغلاق' : 'Close'}
+            </button>` : ''}
+        </div>
+    </div>
+</div>
+
+<script>
+// Survey footer banner functionality
+(function() {
+    let bannerShown = false;
+    let bannerClosed = localStorage.getItem('surveyBannerClosed');
+    
+    function showSurveyBanner() {
+        if (bannerClosed || bannerShown) return;
+        
+        const banner = document.getElementById('surveyFooterBanner');
+        if (banner) {
+            // Show banner after 3 seconds on page
+            setTimeout(() => {
+                banner.classList.add('show');
+                bannerShown = true;
+            }, 3000);
+        }
+    }
+    
+    window.closeSurveyBanner = function() {
+        const banner = document.getElementById('surveyFooterBanner');
+        if (banner) {
+            banner.classList.remove('show');
+            localStorage.setItem('surveyBannerClosed', 'true');
+            
+            // Track close event
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'survey_banner_closed', {
+                    'survey_id': '${generatedSurveyUrl.split('/').pop()}'
+                });
+            }
+        }
+    };
+    
+    window.trackSurveyClick = function() {
+        // Track survey click
+        if (typeof gtag !== 'undefined') {
+            gtag('event', 'survey_banner_clicked', {
+                'survey_id': '${generatedSurveyUrl.split('/').pop()}'
+            });
+        }
+    };
+    
+    // Initialize banner when page loads
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', showSurveyBanner);
+    } else {
+        showSurveyBanner();
+    }
+    
+    // Reset banner visibility on page navigation (for SPAs)
+    window.addEventListener('beforeunload', function() {
+        bannerShown = false;
+    });
+})();
+</script>`;
+        
+        // Display the code
+        document.getElementById('footerJavascriptCode').value = footerCode;
+        document.getElementById('footerCodeSection').style.display = 'block';
+        document.getElementById('footerPreviewSection').style.display = 'block';
+        
+        // Generate preview
+        generateFooterPreview(backgroundColor, language, callToAction, description, closeable);
+        
+        showNotification('تم إنشاء شريط التذييل بنجاح! مثل المواقع الحكومية', 'success');
+    }
+    
+    // Generate footer widget preview
+    function generateFooterPreview(backgroundColor, language, callToAction, description, closeable) {
+        const isRTL = language === 'ar';
+        const previewHtml = `
+            <div style="position: absolute; bottom: 0; left: 0; right: 0; 
+                        background: ${backgroundColor}; color: white; padding: 12px 16px; 
+                        box-shadow: 0 -2px 8px rgba(0,0,0,0.2); 
+                        direction: ${isRTL ? 'rtl' : 'ltr'};">
+                <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px;">
+                    <div style="display: flex; align-items: center; gap: 12px; flex: 1;">
+                        <div style="background: rgba(255,255,255,0.2); border-radius: 50%; 
+                                   width: 32px; height: 32px; display: flex; align-items: center; 
+                                   justify-content: center; font-size: 14px;">📋</div>
+                        <div>
+                            <div style="font-weight: 600; font-size: 14px; margin-bottom: 2px;">${callToAction}</div>
+                            <div style="font-size: 12px; opacity: 0.9;">${description}</div>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 8px; align-items: center;">
+                        <button style="background: white; color: ${backgroundColor}; border: none; 
+                                      padding: 8px 16px; border-radius: 4px; font-weight: 600; 
+                                      font-size: 12px; cursor: pointer;" 
+                                onclick="alert('معاينة: سيفتح الاستطلاع في نافذة جديدة')">
+                            ${isRTL ? 'ابدأ الآن' : 'Take Survey'}
+                        </button>
+                        ${closeable ? `<button style="background: transparent; border: 1px solid rgba(255,255,255,0.5); 
+                                               color: white; padding: 6px 12px; border-radius: 3px; 
+                                               font-size: 11px; cursor: pointer;"
+                                               onclick="this.parentElement.parentElement.parentElement.style.display='none'">
+                            ${isRTL ? 'إغلاق' : 'Close'}
+                        </button>` : ''}
+                    </div>
+                </div>
+            </div>
+        `;
+        document.getElementById('previewFooterWidget').innerHTML = previewHtml;
+    }
+    
+    // Copy footer JavaScript code
+    function copyFooterCode() {
+        const codeField = document.getElementById('footerJavascriptCode');
+        codeField.select();
+        document.execCommand('copy');
+        showNotification('تم نسخ كود شريط التذييل إلى الحافظة', 'info');
+    }
         
         // Color mapping
         const colorMap = {
