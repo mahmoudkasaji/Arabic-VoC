@@ -97,7 +97,19 @@
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-header">
-                        <h5 class="mb-0"><i class="fas fa-chart-bar me-2"></i>توزيع المصادر النشطة</h5>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0"><i class="fas fa-chart-bar me-2"></i>توزيع المصادر النشطة</h5>
+                            <div class="btn-group" role="group">
+                                {% for channel_option in live_analytics.available_channels %}
+                                <input type="radio" class="btn-check" name="channelFilter" id="channel_{{ channel_option.value }}" 
+                                       value="{{ channel_option.value }}" autocomplete="off"
+                                       {% if channel_option.value == live_analytics.current_channel_filter %}checked{% endif %}>
+                                <label class="btn btn-outline-primary btn-sm" for="channel_{{ channel_option.value }}">
+                                    {{ channel_option.label }} ({{ channel_option.count }})
+                                </label>
+                                {% endfor %}
+                            </div>
+                        </div>
                     </div>
                     <div class="card-body">
                         <div class="row">
@@ -106,9 +118,9 @@
                                 <div class="d-flex justify-content-between align-items-center p-3 border rounded">
                                     <div>
                                         <h6 class="mb-1">
-                                            {% if channel_stat.channel.value == 'WIDGET' %}
+                                            {% if channel_stat.channel.value == 'widget' %}
                                                 <i class="fas fa-comments me-2"></i>الويدجت (جانبي + تذييل)
-                                            {% elif channel_stat.channel.value == 'EMAIL' %}
+                                            {% elif channel_stat.channel.value == 'email' %}
                                                 <i class="fas fa-envelope me-2"></i>Gmail
                                             {% endif %}
                                         </h6>
@@ -118,6 +130,31 @@
                                 </div>
                             </div>
                             {% endfor %}
+                        </div>
+                        
+                        <!-- Date Range Filter -->
+                        <div class="row mt-3">
+                            <div class="col-md-12">
+                                <form method="GET" class="d-flex align-items-end gap-3">
+                                    <input type="hidden" name="channel" id="hiddenChannelFilter" value="{{ live_analytics.current_channel_filter }}">
+                                    <div class="form-group">
+                                        <label for="date_from" class="form-label">من تاريخ</label>
+                                        <input type="date" class="form-control" name="date_from" id="date_from" 
+                                               value="{{ live_analytics.current_date_from or '' }}">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="date_to" class="form-label">إلى تاريخ</label>
+                                        <input type="date" class="form-control" name="date_to" id="date_to" 
+                                               value="{{ live_analytics.current_date_to or '' }}">
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-filter me-1"></i>تطبيق الفلتر
+                                    </button>
+                                    <a href="/surveys/responses" class="btn btn-outline-secondary">
+                                        <i class="fas fa-times me-1"></i>مسح الفلاتر
+                                    </a>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -149,10 +186,11 @@
                                     {% for feedback in live_analytics.recent_feedback %}
                                     <tr>
                                         <td>
-                                            {% if feedback.channel.value == 'WIDGET' %}
-                                                <span class="badge bg-info">الويدجت</span>
-                                            {% elif feedback.channel.value == 'EMAIL' %}
-                                                <span class="badge bg-success">Gmail</span>
+                                            {% set channel_name = feedback.channel.get_arabic_name(feedback.channel) %}
+                                            {% set channel_color = feedback.channel.get_tag_color(feedback.channel) %}
+                                            <span class="badge bg-{{ channel_color }}">{{ channel_name }}</span>
+                                            {% if feedback.channel_metadata %}
+                                                <br><small class="text-muted">{{ feedback.channel_metadata.get('source_type', '') }}</small>
                                             {% endif %}
                                         </td>
                                         <td>
@@ -171,9 +209,9 @@
                                             {% endif %}
                                         </td>
                                         <td>
-                                            {% if feedback.status.value == 'PROCESSED' %}
+                                            {% if feedback.status.value == 'processed' %}
                                                 <span class="badge bg-success">معالج</span>
-                                            {% elif feedback.status.value == 'PROCESSING' %}
+                                            {% elif feedback.status.value == 'processing' %}
                                                 <span class="badge bg-warning">قيد المعالجة</span>
                                             {% else %}
                                                 <span class="badge bg-secondary">في الانتظار</span>
@@ -208,5 +246,54 @@
     </div>
     
     {% include 'components/scripts.html' %}
+    
+    <script>
+        // Auto-refresh every 30 seconds for live data
+        let autoRefreshInterval;
+        
+        function startAutoRefresh() {
+            autoRefreshInterval = setInterval(() => {
+                window.location.reload();
+            }, 30000);
+        }
+        
+        function stopAutoRefresh() {
+            if (autoRefreshInterval) {
+                clearInterval(autoRefreshInterval);
+            }
+        }
+        
+        // Channel filter functionality
+        function handleChannelFilter() {
+            const radioButtons = document.querySelectorAll('input[name="channelFilter"]');
+            const hiddenInput = document.getElementById('hiddenChannelFilter');
+            
+            radioButtons.forEach(radio => {
+                radio.addEventListener('change', function() {
+                    if (this.checked) {
+                        // Update URL immediately with new channel filter
+                        const currentUrl = new URL(window.location);
+                        currentUrl.searchParams.set('channel', this.value);
+                        window.location.href = currentUrl.toString();
+                    }
+                });
+            });
+            
+            // Sync hidden input with selected radio
+            const selectedRadio = document.querySelector('input[name="channelFilter"]:checked');
+            if (selectedRadio && hiddenInput) {
+                hiddenInput.value = selectedRadio.value;
+            }
+        }
+        
+        // Start auto-refresh when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            handleChannelFilter();
+            startAutoRefresh();
+        });
+        
+        // Stop auto-refresh when user leaves page
+        window.addEventListener('beforeunload', stopAutoRefresh);
+    </script>
 </body>
 </html>

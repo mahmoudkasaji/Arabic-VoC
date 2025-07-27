@@ -24,6 +24,44 @@ class FeedbackChannel(str, enum.Enum):
     IN_PERSON = "in_person"
     SURVEY = "survey"
     CHATBOT = "chatbot"
+    
+    @classmethod
+    def get_arabic_name(cls, channel):
+        """Get Arabic display name for channel"""
+        names = {
+            cls.EMAIL: "Gmail",
+            cls.PHONE: "الهاتف",
+            cls.WEBSITE: "الموقع",
+            cls.WIDGET: "الويدجت",
+            cls.FOOTER_WIDGET: "تذييل الصفحة",
+            cls.MOBILE_APP: "التطبيق",
+            cls.SOCIAL_MEDIA: "التواصل الاجتماعي",
+            cls.WHATSAPP: "واتساب",
+            cls.SMS: "الرسائل النصية",
+            cls.IN_PERSON: "وجهاً لوجه",
+            cls.SURVEY: "الاستطلاعات",
+            cls.CHATBOT: "الدردشة الآلية"
+        }
+        return names.get(channel, channel.value)
+    
+    @classmethod
+    def get_tag_color(cls, channel):
+        """Get Bootstrap color class for channel tags"""
+        colors = {
+            cls.EMAIL: "success",
+            cls.PHONE: "primary",
+            cls.WEBSITE: "info",
+            cls.WIDGET: "warning",
+            cls.FOOTER_WIDGET: "secondary",
+            cls.MOBILE_APP: "dark",
+            cls.SOCIAL_MEDIA: "purple",
+            cls.WHATSAPP: "success",
+            cls.SMS: "info",
+            cls.IN_PERSON: "primary",
+            cls.SURVEY: "danger",
+            cls.CHATBOT: "dark"
+        }
+        return colors.get(channel, "secondary")
 
 class FeedbackStatus(str, enum.Enum):
     """Processing status of feedback"""

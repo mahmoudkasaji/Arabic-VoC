@@ -59,7 +59,7 @@ def submit_widget_feedback():
         feedback = Feedback(
             content=comment,
             processed_content=comment,
-            channel='FOOTER_WIDGET',
+            channel='widget',
             rating=rating,
             customer_id=str(current_user.id),
             ai_summary=ai_analysis.get('summary', '') if ai_analysis else None,
@@ -72,7 +72,7 @@ def submit_widget_feedback():
                 'user_agent': user_agent,
                 'language': language,
                 'widget_version': '2.0',
-                'submission_type': 'footer_widget',
+                'source_type': 'FOOTER_WIDGET',
                 'category': category
             },
             language_detected=language,

@@ -431,8 +431,11 @@ def survey_responses_page():
         from datetime import datetime, timedelta
         import json
         
-        # Get survey ID from URL parameter  
+        # Get filter parameters
         survey_id = request.args.get('id')
+        channel_filter = request.args.get('channel')
+        date_from = request.args.get('date_from')
+        date_to = request.args.get('date_to')
         
         if survey_id:
             # Show responses for specific survey
@@ -472,14 +475,46 @@ def survey_responses_page():
             # Filter to only configured sources: EMAIL and WIDGET
             active_channels = [FeedbackChannel.EMAIL, FeedbackChannel.WIDGET]
             
+            # Apply channel filter if specified
+            if channel_filter and channel_filter != 'all':
+                try:
+                    filtered_channel = FeedbackChannel(channel_filter.lower())
+                    if filtered_channel in active_channels:
+                        active_channels = [filtered_channel]
+                    else:
+                        active_channels = []  # Invalid channel filter
+                except ValueError:
+                    active_channels = []  # Invalid channel value
+            
             # Calculate today's date range
             today = datetime.now().date()
             today_start = datetime.combine(today, datetime.min.time())
             
             # Get live feedback data from active sources only
-            all_feedback = db.session.query(Feedback).filter(
+            feedback_query = db.session.query(Feedback).filter(
                 Feedback.channel.in_(active_channels)
-            ).order_by(desc(Feedback.created_at)).all()
+            )
+            
+            # Apply date filters if specified
+            if date_from:
+                try:
+                    from_date = datetime.strptime(date_from, '%Y-%m-%d').date()
+                    feedback_query = feedback_query.filter(
+                        func.date(Feedback.created_at) >= from_date
+                    )
+                except ValueError:
+                    pass  # Invalid date format, ignore
+            
+            if date_to:
+                try:
+                    to_date = datetime.strptime(date_to, '%Y-%m-%d').date()
+                    feedback_query = feedback_query.filter(
+                        func.date(Feedback.created_at) <= to_date
+                    )
+                except ValueError:
+                    pass  # Invalid date format, ignore
+                    
+            all_feedback = feedback_query.order_by(desc(Feedback.created_at)).all()
             
             # Calculate live analytics from real configured sources
             today_feedback = db.session.query(Feedback).filter(
@@ -553,6 +588,13 @@ def survey_responses_page():
             else:
                 change_percent = 100 if total_responses_today > 0 else 0
             
+            # Prepare channel filter options for template
+            available_channels = [
+                {'value': 'all', 'label': 'جميع المصادر', 'count': total_responses_all_time},
+                {'value': 'email', 'label': 'Gmail', 'count': sum([stat.count for stat in channel_stats if stat.channel == FeedbackChannel.EMAIL])},
+                {'value': 'widget', 'label': 'الويدجت', 'count': sum([stat.count for stat in channel_stats if stat.channel == FeedbackChannel.WIDGET])}
+            ]
+            
             live_analytics = {
                 'total_responses_today': total_responses_today,
                 'total_responses_all_time': total_responses_all_time,
@@ -561,7 +603,11 @@ def survey_responses_page():
                 'change_percent': change_percent,
                 'channel_stats': channel_stats,
                 'sentiment_stats': sentiment_stats,
-                'recent_feedback': recent_feedback
+                'recent_feedback': recent_feedback,
+                'available_channels': available_channels,
+                'current_channel_filter': channel_filter or 'all',
+                'current_date_from': date_from,
+                'current_date_to': date_to
             }
             
             logger.info(f"Live analytics calculated: {total_responses_today} today, {total_responses_all_time} total, {completion_rate}% completion")

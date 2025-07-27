@@ -73,8 +73,8 @@ def submit_feedback_widget():
                 'page_title': page_title,
                 'user_agent': request.headers.get('User-Agent', ''),
                 'language': 'ar',
+                'source_type': 'SIDEBAR_WIDGET',
                 'widget_version': '2.0',
-                'submission_type': 'footer_widget',
                 'category': category
             },
             language_detected='ar',
