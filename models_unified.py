@@ -16,6 +16,7 @@ class FeedbackChannel(str, enum.Enum):
     PHONE = "phone"
     WEBSITE = "website"
     WIDGET = "widget"
+    FOOTER_WIDGET = "footer_widget"
     MOBILE_APP = "mobile_app"
     SOCIAL_MEDIA = "social_media"
     WHATSAPP = "whatsapp"

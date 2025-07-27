@@ -446,6 +446,12 @@
                             <button class="btn btn-warning w-100 mt-3" onclick="generateFooterWidget()">
                                 <i class="fas fa-window-maximize me-2"></i>إنشاء شريط التذييل
                             </button>
+                            
+                            <div class="mt-3">
+                                <button class="btn btn-outline-secondary w-100" onclick="generatePersistentFooter()">
+                                    <i class="fas fa-layer-group me-2"></i>إنشاء تذييل مضمن مع منطق شرطي
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1052,6 +1058,400 @@
         codeField.select();
         document.execCommand('copy');
         showNotification('تم نسخ كود شريط التذييل إلى الحافظة', 'info');
+    }
+    
+    // Generate Persistent Footer with Conditional Logic
+    function generatePersistentFooter() {
+        if (!generatedSurveyUrl) {
+            alert('يرجى اختيار استطلاع أولاً');
+            return;
+        }
+        
+        const language = document.getElementById('footerLanguage').value;
+        const isRTL = language === 'ar';
+        
+        // Generate persistent footer feedback form
+        const persistentFooterCode = `<!-- Persistent Footer Feedback Form with Conditional Logic -->
+<style>
+.persistent-footer-feedback {
+    background: #f8f9fa;
+    border-top: 1px solid #e9ecef;
+    margin-top: 3rem;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+.feedback-header {
+    background: #1e3a8a;
+    color: white;
+    padding: 16px 0;
+    text-align: center;
+}
+
+.feedback-header h3 {
+    margin: 0;
+    font-weight: 600;
+    font-size: 18px;
+}
+
+.feedback-body {
+    padding: 24px 0;
+    max-width: 800px;
+    margin: 0 auto;
+    direction: ${isRTL ? 'rtl' : 'ltr'};
+    text-align: ${isRTL ? 'right' : 'left'};
+}
+
+.feedback-question {
+    margin-bottom: 20px;
+}
+
+.feedback-question label {
+    display: block;
+    font-weight: 600;
+    font-size: 16px;
+    color: #2d3748;
+    margin-bottom: 12px;
+}
+
+.radio-group {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+    justify-content: ${isRTL ? 'flex-end' : 'flex-start'};
+}
+
+.radio-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+}
+
+.radio-option input[type="radio"] {
+    width: 18px;
+    height: 18px;
+    margin: 0;
+}
+
+.radio-option label {
+    margin: 0;
+    font-weight: 500;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.conditional-section {
+    display: none;
+    animation: slideDown 0.3s ease-out;
+    border-top: 1px solid #e2e8f0;
+    padding-top: 20px;
+    margin-top: 20px;
+}
+
+.conditional-section.show {
+    display: block;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.category-options {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.category-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+}
+
+.category-option input[type="radio"] {
+    width: 16px;
+    height: 16px;
+    margin: 0;
+}
+
+.category-option label {
+    margin: 0;
+    font-weight: 400;
+    font-size: 14px;
+    cursor: pointer;
+    color: #4a5568;
+}
+
+.feedback-textarea {
+    width: 100%;
+    min-height: 120px;
+    padding: 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 14px;
+    resize: vertical;
+    direction: ${isRTL ? 'rtl' : 'ltr'};
+}
+
+.feedback-textarea:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.feedback-submit {
+    background: #3b82f6;
+    color: white;
+    border: none;
+    padding: 12px 32px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 16px;
+}
+
+.feedback-submit:hover {
+    background: #2563eb;
+    transform: translateY(-1px);
+}
+
+.feedback-submit:disabled {
+    background: #9ca3af;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.success-message {
+    display: none;
+    background: #d1fae5;
+    border: 1px solid #10b981;
+    color: #065f46;
+    padding: 16px;
+    border-radius: 6px;
+    text-align: center;
+    font-weight: 500;
+}
+
+.success-message.show {
+    display: block;
+}
+
+@media (max-width: 768px) {
+    .feedback-body {
+        padding: 20px 16px;
+    }
+    
+    .radio-group {
+        flex-direction: column;
+        gap: 12px;
+    }
+    
+    .category-options {
+        gap: 8px;
+    }
+}
+</style>
+
+<div class="persistent-footer-feedback">
+    <div class="feedback-header">
+        <h3>${isRTL ? 'هل وجدت ما تبحث عنه اليوم؟' : 'Did you find what you were looking for today?'}</h3>
+    </div>
+    <div class="feedback-body">
+        <form id="footerFeedbackForm">
+            <div class="feedback-question">
+                <div class="radio-group">
+                    <div class="radio-option">
+                        <input type="radio" id="helpful-yes" name="helpful" value="yes" onchange="handleHelpfulResponse('yes')">
+                        <label for="helpful-yes">${isRTL ? 'نعم' : 'Yes'}</label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="helpful-no" name="helpful" value="no" onchange="handleHelpfulResponse('no')">
+                        <label for="helpful-no">${isRTL ? 'لا' : 'No'}</label>
+                    </div>
+                </div>
+            </div>
+
+            <div id="feedbackSection" class="conditional-section">
+                <div class="feedback-question">
+                    <label>${isRTL ? 'نحن نقدر ملاحظاتك' : "We'd love your feedback"}</label>
+                    <p style="font-size: 14px; color: #6b7280; margin-bottom: 16px;">
+                        ${isRTL ? 'ما الذي ترغب في مشاركته حول تجربتك؟' : 'What would you like to share about your experience?'}
+                    </p>
+                    
+                    <div class="category-options" id="categoryOptions">
+                        <!-- Categories will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <div class="feedback-question">
+                    <label for="feedbackText">${isRTL ? 'أخبرنا المزيد عن تجربتك:' : 'Tell us more about your experience:'}</label>
+                    <textarea 
+                        id="feedbackText" 
+                        name="feedbackText" 
+                        class="feedback-textarea" 
+                        placeholder="${isRTL ? 'يرجى عدم تضمين معلومات شخصية في رسالتك.' : 'Please do not include personal information in your message.'}"
+                    ></textarea>
+                </div>
+
+                <button type="submit" class="feedback-submit">${isRTL ? 'إرسال الملاحظات' : 'Submit Feedback'}</button>
+            </div>
+
+            <div id="successMessage" class="success-message">
+                ${isRTL ? 'شكراً لك! تم إرسال ملاحظاتك بنجاح.' : 'Thank you! Your feedback has been submitted successfully.'}
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+// Persistent Footer Feedback Form Functionality
+(function() {
+    const categoryOptionsConfig = {
+        yes: [
+            { value: 'suggestion', text: '${isRTL ? 'لدي اقتراح أو فكرة' : 'I have a suggestion or idea'}' },
+            { value: 'compliment', text: '${isRTL ? 'أريد مشاركة تعليق إيجابي' : 'I want to share a compliment'}' },
+            { value: 'feature-request', text: '${isRTL ? 'أطلب ميزة جديدة' : 'I request a new feature'}' }
+        ],
+        no: [
+            { value: 'confusing', text: '${isRTL ? 'شيء ما محير' : 'Something is confusing'}' },
+            { value: 'broken', text: '${isRTL ? 'شيء ما لا يعمل' : 'Something went wrong'}' },
+            { value: 'missing-info', text: '${isRTL ? 'معلومات مفقودة' : 'Missing information'}' }
+        ]
+    };
+
+    window.handleHelpfulResponse = function(response) {
+        const feedbackSection = document.getElementById('feedbackSection');
+        const categoryOptions = document.getElementById('categoryOptions');
+        
+        // Show the feedback section
+        feedbackSection.classList.add('show');
+        
+        // Clear existing categories
+        categoryOptions.innerHTML = '';
+        
+        // Add appropriate categories based on response
+        const categories = categoryOptionsConfig[response] || [];
+        categories.forEach((category, index) => {
+            const categoryHtml = \`
+                <div class="category-option">
+                    <input type="radio" id="category-\${category.value}" name="category" value="\${category.value}">
+                    <label for="category-\${category.value}">\${category.text}</label>
+                </div>
+            \`;
+            categoryOptions.innerHTML += categoryHtml;
+        });
+        
+        // Scroll to the feedback section smoothly
+        feedbackSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    };
+
+    // Handle form submission
+    document.getElementById('footerFeedbackForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const formData = new FormData(this);
+        const feedbackData = {
+            helpful: formData.get('helpful'),
+            category: formData.get('category'),
+            text: formData.get('feedbackText'),
+            source: 'embedded_footer',
+            timestamp: new Date().toISOString()
+        };
+        
+        // Disable submit button
+        const submitBtn = this.querySelector('.feedback-submit');
+        const originalText = submitBtn.textContent;
+        submitBtn.disabled = true;
+        submitBtn.textContent = '${isRTL ? 'جاري الإرسال...' : 'Submitting...'}';
+        
+        try {
+            // Replace with your actual feedback submission endpoint
+            const response = await fetch('${generatedSurveyUrl.replace('/s/', '/api/feedback/footer/')}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(feedbackData)
+            });
+            
+            if (response.ok) {
+                // Show success message
+                document.getElementById('feedbackSection').style.display = 'none';
+                document.getElementById('successMessage').classList.add('show');
+                
+                console.log('Footer feedback submitted successfully');
+            } else {
+                throw new Error('Network response was not ok');
+            }
+        } catch (error) {
+            console.error('Error submitting feedback:', error);
+            alert('${isRTL ? 'حدث خطأ أثناء إرسال الملاحظات. يرجى المحاولة مرة أخرى.' : 'An error occurred while submitting feedback. Please try again.'}');
+            
+            // Re-enable submit button
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalText;
+        }
+    });
+})();
+</script>`;
+        
+        // Display the code
+        document.getElementById('footerJavascriptCode').value = persistentFooterCode;
+        document.getElementById('footerCodeSection').style.display = 'block';
+        document.getElementById('footerPreviewSection').style.display = 'block';
+        
+        // Generate preview for persistent footer
+        generatePersistentFooterPreview(language);
+        
+        showNotification('تم إنشاء التذييل المضمن مع المنطق الشرطي بنجاح!', 'success');
+    }
+    
+    // Generate persistent footer preview
+    function generatePersistentFooterPreview(language) {
+        const isRTL = language === 'ar';
+        const previewHtml = `
+            <div style="background: #f8f9fa; border-top: 1px solid #e9ecef;">
+                <div style="background: #1e3a8a; color: white; padding: 12px 0; text-align: center;">
+                    <h4 style="margin: 0; font-size: 16px;">${isRTL ? 'هل وجدت ما تبحث عنه اليوم؟' : 'Did you find what you were looking for today?'}</h4>
+                </div>
+                <div style="padding: 16px; direction: ${isRTL ? 'rtl' : 'ltr'};">
+                    <div style="display: flex; gap: 16px; justify-content: ${isRTL ? 'flex-end' : 'flex-start'}; margin-bottom: 12px;">
+                        <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                            <input type="radio" name="demo-helpful" style="margin: 0;">
+                            <span style="font-size: 14px;">${isRTL ? 'نعم' : 'Yes'}</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                            <input type="radio" name="demo-helpful" style="margin: 0;">
+                            <span style="font-size: 14px;">${isRTL ? 'لا' : 'No'}</span>
+                        </label>
+                    </div>
+                    <div style="border-top: 1px solid #e2e8f0; padding-top: 12px; margin-top: 12px; opacity: 0.7;">
+                        <div style="font-weight: 600; margin-bottom: 8px; font-size: 14px;">${isRTL ? 'نحن نقدر ملاحظاتك' : "We'd love your feedback"}</div>
+                        <div style="margin-bottom: 8px;">
+                            <label style="display: block; font-size: 12px; margin-bottom: 4px;">${isRTL ? 'تصنيف الملاحظات' : 'Category options'}</label>
+                            <textarea style="width: 100%; height: 40px; border: 1px solid #d1d5db; border-radius: 4px; padding: 6px; font-size: 12px; direction: ${isRTL ? 'rtl' : 'ltr'};" 
+                                      placeholder="${isRTL ? 'أخبرنا المزيد...' : 'Tell us more...'}"></textarea>
+                        </div>
+                        <button style="background: #3b82f6; color: white; border: none; padding: 6px 16px; border-radius: 4px; font-size: 12px; cursor: pointer;">
+                            ${isRTL ? 'إرسال' : 'Submit'}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.getElementById('previewFooterWidget').innerHTML = previewHtml;
     }
         
         // Color mapping

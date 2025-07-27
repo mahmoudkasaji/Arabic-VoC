@@ -307,158 +307,266 @@
 
     {% include 'components/scripts.html' %}
     
-    <!-- Demo Footer Survey Widget -->
+    <!-- Persistent Footer Feedback Form -->
     <style>
-    .survey-footer-banner {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background: #2c3e50;
-        color: white;
-        padding: 16px 20px;
-        box-shadow: 0 -4px 12px rgba(0,0,0,0.15);
-        z-index: 9999;
+    .persistent-footer-feedback {
+        background: #f8f9fa;
+        border-top: 1px solid #e9ecef;
+        margin-top: 3rem;
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-        transform: translateY(100%);
-        transition: transform 0.3s ease;
     }
 
-    .survey-footer-banner.show {
-        transform: translateY(0);
+    .feedback-header {
+        background: #1e3a8a;
+        color: white;
+        padding: 16px 0;
+        text-align: center;
     }
 
-    .survey-footer-content {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        max-width: 1200px;
-        margin: 0 auto;
-        gap: 20px;
-    }
-
-    .survey-footer-text {
-        flex: 1;
-        display: flex;
-        align-items: center;
-        gap: 16px;
-    }
-
-    .survey-footer-icon {
-        background: rgba(255,255,255,0.2);
-        border-radius: 50%;
-        width: 40px;
-        height: 40px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+    .feedback-header h3 {
+        margin: 0;
+        font-weight: 600;
         font-size: 18px;
     }
 
-    .survey-footer-message {
-        flex: 1;
+    .feedback-body {
+        padding: 24px 0;
+        max-width: 800px;
+        margin: 0 auto;
+        direction: rtl;
+        text-align: right;
     }
 
-    .survey-footer-title {
+    .feedback-question {
+        margin-bottom: 20px;
+    }
+
+    .feedback-question label {
+        display: block;
         font-weight: 600;
         font-size: 16px;
-        margin-bottom: 4px;
+        color: #2d3748;
+        margin-bottom: 12px;
     }
 
-    .survey-footer-desc {
-        font-size: 14px;
-        opacity: 0.9;
-    }
-
-    .survey-footer-actions {
+    .radio-group {
         display: flex;
-        gap: 12px;
-        align-items: center;
+        gap: 20px;
+        margin-bottom: 20px;
+        justify-content: flex-end;
     }
 
-    .survey-footer-btn {
-        background: white;
-        color: #2c3e50;
+    .radio-option {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+    }
+
+    .radio-option input[type="radio"] {
+        width: 18px;
+        height: 18px;
+        margin: 0;
+    }
+
+    .radio-option label {
+        margin: 0;
+        font-weight: 500;
+        font-size: 15px;
+        cursor: pointer;
+    }
+
+    .conditional-section {
+        display: none;
+        animation: slideDown 0.3s ease-out;
+        border-top: 1px solid #e2e8f0;
+        padding-top: 20px;
+        margin-top: 20px;
+    }
+
+    .conditional-section.show {
+        display: block;
+    }
+
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .category-options {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-bottom: 20px;
+    }
+
+    .category-option {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+    }
+
+    .category-option input[type="radio"] {
+        width: 16px;
+        height: 16px;
+        margin: 0;
+    }
+
+    .category-option label {
+        margin: 0;
+        font-weight: 400;
+        font-size: 14px;
+        cursor: pointer;
+        color: #4a5568;
+    }
+
+    .feedback-textarea {
+        width: 100%;
+        min-height: 120px;
+        padding: 12px;
+        border: 1px solid #d1d5db;
+        border-radius: 6px;
+        font-family: inherit;
+        font-size: 14px;
+        resize: vertical;
+        direction: rtl;
+    }
+
+    .feedback-textarea:focus {
+        outline: none;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    .feedback-submit {
+        background: #3b82f6;
+        color: white;
         border: none;
-        padding: 12px 24px;
+        padding: 12px 32px;
         border-radius: 6px;
         font-weight: 600;
         font-size: 14px;
         cursor: pointer;
         transition: all 0.2s;
-        text-decoration: none;
-        display: inline-block;
+        margin-top: 16px;
     }
 
-    .survey-footer-btn:hover {
-        background: rgba(255,255,255,0.9);
+    .feedback-submit:hover {
+        background: #2563eb;
         transform: translateY(-1px);
     }
 
-    .survey-footer-close {
-        background: transparent;
-        border: 1px solid rgba(255,255,255,0.5);
-        color: white;
-        padding: 8px 16px;
-        border-radius: 4px;
+    .feedback-submit:disabled {
+        background: #9ca3af;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    .privacy-notice {
         font-size: 12px;
-        cursor: pointer;
-        transition: all 0.2s;
+        color: #6b7280;
+        margin-top: 12px;
+        line-height: 1.4;
     }
 
-    .survey-footer-close:hover {
-        background: rgba(255,255,255,0.1);
-        border-color: rgba(255,255,255,0.8);
+    .privacy-notice a {
+        color: #3b82f6;
+        text-decoration: none;
     }
 
-    .survey-footer-banner.rtl {
-        direction: rtl;
-        text-align: right;
+    .privacy-notice a:hover {
+        text-decoration: underline;
+    }
+
+    .success-message {
+        display: none;
+        background: #d1fae5;
+        border: 1px solid #10b981;
+        color: #065f46;
+        padding: 16px;
+        border-radius: 6px;
+        text-align: center;
+        font-weight: 500;
+    }
+
+    .success-message.show {
+        display: block;
     }
 
     @media (max-width: 768px) {
-        .survey-footer-content {
+        .feedback-body {
+            padding: 20px 16px;
+        }
+        
+        .radio-group {
             flex-direction: column;
-            text-align: center;
             gap: 12px;
         }
         
-        .survey-footer-text {
-            flex-direction: column;
+        .category-options {
             gap: 8px;
-        }
-        
-        .survey-footer-actions {
-            width: 100%;
-            justify-content: center;
-        }
-        
-        .survey-footer-btn {
-            flex: 1;
-            min-width: 120px;
         }
     }
     </style>
 
-    <div id="surveyFooterBanner" class="survey-footer-banner rtl">
-        <div class="survey-footer-content">
-            <div class="survey-footer-text">
-                <div class="survey-footer-icon">
-                    📋
+    <div class="persistent-footer-feedback">
+        <div class="feedback-header">
+            <h3>هل وجدت ما تبحث عنه اليوم؟</h3>
+        </div>
+        <div class="feedback-body">
+            <form id="footerFeedbackForm">
+                <div class="feedback-question">
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" id="helpful-yes" name="helpful" value="yes" onchange="handleHelpfulResponse('yes')">
+                            <label for="helpful-yes">نعم</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="helpful-no" name="helpful" value="no" onchange="handleHelpfulResponse('no')">
+                            <label for="helpful-no">لا</label>
+                        </div>
+                    </div>
                 </div>
-                <div class="survey-footer-message">
-                    <div class="survey-footer-title">استطلاع رضا العملاء</div>
-                    <div class="survey-footer-desc">نحن نهتم برأيك! يستغرق 3 دقائق فقط</div>
+
+                <div id="feedbackSection" class="conditional-section">
+                    <div class="feedback-question">
+                        <label>نحن نقدر ملاحظاتك</label>
+                        <p style="font-size: 14px; color: #6b7280; margin-bottom: 16px;">ما الذي ترغب في مشاركته حول تجربتك؟</p>
+                        
+                        <div class="category-options" id="categoryOptions">
+                            <!-- Categories will be populated by JavaScript -->
+                        </div>
+                    </div>
+
+                    <div class="feedback-question">
+                        <label for="feedbackText">أخبرنا المزيد عن تجربتك:</label>
+                        <textarea 
+                            id="feedbackText" 
+                            name="feedbackText" 
+                            class="feedback-textarea" 
+                            placeholder="يرجى عدم تضمين معلومات شخصية في رسالتك. سيتم حذف أي معلومات شخصية مقدمة."
+                        ></textarea>
+                    </div>
+
+                    <button type="submit" class="feedback-submit">إرسال الملاحظات</button>
+                    
+                    <div class="privacy-notice">
+                        يرجى عدم تضمين معلومات شخصية في رسالتك. أي معلومات شخصية مقدمة سيتم حذفها. 
+                        إذا كان لديك أسئلة حول خدمات المنصة، يرجى <a href="/contact">التواصل معنا</a>.
+                    </div>
                 </div>
-            </div>
-            <div class="survey-footer-actions">
-                <a href="/s/nlxjb7kn" target="_blank" class="survey-footer-btn" onclick="trackDemoSurveyClick()">
-                    ابدأ الآن
-                </a>
-                <button class="survey-footer-close" onclick="closeDemoSurveyBanner()">
-                    إغلاق
-                </button>
-            </div>
+
+                <div id="successMessage" class="success-message">
+                    شكراً لك! تم إرسال ملاحظاتك بنجاح. نقدر وقتك ومساهمتك في تحسين المنصة.
+                </div>
+            </form>
         </div>
     </div>
 
@@ -470,49 +578,112 @@
             }
         });
 
-        // Demo Survey footer banner functionality
+        // Persistent Footer Feedback Form Functionality
         (function() {
-            let bannerShown = false;
-            let bannerClosed = localStorage.getItem('demoSurveyBannerClosed');
-            
-            function showDemoSurveyBanner() {
-                if (bannerClosed || bannerShown) return;
+            const categoryOptionsConfig = {
+                yes: [
+                    { value: 'suggestion', text: 'لدي اقتراح أو فكرة' },
+                    { value: 'compliment', text: 'أريد مشاركة تعليق إيجابي' },
+                    { value: 'feature-request', text: 'أطلب ميزة جديدة' }
+                ],
+                no: [
+                    { value: 'confusing', text: 'شيء ما محير' },
+                    { value: 'broken', text: 'شيء ما لا يعمل' },
+                    { value: 'missing-info', text: 'معلومات مفقودة' }
+                ]
+            };
+
+            window.handleHelpfulResponse = function(response) {
+                const feedbackSection = document.getElementById('feedbackSection');
+                const categoryOptions = document.getElementById('categoryOptions');
                 
-                const banner = document.getElementById('surveyFooterBanner');
-                if (banner) {
-                    // Show banner after 5 seconds on homepage to let users see the main content first
-                    setTimeout(() => {
-                        banner.classList.add('show');
-                        bannerShown = true;
-                    }, 5000);
-                }
-            }
-            
-            window.closeDemoSurveyBanner = function() {
-                const banner = document.getElementById('surveyFooterBanner');
-                if (banner) {
-                    banner.classList.remove('show');
-                    localStorage.setItem('demoSurveyBannerClosed', 'true');
-                }
+                // Show the feedback section
+                feedbackSection.classList.add('show');
+                
+                // Clear existing categories
+                categoryOptions.innerHTML = '';
+                
+                // Add appropriate categories based on response
+                const categories = categoryOptionsConfig[response] || [];
+                categories.forEach((category, index) => {
+                    const categoryHtml = `
+                        <div class="category-option">
+                            <input type="radio" id="category-${category.value}" name="category" value="${category.value}">
+                            <label for="category-${category.value}">${category.text}</label>
+                        </div>
+                    `;
+                    categoryOptions.innerHTML += categoryHtml;
+                });
+                
+                // Scroll to the feedback section smoothly
+                feedbackSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
             };
-            
-            window.trackDemoSurveyClick = function() {
-                console.log('Demo survey banner clicked - opening web survey');
-                // Track demo survey click
-                if (typeof gtag !== 'undefined') {
-                    gtag('event', 'demo_survey_banner_clicked', {
-                        'source': 'homepage',
-                        'survey_id': 'nlxjb7kn'
+
+            // Handle form submission
+            document.getElementById('footerFeedbackForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const formData = new FormData(this);
+                const feedbackData = {
+                    helpful: formData.get('helpful'),
+                    category: formData.get('category'),
+                    text: formData.get('feedbackText'),
+                    source: 'homepage_footer',
+                    timestamp: new Date().toISOString()
+                };
+                
+                // Disable submit button
+                const submitBtn = this.querySelector('.feedback-submit');
+                const originalText = submitBtn.textContent;
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'جاري الإرسال...';
+                
+                try {
+                    // Submit feedback to backend
+                    const response = await fetch('/api/feedback/widget', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            rating: feedbackData.helpful === 'yes' ? 5 : 2,
+                            comment: `${feedbackData.category ? '[' + feedbackData.category + '] ' : ''}${feedbackData.text || ''}`,
+                            channel: 'FOOTER_WIDGET',
+                            source: feedbackData.source,
+                            metadata: {
+                                helpful: feedbackData.helpful,
+                                category: feedbackData.category,
+                                timestamp: feedbackData.timestamp
+                            }
+                        })
                     });
+                    
+                    if (response.ok) {
+                        // Show success message
+                        document.getElementById('feedbackSection').style.display = 'none';
+                        document.getElementById('successMessage').classList.add('show');
+                        
+                        // Track success
+                        if (typeof gtag !== 'undefined') {
+                            gtag('event', 'footer_feedback_submitted', {
+                                'helpful': feedbackData.helpful,
+                                'category': feedbackData.category,
+                                'source': 'homepage_footer'
+                            });
+                        }
+                        
+                        console.log('Footer feedback submitted successfully');
+                    } else {
+                        throw new Error('Network response was not ok');
+                    }
+                } catch (error) {
+                    console.error('Error submitting feedback:', error);
+                    alert('حدث خطأ أثناء إرسال الملاحظات. يرجى المحاولة مرة أخرى.');
+                    
+                    // Re-enable submit button
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = originalText;
                 }
-            };
-            
-            // Initialize demo banner
-            showDemoSurveyBanner();
-            
-            // Reset banner visibility on page navigation (for SPAs)
-            window.addEventListener('beforeunload', function() {
-                bannerShown = false;
             });
         })();
     </script>
