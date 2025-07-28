@@ -220,7 +220,7 @@ def _test_openai_integration():
             'success': True,
             'response_time_ms': round(response_time, 2),
             'model': 'gpt-4o',
-            'tokens_used': response.usage.total_tokens if hasattr(response, 'usage') else 0,
+            'tokens_used': response.usage.total_tokens if response.usage else 0,
             'message': 'OpenAI API accessible and responding'
         }
         
@@ -251,7 +251,7 @@ def _test_claude_integration():
             'success': True,
             'response_time_ms': round(response_time, 2),
             'model': 'claude-3-sonnet-20240229',
-            'tokens_used': response.usage.input_tokens + response.usage.output_tokens if hasattr(response, 'usage') else 0,
+            'tokens_used': response.usage.input_tokens + response.usage.output_tokens if response.usage else 0,
             'message': 'Claude API accessible and responding'
         }
         
