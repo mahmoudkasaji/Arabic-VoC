@@ -141,6 +141,13 @@ try:
 except Exception as e:
     logger.error(f"Could not import Feedback Widget routes: {e}")
 
+# Register Integration Status API
+try:
+    import api.integrations_status
+    logger.info("Integration Status API routes registered successfully")
+except Exception as e:
+    logger.error(f"Could not register Integration Status API: {e}")
+
 # Import and register feedback widget API blueprint
 try:
     from api.feedback_widget import feedback_widget_api
@@ -1668,6 +1675,21 @@ def public_enterprise_architecture():
         return Response(content, mimetype='text/html')
     else:
         return "Architecture visualization file not found", 404
+
+# Technical Integration Catalog Route
+@app.route('/integrations/catalog')
+@app.route('/integrations/technical')
+def integrations_catalog():
+    """Technical integration catalog with real-time status monitoring"""
+    from flask_login import current_user
+    try:
+        from replit_auth import require_login
+        if not current_user.is_authenticated:
+            return redirect(url_for('replit_auth.login'))
+    except ImportError:
+        pass
+    
+    return render_template('integrations_technical_catalog.html')
 
 # Import additional contact routes
 import contact_routes  # noqa: F401

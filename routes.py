@@ -201,6 +201,15 @@ def export_contacts():
     
     return response
 
+# Technical Integration Catalog Route
+@app.route('/integrations/catalog')
+@app.route('/integrations/technical')
+@require_login
+def integrations_catalog():
+    """Technical integration catalog with real-time status monitoring"""
+    from flask import render_template
+    return render_template('integrations_technical_catalog.html')
+
 # Add any other routes here.
 # Use flask_login.current_user to check if current user is logged in or anonymous.
 # Use db & models to interact with the database.
