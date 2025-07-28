@@ -957,11 +957,16 @@ def survey_test_page():
 
 # Removed duplicate survey_builder route - already exists above
 
+@app.route('/analytics/advanced')
+def analytics_advanced():
+    """Advanced analytics page - consolidated enhanced features"""
+    return render_template('analytics_advanced.html', 
+                         title='التحليلات المتقدمة')
+                         
 @app.route('/analytics/enhanced-test')
 def enhanced_analytics_test():
-    """Enhanced analytics testing page - Phase 3A"""
-    return render_template('enhanced_analytics_test.html', 
-                         title='اختبار التحليلات المحسنة')
+    """Enhanced analytics testing page - Phase 3A (legacy redirect)"""
+    return redirect('/analytics/advanced')
 
 @app.route('/analytics/reports')
 def professional_reports():

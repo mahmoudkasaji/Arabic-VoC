@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    {% include 'components/head.html' %}
+    <title>Analytics Dashboard - Voice of Customer Platform</title>
+    
+    <!-- Consolidated Analytics CSS -->
+    <style>
+        .analytics-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .analytics-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #e9ecef;
+        }
+        
+        .tab-content {
+            min-height: 600px;
+        }
+        
+        /* Quantitative Metrics Styles */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .metric-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-left: 4px solid #1B5E20;
+        }
+        
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #1B5E20;
+            margin: 0.5rem 0;
+        }
+        
+        .metric-label {
+            color: #6c757d;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .metric-change {
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .metric-change.positive { color: #28a745; }
+        .metric-change.negative { color: #dc3545; }
+        .metric-change.neutral { color: #6c757d; }
+        
+        /* Qualitative Analytics Styles */
+        .qualitative-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .sentiment-breakdown {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .sentiment-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .sentiment-item:last-child {
+            border-bottom: none;
+        }
+        
+        .sentiment-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-left: 0.5rem;
+        }
+        
+        .sentiment-positive { background: #28a745; }
+        .sentiment-neutral { background: #6c757d; }
+        .sentiment-negative { background: #dc3545; }
+        
+        .topic-cloud {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .topic-tag {
+            display: inline-block;
+            background: #1B5E20;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin: 0.25rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .topic-tag:hover {
+            background: #2E7D32;
+            transform: scale(1.05);
+        }
+        
+        .response-feed {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .response-item {
+            padding: 1rem 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .response-item:last-child {
+            border-bottom: none;
+        }
+        
+        .response-text {
+            color: #495057;
+            margin-bottom: 0.5rem;
+            line-height: 1.4;
+        }
+        
+        .response-meta {
+            font-size: 0.75rem;
+            color: #6c757d;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        /* Journey Matrix Styles */
+        .journey-matrix {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin: 2rem 0;
+        }
+        
+        .matrix-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+        
+        .matrix-table th,
+        .matrix-table td {
+            border: 1px solid #dee2e6;
+            padding: 1rem;
+            text-align: center;
+            position: relative;
+        }
+        
+        .matrix-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #495057;
+        }
+        
+        .matrix-cell {
+            width: 120px;
+            height: 80px;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .matrix-cell:hover {
+            background: #f8f9fa;
+            transform: scale(1.02);
+        }
+        
+        .score-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+        
+        .score-positive { color: #28a745; }
+        .score-neutral { color: #ffc107; }
+        .score-negative { color: #dc3545; }
+        
+        .response-count {
+            font-size: 0.75rem;
+            color: #6c757d;
+        }
+        
+        .stage-label {
+            background: #1B5E20;
+            color: white;
+            font-weight: 600;
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+        }
+        
+        .segment-label {
+            background: #2E7D32;
+            color: white;
+            font-weight: 600;
+        }
+        
+        /* Export Actions */
+        .export-actions {
+            display: flex;
+            gap: 1rem;
+            margin: 2rem 0;
+            justify-content: center;
+        }
+        
+        .export-btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .export-btn.primary {
+            background: #1B5E20;
+            color: white;
+        }
+        
+        .export-btn.primary:hover {
+            background: #2E7D32;
+        }
+        
+        .export-btn.secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .export-btn.secondary:hover {
+            background: #545b62;
+        }
+        
+        /* Time Filter */
+        .time-filter {
+            display: flex;
+            gap: 0.5rem;
+            margin: 1rem 0;
+            justify-content: center;
+        }
+        
+        .time-filter button {
+            padding: 0.5rem 1rem;
+            border: 1px solid #dee2e6;
+            background: white;
+            color: #495057;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .time-filter button.active {
+            background: #1B5E20;
+            color: white;
+            border-color: #1B5E20;
+        }
+        
+        .time-filter button:hover:not(.active) {
+            background: #f8f9fa;
+        }
+    </style>
+</head>
+<body>
+    {% include 'components/unified_navigation.html' %}
+    
+    <div class="analytics-container">
+        <!-- Analytics Header -->
+        <div class="analytics-header">
+            <h1 class="h2 mb-3">
+                <i class="fas fa-chart-line me-2 text-success"></i>
+                لوحة تحليلات آراء العملاء
+            </h1>
+            <p class="text-muted mb-4">تحليل شامل للبيانات الكمية والنوعية مع خريطة رحلة العميل</p>
+            
+            <!-- Time Filter -->
+            <div class="time-filter">
+                <button class="active" onclick="setTimeFilter('today')">اليوم</button>
+                <button onclick="setTimeFilter('week')">الأسبوع</button>
+                <button onclick="setTimeFilter('month')">الشهر</button>
+                <button onclick="setTimeFilter('quarter')">الربع</button>
+                <button onclick="setTimeFilter('all')">كل الفترات</button>
+            </div>
+        </div>
+
+        <!-- Analytics Tabs -->
+        <ul class="nav nav-tabs nav-justified mb-4" id="analyticsTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="quantitative-tab" data-bs-toggle="tab" data-bs-target="#quantitative" type="button" role="tab">
+                    <i class="fas fa-chart-bar me-2"></i>المقاييس الكمية
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="qualitative-tab" data-bs-toggle="tab" data-bs-target="#qualitative" type="button" role="tab">
+                    <i class="fas fa-comments me-2"></i>التحليل النوعي
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="journey-tab" data-bs-toggle="tab" data-bs-target="#journey" type="button" role="tab">
+                    <i class="fas fa-route me-2"></i>خريطة الرحلة
+                </button>
+            </li>
+        </ul>
+
+        <!-- Tab Content -->
+        <div class="tab-content" id="analyticsTabContent">
+            
+            <!-- Quantitative Metrics Tab -->
+            <div class="tab-pane fade show active" id="quantitative" role="tabpanel">
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-label">إجمالي الردود</div>
+                        <div class="metric-value" id="total-responses">0</div>
+                        <div class="metric-change positive" id="responses-change">+0%</div>
+                    </div>
+                    
+                    <div class="metric-card">
+                        <div class="metric-label">متوسط التقييم (CSAT)</div>
+                        <div class="metric-value" id="avg-csat">0.0</div>
+                        <div class="metric-change neutral" id="csat-change">+0%</div>
+                    </div>
+                    
+                    <div class="metric-card">
+                        <div class="metric-label">نقاط الولاء (NPS)</div>
+                        <div class="metric-value" id="nps-score">0</div>
+                        <div class="metric-change positive" id="nps-change">+0</div>
+                    </div>
+                    
+                    <div class="metric-card">
+                        <div class="metric-label">معدل الاكتمال</div>
+                        <div class="metric-value" id="completion-rate">0%</div>
+                        <div class="metric-change positive" id="completion-change">+0%</div>
+                    </div>
+                    
+                    <div class="metric-card">
+                        <div class="metric-label">متوسط المشاعر</div>
+                        <div class="metric-value" id="avg-sentiment">0.0</div>
+                        <div class="metric-change neutral" id="sentiment-change">+0.0</div>
+                    </div>
+                    
+                    <div class="metric-card">
+                        <div class="metric-label">استجابات اليوم</div>
+                        <div class="metric-value" id="today-responses">0</div>
+                        <div class="metric-change positive" id="today-change">جديد</div>
+                    </div>
+                </div>
+                
+                <!-- Chart Section -->
+                <div class="row mt-4">
+                    <div class="col-md-8">
+                        <div class="sentiment-breakdown">
+                            <h5 class="mb-3">اتجاه الردود عبر الزمن</h5>
+                            <canvas id="trendsChart" width="400" height="200"></canvas>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="sentiment-breakdown">
+                            <h5 class="mb-3">توزيع القنوات</h5>
+                            <canvas id="channelsChart" width="200" height="200"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Qualitative Analytics Tab -->
+            <div class="tab-pane fade" id="qualitative" role="tabpanel">
+                <div class="qualitative-section">
+                    <!-- Sentiment Breakdown -->
+                    <div class="sentiment-breakdown">
+                        <h5 class="mb-3">تحليل المشاعر</h5>
+                        <div class="sentiment-item">
+                            <div class="d-flex align-items-center">
+                                <span class="sentiment-indicator sentiment-positive"></span>
+                                <span>إيجابي</span>
+                            </div>
+                            <span class="fw-bold" id="positive-count">0</span>
+                        </div>
+                        <div class="sentiment-item">
+                            <div class="d-flex align-items-center">
+                                <span class="sentiment-indicator sentiment-neutral"></span>
+                                <span>محايد</span>
+                            </div>
+                            <span class="fw-bold" id="neutral-count">0</span>
+                        </div>
+                        <div class="sentiment-item">
+                            <div class="d-flex align-items-center">
+                                <span class="sentiment-indicator sentiment-negative"></span>
+                                <span>سلبي</span>
+                            </div>
+                            <span class="fw-bold" id="negative-count">0</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Topic Cloud -->
+                    <div class="topic-cloud">
+                        <h5 class="mb-3">المواضيع المكتشفة</h5>
+                        <div id="topics-container">
+                            <span class="topic-tag">جودة المنتج</span>
+                            <span class="topic-tag">خدمة العملاء</span>
+                            <span class="topic-tag">السعر والقيمة</span>
+                            <span class="topic-tag">سهولة الاستخدام</span>
+                            <span class="topic-tag">الدعم التقني</span>
+                            <span class="topic-tag">السرعة</span>
+                            <span class="topic-tag">التسليم</span>
+                            <span class="topic-tag">الضمان</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Recent Responses Feed -->
+                <div class="response-feed mt-4">
+                    <h5 class="mb-3">آخر التعليقات</h5>
+                    <div id="responses-feed">
+                        <!-- Responses will be loaded here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Journey Matrix Tab -->
+            <div class="tab-pane fade" id="journey" role="tabpanel">
+                <div class="journey-matrix">
+                    <h5 class="mb-4 text-center">خريطة رحلة العميل - مصفوفة المشاعر والتقييمات</h5>
+                    
+                    <table class="matrix-table">
+                        <thead>
+                            <tr>
+                                <th>مرحلة الرحلة</th>
+                                <th class="segment-label">عملاء أفراد</th>
+                                <th class="segment-label">عملاء مؤسسات</th>
+                                <th class="segment-label">عملاء مميزون</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="stage-label">الاستكشاف</td>
+                                <td class="matrix-cell" onclick="drillDown('discovery', 'individual')">
+                                    <div class="score-value score-positive">8.4</div>
+                                    <div class="response-count">42 رد</div>
+                                </td>
+                                <td class="matrix-cell" onclick="drillDown('discovery', 'enterprise')">
+                                    <div class="score-value score-neutral">7.1</div>
+                                    <div class="response-count">15 رد</div>
+                                </td>
+                                <td class="matrix-cell" onclick="drillDown('discovery', 'premium')">
+                                    <div class="score-value score-positive">9.2</div>
+                                    <div class="response-count">8 رد</div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="stage-label">التسجيل</td>
+                                <td class="matrix-cell" onclick="drillDown('signup', 'individual')">
+                                    <div class="score-value score-neutral">6.8</div>
+                                    <div class="response-count">38 رد</div>
+                                </td>
+                                <td class="matrix-cell" onclick="drillDown('signup', 'enterprise')">
+                                    <div class="score-value score-negative">5.2</div>
+                                    <div class="response-count">12 رد</div>
+                                </td>
+                                <td class="matrix-cell" onclick="drillDown('signup', 'premium')">
+                                    <div class="score-value score-positive">8.7</div>
+                                    <div class="response-count">6 رد</div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="stage-label">الاستخدام الأول</td>
+                                <td class="matrix-cell" onclick="drillDown('onboarding', 'individual')">
+                                    <div class="score-value score-positive">7.9</div>
+                                    <div class="response-count">35 رد</div>
+                                </td>
+                                <td class="matrix-cell" onclick="drillDown('onboarding', 'enterprise')">
+                                    <div class="score-value score-neutral">6.5</div>
+                                    <div class="response-count">10 رد</div>
+                                </td>
+                                <td class="matrix-cell" onclick="drillDown('onboarding', 'premium')">
+                                    <div class="score-value score-positive">9.1</div>
+                                    <div class="response-count">5 رد</div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="stage-label">الدعم</td>
+                                <td class="matrix-cell" onclick="drillDown('support', 'individual')">
+                                    <div class="score-value score-neutral">7.3</div>
+                                    <div class="response-count">28 رد</div>
+                                </td>
+                                <td class="matrix-cell" onclick="drillDown('support', 'enterprise')">
+                                    <div class="score-value score-positive">8.1</div>
+                                    <div class="response-count">18 رد</div>
+                                </td>
+                                <td class="matrix-cell" onclick="drillDown('support', 'premium')">
+                                    <div class="score-value score-positive">9.4</div>
+                                    <div class="response-count">7 رد</div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <div class="mt-4 text-center">
+                        <small class="text-muted">
+                            انقر على أي خلية لعرض التفاصيل والتعليقات النصية
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Export Actions -->
+        <div class="export-actions">
+            <button class="export-btn primary" onclick="exportPDF()">
+                <i class="fas fa-file-pdf"></i>تصدير PDF
+            </button>
+            <button class="export-btn secondary" onclick="exportExcel()">
+                <i class="fas fa-file-excel"></i>تصدير Excel
+            </button>
+            <button class="export-btn secondary" onclick="exportCSV()">
+                <i class="fas fa-file-csv"></i>تصدير CSV
+            </button>
+        </div>
+    </div>
+
+    {% include 'components/scripts.html' %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <script>
+    let currentTimeFilter = 'today';
+    let trendsChart, channelsChart;
+
+    // Initialize dashboard
+    document.addEventListener('DOMContentLoaded', function() {
+        loadQuantitativeData();
+        loadQualitativeData();
+        initCharts();
+    });
+
+    async function loadQuantitativeData() {
+        try {
+            const response = await fetch(`/api/analytics/dashboard?time_range=${currentTimeFilter}`);
+            const data = await response.json();
+            
+            if (data.success) {
+                updateQuantitativeMetrics(data);
+            }
+        } catch (error) {
+            console.error('Error loading quantitative data:', error);
+        }
+    }
+
+    async function loadQualitativeData() {
+        try {
+            const response = await fetch(`/api/enhanced-analytics/sentiment?time_range=${currentTimeFilter}`);
+            const data = await response.json();
+            
+            if (data.success) {
+                updateQualitativeMetrics(data);
+            }
+        } catch (error) {
+            console.error('Error loading qualitative data:', error);
+        }
+    }
+
+    function updateQuantitativeMetrics(data) {
+        document.getElementById('total-responses').textContent = data.total_responses || 0;
+        document.getElementById('avg-csat').textContent = (data.avg_csat || 0).toFixed(1);
+        document.getElementById('nps-score').textContent = data.nps_score || 0;
+        document.getElementById('completion-rate').textContent = (data.completion_rate || 0) + '%';
+        document.getElementById('avg-sentiment').textContent = (data.avg_sentiment || 0).toFixed(1);
+        document.getElementById('today-responses').textContent = data.today_responses || 0;
+        
+        // Update change indicators
+        updateChangeIndicators(data.changes || {});
+    }
+
+    function updateQualitativeMetrics(data) {
+        document.getElementById('positive-count').textContent = data.positive_count || 0;
+        document.getElementById('neutral-count').textContent = data.neutral_count || 0;
+        document.getElementById('negative-count').textContent = data.negative_count || 0;
+        
+        if (data.recent_responses) {
+            updateResponsesFeed(data.recent_responses);
+        }
+        
+        if (data.topics) {
+            updateTopicsCloud(data.topics);
+        }
+    }
+
+    function updateChangeIndicators(changes) {
+        const indicators = [
+            { id: 'responses-change', value: changes.responses, suffix: '%' },
+            { id: 'csat-change', value: changes.csat, suffix: '%' },
+            { id: 'nps-change', value: changes.nps, suffix: '' },
+            { id: 'completion-change', value: changes.completion, suffix: '%' },
+            { id: 'sentiment-change', value: changes.sentiment, suffix: '' }
+        ];
+        
+        indicators.forEach(indicator => {
+            const element = document.getElementById(indicator.id);
+            if (element && indicator.value !== undefined) {
+                const value = indicator.value;
+                element.textContent = (value > 0 ? '+' : '') + value + indicator.suffix;
+                element.className = 'metric-change ' + (value > 0 ? 'positive' : value < 0 ? 'negative' : 'neutral');
+            }
+        });
+    }
+
+    function updateResponsesFeed(responses) {
+        const feed = document.getElementById('responses-feed');
+        feed.innerHTML = responses.map(response => `
+            <div class="response-item">
+                <div class="response-text">${response.text}</div>
+                <div class="response-meta">
+                    <span><span class="sentiment-indicator sentiment-${response.sentiment}"></span>${response.sentiment_label}</span>
+                    <span>${response.time_ago}</span>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function updateTopicsCloud(topics) {
+        const container = document.getElementById('topics-container');
+        container.innerHTML = topics.map(topic => 
+            `<span class="topic-tag" onclick="filterByTopic('${topic.name}')">${topic.name}</span>`
+        ).join('');
+    }
+
+    function initCharts() {
+        // Trends Chart
+        const trendsCtx = document.getElementById('trendsChart').getContext('2d');
+        trendsChart = new Chart(trendsCtx, {
+            type: 'line',
+            data: {
+                labels: ['الأسبوع 1', 'الأسبوع 2', 'الأسبوع 3', 'الأسبوع 4'],
+                datasets: [{
+                    label: 'الردود الإيجابية',
+                    data: [12, 19, 15, 25],
+                    borderColor: '#28a745',
+                    backgroundColor: 'rgba(40, 167, 69, 0.1)',
+                    tension: 0.4
+                }, {
+                    label: 'الردود السلبية',
+                    data: [3, 5, 2, 7],
+                    borderColor: '#dc3545',
+                    backgroundColor: 'rgba(220, 53, 69, 0.1)',
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    }
+                }
+            }
+        });
+
+        // Channels Chart
+        const channelsCtx = document.getElementById('channelsChart').getContext('2d');
+        channelsChart = new Chart(channelsCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['الموقع الإلكتروني', 'البريد الإلكتروني', 'واتساب', 'أخرى'],
+                datasets: [{
+                    data: [45, 25, 20, 10],
+                    backgroundColor: ['#1B5E20', '#2E7D32', '#4CAF50', '#81C784']
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+    }
+
+    function setTimeFilter(filter) {
+        currentTimeFilter = filter;
+        
+        // Update button states
+        document.querySelectorAll('.time-filter button').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        event.target.classList.add('active');
+        
+        // Reload data
+        loadQuantitativeData();
+        loadQualitativeData();
+    }
+
+    function drillDown(stage, segment) {
+        alert(`عرض تفاصيل ${stage} للشريحة ${segment}`);
+        // Implementation for drill-down details
+    }
+
+    function filterByTopic(topicName) {
+        alert(`تصفية حسب الموضوع: ${topicName}`);
+        // Implementation for topic filtering
+    }
+
+    function exportPDF() {
+        window.open('/api/professional-reports/generate-pdf?type=consolidated', '_blank');
+    }
+
+    function exportExcel() {
+        window.open('/api/professional-reports/export-excel?type=consolidated', '_blank');
+    }
+
+    function exportCSV() {
+        window.open('/api/professional-reports/export-csv?type=consolidated', '_blank');
+    }
+    </script>
+</body>
+</html>
