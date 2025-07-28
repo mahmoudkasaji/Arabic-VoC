@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="{{ get_language_info().code }}" dir="{{ get_language_info().direction }}">
+<head>
+    {% include 'components/head.html' %}
+    <title>Technical Integration Catalog - Voice of Customer Platform</title>
+    
+    <style>
+    /* Technical Catalog Styling */
+    .catalog-header {
+        background: linear-gradient(135deg, #0d1117 0%, #21262d 100%);
+        color: white;
+        padding: 2rem 0;
+        margin: -1.5rem -1.5rem 2rem -1.5rem;
+        border-bottom: 3px solid #1B5E20;
+    }
+    
+    .status-filter {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
+    }
+    
+    .filter-chip {
+        padding: 0.5rem 1rem;
+        background: #f8f9fa;
+        border: 1px solid #dee2e6;
+        border-radius: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 0.875rem;
+    }
+    
+    .filter-chip.active {
+        background: #1B5E20;
+        color: white;
+        border-color: #1B5E20;
+    }
+    
+    .filter-chip:hover {
+        background: #e9ecef;
+    }
+    
+    .filter-chip.active:hover {
+        background: #155724;
+    }
+    
+    .integration-card {
+        background: white;
+        border-radius: 0.5rem;
+        border: 1px solid #e9ecef;
+        margin-bottom: 1rem;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+    
+    .integration-card:hover {
+        border-color: #1B5E20;
+        box-shadow: 0 4px 12px rgba(27, 94, 32, 0.1);
+    }
+    
+    .integration-header {
+        padding: 1rem 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        cursor: pointer;
+        background: #f8f9fa;
+        border-bottom: 1px solid #e9ecef;
+    }
+    
+    .integration-info {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+    
+    .integration-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 0.25rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+        color: white;
+    }
+    
+    .integration-meta {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+    
+    .status-badge {
+        padding: 0.25rem 0.75rem;
+        border-radius: 1rem;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+    
+    .status-active { background: #d4edda; color: #155724; }
+    .status-configured { background: #fff3cd; color: #856404; }
+    .status-inactive { background: #f8d7da; color: #721c24; }
+    .status-roadmap { background: #d1ecf1; color: #0c5460; }
+    
+    .priority-badge {
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.25rem;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+    
+    .priority-high { background: #dc3545; color: white; }
+    .priority-medium { background: #ffc107; color: #212529; }
+    .priority-low { background: #6c757d; color: white; }
+    .priority-critical { background: #8b0000; color: white; }
+    
+    .integration-details {
+        padding: 1.5rem;
+        display: none;
+        border-top: 1px solid #e9ecef;
+    }
+    
+    .integration-details.expanded {
+        display: block;
+    }
+    
+    .detail-section {
+        margin-bottom: 1.5rem;
+    }
+    
+    .detail-section:last-child {
+        margin-bottom: 0;
+    }
+    
+    .detail-title {
+        font-weight: 600;
+        color: #495057;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .config-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+    }
+    
+    .config-item {
+        padding: 0.75rem;
+        background: #f8f9fa;
+        border-radius: 0.25rem;
+        font-family: 'Courier New', monospace;
+        font-size: 0.875rem;
+        position: relative;
+    }
+    
+    .config-item.configured {
+        background: #d4edda;
+        border-left: 4px solid #28a745;
+    }
+    
+    .config-item.missing {
+        background: #f8d7da;
+        border-left: 4px solid #dc3545;
+    }
+    
+    .endpoint-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    
+    .endpoint-item {
+        padding: 0.5rem;
+        background: #f8f9fa;
+        border-radius: 0.25rem;
+        margin-bottom: 0.5rem;
+        font-family: 'Courier New', monospace;
+        font-size: 0.875rem;
+        word-break: break-all;
+    }
+    
+    .test-button {
+        background: #17a2b8;
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 0.25rem;
+        cursor: pointer;
+        font-size: 0.875rem;
+        transition: all 0.3s ease;
+    }
+    
+    .test-button:hover {
+        background: #138496;
+    }
+    
+    .test-button:disabled {
+        background: #6c757d;
+        cursor: not-allowed;
+    }
+    
+    .test-result {
+        margin-top: 1rem;
+        padding: 1rem;
+        border-radius: 0.25rem;
+        font-size: 0.875rem;
+    }
+    
+    .test-success {
+        background: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+    }
+    
+    .test-error {
+        background: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+    }
+    
+    .category-section {
+        margin-bottom: 3rem;
+    }
+    
+    .category-header {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid #e9ecef;
+    }
+    
+    .category-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 0.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: white;
+    }
+    
+    .implementation-files {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+    
+    .file-tag {
+        background: #e9ecef;
+        color: #495057;
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.25rem;
+        font-size: 0.75rem;
+        font-family: 'Courier New', monospace;
+    }
+    
+    .dependency-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+    
+    .dependency-tag {
+        background: #d1ecf1;
+        color: #0c5460;
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.25rem;
+        font-size: 0.75rem;
+    }
+    
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+    
+    .stat-card {
+        background: white;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        text-align: center;
+        border: 1px solid #e9ecef;
+    }
+    
+    .stat-value {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #1B5E20;
+    }
+    
+    .stat-label {
+        font-size: 0.875rem;
+        color: #6c757d;
+        margin-top: 0.25rem;
+    }
+    
+    .roadmap-timeline {
+        position: relative;
+        padding-left: 2rem;
+    }
+    
+    .roadmap-timeline::before {
+        content: '';
+        position: absolute;
+        left: 0.5rem;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: #dee2e6;
+    }
+    
+    .roadmap-item {
+        position: relative;
+        margin-bottom: 2rem;
+    }
+    
+    .roadmap-item::before {
+        content: '';
+        position: absolute;
+        left: -1.875rem;
+        top: 0.5rem;
+        width: 0.75rem;
+        height: 0.75rem;
+        border-radius: 50%;
+        background: #1B5E20;
+    }
+    
+    .effort-indicator {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        font-size: 0.75rem;
+        color: #6c757d;
+    }
+    </style>
+</head>
+<body>
+    {% include 'components/unified_navigation.html' %}
+    
+    <div class="container-custom">
+        <!-- Header -->
+        <div class="catalog-header">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h1 class="mb-3">🔧 فهرس التكاملات التقني</h1>
+                        <p class="lead mb-0">عرض شامل لجميع التكاملات الحالية والمخططة مع التفاصيل التقنية</p>
+                    </div>
+                    <div class="col-md-4">
+                        <button class="btn btn-outline-light" onclick="refreshAllStatus()">
+                            <i class="fas fa-sync-alt me-2"></i>تحديث الحالة
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistics -->
+        <div class="stats-grid" id="integration-stats">
+            <div class="stat-card">
+                <div class="stat-value" id="total-integrations">-</div>
+                <div class="stat-label">إجمالي التكاملات</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="active-integrations">-</div>
+                <div class="stat-label">نشط</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="configured-integrations">-</div>
+                <div class="stat-label">مُعد</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="roadmap-integrations">-</div>
+                <div class="stat-label">خارطة الطريق</div>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="status-filter">
+            <div class="filter-chip active" data-filter="all">
+                <i class="fas fa-layer-group me-2"></i>جميع التكاملات
+            </div>
+            <div class="filter-chip" data-filter="active">
+                <i class="fas fa-check-circle me-2"></i>نشط
+            </div>
+            <div class="filter-chip" data-filter="configured">
+                <i class="fas fa-cog me-2"></i>مُعد
+            </div>
+            <div class="filter-chip" data-filter="roadmap">
+                <i class="fas fa-road me-2"></i>خارطة الطريق
+            </div>
+        </div>
+
+        <!-- AI Services Category -->
+        <div class="category-section" data-category="AI Services">
+            <div class="category-header">
+                <div class="category-icon" style="background: #667eea;">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <div>
+                    <h3 class="mb-0">خدمات الذكاء الاصطناعي</h3>
+                    <p class="text-muted mb-0">نماذج اللغة الكبيرة ومعالجة النصوص العربية</p>
+                </div>
+            </div>
+            <div id="ai-services-integrations"></div>
+        </div>
+
+        <!-- Communication Category -->
+        <div class="category-section" data-category="Communication Channels">
+            <div class="category-header">
+                <div class="category-icon" style="background: #28a745;">
+                    <i class="fas fa-comments"></i>
+                </div>
+                <div>
+                    <h3 class="mb-0">قنوات التواصل</h3>
+                    <p class="text-muted mb-0">البريد الإلكتروني والرسائل النصية والإشعارات</p>
+                </div>
+            </div>
+            <div id="communication-integrations"></div>
+        </div>
+
+        <!-- CRM Systems Category -->
+        <div class="category-section" data-category="CRM Systems">
+            <div class="category-header">
+                <div class="category-icon" style="background: #0052cc;">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div>
+                    <h3 class="mb-0">أنظمة إدارة العملاء</h3>
+                    <p class="text-muted mb-0">CRM وأنظمة الدعم وإدارة التذاكر</p>
+                </div>
+            </div>
+            <div id="crm-integrations"></div>
+        </div>
+
+        <!-- Analytics Category -->
+        <div class="category-section" data-category="Business Intelligence">
+            <div class="category-header">
+                <div class="category-icon" style="background: #17a2b8;">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <div>
+                    <h3 class="mb-0">ذكاء الأعمال</h3>
+                    <p class="text-muted mb-0">مستودعات البيانات وأدوات التحليل</p>
+                </div>
+            </div>
+            <div id="analytics-integrations"></div>
+        </div>
+
+        <!-- Storage Category -->
+        <div class="category-section" data-category="Data Storage">
+            <div class="category-header">
+                <div class="category-icon" style="background: #6c757d;">
+                    <i class="fas fa-database"></i>
+                </div>
+                <div>
+                    <h3 class="mb-0">تخزين البيانات</h3>
+                    <p class="text-muted mb-0">قواعد البيانات والتخزين السحابي</p>
+                </div>
+            </div>
+            <div id="storage-integrations"></div>
+        </div>
+
+        <!-- Developer APIs Category -->
+        <div class="category-section" data-category="Developer APIs">
+            <div class="category-header">
+                <div class="category-icon" style="background: #6f42c1;">
+                    <i class="fas fa-code"></i>
+                </div>
+                <div>
+                    <h3 class="mb-0">واجهات المطورين</h3>
+                    <p class="text-muted mb-0">APIs و Webhooks والتكاملات المخصصة</p>
+                </div>
+            </div>
+            <div id="developer-integrations"></div>
+        </div>
+    </div>
+
+    <script>
+    let integrationsData = {};
+    let currentFilter = 'all';
+
+    // Load integration data on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        loadIntegrationsData();
+    });
+
+    async function loadIntegrationsData() {
+        try {
+            const response = await fetch('/api/integrations/status');
+            const data = await response.json();
+            
+            if (data.success) {
+                integrationsData = data.integrations;
+                updateStatistics(data.summary);
+                renderIntegrations();
+            } else {
+                console.error('Error loading integrations:', data.error);
+            }
+        } catch (error) {
+            console.error('Error fetching integrations:', error);
+        }
+    }
+
+    function updateStatistics(summary) {
+        document.getElementById('total-integrations').textContent = summary.total_integrations;
+        document.getElementById('active-integrations').textContent = summary.active;
+        document.getElementById('configured-integrations').textContent = summary.configured;
+        document.getElementById('roadmap-integrations').textContent = summary.roadmap;
+    }
+
+    function renderIntegrations() {
+        const categories = {
+            'AI Services': document.getElementById('ai-services-integrations'),
+            'Communication Channels': document.getElementById('communication-integrations'),
+            'CRM Systems': document.getElementById('crm-integrations'),
+            'Business Intelligence': document.getElementById('analytics-integrations'),
+            'Data Storage': document.getElementById('storage-integrations'),
+            'Developer APIs': document.getElementById('developer-integrations')
+        };
+
+        // Clear all categories
+        Object.values(categories).forEach(container => {
+            if (container) container.innerHTML = '';
+        });
+
+        // Render integrations by category
+        Object.entries(integrationsData).forEach(([integrationId, integration]) => {
+            if (shouldShowIntegration(integration)) {
+                const container = categories[integration.category];
+                if (container) {
+                    container.appendChild(createIntegrationCard(integrationId, integration));
+                }
+            }
+        });
+    }
+
+    function shouldShowIntegration(integration) {
+        if (currentFilter === 'all') return true;
+        return integration.status === currentFilter;
+    }
+
+    function createIntegrationCard(integrationId, integration) {
+        const card = document.createElement('div');
+        card.className = 'integration-card';
+        card.dataset.integrationId = integrationId;
+
+        const iconColors = {
+            'openai': '#10a37f',
+            'claude': '#ff8c00',
+            'gmail': '#ea4335',
+            'replit_auth': '#f26207',
+            'postgresql': '#336791',
+            'jais': '#8b4513',
+            'twilio': '#f22f46',
+            'salesforce': '#0052cc',
+            'zendesk': '#03363d',
+            'hubspot': '#ff7a59',
+            'snowflake': '#29b5e8',
+            'bigquery': '#4285f4',
+            'azure_openai': '#0078d4',
+            'whatsapp': '#25d366'
+        };
+
+        const icons = {
+            'openai': 'fas fa-brain',
+            'claude': 'fas fa-robot',
+            'gmail': 'fas fa-envelope',
+            'replit_auth': 'fas fa-shield-alt',
+            'postgresql': 'fas fa-database',
+            'jais': 'fas fa-language',
+            'twilio': 'fas fa-sms',
+            'salesforce': 'fab fa-salesforce',
+            'zendesk': 'fas fa-headset',
+            'hubspot': 'fas fa-bullhorn',
+            'snowflake': 'fas fa-snowflake',
+            'bigquery': 'fas fa-chart-bar',
+            'azure_openai': 'fab fa-microsoft',
+            'whatsapp': 'fab fa-whatsapp'
+        };
+
+        card.innerHTML = `
+            <div class="integration-header" onclick="toggleIntegrationDetails('${integrationId}')">
+                <div class="integration-info">
+                    <div class="integration-icon" style="background: ${iconColors[integrationId] || '#6c757d'};">
+                        <i class="${icons[integrationId] || 'fas fa-plug'}"></i>
+                    </div>
+                    <div>
+                        <h5 class="mb-1">${integration.name}</h5>
+                        <p class="text-muted mb-0">${integration.description}</p>
+                    </div>
+                </div>
+                <div class="integration-meta">
+                    <span class="status-badge status-${integration.status}">${getStatusText(integration.status)}</span>
+                    <span class="priority-badge priority-${integration.priority.toLowerCase()}">${integration.priority}</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+            </div>
+            <div class="integration-details" id="details-${integrationId}">
+                ${createIntegrationDetails(integrationId, integration)}
+            </div>
+        `;
+
+        return card;
+    }
+
+    function createIntegrationDetails(integrationId, integration) {
+        return `
+            <div class="detail-section">
+                <div class="detail-title">
+                    <i class="fas fa-key"></i>
+                    متطلبات التكوين
+                </div>
+                <div class="config-grid">
+                    ${integration.config_keys ? integration.config_keys.map(key => `
+                        <div class="config-item ${integration.missing_keys && integration.missing_keys.includes(key) ? 'missing' : 'configured'}">
+                            ${key}
+                            <i class="fas fa-${integration.missing_keys && integration.missing_keys.includes(key) ? 'times text-danger' : 'check text-success'} position-absolute" style="top: 0.5rem; right: 0.5rem;"></i>
+                        </div>
+                    `).join('') : '<div class="text-muted">لا توجد متطلبات تكوين</div>'}
+                </div>
+            </div>
+
+            <div class="detail-section">
+                <div class="detail-title">
+                    <i class="fas fa-link"></i>
+                    نقاط الاتصال
+                </div>
+                <ul class="endpoint-list">
+                    ${integration.endpoints ? integration.endpoints.map(endpoint => `
+                        <li class="endpoint-item">${endpoint}</li>
+                    `).join('') : '<li class="text-muted">لا توجد نقاط اتصال محددة</li>'}
+                </ul>
+            </div>
+
+            ${integration.implementation_files ? `
+                <div class="detail-section">
+                    <div class="detail-title">
+                        <i class="fas fa-file-code"></i>
+                        ملفات التنفيذ
+                    </div>
+                    <div class="implementation-files">
+                        ${integration.implementation_files.map(file => `
+                            <span class="file-tag">${file}</span>
+                        `).join('')}
+                    </div>
+                </div>
+            ` : ''}
+
+            ${integration.dependencies ? `
+                <div class="detail-section">
+                    <div class="detail-title">
+                        <i class="fas fa-puzzle-piece"></i>
+                        التبعيات
+                    </div>
+                    <div class="dependency-list">
+                        ${integration.dependencies.map(dep => `
+                            <span class="dependency-tag">${dep}</span>
+                        `).join('')}
+                    </div>
+                </div>
+            ` : ''}
+
+            ${integration.estimated_effort_weeks ? `
+                <div class="detail-section">
+                    <div class="detail-title">
+                        <i class="fas fa-clock"></i>
+                        التقدير الزمني
+                    </div>
+                    <div class="effort-indicator">
+                        <i class="fas fa-calendar-alt"></i>
+                        ${integration.estimated_effort_weeks} أسبوع تقديري للتنفيذ
+                    </div>
+                </div>
+            ` : ''}
+
+            ${integration.status === 'active' || integration.status === 'configured' ? `
+                <div class="detail-section">
+                    <div class="detail-title">
+                        <i class="fas fa-vial"></i>
+                        اختبار الاتصال
+                    </div>
+                    <button class="test-button" onclick="testIntegration('${integrationId}')">
+                        <i class="fas fa-play me-2"></i>تشغيل اختبار
+                    </button>
+                    <div id="test-result-${integrationId}"></div>
+                </div>
+            ` : ''}
+        `;
+    }
+
+    function getStatusText(status) {
+        const statusTexts = {
+            'active': 'نشط',
+            'configured': 'مُعد',
+            'inactive': 'غير نشط',
+            'roadmap': 'مخطط'
+        };
+        return statusTexts[status] || status;
+    }
+
+    function toggleIntegrationDetails(integrationId) {
+        const details = document.getElementById(`details-${integrationId}`);
+        const chevron = details.parentElement.querySelector('.fa-chevron-down');
+        
+        if (details.classList.contains('expanded')) {
+            details.classList.remove('expanded');
+            chevron.style.transform = 'rotate(0deg)';
+        } else {
+            details.classList.add('expanded');
+            chevron.style.transform = 'rotate(180deg)';
+        }
+    }
+
+    async function testIntegration(integrationId) {
+        const button = document.querySelector(`[onclick="testIntegration('${integrationId}')"]`);
+        const resultDiv = document.getElementById(`test-result-${integrationId}`);
+        
+        button.disabled = true;
+        button.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>جاري الاختبار...';
+        
+        try {
+            const response = await fetch(`/api/integrations/test/${integrationId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            const data = await response.json();
+            
+            if (data.success && data.test_result.success) {
+                resultDiv.innerHTML = `
+                    <div class="test-result test-success">
+                        <i class="fas fa-check-circle me-2"></i>
+                        ${data.test_result.message || 'اختبار ناجح'}
+                        ${data.test_result.response_time_ms ? `<br><small>وقت الاستجابة: ${data.test_result.response_time_ms}ms</small>` : ''}
+                    </div>
+                `;
+            } else {
+                resultDiv.innerHTML = `
+                    <div class="test-result test-error">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        ${data.test_result?.error || data.error || 'فشل الاختبار'}
+                    </div>
+                `;
+            }
+        } catch (error) {
+            resultDiv.innerHTML = `
+                <div class="test-result test-error">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    خطأ في الشبكة: ${error.message}
+                </div>
+            `;
+        }
+        
+        button.disabled = false;
+        button.innerHTML = '<i class="fas fa-play me-2"></i>تشغيل اختبار';
+    }
+
+    async function refreshAllStatus() {
+        const button = document.querySelector('[onclick="refreshAllStatus()"]');
+        button.disabled = true;
+        button.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>جاري التحديث...';
+        
+        await loadIntegrationsData();
+        
+        button.disabled = false;
+        button.innerHTML = '<i class="fas fa-sync-alt me-2"></i>تحديث الحالة';
+    }
+
+    // Filter functionality
+    document.querySelectorAll('.filter-chip').forEach(chip => {
+        chip.addEventListener('click', function() {
+            document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+            this.classList.add('active');
+            currentFilter = this.dataset.filter;
+            renderIntegrations();
+        });
+    });
+    </script>
+    
+    {% include 'components/scripts.html' %}
+</body>
+</html>
