@@ -144,12 +144,6 @@
                                         <a href="/analytics/dashboard" class="btn btn-sm btn-outline-info" title="لوحة التحليلات">
                                             <i class="fas fa-chart-bar"></i>
                                         </a>
-                                        <a href="/analytics/dashboard" class="btn btn-sm btn-outline-success" title="تحليل مفصل">
-                                            <i class="fas fa-analytics"></i>
-                                        </a>
-                                        <button class="btn btn-sm btn-outline-warning" onclick="openDistributionModal({{ survey.id }}, '{{ survey.title }}', '{{ survey.public_url if survey.public_url else '' }}')" title="توزيع">
-                                            <i class="fas fa-share-alt"></i>
-                                        </button>
                                         <button class="btn btn-sm btn-outline-danger" onclick="deleteSurvey({{ survey.id }})" title="حذف">
                                             <i class="fas fa-trash"></i>
                                         </button>
