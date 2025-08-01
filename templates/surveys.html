@@ -342,7 +342,7 @@
     function openDistributionModal(surveyId, title, publicUrl) {
         currentSurveyId = surveyId;
         currentSurveyTitle = title;
-        currentSurveyUrl = publicUrl || `${window.location.origin}/survey/${surveyId}`;
+        currentSurveyUrl = publicUrl || (window.location.origin + '/survey/' + surveyId);
         
         // Update modal content
         document.getElementById('modalSurveyLink').value = currentSurveyUrl;
@@ -446,20 +446,17 @@ if(document.readyState === 'loading') {
         const emails = emailList.split('\\n').filter(email => email.trim());
         
         // Simulate email sending
-        showNotification(`تم إرسال الاستطلاع إلى ${emails.length} عنوان بريد إلكتروني`, 'success');
+        showNotification('تم إرسال الاستطلاع إلى ' + emails.length + ' عنوان بريد إلكتروني', 'success');
     }
     
     function showNotification(message, type) {
         // Simple notification system
         const notification = document.createElement('div');
-        notification.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
+        notification.className = 'alert alert-' + type + ' alert-dismissible fade show position-fixed';
         notification.style.top = '20px';
         notification.style.left = '20px';
         notification.style.zIndex = '9999';
-        notification.innerHTML = `
-            ${message}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        `;
+        notification.innerHTML = message + '<button type="button" class="btn-close" data-bs-dismiss="alert"></button>';
         document.body.appendChild(notification);
         
         setTimeout(() => {
@@ -469,7 +466,7 @@ if(document.readyState === 'loading') {
     
     function deleteSurvey(surveyId) {
         if (confirm('هل أنت متأكد من حذف هذا الاستطلاع؟ هذا الإجراء لا يمكن التراجع عنه.')) {
-            fetch(`/surveys/${surveyId}/delete`, {
+            fetch('/surveys/' + surveyId + '/delete', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -492,7 +489,7 @@ if(document.readyState === 'loading') {
     }
     
     function duplicateSurvey(surveyId) {
-        fetch(`/surveys/${surveyId}/duplicate`, {
+        fetch('/surveys/' + surveyId + '/duplicate', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -516,22 +513,22 @@ if(document.readyState === 'loading') {
 
     
     function exportResponses(surveyId) {
-        window.open(`/surveys/${surveyId}/export`, '_blank');
+        window.open('/surveys/' + surveyId + '/export', '_blank');
     }
     
     function toggleResponsePreview(surveyId) {
-        const previewRow = document.getElementById(`responsePreview${surveyId}`);
+        const previewRow = document.getElementById('responsePreview' + surveyId);
         if (previewRow.style.display === 'none') {
             // Load quick stats and show preview
-            fetch(`/api/surveys/${surveyId}/quick-stats`)
+            fetch('/api/surveys/' + surveyId + '/quick-stats')
             .then(response => response.json())
             .then(data => {
                 if (data.status === 'success') {
                     // Update the preview with real data
                     const stats = data.stats;
                     previewRow.querySelector('.col-md-4 small:nth-child(2)').textContent = stats.latest_response;
-                    previewRow.querySelector('.col-md-4 small:nth-child(4)').textContent = `${stats.avg_rating}/5 ⭐`;
-                    previewRow.querySelector('.col-md-5 small').textContent = `"${stats.latest_comment}"`;
+                    previewRow.querySelector('.col-md-4 small:nth-child(4)').textContent = stats.avg_rating + '/5 ⭐';
+                    previewRow.querySelector('.col-md-5 small').textContent = '"' + stats.latest_comment + '"';
                 }
                 previewRow.style.display = '';
             })
