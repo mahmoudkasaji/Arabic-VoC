@@ -41,15 +41,17 @@ QA Framework Preference: Prefers comprehensive testing coverage that evolves wit
 - **Infrastructure**: Gunicorn WSGI with auto-scaling, multi-environment deployment, and performance monitoring.
 
 ### Technical Implementation
-- **Backend Framework**: Flask, optimized for Replit deployment.
+- **Backend Framework**: Hybrid Flask/API architecture optimized for Replit deployment. Flask routes for internal operations, API blueprints for complex processing.
 - **Authentication**: Enterprise Replit OAuth 2.0 with PKCE and role-based access control. Native Replit integration with a three-table user management system (`replit_users`, `replit_user_preferences`, `replit_oauth`).
 - **AI System**: Advanced Arabic analyzer with OpenAI GPT-4o integration, supporting sentiment analysis, emotion detection, and topic categorization with cultural context awareness.
 - **Database**: PostgreSQL 13+ with Arabic collation, connection pooling, and performance indexes, managed by Flask-SQLAlchemy.
 - **Frontend**: Jinja2 templates with RTL support, custom CSS with an Arabic design system, vanilla JavaScript, and Chart.js for visualizations. Arabic fonts (Amiri, Cairo) are used.
-- **Survey Management**: Streamlined navigation, unified interface for creation, distribution, and monitoring, with multi-channel options (email, SMS, links). Supports various question types and generates web-hosted survey links (custom URLs, QR codes).
-- **Analytics Dashboard**: Consolidated into two core approaches: Main Analytics Dashboard for KPIs and Advanced Analytics for enhanced text analysis and professional reporting. Features quantitative metrics, qualitative text analytics, and a journey matrix. Includes predictive CX insights (satisfaction, early warning, opportunity detection) and an "Actions Required" workflow tab for analysts.
-- **Feedback Widgets**: Persistent footer and sidebar feedback forms with conditional logic, Arabic RTL support, and direct database integration.
-- **Contact Management**: Direct database operations for CRUD functionality with Flask routes, hard delete functionality, bulk import/export, and integration with survey distribution.
+- **Survey Management**: Flask routes for simple operations (list, create, distribute), API blueprints for complex analytics. Streamlined navigation, unified interface for creation, distribution, and monitoring, with multi-channel options (email, SMS, links). Supports various question types and generates web-hosted survey links (custom URLs, QR codes).
+- **Analytics Dashboard**: Hybrid approach - Flask routes for basic data, API blueprints for complex analytics. Consolidated into two core approaches: Main Analytics Dashboard for KPIs and Advanced Analytics for enhanced text analysis and professional reporting. Features quantitative metrics, qualitative text analytics, and a journey matrix. Includes predictive CX insights (satisfaction, early warning, opportunity detection) and an "Actions Required" workflow tab for analysts.
+- **Feedback Widgets**: Flask routes for simple submissions, API blueprints for complex processing. Persistent footer and sidebar feedback forms with conditional logic, Arabic RTL support, and direct database integration.
+- **Contact Management**: Migrated to Flask routes for optimal performance. Direct database operations for CRUD functionality, hard delete functionality, bulk import/export, and integration with survey distribution.
+- **User Preferences**: Flask routes for settings management with native session integration.
+- **Integration Testing**: Flask routes for real-time integration health monitoring and testing.
 - **Internationalization**: Full bilingual system (Arabic/English) with JSON translation dictionaries, template helpers, JavaScript toggles, and complete RTL/LTR support.
 - **UI/UX Decisions**: Unified navigation with a 4-tab structure (Surveys, Analytics, Integrations, Settings), consistent layout system, and comprehensive design system with standardized components and responsive design. Emphasis on progressive disclosure and simplified workflows.
 

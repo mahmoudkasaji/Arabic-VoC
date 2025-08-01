@@ -93,9 +93,7 @@ import api.survey_management
 from api.executive_dashboard import executive_bp
 app.register_blueprint(executive_bp, url_prefix='/api/executive-dashboard')
 
-# Register contacts API blueprint
-from api.contacts import contacts_bp
-app.register_blueprint(contacts_bp)
+# Note: Contact management migrated to Flask routes in contact_routes.py
 
 # Register survey hosting API blueprint
 from api.survey_hosting import survey_hosting_bp
@@ -105,8 +103,7 @@ app.register_blueprint(survey_hosting_bp)
 from api.surveys_flask import surveys_bp
 app.register_blueprint(surveys_bp)
 
-# Import user preferences API
-import api.user_preferences
+# Note: User preferences migrated to Flask routes in routes.py
 
 # Import and register Replit Auth blueprint  
 try:
@@ -117,7 +114,7 @@ except Exception as e:
     logger.warning(f"Could not register Replit Auth blueprint: {e}")
     logger.info("Running without Replit Auth - development mode")
 
-# Register API blueprints
+# Register remaining API blueprints (complex operations only)
 try:
     from api.analytics_live import analytics_live_bp
     app.register_blueprint(analytics_live_bp)
@@ -125,7 +122,7 @@ try:
 except Exception as e:
     logger.error(f"Could not register Live Analytics API blueprint: {e}")
 
-# Register Enhanced Analytics API - Phase 3A
+# Register Enhanced Analytics API - Phase 3A (AI-powered analytics)
 try:
     from api.enhanced_analytics import enhanced_analytics_bp
     app.register_blueprint(enhanced_analytics_bp)
@@ -133,13 +130,15 @@ try:
 except Exception as e:
     logger.error(f"Could not register Enhanced Analytics API blueprint: {e}")
 
-# Register Professional Reports API - Phase 3B
+# Register Professional Reports API - Phase 3B (complex reporting)
 try:
     from api.professional_reports import professional_reports_bp
     app.register_blueprint(professional_reports_bp)
     logger.info("Professional Reports API blueprint registered successfully")
 except Exception as e:
     logger.error(f"Could not register Professional Reports API blueprint: {e}")
+
+# NOTE: Contact management, user preferences, and simple operations migrated to Flask routes in routes.py
 
 # Import simplified feedback widget routes
 try:
