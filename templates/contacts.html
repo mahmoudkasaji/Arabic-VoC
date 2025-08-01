@@ -14,9 +14,9 @@
             <div class="row align-items-center">
                 <div class="col-md-8">
                     <h1 class="page-title mb-2">
-                        <i class="fas fa-address-book text-primary me-3"></i>إدارة جهات الاتصال
+                        <i class="fas fa-address-book text-primary me-3"></i>إدارة {{ 'navigation.contacts_dropdown.title' | translate }}
                     </h1>
-                    <p class="page-description text-muted mb-0">إدارة وتنظيم قائمة جهات الاتصال لتوزيع الاستطلاعات</p>
+                    <p class="page-description text-muted mb-0">إدارة وتنظيم قائمة {{ 'navigation.contacts_dropdown.title' | translate }} ل{{ 'navigation.surveys_distribution.title' | translate }}</p>
                 </div>
                 <div class="col-md-4 text-end">
                     <div class="badge bg-primary fs-6 px-3 py-2">
@@ -37,7 +37,7 @@
                                 <i class="fas fa-search text-muted"></i>
                             </span>
                             <input type="text" class="form-control" id="searchContacts" 
-                                   placeholder="البحث في جهات الاتصال..." onkeyup="searchContacts()">
+                                   placeholder="البحث في {{ 'navigation.contacts_dropdown.title' | translate }}..." onkeyup="searchContacts()">
                         </div>
                     </div>
                     
@@ -56,7 +56,7 @@
                                     <i class="fas fa-upload"></i>استيراد
                                 </button>
                                 <a href="/contacts/export" class="btn-standard btn-secondary-standard btn-md-standard" 
-                                   title="تصدير جميع جهات الاتصال إلى ملف CSV">
+                                   title="تصدير جميع {{ 'navigation.contacts_dropdown.title' | translate }} إلى ملف CSV">
                                     <i class="fas fa-download"></i>تصدير
                                 </a>
                             </div>
@@ -117,7 +117,7 @@
         <div class="card-unified">
             <div class="card-header">
                 <h5 class="card-title mb-0">
-                    <i class="fas fa-users me-2"></i>قائمة جهات الاتصال
+                    <i class="fas fa-users me-2"></i>قائمة {{ 'navigation.contacts_dropdown.title' | translate }}
                     <span class="badge bg-primary">{{ contacts|length }}</span>
                 </h5>
             </div>
@@ -432,14 +432,14 @@
                                 <li>يجب أن يكون الملف بصيغة CSV</li>
                                 <li>الصف الأول يحتوي على عناوين الأعمدة</li>
                                 <li>العمود الأول يجب أن يحتوي على الاسم (مطلوب)</li>
-                                <li>سيتم تحديث جهات الاتصال الموجودة حسب البريد الإلكتروني أو رقم الهاتف</li>
+                                <li>سيتم تحديث {{ 'navigation.contacts_dropdown.title' | translate }} الموجودة حسب البريد الإلكتروني أو رقم الهاتف</li>
                             </ul>
                         </div>
                         
                         <div class="mb-3">
                             <label class="form-label">ملف CSV</label>
                             <input type="file" class="form-control" name="file" id="csvFile" accept=".csv" required>
-                            <div class="form-text">حدد ملف CSV يحتوي على بيانات جهات الاتصال</div>
+                            <div class="form-text">حدد ملف CSV يحتوي على بيانات {{ 'navigation.contacts_dropdown.title' | translate }}</div>
                         </div>
                         
                         <div class="card">
@@ -503,7 +503,7 @@
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
                         <button type="submit" class="btn btn-success" id="importSubmitBtn">
                             <span class="spinner-border spinner-border-sm d-none me-2" role="status"></span>
-                            <i class="fas fa-upload me-2"></i>استيراد جهات الاتصال
+                            <i class="fas fa-upload me-2"></i>استيراد {{ 'navigation.contacts_dropdown.title' | translate }}
                         </button>
                     </div>
                 </form>

@@ -105,12 +105,12 @@
                     <div class="mb-3" id="target_audience_section">
                         <label for="target_audience" class="form-label">الجمهور المستهدف</label>
                         <select class="form-select" id="target_audience" name="target_audience" multiple>
-                            <option value="all">جميع جهات الاتصال</option>
+                            <option value="all">جميع {{ 'navigation.contacts_dropdown.title' | translate }}</option>
                             {% for group in contact_groups %}
                             <option value="{{ group.id }}">{{ group.name }} ({{ group.contact_count }} جهة اتصال)</option>
                             {% endfor %}
                         </select>
-                        <div class="form-text">اختر مجموعة أو أكثر، أو اترك فارغاً لإرسال لجميع جهات الاتصال</div>
+                        <div class="form-text">اختر مجموعة أو أكثر، أو اترك فارغاً لإرسال لجميع {{ 'navigation.contacts_dropdown.title' | translate }}</div>
                     </div>
                     
                     <!-- Step 3: Scheduling -->
