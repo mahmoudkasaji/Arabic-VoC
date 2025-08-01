@@ -162,13 +162,7 @@ try:
 except Exception as e:
     logger.error(f"Could not register Feedback Widget API blueprint: {e}")
 
-# Register distribution routes blueprint - Temporarily disabled due to conflicts
-# try:
-#     from routes.distribution import distribution_bp
-#     app.register_blueprint(distribution_bp)
-#     logger.info("Distribution routes blueprint registered successfully")
-# except Exception as e:
-#     logger.error(f"Could not register Distribution routes blueprint: {e}")
+
 
 @app.route('/')
 def index():
@@ -186,12 +180,7 @@ def index():
 
 # Removed redundant homepage route
 
-@app.route('/debug-bilingual')
-def debug_bilingual():
-    """Debug page for bilingual functionality"""
-    with open('debug_bilingual.html', 'r', encoding='utf-8') as f:
-        content = f.read()
-    return render_template_string(content)
+# Debug route removed - file no longer exists
 
 @app.route('/feedback')
 def feedback_page():

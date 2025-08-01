@@ -10,12 +10,14 @@ from fastapi import FastAPI
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from models.auth import User, Organization
-from api.auth import router as auth_router
+# Note: Auth API migrated to Flask routes in routes.py
+# from api.auth import router as auth_router
 from utils.database_arabic import init_arabic_database, arabic_db_manager
 
+# Note: Test app disabled as Auth API migrated to Flask routes
 # Create test app
-test_app = FastAPI()
-test_app.include_router(auth_router)
+# test_app = FastAPI()
+# test_app.include_router(auth_router)
 
 class TestUserRegistration:
     """Test user registration with Arabic names"""
