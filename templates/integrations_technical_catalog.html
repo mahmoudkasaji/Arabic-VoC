@@ -732,20 +732,21 @@
                                 <div class="status-badge badge bg-success">Active</div>
                             </div>
                             
-                            <div class="integration-config">
-                                <div class="config-grid">
-                                    <div class="config-item">
-                                        <small>Encryption</small>
-                                        <p class="fw-bold">TLS</p>
-                                    </div>
-                                    <div class="config-item">
-                                        <small>Success Rate</small>
-                                        <p class="fw-bold">99.5%</p>
-                                    </div>
-                                    <div class="config-item">
-                                        <small>Language Support</small>
-                                        <p class="fw-bold">Arabic/English</p>
-                                    </div>
+                            <div style="background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 4px; padding: 1rem; margin: 1rem 0;">
+                                <div style="margin-bottom: 0.75rem;">
+                                    <strong style="color: #495057; font-size: 0.875rem; text-transform: uppercase;">SMTP Endpoint</strong>
+                                </div>
+                                <div style="background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 4px; padding: 0.75rem; margin-bottom: 0.5rem; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 0.875rem;">
+                                    <span style="display: inline-block; padding: 0.2rem 0.5rem; border-radius: 3px; font-size: 0.75rem; font-weight: 600; margin-right: 0.5rem; min-width: 45px; text-align: center; background: #e8f5e8; color: #2e7d32;">SMTP</span>
+                                    <code>smtp.gmail.com:587</code>
+                                </div>
+                                <div style="background: #fff3cd; border-left: 4px solid #ffc107; padding: 0.75rem; margin-bottom: 0.75rem; border-radius: 0 4px 4px 0;">
+                                    <div style="font-weight: 600; color: #856404; margin-bottom: 0.25rem;">App Password Authentication</div>
+                                    <small>Requires GMAIL_EMAIL, GMAIL_APP_PASSWORD</small>
+                                </div>
+                                <div style="font-size: 0.875rem;">
+                                    <strong>Implementation:</strong> <code>utils/email_service.py</code><br>
+                                    <strong>Features:</strong> HTML Templates, Bulk Email, Arabic RTL Support
                                 </div>
                             </div>
                             
