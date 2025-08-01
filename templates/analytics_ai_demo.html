@@ -321,10 +321,9 @@
                     </div>
                     <div>
                         <span class="sentiment-indicator" id="sentimentResult">محايد</span>
-                        <div class="confidence-bar">
-                            <div class="confidence-fill" id="confidenceBar" style="width: 0%"></div>
+                        <div class="mt-2">
+                            <small class="text-muted">درجة الثقة: <span id="confidenceText">0%</span></small>
                         </div>
-                        <small class="text-muted mt-2 d-block">درجة الثقة: <span id="confidenceText">0%</span></small>
                     </div>
                 </div>
                 
@@ -488,13 +487,8 @@
             sentimentResult.className = `sentiment-indicator sentiment-${analysis.sentiment}`;
             
             // Update confidence
-            const confidenceBar = document.getElementById('confidenceBar');
             const confidenceText = document.getElementById('confidenceText');
-            
-            setTimeout(() => {
-                confidenceBar.style.width = analysis.confidence + '%';
-                confidenceText.textContent = analysis.confidence + '%';
-            }, 300);
+            confidenceText.textContent = analysis.confidence + '%';
             
             // Update topics
             const topicsGrid = document.getElementById('topicsGrid');
@@ -571,13 +565,8 @@
             sentimentResult.className = `sentiment-indicator sentiment-${sentiment}`;
             
             // Update confidence
-            const confidenceBar = document.getElementById('confidenceBar');
             const confidenceText = document.getElementById('confidenceText');
-            
-            setTimeout(() => {
-                confidenceBar.style.width = confidence + '%';
-                confidenceText.textContent = confidence + '%';
-            }, 300);
+            confidenceText.textContent = confidence + '%';
             
             // Update topics
             const topicsGrid = document.getElementById('topicsGrid');
