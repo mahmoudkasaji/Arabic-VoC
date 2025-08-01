@@ -1931,6 +1931,40 @@ def edit_survey_page(survey_id):
         flash('حدث خطأ في تحميل الاستطلاع للتحرير', 'error')
         return redirect(url_for('surveys_page'))
 
+# Contact Delete Route (added directly to app.py)
+@app.route('/contacts/delete/<int:contact_id>', methods=['POST'])
+@require_login  
+def delete_contact_route(contact_id):
+    """Delete a contact"""
+    from models.contacts import Contact
+    import logging
+    
+    logger = logging.getLogger(__name__)
+    
+    try:
+        logger.debug(f"Attempting to delete contact with ID: {contact_id}")
+        
+        contact = Contact.query.get_or_404(contact_id)
+        logger.debug(f"Found contact: {contact.name}")
+        
+        # Hard delete - remove from database
+        db.session.delete(contact)
+        db.session.commit()
+        logger.debug(f"Contact {contact_id} deleted successfully")
+        
+        return jsonify({
+            'status': 'success',
+            'message': 'تم حذف جهة الاتصال بنجاح'
+        })
+        
+    except Exception as e:
+        logger.error(f"Error deleting contact {contact_id}: {str(e)}")
+        db.session.rollback()
+        return jsonify({
+            'status': 'error',
+            'message': f'حدث خطأ في حذف جهة الاتصال: {str(e)}'
+        }), 500
+
 # Import additional contact routes
 import contact_routes  # noqa: F401
 import routes  # noqa: F401
