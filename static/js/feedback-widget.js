@@ -7,7 +7,8 @@
 if (typeof window.FeedbackWidget === 'undefined') {
 
 class FeedbackWidget {
-    constructor(options = {}) {
+    constructor(options) {
+        options = options || {};
         this.options = {
             position: 'bottom-right', // bottom-left for RTL
             submitEndpoint: '/feedback-widget',
@@ -685,13 +686,14 @@ class FeedbackWidget {
         return this.options.labels[this.currentLang][key] || this.options.labels['ar'][key];
     }
 
-    trackEvent(eventName, data = {}) {
+    trackEvent(eventName, data) {
+        data = data || {};
         // Integration with existing analytics
         if (typeof gtag !== 'undefined') {
-            gtag('event', eventName, {
-                event_category: 'feedback_widget',
-                ...data
-            });
+            const eventData = Object.assign({
+                event_category: 'feedback_widget'
+            }, data);
+            gtag('event', eventName, eventData);
         }
         
         // Console logging for development
