@@ -496,11 +496,11 @@
             <!-- Statistics -->
             <div class="stats-grid" id="integration-stats">
                 <div class="metric-card" style="background: linear-gradient(135deg, #1B5E20 0%, #0F3711 100%);">
-                    <div class="metric-value" id="ai-analytics-count">4</div>
+                    <div class="metric-value" id="ai-analytics-count">3</div>
                     <div class="metric-label">AI Analytics</div>
                 </div>
                 <div class="metric-card" style="background: linear-gradient(135deg, #F4A460 0%, #e89344 100%);">
-                    <div class="metric-value" id="feedback-channels-count">3</div>
+                    <div class="metric-value" id="feedback-channels-count">2</div>
                     <div class="metric-label">Feedback Channels</div>
                 </div>
                 <div class="metric-card" style="background: linear-gradient(135deg, #4169E1 0%, #1548E8 100%);">
@@ -508,7 +508,7 @@
                     <div class="metric-label">Authentication & Security</div>
                 </div>
                 <div class="metric-card" style="background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);">
-                    <div class="metric-value" id="total-integrations">9</div>
+                    <div class="metric-value" id="total-integrations">7</div>
                     <div class="metric-label">Total Active</div>
                 </div>
             </div>
@@ -555,7 +555,7 @@
                         <p class="text-muted mb-0">Advanced sentiment analysis and text processing engines</p>
                     </div>
                     <div class="text-end">
-                        <span class="badge bg-primary">4 Active</span>
+                        <span class="badge bg-primary">3 Integrations</span>
                     </div>
                 </div>
 
@@ -652,53 +652,8 @@
                 </div>
 
                 <div class="row mb-4">
-                    <!-- Analytics Engine -->
-                    <div class="col-md-6" data-status="active" data-category="ai-analytics">
-                        <div class="integration-card">
-                            <div class="integration-header">
-                                <div class="integration-info">
-                                    <div class="integration-icon" style="background: #1B5E20;">
-                                        <i class="fas fa-chart-line"></i>
-                                    </div>
-                                    <div>
-                                        <h5 class="mb-1">Analytics Engine</h5>
-                                        <small class="text-muted">Real-time sentiment processing</small>
-                                        <span class="model-status status-active" title="Active"></span>
-                                    </div>
-                                </div>
-                                <div class="status-badge badge bg-success">Active</div>
-                            </div>
-                            
-                            <div class="integration-config">
-                                <div class="config-grid">
-                                    <div class="config-item">
-                                        <small>Processing Speed</small>
-                                        <p class="fw-bold">< 500ms</p>
-                                    </div>
-                                    <div class="config-item">
-                                        <small>Accuracy Rate</small>
-                                        <p class="fw-bold">94.7%</p>
-                                    </div>
-                                    <div class="config-item">
-                                        <small>Language Support</small>
-                                        <p class="fw-bold">Arabic/English</p>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="d-flex gap-2">
-                                <button class="btn btn-sm btn-outline-success" onclick="testIntegration('analytics')">
-                                    <i class="fas fa-chart-bar me-1"></i>Test Analytics
-                                </button>
-                                <button class="btn btn-sm btn-outline-primary" onclick="window.location.href='/analytics/dashboard'">
-                                    <i class="fas fa-tachometer-alt me-1"></i>Dashboard
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Multilingual NLP -->
-                    <div class="col-md-6" data-status="active" data-category="ai-analytics">
+                    <!-- JAIS-30B Chat -->
+                    <div class="col-md-6" data-status="configured" data-category="ai-analytics">
                         <div class="integration-card">
                             <div class="integration-header">
                                 <div class="integration-info">
@@ -706,36 +661,36 @@
                                         <i class="fas fa-language"></i>
                                     </div>
                                     <div>
-                                        <h5 class="mb-1">Multilingual NLP</h5>
-                                        <small class="text-muted">Arabic text processing & normalization</small>
-                                        <span class="model-status status-active" title="Active"></span>
+                                        <h5 class="mb-1">JAIS-30B Chat</h5>
+                                        <small class="text-muted">Native Arabic AI model with superior dialectal understanding</small>
+                                        <span class="model-status status-configured" title="Configured"></span>
                                     </div>
                                 </div>
-                                <div class="status-badge badge bg-success">Active</div>
+                                <div class="status-badge badge bg-info">Configured</div>
                             </div>
                             
-                            <div class="integration-config">
-                                <div class="config-grid">
-                                    <div class="config-item">
-                                        <small>Arabic Support</small>
-                                        <p class="fw-bold">Native</p>
-                                    </div>
-                                    <div class="config-item">
-                                        <small>Text Preprocessing</small>
-                                        <p class="fw-bold">BiDi + Reshaping</p>
-                                    </div>
-                                    <div class="config-item">
-                                        <small>Dialect Recognition</small>
-                                        <p class="fw-bold">Gulf/Levantine</p>
-                                    </div>
+                            <div style="background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 4px; padding: 1rem; margin: 1rem 0;">
+                                <div style="margin-bottom: 0.75rem;">
+                                    <strong style="color: #495057; font-size: 0.875rem; text-transform: uppercase;">API Endpoint</strong>
+                                </div>
+                                <div style="background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 4px; padding: 0.75rem; margin-bottom: 0.5rem; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 0.875rem;">
+                                    <span style="display: inline-block; padding: 0.2rem 0.5rem; border-radius: 3px; font-size: 0.75rem; font-weight: 600; margin-right: 0.5rem; min-width: 45px; text-align: center; background: #e8f5e8; color: #2e7d32;">POST</span>
+                                    <code>https://api.core42.ai/v1</code>
+                                </div>
+                                <div style="background: #fff3cd; border-left: 4px solid #ffc107; padding: 0.75rem; margin-bottom: 0.75rem; border-radius: 0 4px 4px 0;">
+                                    <div style="font-weight: 600; color: #856404; margin-bottom: 0.25rem;">API Key Authentication</div>
+                                    <small>Requires JAIS_API_KEY and JAIS_ENDPOINT configuration</small>
+                                </div>
+                                <div style="font-size: 0.875rem;">
+                                    <strong>Model:</strong> JAIS-30B-Chat | <strong>Speciality:</strong> Arabic Dialects | <strong>Cost:</strong> $0.002/request
                                 </div>
                             </div>
                             
                             <div class="d-flex gap-2">
-                                <button class="btn btn-sm btn-outline-success" onclick="testIntegration('nlp')">
-                                    <i class="fas fa-language me-1"></i>Test NLP
+                                <button class="btn btn-sm btn-outline-success" onclick="testIntegration('jais')">
+                                    <i class="fas fa-play me-1"></i>Test API
                                 </button>
-                                <button class="btn btn-sm btn-outline-primary" onclick="configureIntegration('nlp')">
+                                <button class="btn btn-sm btn-outline-primary" onclick="configureIntegration('jais')">
                                     <i class="fas fa-cog me-1"></i>Configure
                                 </button>
                             </div>
@@ -755,7 +710,7 @@
                         <p class="text-muted mb-0">Communication channels for collecting customer feedback</p>
                     </div>
                     <div class="text-end">
-                        <span class="badge bg-danger">3 Active</span>
+                        <span class="badge bg-danger">2 Integrations</span>
                     </div>
                 </div>
 
@@ -805,93 +760,47 @@
                         </div>
                     </div>
 
-                    <!-- Survey Widget -->
-                    <div class="col-md-6" data-status="active" data-category="feedback-channels">
-                        <div class="integration-card">
-                            <div class="integration-header">
-                                <div class="integration-info">
-                                    <div class="integration-icon" style="background: #F4A460;">
-                                        <i class="fas fa-poll"></i>
-                                    </div>
-                                    <div>
-                                        <h5 class="mb-1">Survey Widget</h5>
-                                        <small class="text-muted">Embedded feedback collection</small>
-                                        <span class="model-status status-active" title="Active"></span>
-                                    </div>
-                                </div>
-                                <div class="status-badge badge bg-success">Active</div>
-                            </div>
-                            
-                            <div class="integration-config">
-                                <div class="config-grid">
-                                    <div class="config-item">
-                                        <small>Widget Type</small>
-                                        <p class="fw-bold">Floating/Persistent</p>
-                                    </div>
-                                    <div class="config-item">
-                                        <small>Response Rate</small>
-                                        <p class="fw-bold">34.2%</p>
-                                    </div>
-                                    <div class="config-item">
-                                        <small>Categories</small>
-                                        <p class="fw-bold">6 Types</p>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="d-flex gap-2">
-                                <button class="btn btn-sm btn-outline-success" onclick="testIntegration('survey_widget')">
-                                    <i class="fas fa-clipboard-check me-1"></i>Test Widget
-                                </button>
-                                <button class="btn btn-sm btn-outline-primary" onclick="window.location.href='/feedback/widget'">
-                                    <i class="fas fa-external-link-alt me-1"></i>View Widget
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row mb-4">
-                    <!-- Contact Management -->
-                    <div class="col-md-6" data-status="active" data-category="feedback-channels">
+                    <!-- Twilio SMS -->
+                    <div class="col-md-6" data-status="configured" data-category="feedback-channels">
                         <div class="integration-card">
                             <div class="integration-header">
                                 <div class="integration-info">
                                     <div class="integration-icon" style="background: #e89344;">
-                                        <i class="fas fa-address-book"></i>
+                                        <i class="fas fa-sms"></i>
                                     </div>
                                     <div>
-                                        <h5 class="mb-1">Contact Management</h5>
-                                        <small class="text-muted">Customer database integration</small>
-                                        <span class="model-status status-active" title="Active"></span>
+                                        <h5 class="mb-1">Twilio SMS</h5>
+                                        <small class="text-muted">SMS delivery for survey distribution and alerts</small>
+                                        <span class="model-status status-configured" title="Configured"></span>
                                     </div>
                                 </div>
-                                <div class="status-badge badge bg-success">Active</div>
+                                <div class="status-badge badge bg-info">Configured</div>
                             </div>
                             
-                            <div class="integration-config">
-                                <div class="config-grid">
-                                    <div class="config-item">
-                                        <small>Total Contacts</small>
-                                        <p class="fw-bold">2,847</p>
-                                    </div>
-                                    <div class="config-item">
-                                        <small>Active Segments</small>
-                                        <p class="fw-bold">12</p>
-                                    </div>
-                                    <div class="config-item">
-                                        <small>Data Sync</small>
-                                        <p class="fw-bold">Real-time</p>
-                                    </div>
+                            <div style="background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 4px; padding: 1rem; margin: 1rem 0;">
+                                <div style="margin-bottom: 0.75rem;">
+                                    <strong style="color: #495057; font-size: 0.875rem; text-transform: uppercase;">API Endpoint</strong>
+                                </div>
+                                <div style="background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 4px; padding: 0.75rem; margin-bottom: 0.5rem; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 0.875rem;">
+                                    <span style="display: inline-block; padding: 0.2rem 0.5rem; border-radius: 3px; font-size: 0.75rem; font-weight: 600; margin-right: 0.5rem; min-width: 45px; text-align: center; background: #e8f5e8; color: #2e7d32;">POST</span>
+                                    <code>https://api.twilio.com/2010-04-01/Accounts/{AccountSid}/Messages.json</code>
+                                </div>
+                                <div style="background: #fff3cd; border-left: 4px solid #ffc107; padding: 0.75rem; margin-bottom: 0.75rem; border-radius: 0 4px 4px 0;">
+                                    <div style="font-weight: 600; color: #856404; margin-bottom: 0.25rem;">Basic Authentication</div>
+                                    <small>Requires TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_PHONE_NUMBER</small>
+                                </div>
+                                <div style="font-size: 0.875rem;">
+                                    <strong>Implementation:</strong> <code>utils/sms_service.py</code><br>
+                                    <strong>Features:</strong> Bulk SMS, Unicode Support, Delivery Reports
                                 </div>
                             </div>
                             
                             <div class="d-flex gap-2">
-                                <button class="btn btn-sm btn-outline-success" onclick="testIntegration('contacts')">
-                                    <i class="fas fa-sync me-1"></i>Sync Test
+                                <button class="btn btn-sm btn-outline-success" onclick="testIntegration('twilio')">
+                                    <i class="fas fa-paper-plane me-1"></i>Test SMS
                                 </button>
-                                <button class="btn btn-sm btn-outline-primary" onclick="window.location.href='/contacts'">
-                                    <i class="fas fa-users me-1"></i>Manage Contacts
+                                <button class="btn btn-sm btn-outline-primary" onclick="configureIntegration('twilio')">
+                                    <i class="fas fa-cog me-1"></i>Configure
                                 </button>
                             </div>
                         </div>
@@ -910,7 +819,7 @@
                         <p class="text-muted mb-0">Secure authentication and data protection systems</p>
                     </div>
                     <div class="text-end">
-                        <span class="badge bg-info">2 Active</span>
+                        <span class="badge bg-info">2 Integrations</span>
                     </div>
                 </div>
 
