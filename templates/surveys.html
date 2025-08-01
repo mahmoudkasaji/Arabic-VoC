@@ -518,8 +518,98 @@
     
     function deleteSurvey(surveyId) {
         if (confirm('هل أنت متأكد من حذف هذا الاستطلاع؟ هذا الإجراء لا يمكن التراجع عنه.')) {
-            // Add actual delete functionality here
-            console.log('Delete survey:', surveyId);
+            fetch(`/surveys/${surveyId}/delete`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    alert(data.message);
+                    location.reload();
+                } else {
+                    alert(data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('حدث خطأ في حذف الاستطلاع');
+            });
+        }
+    }
+    
+    function duplicateSurvey(surveyId) {
+        fetch(`/surveys/${surveyId}/duplicate`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                alert(data.message);
+                location.reload();
+            } else {
+                alert(data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('حدث خطأ في نسخ الاستطلاع');
+        });
+    }
+    
+    function pauseSurvey(surveyId) {
+        fetch(`/surveys/${surveyId}/toggle-status`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                alert(data.message);
+                location.reload();
+            } else {
+                alert(data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('حدث خطأ في تغيير حالة الاستطلاع');
+        });
+    }
+    
+    function exportResponses(surveyId) {
+        window.open(`/surveys/${surveyId}/export`, '_blank');
+    }
+    
+    function toggleResponsePreview(surveyId) {
+        const previewRow = document.getElementById(`responsePreview${surveyId}`);
+        if (previewRow.style.display === 'none') {
+            // Load quick stats and show preview
+            fetch(`/api/surveys/${surveyId}/quick-stats`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    // Update the preview with real data
+                    const stats = data.stats;
+                    previewRow.querySelector('.col-md-4 small:nth-child(2)').textContent = stats.latest_response;
+                    previewRow.querySelector('.col-md-4 small:nth-child(4)').textContent = `${stats.avg_rating}/5 ⭐`;
+                    previewRow.querySelector('.col-md-5 small').textContent = `"${stats.latest_comment}"`;
+                }
+                previewRow.style.display = '';
+            })
+            .catch(error => {
+                console.error('Error loading stats:', error);
+                previewRow.style.display = '';
+            });
+        } else {
+            previewRow.style.display = 'none';
         }
     }
 
