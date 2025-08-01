@@ -40,28 +40,27 @@ class Contact(db.Model):
     deliveries = relationship("ContactDelivery", back_populates="contact", cascade="all, delete-orphan")
     
     def __repr__(self):
-        return f"<Contact {self.name} ({self.email or self.phone})>"
+        email_or_phone = getattr(self, 'email', None) or getattr(self, 'phone', None)
+        return f"<Contact {getattr(self, 'name', 'Unknown')} ({email_or_phone})>"
     
-    @property
-    def preferred_contact_method(self):
+    def get_preferred_contact_method(self):
         """Get preferred contact method based on available data and preferences"""
-        if self.email and self.email_opt_in:
+        if getattr(self, 'email', None) and getattr(self, 'email_opt_in', False):
             return 'email'
-        elif self.phone and self.sms_opt_in:
+        elif getattr(self, 'phone', None) and getattr(self, 'sms_opt_in', False):
             return 'sms'
-        elif self.phone and self.whatsapp_opt_in:
+        elif getattr(self, 'phone', None) and getattr(self, 'whatsapp_opt_in', False):
             return 'whatsapp'
         return None
     
-    @property
-    def available_channels(self):
+    def get_available_channels(self):
         """Get list of available contact channels"""
         channels = []
-        if self.email and self.email_opt_in:
+        if getattr(self, 'email', None) and getattr(self, 'email_opt_in', False):
             channels.append('email')
-        if self.phone and self.sms_opt_in:
+        if getattr(self, 'phone', None) and getattr(self, 'sms_opt_in', False):
             channels.append('sms')
-        if self.phone and self.whatsapp_opt_in:
+        if getattr(self, 'phone', None) and getattr(self, 'whatsapp_opt_in', False):
             channels.append('whatsapp')
         return channels
     
@@ -79,8 +78,8 @@ class Contact(db.Model):
             'sms_opt_in': self.sms_opt_in,
             'whatsapp_opt_in': self.whatsapp_opt_in,
             'is_active': self.is_active,
-            'preferred_contact_method': self.preferred_contact_method,
-            'available_channels': self.available_channels,
+            'preferred_contact_method': self.get_preferred_contact_method(),
+            'available_channels': self.get_available_channels(),
             'created_at': self.created_at.isoformat() if self.created_at else None,
             'notes': self.notes
         }
