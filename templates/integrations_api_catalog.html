@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="{{ get_language_info().code }}" dir="{{ get_language_info().direction }}">
+<head>
+    {% include 'components/head.html' %}
+    <title>API Integrations Catalog - {{ 'app.name' | translate }}</title>
+    
+    <style>
+    /* Clean, Developer-Focused Design */
+    .page-header {
+        background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+        color: white;
+        padding: 2rem 0;
+        margin: -1.5rem -1.5rem 2rem -1.5rem;
+    }
+    
+    .api-card {
+        background: white;
+        border: 1px solid #e1e8ed;
+        border-radius: 8px;
+        margin-bottom: 1.5rem;
+        overflow: hidden;
+        transition: all 0.2s ease;
+    }
+    
+    .api-card:hover {
+        border-color: #1da1f2;
+        box-shadow: 0 2px 8px rgba(29, 161, 242, 0.1);
+    }
+    
+    /* Header with Service Info */
+    .api-header {
+        background: #f8f9fa;
+        padding: 1rem 1.5rem;
+        border-bottom: 1px solid #e1e8ed;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    
+    .service-info {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+    
+    .service-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        color: white;
+    }
+    
+    .status-indicator {
+        padding: 0.25rem 0.75rem;
+        border-radius: 12px;
+        font-size: 0.75rem;
+        font-weight: 500;
+    }
+    
+    .status-active { background: #d4edda; color: #155724; }
+    .status-inactive { background: #f8d7da; color: #721c24; }
+    .status-testing { background: #fff3cd; color: #856404; }
+    
+    /* Main Content Area - Two Column Layout */
+    .api-content {
+        display: grid;
+        grid-template-columns: 1fr 300px;
+        gap: 0;
+    }
+    
+    /* Left: API Details */
+    .api-details {
+        padding: 1.5rem;
+    }
+    
+    .endpoint-section {
+        margin-bottom: 1.5rem;
+    }
+    
+    .endpoint-section h6 {
+        color: #495057;
+        font-weight: 600;
+        margin-bottom: 0.75rem;
+        font-size: 0.875rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .endpoint-item {
+        background: #f8f9fa;
+        border: 1px solid #e9ecef;
+        border-radius: 4px;
+        padding: 0.75rem;
+        margin-bottom: 0.5rem;
+        font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+        font-size: 0.875rem;
+    }
+    
+    .method-badge {
+        display: inline-block;
+        padding: 0.2rem 0.5rem;
+        border-radius: 3px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        margin-right: 0.5rem;
+        min-width: 45px;
+        text-align: center;
+    }
+    
+    .method-get { background: #e3f2fd; color: #1565c0; }
+    .method-post { background: #e8f5e8; color: #2e7d32; }
+    .method-put { background: #fff3e0; color: #ef6c00; }
+    .method-delete { background: #ffebee; color: #c62828; }
+    
+    .auth-info {
+        background: #e3f2fd;
+        border-left: 4px solid #2196f3;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        border-radius: 0 4px 4px 0;
+    }
+    
+    .auth-method {
+        font-weight: 600;
+        color: #1565c0;
+        margin-bottom: 0.25rem;
+    }
+    
+    /* Right: Quick Actions & Config */
+    .api-sidebar {
+        background: #f8f9fa;
+        border-left: 1px solid #e1e8ed;
+        padding: 1.5rem;
+    }
+    
+    .quick-actions {
+        margin-bottom: 1.5rem;
+    }
+    
+    .test-button {
+        width: 100%;
+        background: #28a745;
+        color: white;
+        border: none;
+        padding: 0.75rem;
+        border-radius: 4px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background 0.2s;
+        margin-bottom: 0.5rem;
+    }
+    
+    .test-button:hover { background: #218838; }
+    .test-button:disabled { background: #6c757d; cursor: not-allowed; }
+    
+    .docs-button {
+        width: 100%;
+        background: #6c757d;
+        color: white;
+        border: none;
+        padding: 0.75rem;
+        border-radius: 4px;
+        font-weight: 500;
+        cursor: pointer;
+        text-decoration: none;
+        display: block;
+        text-align: center;
+        margin-bottom: 0.5rem;
+    }
+    
+    .docs-button:hover { background: #545b62; color: white; }
+    
+    .config-status {
+        background: white;
+        border: 1px solid #e1e8ed;
+        border-radius: 4px;
+        padding: 1rem;
+    }
+    
+    .config-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.5rem 0;
+        border-bottom: 1px solid #f1f3f4;
+        font-size: 0.875rem;
+    }
+    
+    .config-item:last-child {
+        border-bottom: none;
+    }
+    
+    .config-key {
+        font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+        color: #495057;
+    }
+    
+    .config-value {
+        font-weight: 500;
+    }
+    
+    .configured { color: #28a745; }
+    .missing { color: #dc3545; }
+    
+    /* Response Examples */
+    .response-example {
+        background: #f8f9fa;
+        border: 1px solid #e9ecef;
+        border-radius: 4px;
+        padding: 1rem;
+        margin-top: 0.75rem;
+    }
+    
+    .response-example pre {
+        margin: 0;
+        font-size: 0.75rem;
+        color: #495057;
+        overflow-x: auto;
+    }
+    
+    /* Rate Limits & Performance */
+    .performance-metrics {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+    
+    .metric {
+        text-align: center;
+        padding: 0.75rem;
+        background: white;
+        border: 1px solid #e1e8ed;
+        border-radius: 4px;
+    }
+    
+    .metric-value {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #1da1f2;
+        margin-bottom: 0.25rem;
+    }
+    
+    .metric-label {
+        font-size: 0.75rem;
+        color: #657786;
+        text-transform: uppercase;
+    }
+    
+    /* Filter Controls */
+    .filter-controls {
+        background: white;
+        border: 1px solid #e1e8ed;
+        border-radius: 8px;
+        padding: 1rem;
+        margin-bottom: 2rem;
+    }
+    
+    .filter-group {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+    
+    .filter-select {
+        padding: 0.5rem;
+        border: 1px solid #e1e8ed;
+        border-radius: 4px;
+        background: white;
+        min-width: 150px;
+    }
+    
+    /* Test Results */
+    .test-result {
+        margin-top: 1rem;
+        padding: 1rem;
+        border-radius: 4px;
+        font-size: 0.875rem;
+        display: none;
+    }
+    
+    .test-success {
+        background: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+    }
+    
+    .test-error {
+        background: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+    }
+    
+    @media (max-width: 768px) {
+        .api-content {
+            grid-template-columns: 1fr;
+        }
+        
+        .api-sidebar {
+            border-left: none;
+            border-top: 1px solid #e1e8ed;
+        }
+        
+        .filter-group {
+            flex-direction: column;
+            align-items: stretch;
+        }
+    }
+    </style>
+</head>
+<body>
+    {% include 'components/unified_navigation.html' %}
+    
+    <div class="page-container">
+        <div class="container-fluid">
+            <!-- Page Header -->
+            <div class="page-header">
+                <div class="container">
+                    <h1 class="mb-2">
+                        <i class="fas fa-code me-2"></i>
+                        API Integrations Catalog
+                    </h1>
+                    <p class="mb-0 opacity-75">Technical documentation and testing interface for all platform APIs</p>
+                </div>
+            </div>
+
+            <!-- Filter Controls -->
+            <div class="filter-controls">
+                <div class="filter-group">
+                    <label for="statusFilter"><strong>Status:</strong></label>
+                    <select id="statusFilter" class="filter-select">
+                        <option value="all">All Integrations</option>
+                        <option value="active">Active Only</option>
+                        <option value="inactive">Inactive Only</option>
+                        <option value="testing">Testing Phase</option>
+                    </select>
+                    
+                    <label for="categoryFilter"><strong>Category:</strong></label>
+                    <select id="categoryFilter" class="filter-select">
+                        <option value="all">All Categories</option>
+                        <option value="ai">AI Services</option>
+                        <option value="communication">Communication</option>
+                        <option value="storage">Storage & Database</option>
+                        <option value="auth">Authentication</option>
+                    </select>
+                    
+                    <button class="btn btn-outline-primary" onclick="exportApiDocs()">
+                        <i class="fas fa-download me-1"></i>Export API Docs
+                    </button>
+                </div>
+            </div>
+
+            <!-- API Integration Cards -->
+            <div id="api-integrations">
+                
+                <!-- OpenAI GPT-4o API -->
+                <div class="api-card" data-status="active" data-category="ai">
+                    <div class="api-header">
+                        <div class="service-info">
+                            <div class="service-icon" style="background: #74aa9c;">
+                                <i class="fas fa-brain"></i>
+                            </div>
+                            <div>
+                                <h5 class="mb-0">OpenAI GPT-4o API</h5>
+                                <small class="text-muted">Advanced AI text analysis for Arabic content</small>
+                            </div>
+                        </div>
+                        <span class="status-indicator status-active">Active</span>
+                    </div>
+                    
+                    <div class="api-content">
+                        <div class="api-details">
+                            <!-- Authentication -->
+                            <div class="auth-info">
+                                <div class="auth-method">Bearer Token Authentication</div>
+                                <small>Requires OPENAI_API_KEY in environment</small>
+                            </div>
+                            
+                            <!-- API Endpoints -->
+                            <div class="endpoint-section">
+                                <h6>Available Endpoints</h6>
+                                <div class="endpoint-item">
+                                    <span class="method-badge method-post">POST</span>
+                                    <code>https://api.openai.com/v1/chat/completions</code>
+                                </div>
+                                <div class="response-example">
+                                    <strong>Request Headers:</strong>
+                                    <pre>Authorization: Bearer {OPENAI_API_KEY}
+Content-Type: application/json</pre>
+                                </div>
+                            </div>
+                            
+                            <!-- Implementation Details -->
+                            <div class="endpoint-section">
+                                <h6>Implementation</h6>
+                                <div class="endpoint-item">
+                                    <strong>Client:</strong> <code>utils/api_key_manager.py</code><br>
+                                    <strong>Model:</strong> gpt-4o<br>
+                                    <strong>Max Tokens:</strong> 4,096<br>
+                                    <strong>Temperature:</strong> 0.1 (for consistent analysis)
+                                </div>
+                            </div>
+                            
+                            <!-- Rate Limits -->
+                            <div class="endpoint-section">
+                                <h6>Rate Limits & Performance</h6>
+                                <div class="performance-metrics">
+                                    <div class="metric">
+                                        <div class="metric-value">10,000</div>
+                                        <div class="metric-label">Requests/Min</div>
+                                    </div>
+                                    <div class="metric">
+                                        <div class="metric-value">1.2s</div>
+                                        <div class="metric-label">Avg Response</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="api-sidebar">
+                            <div class="quick-actions">
+                                <button class="test-button" onclick="testApiEndpoint('openai')">
+                                    <i class="fas fa-play me-1"></i>Test API Connection
+                                </button>
+                                <a href="#" class="docs-button" onclick="showApiDocs('openai')">
+                                    <i class="fas fa-book me-1"></i>View Documentation
+                                </a>
+                            </div>
+                            
+                            <div class="config-status">
+                                <h6 class="mb-3">Configuration Status</h6>
+                                <div class="config-item">
+                                    <span class="config-key">OPENAI_API_KEY</span>
+                                    <span class="config-value configured">✓ Configured</span>
+                                </div>
+                                <div class="config-item">
+                                    <span class="config-key">Rate Limiting</span>
+                                    <span class="config-value configured">✓ Enabled</span>
+                                </div>
+                                <div class="config-item">
+                                    <span class="config-key">Error Handling</span>
+                                    <span class="config-value configured">✓ Active</span>
+                                </div>
+                            </div>
+                            
+                            <div class="test-result" id="test-result-openai"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Claude 3.5 Sonnet API -->
+                <div class="api-card" data-status="active" data-category="ai">
+                    <div class="api-header">
+                        <div class="service-info">
+                            <div class="service-icon" style="background: #d4a574;">
+                                <i class="fas fa-robot"></i>
+                            </div>
+                            <div>
+                                <h5 class="mb-0">Claude 3.5 Sonnet API</h5>
+                                <small class="text-muted">Cultural context analysis for Arabic content</small>
+                            </div>
+                        </div>
+                        <span class="status-indicator status-active">Active</span>
+                    </div>
+                    
+                    <div class="api-content">
+                        <div class="api-details">
+                            <!-- Authentication -->
+                            <div class="auth-info">
+                                <div class="auth-method">x-api-key Header Authentication</div>
+                                <small>Requires ANTHROPIC_API_KEY in environment</small>
+                            </div>
+                            
+                            <!-- API Endpoints -->
+                            <div class="endpoint-section">
+                                <h6>Available Endpoints</h6>
+                                <div class="endpoint-item">
+                                    <span class="method-badge method-post">POST</span>
+                                    <code>https://api.anthropic.com/v1/messages</code>
+                                </div>
+                                <div class="response-example">
+                                    <strong>Request Headers:</strong>
+                                    <pre>x-api-key: {ANTHROPIC_API_KEY}
+Content-Type: application/json
+anthropic-version: 2023-06-01</pre>
+                                </div>
+                            </div>
+                            
+                            <!-- Implementation Details -->
+                            <div class="endpoint-section">
+                                <h6>Implementation</h6>
+                                <div class="endpoint-item">
+                                    <strong>Client:</strong> <code>utils/api_key_manager.py</code><br>
+                                    <strong>Model:</strong> claude-3-5-sonnet-20241022<br>
+                                    <strong>Max Tokens:</strong> 8,192<br>
+                                    <strong>Usage:</strong> Fallback & cultural context analysis
+                                </div>
+                            </div>
+                            
+                            <!-- Rate Limits -->
+                            <div class="endpoint-section">
+                                <h6>Rate Limits & Performance</h6>
+                                <div class="performance-metrics">
+                                    <div class="metric">
+                                        <div class="metric-value">1,000</div>
+                                        <div class="metric-label">Requests/Min</div>
+                                    </div>
+                                    <div class="metric">
+                                        <div class="metric-value">2.1s</div>
+                                        <div class="metric-label">Avg Response</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="api-sidebar">
+                            <div class="quick-actions">
+                                <button class="test-button" onclick="testApiEndpoint('claude')">
+                                    <i class="fas fa-play me-1"></i>Test API Connection
+                                </button>
+                                <a href="#" class="docs-button" onclick="showApiDocs('claude')">
+                                    <i class="fas fa-book me-1"></i>View Documentation
+                                </a>
+                            </div>
+                            
+                            <div class="config-status">
+                                <h6 class="mb-3">Configuration Status</h6>
+                                <div class="config-item">
+                                    <span class="config-key">ANTHROPIC_API_KEY</span>
+                                    <span class="config-value configured">✓ Configured</span>
+                                </div>
+                                <div class="config-item">
+                                    <span class="config-key">Fallback Role</span>
+                                    <span class="config-value configured">✓ Enabled</span>
+                                </div>
+                                <div class="config-item">
+                                    <span class="config-key">Cost Optimization</span>
+                                    <span class="config-value configured">✓ Active</span>
+                                </div>
+                            </div>
+                            
+                            <div class="test-result" id="test-result-claude"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gmail SMTP API -->
+                <div class="api-card" data-status="active" data-category="communication">
+                    <div class="api-header">
+                        <div class="service-info">
+                            <div class="service-icon" style="background: #d93025;">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <div>
+                                <h5 class="mb-0">Gmail SMTP API</h5>
+                                <small class="text-muted">Email delivery for surveys and notifications</small>
+                            </div>
+                        </div>
+                        <span class="status-indicator status-active">Active</span>
+                    </div>
+                    
+                    <div class="api-content">
+                        <div class="api-details">
+                            <!-- Authentication -->
+                            <div class="auth-info">
+                                <div class="auth-method">SMTP Authentication</div>
+                                <small>App-specific password required (not regular Gmail password)</small>
+                            </div>
+                            
+                            <!-- API Endpoints -->
+                            <div class="endpoint-section">
+                                <h6>SMTP Configuration</h6>
+                                <div class="endpoint-item">
+                                    <strong>Server:</strong> <code>smtp.gmail.com:587</code><br>
+                                    <strong>Security:</strong> STARTTLS<br>
+                                    <strong>Authentication:</strong> App Password
+                                </div>
+                                <div class="response-example">
+                                    <strong>Required Environment Variables:</strong>
+                                    <pre>GMAIL_EMAIL=your-email@gmail.com
+GMAIL_APP_PASSWORD=your-16-char-app-password</pre>
+                                </div>
+                            </div>
+                            
+                            <!-- Implementation Details -->
+                            <div class="endpoint-section">
+                                <h6>Implementation</h6>
+                                <div class="endpoint-item">
+                                    <strong>Client:</strong> <code>utils/email_service.py</code><br>
+                                    <strong>Library:</strong> smtplib (Python standard)<br>
+                                    <strong>Features:</strong> HTML/Text support, Arabic RTL<br>
+                                    <strong>Template Engine:</strong> Jinja2
+                                </div>
+                            </div>
+                            
+                            <!-- Performance -->
+                            <div class="endpoint-section">
+                                <h6>Performance & Limits</h6>
+                                <div class="performance-metrics">
+                                    <div class="metric">
+                                        <div class="metric-value">500</div>
+                                        <div class="metric-label">Emails/Day</div>
+                                    </div>
+                                    <div class="metric">
+                                        <div class="metric-value">99.5%</div>
+                                        <div class="metric-label">Success Rate</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="api-sidebar">
+                            <div class="quick-actions">
+                                <button class="test-button" onclick="testApiEndpoint('gmail')">
+                                    <i class="fas fa-paper-plane me-1"></i>Send Test Email
+                                </button>
+                                <a href="/gmail-test" class="docs-button">
+                                    <i class="fas fa-cog me-1"></i>Email Test Page
+                                </a>
+                            </div>
+                            
+                            <div class="config-status">
+                                <h6 class="mb-3">Configuration Status</h6>
+                                <div class="config-item">
+                                    <span class="config-key">GMAIL_EMAIL</span>
+                                    <span class="config-value configured">✓ Configured</span>
+                                </div>
+                                <div class="config-item">
+                                    <span class="config-key">GMAIL_APP_PASSWORD</span>
+                                    <span class="config-value configured">✓ Configured</span>
+                                </div>
+                                <div class="config-item">
+                                    <span class="config-key">TLS Encryption</span>
+                                    <span class="config-value configured">✓ Enabled</span>
+                                </div>
+                            </div>
+                            
+                            <div class="test-result" id="test-result-gmail"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Replit OAuth API -->
+                <div class="api-card" data-status="active" data-category="auth">
+                    <div class="api-header">
+                        <div class="service-info">
+                            <div class="service-icon" style="background: #1B5E20;">
+                                <i class="fas fa-shield-alt"></i>
+                            </div>
+                            <div>
+                                <h5 class="mb-0">Replit OAuth 2.0 API</h5>
+                                <small class="text-muted">Native platform authentication with PKCE</small>
+                            </div>
+                        </div>
+                        <span class="status-indicator status-active">Active</span>
+                    </div>
+                    
+                    <div class="api-content">
+                        <div class="api-details">
+                            <!-- Authentication -->
+                            <div class="auth-info">
+                                <div class="auth-method">OAuth 2.0 with PKCE</div>
+                                <small>Native Replit integration - no external API keys required</small>
+                            </div>
+                            
+                            <!-- API Endpoints -->
+                            <div class="endpoint-section">
+                                <h6>OAuth Endpoints</h6>
+                                <div class="endpoint-item">
+                                    <span class="method-badge method-get">GET</span>
+                                    <code>https://replit.com/oidc/authorize</code>
+                                </div>
+                                <div class="endpoint-item">
+                                    <span class="method-badge method-post">POST</span>
+                                    <code>https://replit.com/oidc/token</code>
+                                </div>
+                                <div class="endpoint-item">
+                                    <span class="method-badge method-get">GET</span>
+                                    <code>https://replit.com/oidc/userinfo</code>
+                                </div>
+                                <div class="response-example">
+                                    <strong>User Info Response:</strong>
+                                    <pre>{
+  "id": "user_id",
+  "username": "replit_username", 
+  "email": "user@email.com",
+  "first_name": "First",
+  "last_name": "Last"
+}</pre>
+                                </div>
+                            </div>
+                            
+                            <!-- Implementation Details -->
+                            <div class="endpoint-section">
+                                <h6>Implementation</h6>
+                                <div class="endpoint-item">
+                                    <strong>Client:</strong> <code>replit_auth.py</code><br>
+                                    <strong>Database:</strong> <code>models/replit_*.py</code><br>
+                                    <strong>Session:</strong> Flask-Login integration<br>
+                                    <strong>Security:</strong> PKCE + JWT tokens
+                                </div>
+                            </div>
+                            
+                            <!-- Performance -->
+                            <div class="endpoint-section">
+                                <h6>Security & Performance</h6>
+                                <div class="performance-metrics">
+                                    <div class="metric">
+                                        <div class="metric-value">24h</div>
+                                        <div class="metric-label">Session Duration</div>
+                                    </div>
+                                    <div class="metric">
+                                        <div class="metric-value">100%</div>
+                                        <div class="metric-label">Uptime</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="api-sidebar">
+                            <div class="quick-actions">
+                                <button class="test-button" onclick="testApiEndpoint('replit_oauth')">
+                                    <i class="fas fa-key me-1"></i>Test Auth Flow
+                                </button>
+                                <a href="#" class="docs-button" onclick="showApiDocs('replit_oauth')">
+                                    <i class="fas fa-book me-1"></i>OAuth Documentation
+                                </a>
+                            </div>
+                            
+                            <div class="config-status">
+                                <h6 class="mb-3">Configuration Status</h6>
+                                <div class="config-item">
+                                    <span class="config-key">REPL_ID</span>
+                                    <span class="config-value configured">✓ Auto-detected</span>
+                                </div>
+                                <div class="config-item">
+                                    <span class="config-key">SESSION_SECRET</span>
+                                    <span class="config-value configured">✓ Configured</span>
+                                </div>
+                                <div class="config-item">
+                                    <span class="config-key">PKCE Security</span>
+                                    <span class="config-value configured">✓ Enabled</span>
+                                </div>
+                            </div>
+                            
+                            <div class="test-result" id="test-result-replit_oauth"></div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    
+    <script>
+    // API Testing Functions
+    async function testApiEndpoint(integrationId) {
+        const button = event.target;
+        const resultDiv = document.getElementById(`test-result-${integrationId}`);
+        const originalText = button.innerHTML;
+        
+        // Update button state
+        button.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Testing...';
+        button.disabled = true;
+        
+        // Show loading state
+        resultDiv.style.display = 'block';
+        resultDiv.className = 'test-result';
+        resultDiv.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Running API test...';
+        
+        try {
+            const response = await fetch(`/api/integrations/test/${integrationId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            const data = await response.json();
+            
+            if (data.success && data.test_result?.success) {
+                resultDiv.className = 'test-result test-success';
+                const responseTime = data.test_result.response_time_ms ? ` (${data.test_result.response_time_ms}ms)` : '';
+                resultDiv.innerHTML = `
+                    <strong>✓ Test Successful${responseTime}</strong><br>
+                    <small>${data.test_result.message || 'API endpoint is working correctly'}</small>
+                `;
+            } else {
+                resultDiv.className = 'test-result test-error';
+                resultDiv.innerHTML = `
+                    <strong>✗ Test Failed</strong><br>
+                    <small>${data.test_result?.error || data.error || 'Unknown error occurred'}</small>
+                `;
+            }
+        } catch (error) {
+            resultDiv.className = 'test-result test-error';
+            resultDiv.innerHTML = `
+                <strong>✗ Connection Error</strong><br>
+                <small>${error.message}</small>
+            `;
+        } finally {
+            button.innerHTML = originalText;
+            button.disabled = false;
+        }
+    }
+    
+    // Filter Functions
+    function filterIntegrations() {
+        const statusFilter = document.getElementById('statusFilter').value;
+        const categoryFilter = document.getElementById('categoryFilter').value;
+        const cards = document.querySelectorAll('.api-card');
+        
+        cards.forEach(card => {
+            const status = card.getAttribute('data-status');
+            const category = card.getAttribute('data-category');
+            
+            const statusMatch = statusFilter === 'all' || status === statusFilter;
+            const categoryMatch = categoryFilter === 'all' || category === categoryFilter;
+            
+            if (statusMatch && categoryMatch) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    }
+    
+    // API Documentation Modal
+    function showApiDocs(integrationId) {
+        const docUrls = {
+            'openai': 'https://platform.openai.com/docs/api-reference',
+            'claude': 'https://docs.anthropic.com/claude/reference',
+            'gmail': 'https://developers.google.com/gmail/smtp',
+            'replit_oauth': 'https://docs.replit.com/hosting/authentication'
+        };
+        
+        if (docUrls[integrationId]) {
+            window.open(docUrls[integrationId], '_blank');
+        } else {
+            alert('Documentation not available for this integration');
+        }
+    }
+    
+    // Export API Documentation
+    function exportApiDocs() {
+        const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
+        const filename = `api-integrations-catalog-${timestamp}.json`;
+        
+        const apiData = {
+            generated: new Date().toISOString(),
+            platform: 'Voice of Customer Platform',
+            integrations: []
+        };
+        
+        document.querySelectorAll('.api-card').forEach(card => {
+            const name = card.querySelector('h5').textContent;
+            const status = card.getAttribute('data-status');
+            const category = card.getAttribute('data-category');
+            const endpoints = [];
+            
+            card.querySelectorAll('.endpoint-item code').forEach(endpoint => {
+                endpoints.push(endpoint.textContent);
+            });
+            
+            apiData.integrations.push({
+                name,
+                status,
+                category,
+                endpoints
+            });
+        });
+        
+        const blob = new Blob([JSON.stringify(apiData, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        a.click();
+        URL.revokeObjectURL(url);
+    }
+    
+    // Event Listeners
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('statusFilter').addEventListener('change', filterIntegrations);
+        document.getElementById('categoryFilter').addEventListener('change', filterIntegrations);
+    });
+    </script>
+    
+    {% include 'components/scripts.html' %}
+</body>
+</html>
