@@ -392,65 +392,31 @@
             purple: '#6f42c1'
         };
         
-        // Generate the embeddable JavaScript code
+        // Generate the embeddable JavaScript code (simplified to prevent rendering issues)
         const jsCode = `<!-- Voice of Customer Survey Widget -->
 <script>
-(function() {
-    // Widget Configuration
-    var config = {
-        surveyUrl: '${currentSurveyUrl}',
-        position: '${position}',
-        color: '${colorMap[color]}',
-        language: '${language}'
-    };
-    
-    // Create widget
-    function createWidget() {
-        var widget = document.createElement('div');
-        widget.id = 'voc-survey-widget';
-        widget.style.position = 'fixed';
-        widget.style.zIndex = '9999';
-        widget.style.fontFamily = 'Arial, sans-serif';
-        
-        // Position the widget
-        if (config.position === 'bottom-right') {
-            widget.style.bottom = '20px';
-            widget.style.right = '20px';
-        } else if (config.position === 'bottom-left') {
-            widget.style.bottom = '20px';
-            widget.style.left = '20px';
-        } else {
-            widget.style.top = '50%';
-            widget.style.left = '50%';
-            widget.style.transform = 'translate(-50%, -50%)';
-        }
-        
-        // Widget HTML
-        var isArabic = config.language === 'ar' || (config.language === 'auto' && document.documentElement.lang === 'ar');
-        var triggerText = isArabic ? 'رأيك' : 'Feedback';
-        var direction = isArabic ? 'rtl' : 'ltr';
-        
-        widget.innerHTML = '<button id="voc-trigger" style="' +
-            'background: ' + config.color + '; color: white; border: none; ' +
-            'padding: 12px 20px; border-radius: 25px; cursor: pointer; ' +
-            'box-shadow: 0 4px 12px rgba(0,0,0,0.2); font-size: 14px; ' +
-            'direction: ' + direction + ';">' + triggerText + '</button>';
-        
-        document.body.appendChild(widget);
-        
-        // Click handler
-        document.getElementById('voc-trigger').onclick = function() {
-            window.open(config.surveyUrl, '_blank', 'width=600,height=700');
-        };
-    }
-    
-    // Initialize when DOM is ready
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', createWidget);
-    } else {
-        createWidget();
-    }
-})();
+// Widget configuration
+var widgetConfig = {
+    surveyUrl: '${currentSurveyUrl}',
+    position: '${position}',
+    color: '${colorMap[color]}',
+    language: '${language}'
+};
+
+// Create widget button
+function createSurveyWidget() {
+    var btn = document.createElement('button');
+    btn.innerHTML = '${language === 'ar' ? 'رأيك' : 'Feedback'}';
+    btn.style.cssText = 'position:fixed;bottom:20px;${position.includes('left') ? 'left' : 'right'}:20px;background:${colorMap[color]};color:white;border:none;padding:12px 20px;border-radius:25px;cursor:pointer;z-index:9999;';
+    btn.onclick = function(){ window.open(widgetConfig.surveyUrl, '_blank', 'width=600,height=700'); };
+    document.body.appendChild(btn);
+}
+
+if(document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', createSurveyWidget);
+} else {
+    createSurveyWidget();
+}
 </script>`;
         
         // Display the code
