@@ -68,6 +68,15 @@
       "subtitle": "Monitor and manage all technical integrations and AI models"
     }
   },
+  "language": {
+    "toggle_tooltip": "Switch Language",
+    "switch_to": "EN",
+    "current": "Current Language",
+    "available": "Available Languages"
+  },
+  "surveys": {
+    "title": "Survey Management"
+  },
   "contacts": {
     "title": "Contact Management",
     "management": "Contact Management", 

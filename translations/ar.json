@@ -47,8 +47,20 @@
     },
     "back_to_home": "العودة للرئيسية"
   },
+  "language": {
+    "toggle_tooltip": "تبديل اللغة",
+    "switch_to": "عربي",
+    "current": "اللغة الحالية",
+    "available": "اللغات المتاحة"
+  },
+  "surveys": {
+    "title": "إدارة الاستطلاعات"
+  },
   "contacts": {
-    "title": "Contact Management"
+    "title": "إدارة جهات الاتصال",
+    "management": "إدارة جهات الاتصال",
+    "list": "قائمة جهات الاتصال",
+    "manage_organize": "إدارة وتنظيم جهات الاتصال"
   },
   "buttons": {
     "create": "إنشاء",

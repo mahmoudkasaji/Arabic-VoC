@@ -107,21 +107,21 @@ class LanguageManager:
         rtl_languages = ['ar', 'he', 'fa', 'ur']
         return 'rtl' if language in rtl_languages else 'ltr'
     
-    def translate(self, key: str, language: Optional[str] = None, **kwargs) -> str:
+    def translate(self, key: str, language: Optional[str] = None, force_lang: Optional[str] = None, **kwargs) -> str:
         """Translate a key to specified language with variable substitution"""
-        if not language:
-            language = self.get_current_language()
+        # Use force_lang if provided, otherwise use language parameter or current language
+        target_lang = force_lang or language or self.get_current_language()
         
         # Get translation from nested key (e.g., "navigation.surveys.create")
         keys = key.split('.')
-        translation = self.translations.get(language, {})
+        translation = self.translations.get(target_lang, {})
         
         for k in keys:
             if isinstance(translation, dict) and k in translation:
                 translation = translation[k]
             else:
                 # Fallback to other language if key not found
-                fallback_lang = self.fallback_language if language != self.fallback_language else self.default_language
+                fallback_lang = self.fallback_language if target_lang != self.fallback_language else self.default_language
                 fallback_translation = self.translations.get(fallback_lang, {})
                 
                 for k in keys:
