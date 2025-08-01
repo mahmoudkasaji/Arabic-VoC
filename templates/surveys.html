@@ -578,14 +578,7 @@
         }
     }
     
-    function openDistributionModal(surveyId, surveyTitle) {
-        currentSurveyId = surveyId;
-        currentSurveyTitle = surveyTitle;
-        document.getElementById('modalSurveyTitle').textContent = surveyTitle;
-        
-        const modal = new bootstrap.Modal(document.getElementById('distributionModal'));
-        modal.show();
-    }
+
     </script>
 
     {% include 'components/scripts.html' %}
