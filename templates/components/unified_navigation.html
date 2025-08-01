@@ -7,12 +7,12 @@
             {{ 'app.name' | translate }}
         </a>
         
-        <!-- Language Toggle Button -->
+        <!-- Language Toggle Button - Flask route version -->
         <div class="navbar-nav ms-auto me-3">
-            <button class="btn btn-outline-primary btn-sm" onclick="toggleLanguage()" title="{{ 'language.toggle_tooltip' | translate }}">
+            <a href="/language/toggle" class="btn btn-outline-primary btn-sm" title="{{ 'language.toggle_tooltip' | translate }}">
                 <i class="fas fa-globe me-1"></i>
                 {{ 'language.switch_to' | translate }}
-            </button>
+            </a>
         </div>
         
         <!-- Mobile Toggle -->

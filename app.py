@@ -1441,14 +1441,18 @@ def test_ai_analysis():
         logger.error(f"Analysis failed: {str(e)}")
         return jsonify({'error': f'Analysis failed: {str(e)}'}), 500
 
-@app.route('/api/language/toggle', methods=['POST'])  
+# Language switching converted to Flask routes (as per user preference)
+@app.route('/language/toggle', methods=['GET', 'POST'])
 def toggle_language():
-    """Toggle user's language preference - FINAL FIX"""
+    """Toggle user's language preference - Flask route version"""
     try:
-        from flask import g
+        from flask import g, redirect, url_for
         
-        data = request.get_json() or {}
-        target_lang = data.get('language')
+        # Get target language from form data, query params, or auto-toggle
+        if request.method == 'POST':
+            target_lang = request.form.get('language')
+        else:
+            target_lang = request.args.get('lang')
         
         if not target_lang:
             # Auto-toggle to opposite language
@@ -1456,45 +1460,43 @@ def toggle_language():
             target_lang = language_manager.get_opposite_language(current_lang)
             logger.info(f"Auto-toggling from {current_lang} to {target_lang}")
         
-        # CRITICAL FIX: Set language with immediate effect
+        # Set language with immediate effect
         if language_manager.set_language(target_lang):
             # Force immediate session save
             session.modified = True
             
-            # CRITICAL: Clear any cached language in g object and reset
+            # Clear any cached language in g object and reset
             if hasattr(g, '_current_language'):
                 delattr(g, '_current_language')
             g._current_language = target_lang
             
-            logger.info(f"Language switched to {target_lang}, session: {session.get('language')}, g: {getattr(g, '_current_language', 'None')}")
+            logger.info(f"Language switched to {target_lang} via Flask route")
             
-            from utils.template_helpers import get_success_message
-            response = jsonify({
-                'success': True,
-                'message': get_success_message('saved', target_lang),
-                'language': target_lang,
-                'direction': language_manager.get_direction(target_lang),
-                'language_info': language_manager.get_language_info(target_lang),
-                'session_language': session.get('language'),
-                'g_language': getattr(g, '_current_language', 'None')
-            })
-            
-            # Prevent caching
-            response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
-            response.headers['Pragma'] = 'no-cache'
-            response.headers['Expires'] = '0'
-            
-            return response
+            # Get the referring page or default to home
+            return_url = request.args.get('return_url') or request.referrer or url_for('index')
+            return redirect(return_url)
         else:
-            from utils.template_helpers import get_error_message
-            return jsonify({
-                'error': get_error_message('general_error')
-            }), 400
+            logger.error(f"Failed to set language to {target_lang}")
+            from flask import flash
+            flash(f'Language {target_lang} not supported', 'error')
+            return redirect(url_for('index'))
             
     except Exception as e:
-        logger.error(f"Error toggling language: {e}")
-        from utils.template_helpers import get_error_message
-        return jsonify({'error': get_error_message('general_error')}), 500
+        logger.error(f"Language toggle error: {str(e)}")
+        from flask import flash
+        flash('Language switching failed', 'error')
+        return redirect(url_for('index'))
+
+@app.route('/language/set/<lang>')
+def set_language(lang):
+    """Direct language setting route"""
+    if lang in language_manager.supported_languages:
+        language_manager.set_language(lang)
+        return redirect(request.referrer or url_for('index'))
+    else:
+        from flask import flash
+        flash(f'Language {lang} not supported', 'error')
+        return redirect(url_for('index'))
 
 @app.route('/api/language/status')
 def language_status():
