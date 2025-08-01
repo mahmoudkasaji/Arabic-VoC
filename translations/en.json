@@ -69,8 +69,8 @@
     }
   },
   "language": {
-    "toggle_tooltip": "Switch Language",
-    "switch_to": "EN",
+    "toggle_tooltip": "Switch to Arabic",
+    "switch_to": "العربية",
     "current": "Current Language",
     "available": "Available Languages"
   },

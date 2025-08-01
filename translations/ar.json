@@ -48,8 +48,8 @@
     "back_to_home": "العودة للرئيسية"
   },
   "language": {
-    "toggle_tooltip": "تبديل اللغة",
-    "switch_to": "عربي",
+    "toggle_tooltip": "تبديل إلى الإنجليزية",
+    "switch_to": "English",
     "current": "اللغة الحالية",
     "available": "اللغات المتاحة"
   },
