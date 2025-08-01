@@ -151,11 +151,7 @@
                                             <i class="fas fa-analytics"></i>
                                         </a>
                                         {% endif %}
-                                        {% if survey.status == 'published' %}
-                                        <button class="btn btn-sm btn-outline-warning" onclick="pauseSurvey({{ survey.id }})" title="إيقاف">
-                                            <i class="fas fa-pause"></i>
-                                        </button>
-                                        {% endif %}
+
                                         <button class="btn btn-sm btn-outline-warning" onclick="openDistributionModal({{ survey.id }}, '{{ survey.title }}', '{{ survey.public_url if survey.public_url else '' }}')" title="توزيع">
                                             <i class="fas fa-share-alt"></i>
                                         </button>
@@ -562,27 +558,7 @@
         });
     }
     
-    function pauseSurvey(surveyId) {
-        fetch(`/surveys/${surveyId}/toggle-status`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.status === 'success') {
-                alert(data.message);
-                location.reload();
-            } else {
-                alert(data.message);
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('حدث خطأ في تغيير حالة الاستطلاع');
-        });
-    }
+
     
     function exportResponses(surveyId) {
         window.open(`/surveys/${surveyId}/export`, '_blank');
