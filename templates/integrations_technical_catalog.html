@@ -465,10 +465,7 @@
                     <div class="metric-value" id="configured-integrations">-</div>
                     <div class="metric-label">مُعد</div>
                 </div>
-                <div class="metric-card">
-                    <div class="metric-value" id="roadmap-integrations">-</div>
-                    <div class="metric-label">خارطة الطريق</div>
-                </div>
+
             </div>
 
             <!-- Filter Controls -->
@@ -689,109 +686,9 @@
                 </div>
             </div>
 
-            <!-- Database & Storage Section -->
-            <div class="row mb-4">
-                <!-- PostgreSQL -->
-                <div class="col-md-6">
-                    <div class="integration-card">
-                        <div class="integration-header">
-                            <div class="integration-info">
-                                <div class="integration-icon" style="background: #336791;">
-                                    <i class="fas fa-database"></i>
-                                </div>
-                                <div>
-                                    <h5 class="mb-1">PostgreSQL</h5>
-                                    <small class="text-muted">قاعدة البيانات الرئيسية</small>
-                                    <span class="model-status status-active" title="نشط"></span>
-                                </div>
-                            </div>
-                            <div class="status-badge badge bg-success">نشط</div>
-                        </div>
-                        
-                        <div class="integration-config">
-                            <div class="config-grid">
-                                <div class="config-item">
-                                    <small>الإصدار</small>
-                                    <p class="fw-bold">13+</p>
-                                </div>
-                                <div class="config-item">
-                                    <small>دعم العربية</small>
-                                    <p class="fw-bold">محسّن</p>
-                                </div>
-                                <div class="config-item">
-                                    <small>تجميع الاتصالات</small>
-                                    <p class="fw-bold">مفعّل</p>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="d-flex gap-2">
-                            <button class="btn btn-sm btn-outline-success" onclick="testIntegration('postgresql')">
-                                <i class="fas fa-plug me-1"></i>اختبار الاتصال
-                            </button>
-                            <button class="btn btn-sm btn-outline-primary" onclick="configureIntegration('postgresql')">
-                                <i class="fas fa-cog me-1"></i>إعدادات
-                            </button>
-                        </div>
-                    </div>
-                </div>
 
-                <!-- Roadmap Integrations -->
-                <div class="col-md-6">
-                    <div class="integration-card" style="opacity: 0.7;">
-                        <div class="integration-header">
-                            <div class="integration-info">
-                                <div class="integration-icon" style="background: #6c757d;">
-                                    <i class="fas fa-road"></i>
-                                </div>
-                                <div>
-                                    <h5 class="mb-1">تكاملات مخططة</h5>
-                                    <small class="text-muted">Salesforce, Zendesk, HubSpot</small>
-                                    <span class="model-status status-roadmap" title="خارطة الطريق"></span>
-                                </div>
-                            </div>
-                            <div class="status-badge badge bg-secondary">خارطة الطريق</div>
-                        </div>
-                        
-                        <div class="integration-config">
-                            <div class="config-grid">
-                                <div class="config-item">
-                                    <small>التطوير</small>
-                                    <p class="fw-bold">Q3 2025</p>
-                                </div>
-                                <div class="config-item">
-                                    <small>الأولوية</small>
-                                    <p class="fw-bold">عالية</p>
-                                </div>
-                                <div class="config-item">
-                                    <small>المدة المتوقعة</small>
-                                    <p class="fw-bold">2-3 أسابيع</p>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="d-flex gap-2">
-                            <button class="btn btn-sm btn-outline-secondary" disabled>
-                                <i class="fas fa-clock me-1"></i>قيد التطوير
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
-        <!-- Developer APIs Category -->
-        <div class="category-section" data-category="Developer APIs">
-            <div class="category-header">
-                <div class="category-icon" style="background: #6f42c1;">
-                    <i class="fas fa-code"></i>
-                </div>
-                <div>
-                    <h3 class="mb-0">واجهات المطورين</h3>
-                    <p class="text-muted mb-0">APIs و Webhooks والتكاملات المخصصة</p>
-                </div>
-            </div>
-            <div id="developer-integrations"></div>
-        </div>
+
     </div>
 
     <script>
@@ -824,10 +721,9 @@
     }
 
     function updateStatistics(summary) {
-        document.getElementById('total-integrations').textContent = summary.total_integrations || 5;
-        document.getElementById('active-integrations').textContent = summary.active || 5;
+        document.getElementById('total-integrations').textContent = summary.total_integrations || 4;
+        document.getElementById('active-integrations').textContent = summary.active || 4;
         document.getElementById('configured-integrations').textContent = summary.configured || 0;
-        document.getElementById('roadmap-integrations').textContent = summary.roadmap || 6;
     }
     
     function initNotifications() {
@@ -923,7 +819,7 @@
     }
     
     function testAllConnections() {
-        const integrations = ['openai', 'claude', 'gmail', 'replit_oauth', 'postgresql'];
+        const integrations = ['openai', 'claude', 'gmail', 'replit_oauth'];
         showNotification('Testing all connections...', 'info');
         
         integrations.forEach((integration, index) => {
