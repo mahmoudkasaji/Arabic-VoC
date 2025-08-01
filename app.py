@@ -51,12 +51,42 @@ app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 # Initialize database
 db.init_app(app)
 
-# Initialize language system
+# Initialize language system BEFORE any other imports
 from utils.language_manager import language_manager
-from utils.template_helpers import register_template_helpers
-from utils.template_filters import register_filters
-register_template_helpers(app)
-register_filters(app)
+
+# Register template helpers with explicit error handling
+try:
+    from utils.template_helpers import register_template_helpers
+    register_template_helpers(app)
+    logger.info("Template helpers registered successfully")
+except Exception as e:
+    logger.error(f"Failed to register template helpers: {e}")
+
+try:
+    from utils.template_filters import register_filters
+    register_filters(app) 
+    logger.info("Template filters registered successfully")
+except Exception as e:
+    logger.error(f"Failed to register template filters: {e}")
+
+# Verify translation filter is working
+@app.context_processor
+def inject_language_vars():
+    """Inject language variables into all templates"""
+    try:
+        current_lang = language_manager.get_current_language()
+        return {
+            'current_lang': current_lang,
+            'lang_direction': language_manager.get_direction(current_lang),
+            'translate': language_manager.translate
+        }
+    except Exception as e:
+        logger.error(f"Language context injection failed: {e}")
+        return {
+            'current_lang': 'ar',
+            'lang_direction': 'rtl',
+            'translate': lambda key, **kwargs: f"[{key}]"
+        }
 
 # Create tables
 with app.app_context():
