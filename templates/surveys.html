@@ -143,9 +143,9 @@
                                         <a href="/surveys/{{ survey.id }}/edit" class="btn btn-sm btn-outline-primary" title="تحرير">
                                             <i class="fas fa-edit"></i>
                                         </a>
-                                        <button class="btn btn-sm btn-outline-info" onclick="toggleResponsePreview({{ survey.id }})" title="النتائج السريعة">
+                                        <a href="/analytics/dashboard" class="btn btn-sm btn-outline-info" title="لوحة التحليلات">
                                             <i class="fas fa-chart-bar"></i>
-                                        </button>
+                                        </a>
                                         {% if survey.response_count > 0 %}
                                         <a href="/surveys/responses?id={{ survey.id }}" class="btn btn-sm btn-outline-success" title="تحليل مفصل">
                                             <i class="fas fa-analytics"></i>
