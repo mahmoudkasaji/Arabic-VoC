@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="{{ get_language_info().code }}" dir="{{ get_language_info().direction }}">
+<head>
+    {% include 'components/head.html' %}
+    <title>Analytics Dashboard - Voice of Customer Platform</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/unified-layout.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .dashboard-container {
+            padding: 24px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .dashboard-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .dashboard-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 8px;
+        }
+        
+        .dashboard-subtitle {
+            font-size: 1.1rem;
+            color: #64748b;
+            margin-bottom: 16px;
+        }
+        
+        /* KPI Cards Grid */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+        
+        @media (max-width: 1200px) {
+            .kpi-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .kpi-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .kpi-card {
+            background: white;
+            border-radius: 16px;
+            padding: 32px 24px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .kpi-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient);
+            transition: height 0.3s ease;
+        }
+        
+        .kpi-card:hover::before,
+        .kpi-card.active::before {
+            height: 8px;
+        }
+        
+        .kpi-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+        }
+        
+        .kpi-card.active {
+            border-color: #3b82f6;
+            transform: translateY(-4px);
+            box-shadow: 0 8px 32px rgba(59, 130, 246, 0.2);
+        }
+        
+        .kpi-card.csat {
+            --gradient: linear-gradient(135deg, #10b981, #059669);
+        }
+        
+        .kpi-card.nps {
+            --gradient: linear-gradient(135deg, #3b82f6, #1d4ed8);
+        }
+        
+        .kpi-card.ces {
+            --gradient: linear-gradient(135deg, #f59e0b, #d97706);
+        }
+        
+        .kpi-card.completion {
+            --gradient: linear-gradient(135deg, #8b5cf6, #7c3aed);
+        }
+        
+        .kpi-icon {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 16px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+            background: var(--gradient);
+        }
+        
+        .kpi-value {
+            font-size: 3rem;
+            font-weight: 800;
+            color: #1e293b;
+            margin-bottom: 8px;
+            line-height: 1;
+        }
+        
+        .kpi-label {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #475569;
+            margin-bottom: 12px;
+        }
+        
+        .kpi-change {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .kpi-change.positive { color: #059669; }
+        .kpi-change.negative { color: #dc2626; }
+        .kpi-change.neutral { color: #64748b; }
+        
+        /* Chart Section */
+        .chart-section {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+        
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid #f1f5f9;
+        }
+        
+        .chart-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1e293b;
+        }
+        
+        .time-filter {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .time-filter button {
+            padding: 8px 16px;
+            border: 2px solid #e2e8f0;
+            background: white;
+            color: #64748b;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .time-filter button.active {
+            background: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+        }
+        
+        .time-filter button:hover:not(.active) {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+            color: #374151;
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 400px;
+            width: 100%;
+        }
+        
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .loading-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f4f6;
+            border-top: 4px solid #3b82f6;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Arabic RTL Support */
+        [dir="rtl"] .chart-header {
+            direction: rtl;
+        }
+        
+        [dir="rtl"] .time-filter {
+            flex-direction: row-reverse;
+        }
+        
+        [dir="rtl"] .kpi-change {
+            flex-direction: row-reverse;
+        }
+    </style>
+</head>
+<body>
+    {% include 'components/unified_navigation.html' %}
+    
+    <div class="dashboard-container">
+        <!-- Dashboard Header -->
+        <div class="dashboard-header">
+            <h1 class="dashboard-title">
+                <i class="fas fa-chart-line me-3"></i>
+                لوحة مؤشرات الأداء الرئيسية
+            </h1>
+            <p class="dashboard-subtitle">
+                تحليل مؤشرات الأداء الأساسية لصوت العميل مع رسوم بيانية تفاعلية
+            </p>
+            <div class="mt-2">
+                <small class="text-muted">آخر تحديث: <span id="lastUpdate">جاري التحميل...</span></small>
+            </div>
+        </div>
+        
+        <!-- KPI Cards -->
+        <div class="kpi-grid">
+            <!-- CSAT Card -->
+            <div class="kpi-card csat active" data-metric="csat" onclick="selectKPI('csat')">
+                <div class="kpi-icon">
+                    <i class="fas fa-smile"></i>
+                </div>
+                <div class="kpi-value" id="csatValue">--</div>
+                <div class="kpi-label">رضا العملاء (CSAT)</div>
+                <div class="kpi-change neutral" id="csatChange">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <span>جاري التحميل...</span>
+                </div>
+            </div>
+            
+            <!-- NPS Card -->
+            <div class="kpi-card nps" data-metric="nps" onclick="selectKPI('nps')">
+                <div class="kpi-icon">
+                    <i class="fas fa-thumbs-up"></i>
+                </div>
+                <div class="kpi-value" id="npsValue">--</div>
+                <div class="kpi-label">صافي نقاط الترويج (NPS)</div>
+                <div class="kpi-change neutral" id="npsChange">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <span>جاري التحميل...</span>
+                </div>
+            </div>
+            
+            <!-- CES Card -->
+            <div class="kpi-card ces" data-metric="ces" onclick="selectKPI('ces')">
+                <div class="kpi-icon">
+                    <i class="fas fa-tachometer-alt"></i>
+                </div>
+                <div class="kpi-value" id="cesValue">--</div>
+                <div class="kpi-label">سهولة الخدمة (CES)</div>
+                <div class="kpi-change neutral" id="cesChange">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <span>جاري التحميل...</span>
+                </div>
+            </div>
+            
+            <!-- Completion Rate Card -->
+            <div class="kpi-card completion" data-metric="completion" onclick="selectKPI('completion')">
+                <div class="kpi-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="kpi-value" id="completionValue">--</div>
+                <div class="kpi-label">معدل الإتمام</div>
+                <div class="kpi-change neutral" id="completionChange">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <span>جاري التحميل...</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Chart Section -->
+        <div class="chart-section">
+            <div class="chart-header">
+                <h2 class="chart-title" id="chartTitle">تطور رضا العملاء (CSAT)</h2>
+                <div class="time-filter">
+                    <button class="active" onclick="changeTimeRange('7d')">7 أيام</button>
+                    <button onclick="changeTimeRange('30d')">30 يوم</button>
+                    <button onclick="changeTimeRange('90d')">90 يوم</button>
+                    <button onclick="changeTimeRange('1y')">سنة</button>
+                </div>
+            </div>
+            
+            <div class="chart-container">
+                <canvas id="mainChart"></canvas>
+                <div class="loading-overlay" id="chartLoading">
+                    <div class="loading-spinner"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    {% include 'components/scripts.html' %}
+    
+    <script>
+        let currentKPI = 'csat';
+        let currentTimeRange = '7d';
+        let mainChart = null;
+        
+        // KPI Titles
+        const kpiTitles = {
+            'csat': 'تطور رضا العملاء (CSAT)',
+            'nps': 'تطور صافي نقاط الترويج (NPS)',
+            'ces': 'تطور سهولة الخدمة (CES)',
+            'completion': 'تطور معدل الإتمام'
+        };
+        
+        // Colors for each KPI
+        const kpiColors = {
+            'csat': {
+                background: 'rgba(16, 185, 129, 0.1)',
+                border: 'rgb(16, 185, 129)',
+                gradient: ['#10b981', '#059669']
+            },
+            'nps': {
+                background: 'rgba(59, 130, 246, 0.1)',
+                border: 'rgb(59, 130, 246)',
+                gradient: ['#3b82f6', '#1d4ed8']
+            },
+            'ces': {
+                background: 'rgba(245, 158, 11, 0.1)',
+                border: 'rgb(245, 158, 11)',
+                gradient: ['#f59e0b', '#d97706']
+            },
+            'completion': {
+                background: 'rgba(139, 92, 246, 0.1)',
+                border: 'rgb(139, 92, 246)',
+                gradient: ['#8b5cf6', '#7c3aed']
+            }
+        };
+        
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            loadKPIData();
+            initChart();
+            updateLastUpdate();
+        });
+        
+        // Select KPI function
+        function selectKPI(kpi) {
+            // Update active card
+            document.querySelectorAll('.kpi-card').forEach(card => {
+                card.classList.remove('active');
+            });
+            document.querySelector(`[data-metric="${kpi}"]`).classList.add('active');
+            
+            // Update current KPI
+            currentKPI = kpi;
+            
+            // Update chart title
+            document.getElementById('chartTitle').textContent = kpiTitles[kpi];
+            
+            // Load chart data
+            loadChartData();
+        }
+        
+        // Change time range function
+        function changeTimeRange(range) {
+            // Update active button
+            document.querySelectorAll('.time-filter button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Update current range
+            currentTimeRange = range;
+            
+            // Reload data
+            loadKPIData();
+            loadChartData();
+        }
+        
+        // Load KPI data
+        async function loadKPIData() {
+            try {
+                const response = await fetch(`/api/analytics/dashboard?time_range=${currentTimeRange}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    updateKPICards(data.data);
+                } else {
+                    console.error('Error loading KPI data:', data.error);
+                }
+            } catch (error) {
+                console.error('Error loading KPI data:', error);
+                // Show error state
+                showErrorState();
+            }
+        }
+        
+        // Update KPI cards
+        function updateKPICards(data) {
+            // CSAT
+            document.getElementById('csatValue').textContent = data.csat?.value || '--';
+            updateTrendIndicator('csatChange', data.csat?.change);
+            
+            // NPS
+            document.getElementById('npsValue').textContent = data.nps?.value || '--';
+            updateTrendIndicator('npsChange', data.nps?.change);
+            
+            // CES
+            document.getElementById('cesValue').textContent = data.ces?.value || '--';
+            updateTrendIndicator('cesChange', data.ces?.change);
+            
+            // Completion Rate
+            document.getElementById('completionValue').textContent = data.completion?.value || '--';
+            updateTrendIndicator('completionChange', data.completion?.change);
+        }
+        
+        // Update trend indicator
+        function updateTrendIndicator(elementId, change) {
+            const element = document.getElementById(elementId);
+            if (!change) {
+                element.innerHTML = '<i class="fas fa-minus"></i><span>لا توجد بيانات</span>';
+                element.className = 'kpi-change neutral';
+                return;
+            }
+            
+            const value = parseFloat(change.value) || 0;
+            const icon = value > 0 ? 'fa-arrow-up' : value < 0 ? 'fa-arrow-down' : 'fa-minus';
+            const className = value > 0 ? 'positive' : value < 0 ? 'negative' : 'neutral';
+            const prefix = value > 0 ? '+' : '';
+            
+            element.innerHTML = `<i class="fas ${icon}"></i><span>${prefix}${value}% ${change.period}</span>`;
+            element.className = `kpi-change ${className}`;
+        }
+        
+        // Initialize chart
+        function initChart() {
+            const ctx = document.getElementById('mainChart').getContext('2d');
+            
+            mainChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: kpiTitles[currentKPI],
+                        data: [],
+                        borderColor: kpiColors[currentKPI].border,
+                        backgroundColor: kpiColors[currentKPI].background,
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        pointBackgroundColor: kpiColors[currentKPI].border,
+                        pointBorderColor: '#ffffff',
+                        pointBorderWidth: 2,
+                        pointRadius: 6,
+                        pointHoverRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                            titleColor: '#374151',
+                            bodyColor: '#374151',
+                            borderColor: '#e5e7eb',
+                            borderWidth: 1,
+                            cornerRadius: 8,
+                            displayColors: false
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                color: '#6b7280'
+                            }
+                        },
+                        y: {
+                            grid: {
+                                color: '#f3f4f6'
+                            },
+                            ticks: {
+                                color: '#6b7280'
+                            }
+                        }
+                    },
+                    elements: {
+                        point: {
+                            hoverBorderWidth: 3
+                        }
+                    }
+                }
+            });
+            
+            loadChartData();
+        }
+        
+        // Load chart data
+        async function loadChartData() {
+            showChartLoading(true);
+            
+            try {
+                const response = await fetch(`/api/analytics/chart-data?metric=${currentKPI}&time_range=${currentTimeRange}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    updateChart(data.data);
+                } else {
+                    console.error('Error loading chart data:', data.error);
+                }
+            } catch (error) {
+                console.error('Error loading chart data:', error);
+            } finally {
+                showChartLoading(false);
+            }
+        }
+        
+        // Update chart
+        function updateChart(data) {
+            if (!mainChart) return;
+            
+            // Update colors
+            const colors = kpiColors[currentKPI];
+            mainChart.data.datasets[0].borderColor = colors.border;
+            mainChart.data.datasets[0].backgroundColor = colors.background;
+            mainChart.data.datasets[0].pointBackgroundColor = colors.border;
+            
+            // Update data
+            mainChart.data.labels = data.labels || [];
+            mainChart.data.datasets[0].data = data.values || [];
+            mainChart.data.datasets[0].label = kpiTitles[currentKPI];
+            
+            mainChart.update('active');
+        }
+        
+        // Show/hide chart loading
+        function showChartLoading(show) {
+            const overlay = document.getElementById('chartLoading');
+            if (show) {
+                overlay.classList.add('show');
+            } else {
+                overlay.classList.remove('show');
+            }
+        }
+        
+        // Show error state
+        function showErrorState() {
+            document.querySelectorAll('.kpi-value').forEach(el => {
+                el.textContent = 'خطأ';
+            });
+            document.querySelectorAll('.kpi-change').forEach(el => {
+                el.innerHTML = '<i class="fas fa-exclamation-triangle"></i><span>خطأ في التحميل</span>';
+                el.className = 'kpi-change negative';
+            });
+        }
+        
+        // Update last update time
+        function updateLastUpdate() {
+            const now = new Date();
+            const timeString = now.toLocaleString('ar-SA', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            document.getElementById('lastUpdate').textContent = timeString;
+        }
+        
+        // Auto-refresh every 5 minutes
+        setInterval(() => {
+            loadKPIData();
+            loadChartData();
+            updateLastUpdate();
+        }, 5 * 60 * 1000);
+    </script>
+</body>
+</html>

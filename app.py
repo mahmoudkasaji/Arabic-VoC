@@ -121,6 +121,14 @@ try:
 except Exception as e:
     logger.error(f"Could not register Live Analytics API blueprint: {e}")
 
+# Register Simplified Dashboard API
+try:
+    from api.dashboard_simplified import dashboard_simple_bp
+    app.register_blueprint(dashboard_simple_bp)
+    logger.info("Simplified Dashboard API blueprint registered successfully")
+except Exception as e:
+    logger.error(f"Could not register Simplified Dashboard API blueprint: {e}")
+
 # Register Enhanced Analytics API - Phase 3A (AI-powered analytics)
 try:
     from api.enhanced_analytics import enhanced_analytics_bp
@@ -1183,9 +1191,9 @@ def analytics_main():
 
 @app.route('/analytics/dashboard')
 def analytics_dashboard():
-    """Unified live analytics dashboard with real-time data"""
-    return render_template('analytics_unified.html', 
-                         title='التحليلات المباشرة')
+    """Simplified KPI dashboard with 4 key metrics and toggleable charts"""
+    return render_template('analytics_simplified.html', 
+                         title='لوحة مؤشرات الأداء الرئيسية')
 
 @app.route('/analytics/insights')
 def analytics_insights():
