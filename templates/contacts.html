@@ -164,10 +164,17 @@
                                         {% endif %}
                                     </td>
                                     <td>
-                                        <button class="btn btn-sm btn-outline-primary" 
-                                                onclick="editContact({{ contact.id }}, '{{ contact.name }}', '{{ contact.email or '' }}', '{{ contact.phone or '' }}', '{{ contact.company or '' }}', '{{ contact.language_preference }}', {{ 'true' if contact.is_active else 'false' }}, {{ 'true' if contact.email_opt_in else 'false' }}, {{ 'true' if contact.sms_opt_in else 'false' }}, {{ 'true' if contact.whatsapp_opt_in else 'false' }}, '{{ contact.notes or '' }}')">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
+                                        <div class="btn-group" role="group">
+                                            <button class="btn btn-sm btn-outline-primary" 
+                                                    onclick="editContact({{ contact.id }}, '{{ contact.name }}', '{{ contact.email or '' }}', '{{ contact.phone or '' }}', '{{ contact.company or '' }}', '{{ contact.language_preference }}', {{ 'true' if contact.is_active else 'false' }}, {{ 'true' if contact.email_opt_in else 'false' }}, {{ 'true' if contact.sms_opt_in else 'false' }}, {{ 'true' if contact.whatsapp_opt_in else 'false' }}, '{{ contact.notes or '' }}')">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-danger" 
+                                                    onclick="deleteContact({{ contact.id }}, '{{ contact.name }}')"
+                                                    title="حذف جهة الاتصال">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
                                     </td>
                                 </tr>
                                 {% endfor %}
@@ -696,6 +703,67 @@
             for (let i = 0; i < rows.length; i++) {
                 rows[i].style.display = '';
             }
+        }
+        
+        // Delete contact function
+        function deleteContact(contactId, contactName) {
+            if (confirm(`هل أنت متأكد من حذف جهة الاتصال "${contactName}"؟\n\nهذا الإجراء لا يمكن التراجع عنه.`)) {
+                // Show loading state
+                const deleteBtn = event.target.closest('button');
+                const originalContent = deleteBtn.innerHTML;
+                deleteBtn.disabled = true;
+                deleteBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                
+                // Make API call to delete contact
+                fetch(`/api/contacts/${contactId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        // Show success message
+                        showNotification('تم حذف جهة الاتصال بنجاح', 'success');
+                        
+                        // Remove the row from table or reload page
+                        setTimeout(() => {
+                            location.reload();
+                        }, 1500);
+                    } else {
+                        throw new Error(data.message || 'حدث خطأ في حذف جهة الاتصال');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error deleting contact:', error);
+                    showNotification('حدث خطأ في حذف جهة الاتصال', 'error');
+                    
+                    // Restore button state
+                    deleteBtn.disabled = false;
+                    deleteBtn.innerHTML = originalContent;
+                });
+            }
+        }
+        
+        // Show notification function
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.className = `alert alert-${type === 'error' ? 'danger' : type} alert-dismissible fade show position-fixed`;
+            notification.style.cssText = 'top: 20px; left: 20px; z-index: 9999; max-width: 400px;';
+            notification.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Auto-remove after 5 seconds
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.remove();
+                }
+            }, 5000);
         }
         
         // Email service test (referenced in HTML)
