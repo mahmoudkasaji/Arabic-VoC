@@ -8,6 +8,11 @@ from datetime import datetime
 from sqlalchemy import Column, Integer, String, Text, DateTime, Float, JSON, Enum
 from sqlalchemy.ext.declarative import declarative_base
 
+# Import db only when needed to avoid circular imports
+def get_db():
+    from app import db
+    return db
+
 Base = declarative_base()
 
 class FeedbackChannel(str, enum.Enum):
@@ -71,9 +76,9 @@ class FeedbackStatus(str, enum.Enum):
     FAILED = "failed"
     ARCHIVED = "archived"
 
-class Contact(Base):
-    """Contact model for distribution system"""
-    __tablename__ = 'contacts'
+class UnifiedContact(Base):
+    """Unified contact model for distribution system"""
+    __tablename__ = 'unified_contacts'
     
     id = Column(Integer, primary_key=True)
     email = Column(String(255), nullable=False)

@@ -1,30 +1,16 @@
 from flask import session, jsonify
 from app import app, db
 from flask_login import current_user
-try:
-    from replit_auth import require_login
-except ImportError:
-    # Fallback decorator if Replit Auth is not available
-    def require_login(f):
-        return f
+# Use simplified import utility
+from utils.imports import safe_import_replit_auth
+require_login, _ = safe_import_replit_auth()
 
 # Make session permanent
 @app.before_request
 def make_session_permanent():
     session.permanent = True
 
-@app.route('/')
-def example_index():
-    # Use flask_login.current_user to check if current user is logged in or anonymous.
-    user = current_user
-    if user.is_authenticated:
-        # User is logged in, show dashboard/home
-        from flask import render_template
-        return render_template('index_simple.html')
-    else:
-        # User is not logged in, show landing page
-        from flask import render_template
-        return render_template('index_simple.html')
+# Home route is handled in app.py to avoid duplication
 
 @app.route('/example_protected_route')
 @require_login # protected by Replit Auth

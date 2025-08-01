@@ -4,11 +4,9 @@ Contact management routes for direct database operations
 
 from flask import request, redirect, url_for, flash, Response
 from app import app, db
-try:
-    from replit_auth import require_login
-except ImportError:
-    def require_login(f):
-        return f
+# Use simplified import utility
+from utils.imports import safe_import_replit_auth
+require_login, _ = safe_import_replit_auth()
 
 # Contact Edit Route
 @app.route('/contacts/edit/<int:contact_id>', methods=['POST'])

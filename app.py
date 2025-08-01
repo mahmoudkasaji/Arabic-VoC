@@ -20,12 +20,9 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-# Import auth decorators with fallback
-try:
-    from replit_auth import require_login
-except ImportError:
-    def require_login(f):
-        return f
+# Import auth decorators with centralized utility
+from utils.imports import safe_import_replit_auth
+require_login, make_replit_blueprint_func = safe_import_replit_auth()
 
 class Base(DeclarativeBase):
     pass
@@ -105,13 +102,15 @@ app.register_blueprint(surveys_bp)
 
 # Note: User preferences migrated to Flask routes in routes.py
 
-# Import and register Replit Auth blueprint  
-try:
-    from replit_auth import make_replit_blueprint
-    app.register_blueprint(make_replit_blueprint(), url_prefix="/auth")
-    logger.info("Replit Auth blueprint registered successfully")
-except Exception as e:
-    logger.warning(f"Could not register Replit Auth blueprint: {e}")
+# Import and register Replit Auth blueprint using centralized utility
+if make_replit_blueprint_func:
+    try:
+        app.register_blueprint(make_replit_blueprint_func(), url_prefix="/auth")
+        logger.info("Replit Auth blueprint registered successfully")
+    except Exception as e:
+        logger.warning(f"Could not register Replit Auth blueprint: {e}")
+        logger.info("Running without Replit Auth - development mode")
+else:
     logger.info("Running without Replit Auth - development mode")
 
 # Register remaining API blueprints (complex operations only)
@@ -239,18 +238,16 @@ def submit_feedback():
             logger.error(f"Real-time analysis failed for feedback {feedback.id}: {e}")
             # Continue without analysis - feedback still saved
         
-        from utils.template_helpers import get_success_message
-        return jsonify({
-            'success': True,
-            'message': get_success_message('feedback_submitted'),
-            'feedback_id': feedback.id
-        })
+        from utils.common import standardize_success_response
+        return jsonify(standardize_success_response(
+            data={'feedback_id': feedback.id},
+            message='تم إرسال التعليق بنجاح'
+        ))
         
     except Exception as e:
-        logger.error(f"Error submitting feedback: {e}")
         db.session.rollback()
-        from utils.template_helpers import get_error_message
-        return jsonify({'error': get_error_message('general_error')}), 500
+        from utils.common import standardize_error_response
+        return jsonify(standardize_error_response(e, 'feedback_submission')), 500
 
 @app.route('/api/feedback/list')
 def list_feedback():
@@ -285,9 +282,8 @@ def list_feedback():
         })
         
     except Exception as e:
-        logger.error(f"Error listing feedback: {e}")
-        from utils.template_helpers import get_error_message
-        return jsonify({'error': get_error_message('general_error')}), 500
+        from utils.common import standardize_error_response
+        return jsonify(standardize_error_response(e, 'feedback_listing')), 500
 
 # Removed redundant realtime dashboard route
 
