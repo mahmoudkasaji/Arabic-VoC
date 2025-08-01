@@ -51,10 +51,15 @@ app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 # Initialize database
 db.init_app(app)
 
-# Initialize language system BEFORE any other imports
+# Initialize Hybrid I18N System
+from utils.hybrid_i18n import hybrid_i18n
+hybrid_i18n.init_app(app)
+logger.info("Hybrid I18N system initialized successfully")
+
+# Maintain compatibility with existing language manager
 from utils.language_manager import language_manager
 
-# Register template helpers with explicit error handling
+# Register template helpers for backward compatibility
 try:
     from utils.template_helpers import register_template_helpers
     register_template_helpers(app)
@@ -62,37 +67,31 @@ try:
 except Exception as e:
     logger.error(f"Failed to register template helpers: {e}")
 
-try:
-    from utils.template_filters import register_filters
-    register_filters(app) 
-    logger.info("Template filters registered successfully")
-except Exception as e:
-    logger.error(f"Failed to register template filters: {e}")
-
-# Verify translation filter is working
+# Enhanced context processor with hybrid integration
 @app.context_processor
 def inject_language_vars():
-    """Inject language variables into all templates - ENHANCED"""
+    """Inject comprehensive language variables into all templates"""
     try:
-        from flask import session, g
-        
-        # Force consistent language detection
-        current_lang = language_manager.get_current_language()
-        
-        # Language context working correctly
+        current_lang = hybrid_i18n.get_locale()
         
         return {
             'current_lang': current_lang,
-            'lang_direction': language_manager.get_direction(current_lang),
+            'CURRENT_LANGUAGE': current_lang,
+            'lang_direction': 'rtl' if current_lang == 'ar' else 'ltr',
+            'LANGUAGE_DIRECTION': 'rtl' if current_lang == 'ar' else 'ltr',
+            'LANGUAGES': app.config['LANGUAGES'],
             'translate': language_manager.translate,
             'get_lang': lambda: current_lang,
-            'get_dir': lambda: language_manager.get_direction(current_lang)
+            'get_dir': lambda: 'rtl' if current_lang == 'ar' else 'ltr'
         }
     except Exception as e:
         logger.error(f"Language context injection failed: {e}")
         return {
             'current_lang': 'ar',
+            'CURRENT_LANGUAGE': 'ar',
             'lang_direction': 'rtl',
+            'LANGUAGE_DIRECTION': 'rtl',
+            'LANGUAGES': {'ar': 'العربية', 'en': 'English'},
             'translate': lambda key, **kwargs: f"[{key}]",
             'get_lang': lambda: 'ar',
             'get_dir': lambda: 'rtl'

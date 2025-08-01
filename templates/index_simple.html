@@ -2,7 +2,10 @@
 <html lang="{{ current_lang }}" dir="{{ lang_direction }}">
 <head>
     {% include 'components/head.html' %}
-    <title>{{ translate('app.name') }}</title>
+    <title data-i18n="app.name">{{ translate('app.name') }}</title>
+    
+    <!-- Hybrid I18N JavaScript -->
+    <script src="{{ url_for('static', filename='js/hybrid-i18n.js') }}" defer></script>
     
     <style>
         body {

@@ -2,16 +2,17 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
     <div class="container">
         <!-- Brand - Centered Layout -->
-        <a class="navbar-brand fw-bold text-primary mx-auto mx-lg-0" href="/" style="font-size: 1.25rem;">
+        <a class="navbar-brand fw-bold text-primary mx-auto mx-lg-0" href="/" style="font-size: 1.25rem;" data-i18n="app.name">
             <i class="fas fa-home me-2"></i>
             {{ translate('app.name') }}
         </a>
         
-        <!-- Language Toggle Button - Flask route version -->
+        <!-- Language Toggle Button - Hybrid version -->
         <div class="navbar-nav ms-auto me-3">
-            <a href="/language/toggle" class="btn btn-outline-primary btn-sm" title="{{ 'language.toggle_tooltip' | translate }}">
+            <a href="/language/toggle" class="btn btn-outline-primary btn-sm hybrid-lang-toggle" 
+               title="{{ 'language.toggle_tooltip' | translate }}" data-i18n-title="language.toggle_tooltip">
                 <i class="fas fa-globe me-1"></i>
-                {{ 'language.switch_to' | translate }}
+                <span data-i18n="language.switch_to">{{ 'language.switch_to' | translate }}</span>
             </a>
         </div>
         
@@ -27,7 +28,7 @@
                 <!-- 1. Surveys -->
                 <li class="nav-item dropdown mx-2">
                     <a class="nav-link dropdown-toggle" href="#" id="surveysDropdown" role="button" 
-                       data-bs-toggle="dropdown" aria-expanded="false">
+                       data-bs-toggle="dropdown" aria-expanded="false" data-nav="surveys" data-i18n="navigation.surveys_dropdown.title">
                         <i class="fas fa-poll me-1"></i>{{ 'navigation.surveys_dropdown.title' | translate }}
                     </a>
                     <ul class="dropdown-menu">
