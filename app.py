@@ -1192,8 +1192,53 @@ def analytics_main():
 @app.route('/analytics/dashboard')
 def analytics_dashboard():
     """Simplified KPI dashboard with 4 key metrics and toggleable charts"""
-    return render_template('analytics_simplified.html', 
-                         title='لوحة مؤشرات الأداء الرئيسية')
+    from datetime import datetime, timedelta
+    import random
+    import math
+    
+    # Generate sample KPI data
+    kpi_data = {
+        'csat': {
+            'value': f"{85 + random.uniform(-5, 5):.1f}%",
+            'change': f"{random.uniform(-3, 3):+.1f}%",
+            'trend': 'positive' if random.random() > 0.5 else 'negative'
+        },
+        'nps': {
+            'value': f"{42 + random.uniform(-8, 8):.0f}",
+            'change': f"{random.uniform(-5, 5):+.1f}",
+            'trend': 'positive' if random.random() > 0.5 else 'negative'
+        },
+        'ces': {
+            'value': f"{7.2 + random.uniform(-1, 1):.1f}/10",
+            'change': f"{random.uniform(-0.5, 0.5):+.1f}",
+            'trend': 'positive' if random.random() > 0.5 else 'negative'
+        },
+        'completion': {
+            'value': f"{78 + random.uniform(-8, 8):.1f}%",
+            'change': f"{random.uniform(-4, 4):+.1f}%",
+            'trend': 'positive' if random.random() > 0.5 else 'negative'
+        }
+    }
+    
+    # Generate chart data for all KPIs
+    labels = []
+    for i in range(7):  # Last 7 days
+        date = datetime.now() - timedelta(days=6-i)
+        labels.append(date.strftime('%m/%d'))
+    
+    # Generate values for each KPI
+    chart_data = {
+        'labels': labels,
+        'csat': [round(85 + math.sin(i * 0.3) * 3 + random.uniform(-2, 2), 1) for i in range(7)],
+        'nps': [round(42 + math.sin(i * 0.4) * 5 + random.uniform(-3, 3), 0) for i in range(7)],
+        'ces': [round(7.2 + math.sin(i * 0.2) * 0.5 + random.uniform(-0.3, 0.3), 1) for i in range(7)],
+        'completion': [round(78 + math.sin(i * 0.5) * 4 + random.uniform(-3, 3), 1) for i in range(7)]
+    }
+    
+    return render_template('analytics_simplified_flask.html', 
+                         title='لوحة مؤشرات الأداء الرئيسية',
+                         kpi_data=kpi_data,
+                         chart_data=chart_data)
 
 @app.route('/analytics/insights')
 def analytics_insights():

@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="{{ get_language_info().code }}" dir="{{ get_language_info().direction }}">
+<head>
+    {% include 'components/head.html' %}
+    <title>Analytics Dashboard - Voice of Customer Platform</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/unified-layout.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .dashboard-container {
+            padding: 24px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .dashboard-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .dashboard-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 8px;
+        }
+        
+        .dashboard-subtitle {
+            font-size: 1.1rem;
+            color: #64748b;
+            margin-bottom: 16px;
+        }
+        
+        /* KPI Cards Grid */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+        
+        @media (max-width: 1200px) {
+            .kpi-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .kpi-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .kpi-card {
+            background: white;
+            border-radius: 16px;
+            padding: 32px 24px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .kpi-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient);
+            transition: height 0.3s ease;
+        }
+        
+        .kpi-card:hover::before,
+        .kpi-card.active::before {
+            height: 8px;
+        }
+        
+        .kpi-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+        }
+        
+        .kpi-card.active {
+            border-color: #3b82f6;
+            transform: translateY(-4px);
+            box-shadow: 0 8px 32px rgba(59, 130, 246, 0.2);
+        }
+        
+        .kpi-card.csat {
+            --gradient: linear-gradient(135deg, #10b981, #059669);
+        }
+        
+        .kpi-card.nps {
+            --gradient: linear-gradient(135deg, #3b82f6, #1d4ed8);
+        }
+        
+        .kpi-card.ces {
+            --gradient: linear-gradient(135deg, #f59e0b, #d97706);
+        }
+        
+        .kpi-card.completion {
+            --gradient: linear-gradient(135deg, #8b5cf6, #7c3aed);
+        }
+        
+        .kpi-icon {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 16px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+            background: var(--gradient);
+        }
+        
+        .kpi-value {
+            font-size: 3rem;
+            font-weight: 800;
+            color: #1e293b;
+            margin-bottom: 8px;
+            line-height: 1;
+        }
+        
+        .kpi-label {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #475569;
+            margin-bottom: 12px;
+        }
+        
+        .kpi-change {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .kpi-change.positive { color: #059669; }
+        .kpi-change.negative { color: #dc2626; }
+        .kpi-change.neutral { color: #64748b; }
+        
+        /* Chart Section */
+        .chart-section {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+        
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid #f1f5f9;
+        }
+        
+        .chart-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1e293b;
+        }
+        
+        .refresh-btn {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .refresh-btn:hover {
+            background: #2563eb;
+            transform: translateY(-1px);
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 400px;
+            width: 100%;
+        }
+        
+        /* Chart Data Storage */
+        .chart-data {
+            display: none;
+        }
+        
+        /* Arabic RTL Support */
+        [dir="rtl"] .chart-header {
+            direction: rtl;
+        }
+        
+        [dir="rtl"] .kpi-change {
+            flex-direction: row-reverse;
+        }
+    </style>
+</head>
+<body>
+    {% include 'components/unified_navigation.html' %}
+    
+    <div class="dashboard-container">
+        <!-- Dashboard Header -->
+        <div class="dashboard-header">
+            <h1 class="dashboard-title">
+                <i class="fas fa-chart-line me-3"></i>
+                لوحة مؤشرات الأداء الرئيسية
+            </h1>
+            <p class="dashboard-subtitle">
+                تحليل مؤشرات الأداء الأساسية لصوت العميل مع رسوم بيانية تفاعلية
+            </p>
+            <div class="mt-2">
+                <small class="text-muted">آخر تحديث: <span id="lastUpdate">الآن</span></small>
+            </div>
+        </div>
+        
+        <!-- KPI Cards -->
+        <div class="kpi-grid">
+            <!-- CSAT Card -->
+            <div class="kpi-card csat active" data-metric="csat" onclick="selectKPI('csat')">
+                <div class="kpi-icon">
+                    <i class="fas fa-smile"></i>
+                </div>
+                <div class="kpi-value">{{ kpi_data.csat.value }}</div>
+                <div class="kpi-label">رضا العملاء (CSAT)</div>
+                <div class="kpi-change {{ kpi_data.csat.trend }}">
+                    {% if kpi_data.csat.trend == 'positive' %}
+                        <i class="fas fa-arrow-up"></i>
+                    {% elif kpi_data.csat.trend == 'negative' %}
+                        <i class="fas fa-arrow-down"></i>
+                    {% else %}
+                        <i class="fas fa-minus"></i>
+                    {% endif %}
+                    <span>{{ kpi_data.csat.change }} هذا الأسبوع</span>
+                </div>
+            </div>
+            
+            <!-- NPS Card -->
+            <div class="kpi-card nps" data-metric="nps" onclick="selectKPI('nps')">
+                <div class="kpi-icon">
+                    <i class="fas fa-thumbs-up"></i>
+                </div>
+                <div class="kpi-value">{{ kpi_data.nps.value }}</div>
+                <div class="kpi-label">صافي نقاط الترويج (NPS)</div>
+                <div class="kpi-change {{ kpi_data.nps.trend }}">
+                    {% if kpi_data.nps.trend == 'positive' %}
+                        <i class="fas fa-arrow-up"></i>
+                    {% elif kpi_data.nps.trend == 'negative' %}
+                        <i class="fas fa-arrow-down"></i>
+                    {% else %}
+                        <i class="fas fa-minus"></i>
+                    {% endif %}
+                    <span>{{ kpi_data.nps.change }} هذا الأسبوع</span>
+                </div>
+            </div>
+            
+            <!-- CES Card -->
+            <div class="kpi-card ces" data-metric="ces" onclick="selectKPI('ces')">
+                <div class="kpi-icon">
+                    <i class="fas fa-tachometer-alt"></i>
+                </div>
+                <div class="kpi-value">{{ kpi_data.ces.value }}</div>
+                <div class="kpi-label">سهولة الخدمة (CES)</div>
+                <div class="kpi-change {{ kpi_data.ces.trend }}">
+                    {% if kpi_data.ces.trend == 'positive' %}
+                        <i class="fas fa-arrow-up"></i>
+                    {% elif kpi_data.ces.trend == 'negative' %}
+                        <i class="fas fa-arrow-down"></i>
+                    {% else %}
+                        <i class="fas fa-minus"></i>
+                    {% endif %}
+                    <span>{{ kpi_data.ces.change }} هذا الأسبوع</span>
+                </div>
+            </div>
+            
+            <!-- Completion Rate Card -->
+            <div class="kpi-card completion" data-metric="completion" onclick="selectKPI('completion')">
+                <div class="kpi-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="kpi-value">{{ kpi_data.completion.value }}</div>
+                <div class="kpi-label">معدل الإتمام</div>
+                <div class="kpi-change {{ kpi_data.completion.trend }}">
+                    {% if kpi_data.completion.trend == 'positive' %}
+                        <i class="fas fa-arrow-up"></i>
+                    {% elif kpi_data.completion.trend == 'negative' %}
+                        <i class="fas fa-arrow-down"></i>
+                    {% else %}
+                        <i class="fas fa-minus"></i>
+                    {% endif %}
+                    <span>{{ kpi_data.completion.change }} هذا الأسبوع</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Chart Section -->
+        <div class="chart-section">
+            <div class="chart-header">
+                <h2 class="chart-title" id="chartTitle">تطور رضا العملاء (CSAT) - آخر 7 أيام</h2>
+                <button class="refresh-btn" onclick="window.location.reload()">
+                    <i class="fas fa-sync-alt"></i>
+                    تحديث البيانات
+                </button>
+            </div>
+            
+            <div class="chart-container">
+                <canvas id="mainChart"></canvas>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Chart Data (Hidden) -->
+    <div class="chart-data">
+        <script id="chartData" type="application/json">
+        {
+            "csat": {
+                "title": "تطور رضا العملاء (CSAT) - آخر 7 أيام",
+                "labels": {{ chart_data.labels | tojson }},
+                "values": {{ chart_data.csat | tojson }},
+                "color": "#10b981"
+            },
+            "nps": {
+                "title": "تطور صافي نقاط الترويج (NPS) - آخر 7 أيام",
+                "labels": {{ chart_data.labels | tojson }},
+                "values": {{ chart_data.nps | tojson }},
+                "color": "#3b82f6"
+            },
+            "ces": {
+                "title": "تطور سهولة الخدمة (CES) - آخر 7 أيام",
+                "labels": {{ chart_data.labels | tojson }},
+                "values": {{ chart_data.ces | tojson }},
+                "color": "#f59e0b"
+            },
+            "completion": {
+                "title": "تطور معدل الإتمام - آخر 7 أيام",
+                "labels": {{ chart_data.labels | tojson }},
+                "values": {{ chart_data.completion | tojson }},
+                "color": "#8b5cf6"
+            }
+        }
+        </script>
+    </div>
+    
+    {% include 'components/scripts.html' %}
+    
+    <script>
+        let currentKPI = 'csat';
+        let mainChart = null;
+        let chartDataConfig = null;
+        
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load chart data from script tag
+            const chartDataScript = document.getElementById('chartData');
+            chartDataConfig = JSON.parse(chartDataScript.textContent);
+            
+            initChart();
+            updateLastUpdate();
+        });
+        
+        // Select KPI function
+        function selectKPI(kpi) {
+            // Update active card
+            document.querySelectorAll('.kpi-card').forEach(card => {
+                card.classList.remove('active');
+            });
+            document.querySelector(`[data-metric="${kpi}"]`).classList.add('active');
+            
+            // Update current KPI
+            currentKPI = kpi;
+            
+            // Update chart
+            updateChart();
+        }
+        
+        // Initialize chart
+        function initChart() {
+            const ctx = document.getElementById('mainChart').getContext('2d');
+            
+            const initialData = chartDataConfig[currentKPI];
+            
+            mainChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: initialData.labels,
+                    datasets: [{
+                        label: initialData.title,
+                        data: initialData.values,
+                        borderColor: initialData.color,
+                        backgroundColor: initialData.color + '20',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        pointBackgroundColor: initialData.color,
+                        pointBorderColor: '#ffffff',
+                        pointBorderWidth: 2,
+                        pointRadius: 6,
+                        pointHoverRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                            titleColor: '#374151',
+                            bodyColor: '#374151',
+                            borderColor: '#e5e7eb',
+                            borderWidth: 1,
+                            cornerRadius: 8,
+                            displayColors: false,
+                            rtl: document.dir === 'rtl'
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                color: '#6b7280'
+                            }
+                        },
+                        y: {
+                            grid: {
+                                color: '#f3f4f6'
+                            },
+                            ticks: {
+                                color: '#6b7280'
+                            }
+                        }
+                    },
+                    elements: {
+                        point: {
+                            hoverBorderWidth: 3
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Update chart
+        function updateChart() {
+            if (!mainChart || !chartDataConfig) return;
+            
+            const data = chartDataConfig[currentKPI];
+            
+            // Update chart title
+            document.getElementById('chartTitle').textContent = data.title;
+            
+            // Update chart data
+            mainChart.data.labels = data.labels;
+            mainChart.data.datasets[0].data = data.values;
+            mainChart.data.datasets[0].label = data.title;
+            mainChart.data.datasets[0].borderColor = data.color;
+            mainChart.data.datasets[0].backgroundColor = data.color + '20';
+            mainChart.data.datasets[0].pointBackgroundColor = data.color;
+            
+            mainChart.update('active');
+        }
+        
+        // Update last update time
+        function updateLastUpdate() {
+            const now = new Date();
+            const timeString = now.toLocaleString('ar-SA', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            document.getElementById('lastUpdate').textContent = timeString;
+        }
+    </script>
+</body>
+</html>
