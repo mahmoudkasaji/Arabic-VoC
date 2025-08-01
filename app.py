@@ -513,44 +513,7 @@ def duplicate_survey_by_id(survey_id):
             'message': 'حدث خطأ في نسخ الاستطلاع'
         }), 500
 
-@app.route('/surveys/<int:survey_id>/toggle-status', methods=['POST'])
-@require_login
-def toggle_survey_status_by_id(survey_id):
-    """Toggle survey status between published/paused"""
-    from models.survey_flask import SurveyFlask
-    
-    try:
-        survey = SurveyFlask.query.get_or_404(survey_id)
-        
-        # Toggle status
-        if survey.status == 'published':
-            survey.status = 'paused'
-            message = 'تم إيقاف الاستطلاع مؤقتاً'
-        elif survey.status == 'paused':
-            survey.status = 'published'
-            message = 'تم تفعيل الاستطلاع'
-        elif survey.status == 'draft':
-            survey.status = 'published'
-            message = 'تم نشر الاستطلاع'
-        else:
-            survey.status = 'draft'
-            message = 'تم حفظ الاستطلاع كمسودة'
-        
-        db.session.commit()
-        
-        return jsonify({
-            'status': 'success',
-            'message': message,
-            'new_status': survey.status
-        })
-        
-    except Exception as e:
-        db.session.rollback()
-        logger.error(f"Error toggling survey status: {e}")
-        return jsonify({
-            'status': 'error',
-            'message': 'حدث خطأ في تغيير حالة الاستطلاع'
-        }), 500
+
 
 # Add distribution modal functionality routes
 @app.route('/api/surveys/<int:survey_id>/send-emails', methods=['POST'])

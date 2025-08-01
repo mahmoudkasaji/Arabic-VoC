@@ -108,8 +108,6 @@
                                         <span class="badge bg-success">نشط</span>
                                     {% elif survey.status == 'draft' %}
                                         <span class="badge bg-secondary">مسودة</span>
-                                    {% elif survey.status == 'paused' %}
-                                        <span class="badge bg-warning">متوقف</span>
                                     {% else %}
                                         <span class="badge bg-light text-dark">{{ survey.status }}</span>
                                     {% endif %}
