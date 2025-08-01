@@ -47,17 +47,33 @@ class HybridI18N {
     }
     
     setupLanguageSwitcher() {
-        // Find language toggle buttons with hybrid class
-        const toggleButtons = document.querySelectorAll('.hybrid-lang-toggle, [href="/language/toggle"]');
+        // Find language toggle buttons with multiple selectors
+        const selectors = [
+            '.hybrid-lang-toggle',
+            '[href="/language/toggle"]',
+            'a[href*="language/toggle"]',
+            '.btn[href*="language"]'
+        ];
+        
+        let toggleButtons = [];
+        selectors.forEach(selector => {
+            const found = document.querySelectorAll(selector);
+            toggleButtons.push(...found);
+        });
+        
+        // Remove duplicates
+        toggleButtons = [...new Set(toggleButtons)];
         
         toggleButtons.forEach(button => {
             button.addEventListener('click', (e) => {
                 e.preventDefault();
+                console.log('🔄 Language toggle clicked!');
                 this.switchLanguage();
             });
         });
         
         console.log(`🔧 Set up ${toggleButtons.length} language toggle buttons`);
+        console.log('Button details:', toggleButtons.map(b => ({ class: b.className, href: b.href })));
     }
     
     async switchLanguage() {
@@ -80,10 +96,14 @@ class HybridI18N {
             if (response.ok) {
                 const result = await response.json();
                 
+                console.log('🎯 Server response:', result);
+                
                 // Update local state
                 this.currentLanguage = result.language;
                 this.translations = result.translations;
                 this.isRTL = result.direction === 'rtl';
+                
+                console.log(`📊 Updated state: lang=${this.currentLanguage}, isRTL=${this.isRTL}, translations keys=${Object.keys(this.translations).length}`);
                 
                 // Apply to DOM instantly
                 this.applyLanguageToDOM();
@@ -131,8 +151,20 @@ class HybridI18N {
             const key = element.getAttribute('data-i18n');
             const translation = this.getTranslation(key);
             
+            console.log(`🔍 Translating: ${key} -> ${translation}`);
+            
             if (translation) {
-                element.textContent = translation;
+                // Preserve icons and other HTML content while updating text
+                const icon = element.querySelector('i');
+                const iconHTML = icon ? icon.outerHTML + ' ' : '';
+                
+                if (element.tagName === 'TITLE') {
+                    element.textContent = translation;
+                } else if (iconHTML) {
+                    element.innerHTML = iconHTML + translation;
+                } else {
+                    element.textContent = translation;
+                }
             }
         });
         
@@ -147,6 +179,7 @@ class HybridI18N {
         const title = this.getTranslation('app.name');
         if (title) {
             document.title = title;
+            console.log(`📄 Updated page title: ${title}`);
         }
         
         // Translate navbar brand
@@ -155,10 +188,14 @@ class HybridI18N {
             const icon = brand.querySelector('i');
             const iconHTML = icon ? icon.outerHTML + ' ' : '';
             brand.innerHTML = iconHTML + title;
+            console.log(`🏷️ Updated navbar brand: ${title}`);
         });
         
         // Translate navigation items
         this.translateNavigation();
+        
+        // Translate any other elements using translate filter format
+        this.translateFilterElements();
     }
     
     translateNavigation() {
@@ -188,16 +225,77 @@ class HybridI18N {
         const buttonText = this.getTranslation('language.switch_to');
         const tooltip = this.getTranslation('language.toggle_tooltip');
         
+        console.log(`🔘 Found ${toggleButtons.length} language buttons to update`);
+        console.log(`📝 Button text: ${buttonText}, Tooltip: ${tooltip}`);
+        
         toggleButtons.forEach(button => {
+            // Update the text span inside the button
             const textSpan = button.querySelector('[data-i18n="language.switch_to"]');
             if (textSpan && buttonText) {
                 textSpan.textContent = buttonText;
+                console.log(`✅ Updated button text to: ${buttonText}`);
             }
             
+            // Update tooltip
             if (tooltip) {
                 button.title = tooltip;
             }
         });
+    }
+    
+    translateFilterElements() {
+        // Handle common translation patterns that might not have data-i18n
+        const commonSelectors = [
+            'h1, h2, h3, h4, h5, h6',
+            '.nav-link',
+            '.dropdown-item',
+            '.btn-text',
+            'p, span'
+        ];
+        
+        // Look for elements that might contain untranslated text
+        commonSelectors.forEach(selector => {
+            const elements = document.querySelectorAll(selector);
+            elements.forEach(element => {
+                // Skip if already has data-i18n
+                if (element.hasAttribute('data-i18n')) return;
+                
+                // Skip if contains only icons or complex HTML
+                if (element.querySelector('i, img, svg') && element.textContent.trim().length < 3) return;
+                
+                // Try to find matching translation key
+                const text = element.textContent.trim();
+                if (text && text.length > 0) {
+                    // Check if we have a direct translation
+                    const translation = this.findTranslationByValue(text);
+                    if (translation) {
+                        element.textContent = translation;
+                        console.log(`🔄 Found and updated: "${text}" -> "${translation}"`);
+                    }
+                }
+            });
+        });
+    }
+    
+    findTranslationByValue(searchText) {
+        // Search through translations to find matching text and return translation
+        const searchLower = searchText.toLowerCase();
+        
+        // Search through all translation categories
+        for (const category in this.translations) {
+            for (const key in this.translations[category]) {
+                const value = this.translations[category][key];
+                if (typeof value === 'string') {
+                    // Check if this matches the current opposite language
+                    if (this.currentLanguage === 'en') {
+                        // Currently English, so search Arabic text and return English
+                        // This is complex without reverse lookup, skip for now
+                    }
+                }
+            }
+        }
+        
+        return null;
     }
     
     applyDirectionStyling() {
@@ -230,9 +328,9 @@ class HybridI18N {
     
     // UI Feedback Methods
     showLoadingState() {
-        const toggleButtons = document.querySelectorAll('[href="/language/toggle"]');
+        const toggleButtons = document.querySelectorAll('.hybrid-lang-toggle, [href="/language/toggle"]');
         toggleButtons.forEach(button => {
-            button.disabled = true;
+            button.style.pointerEvents = 'none';
             button.style.opacity = '0.6';
             const icon = button.querySelector('i');
             if (icon) {
@@ -242,9 +340,9 @@ class HybridI18N {
     }
     
     hideLoadingState() {
-        const toggleButtons = document.querySelectorAll('[href="/language/toggle"]');
+        const toggleButtons = document.querySelectorAll('.hybrid-lang-toggle, [href="/language/toggle"]');
         toggleButtons.forEach(button => {
-            button.disabled = false;
+            button.style.pointerEvents = 'auto';
             button.style.opacity = '1';
             const icon = button.querySelector('i');
             if (icon) {
