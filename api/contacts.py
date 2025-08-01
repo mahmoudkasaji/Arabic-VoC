@@ -167,9 +167,8 @@ def delete_contact(contact_id):
     try:
         contact = Contact.query.get_or_404(contact_id)
         
-        # Soft delete - just mark as inactive
-        contact.is_active = False
-        contact.updated_at = datetime.utcnow()
+        # Hard delete - remove from database
+        db.session.delete(contact)
         db.session.commit()
         
         return jsonify({
