@@ -386,8 +386,8 @@
             btnText.textContent = 'جاري التحليل...';
             
             try {
-                // Simulate AI analysis (replace with actual API call)
-                await simulateAnalysis(text);
+                // Call real OpenAI API
+                await callRealAnalysis(text);
             } catch (error) {
                 console.error('Error analyzing text:', error);
                 alert('حدث خطأ في التحليل. يرجى المحاولة مرة أخرى.');
@@ -399,18 +399,28 @@
             }
         }
         
-        // Simulate AI analysis
-        async function simulateAnalysis(text) {
-            // Simulate API delay
-            await new Promise(resolve => setTimeout(resolve, 2000));
+        // Call real OpenAI API analysis
+        async function callRealAnalysis(text) {
+            const response = await fetch('/api/analyze-text', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    text: text
+                })
+            });
             
-            // Simple sentiment analysis simulation
-            const sentiment = detectSentiment(text);
-            const confidence = Math.floor(Math.random() * 30) + 70; // 70-99%
-            const topics = extractTopics(text);
+            const data = await response.json();
             
-            // Show results
-            displayResults(sentiment, confidence, topics, text);
+            if (!data.success) {
+                throw new Error(data.error || 'فشل في التحليل');
+            }
+            
+            const analysis = data.analysis;
+            
+            // Show results with real AI data
+            displayRealResults(analysis, text);
         }
         
         // Simple sentiment detection
@@ -460,7 +470,90 @@
             return foundTopics.length > 0 ? foundTopics : ['عام'];
         }
         
-        // Display results
+        // Display real AI results
+        function displayRealResults(analysis, originalText) {
+            // Show results section
+            const resultsSection = document.getElementById('resultsSection');
+            resultsSection.classList.add('show');
+            
+            // Update sentiment
+            const sentimentResult = document.getElementById('sentimentResult');
+            const sentimentTexts = {
+                'positive': 'إيجابي',
+                'negative': 'سلبي', 
+                'neutral': 'محايد'
+            };
+            
+            sentimentResult.textContent = sentimentTexts[analysis.sentiment] || 'محايد';
+            sentimentResult.className = `sentiment-indicator sentiment-${analysis.sentiment}`;
+            
+            // Update confidence
+            const confidenceBar = document.getElementById('confidenceBar');
+            const confidenceText = document.getElementById('confidenceText');
+            
+            setTimeout(() => {
+                confidenceBar.style.width = analysis.confidence + '%';
+                confidenceText.textContent = analysis.confidence + '%';
+            }, 300);
+            
+            // Update topics
+            const topicsGrid = document.getElementById('topicsGrid');
+            topicsGrid.innerHTML = '';
+            
+            if (analysis.topics && analysis.topics.length > 0) {
+                analysis.topics.forEach(topic => {
+                    const topicElement = document.createElement('span');
+                    topicElement.className = 'topic-tag';
+                    topicElement.textContent = topic;
+                    topicsGrid.appendChild(topicElement);
+                });
+            } else {
+                topicsGrid.innerHTML = '<span class="topic-tag">عام</span>';
+            }
+            
+            // Update detailed analysis
+            const detailedAnalysis = document.getElementById('detailedAnalysis');
+            let detailsHtml = '';
+            
+            // Emotions
+            if (analysis.emotions && analysis.emotions.length > 0) {
+                detailsHtml += '<div class="mb-3">';
+                detailsHtml += '<strong><i class="fas fa-smile me-2"></i>العواطف المكتشفة:</strong><br>';
+                detailsHtml += '<div class="mt-2">';
+                analysis.emotions.forEach(emotion => {
+                    detailsHtml += `<span class="badge bg-primary me-1">${emotion}</span>`;
+                });
+                detailsHtml += '</div></div>';
+            }
+            
+            // Key phrases
+            if (analysis.key_phrases && analysis.key_phrases.length > 0) {
+                detailsHtml += '<div class="mb-3">';
+                detailsHtml += '<strong><i class="fas fa-quote-right me-2"></i>العبارات الرئيسية:</strong><br>';
+                detailsHtml += '<div class="mt-2">';
+                analysis.key_phrases.forEach(phrase => {
+                    detailsHtml += `<span class="badge bg-secondary me-1 mb-1">"${phrase}"</span>`;
+                });
+                detailsHtml += '</div></div>';
+            }
+            
+            // Summary
+            if (analysis.summary) {
+                detailsHtml += '<div class="mb-3">';
+                detailsHtml += '<strong><i class="fas fa-file-alt me-2"></i>ملخص التحليل:</strong><br>';
+                detailsHtml += `<div class="mt-2 p-3 bg-light rounded">${analysis.summary}</div>`;
+                detailsHtml += '</div>';
+            }
+            
+            detailedAnalysis.innerHTML = detailsHtml;
+            
+            // Scroll to results
+            setTimeout(() => {
+                resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 300);
+        }
+
+        // Display results (keep for fallback)
         function displayResults(sentiment, confidence, topics, originalText) {
             // Show results section
             const resultsSection = document.getElementById('resultsSection');

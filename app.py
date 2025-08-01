@@ -154,6 +154,13 @@ try:
 except Exception as e:
     logger.error(f"Could not import Feedback Widget routes: {e}")
 
+# Import AI analysis routes
+try:
+    import routes_ai_analysis
+    logger.info("AI Analysis routes imported successfully")
+except Exception as e:
+    logger.error(f"Could not import Feedback Widget routes: {e}")
+
 # Register Integration Status API
 try:
     import api.integrations_status
