@@ -1162,9 +1162,9 @@ def survey_test_page():
 
 @app.route('/analytics/advanced')
 def analytics_advanced():
-    """Advanced analytics page - consolidated enhanced features"""
-    return render_template('analytics_advanced.html', 
-                         title='التحليلات المتقدمة')
+    """Simplified AI text analytics demo page"""
+    return render_template('analytics_ai_demo.html', 
+                         title='مختبر تحليل النصوص بالذكاء الاصطناعي')
                          
 @app.route('/analytics/enhanced-test')
 def enhanced_analytics_test():

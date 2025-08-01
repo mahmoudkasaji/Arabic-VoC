@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="{{ get_language_info().code }}" dir="{{ get_language_info().direction }}">
+<head>
+    {% include 'components/head.html' %}
+    <title>AI Text Analytics Demo - Voice of Customer Platform</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/unified-layout.css') }}">
+    <style>
+        .demo-container {
+            padding: 24px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .demo-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .demo-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 8px;
+        }
+        
+        .demo-subtitle {
+            font-size: 1.1rem;
+            color: #64748b;
+            margin-bottom: 16px;
+        }
+        
+        .demo-card {
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            margin-bottom: 32px;
+        }
+        
+        .input-section {
+            margin-bottom: 32px;
+        }
+        
+        .input-label {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 12px;
+            display: block;
+        }
+        
+        .text-input {
+            width: 100%;
+            min-height: 200px;
+            padding: 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-family: 'Cairo', sans-serif;
+            font-size: 1rem;
+            line-height: 1.6;
+            resize: vertical;
+            transition: all 0.3s ease;
+            background: #fafbfc;
+        }
+        
+        .text-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        
+        .analyze-btn {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 0 auto;
+        }
+        
+        .analyze-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+        }
+        
+        .analyze-btn:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .results-section {
+            margin-top: 32px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+        }
+        
+        .results-section.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .result-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 16px;
+        }
+        
+        .result-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .sentiment-indicator {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+        
+        .sentiment-positive {
+            background: #dcfce7;
+            color: #166534;
+        }
+        
+        .sentiment-negative {
+            background: #fef2f2;
+            color: #991b1b;
+        }
+        
+        .sentiment-neutral {
+            background: #f1f5f9;
+            color: #475569;
+        }
+        
+        .confidence-bar {
+            background: #e2e8f0;
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+        
+        .confidence-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #10b981, #059669);
+            border-radius: 4px;
+            transition: width 0.8s ease;
+        }
+        
+        .topics-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        
+        .topic-tag {
+            background: #ddd6fe;
+            color: #5b21b6;
+            padding: 6px 12px;
+            border-radius: 16px;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+        
+        .example-texts {
+            background: #f0f9ff;
+            border: 1px solid #bae6fd;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+        
+        .example-title {
+            font-weight: 600;
+            color: #0c4a6e;
+            margin-bottom: 12px;
+        }
+        
+        .example-item {
+            background: white;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid #e0f2fe;
+        }
+        
+        .example-item:hover {
+            border-color: #0284c7;
+            transform: translateX(4px);
+        }
+        
+        .example-text {
+            color: #374151;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        
+        .loading-spinner {
+            display: none;
+            width: 24px;
+            height: 24px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top: 3px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Arabic RTL Support */
+        [dir="rtl"] .example-item:hover {
+            transform: translateX(-4px);
+        }
+        
+        [dir="rtl"] .topics-grid {
+            direction: rtl;
+        }
+    </style>
+</head>
+<body>
+    {% include 'components/unified_navigation.html' %}
+    
+    <div class="demo-container">
+        <!-- Header -->
+        <div class="demo-header">
+            <h1 class="demo-title">
+                <i class="fas fa-brain me-3"></i>
+                مختبر تحليل النصوص بالذكاء الاصطناعي
+            </h1>
+            <p class="demo-subtitle">
+                اختبر قوة الذكاء الاصطناعي في تحليل المشاعر والمواضيع للنصوص العربية
+            </p>
+        </div>
+        
+        <!-- Main Demo Card -->
+        <div class="demo-card">
+            <!-- Example Texts -->
+            <div class="example-texts">
+                <div class="example-title">
+                    <i class="fas fa-lightbulb me-2"></i>
+                    أمثلة للتجربة (اضغط لاستخدامها):
+                </div>
+                
+                <div class="example-item" onclick="useExample(this)">
+                    <div class="example-text">
+                        المنتج رائع جداً وأحببت الخدمة السريعة، لكن السعر مرتفع قليلاً. بشكل عام أنصح بالشراء.
+                    </div>
+                </div>
+                
+                <div class="example-item" onclick="useExample(this)">
+                    <div class="example-text">
+                        التطبيق معقد جداً ولا أستطيع فهم كيفية استخدامه. خدمة العملاء بطيئة في الرد وأشعر بالإحباط.
+                    </div>
+                </div>
+                
+                <div class="example-item" onclick="useExample(this)">
+                    <div class="example-text">
+                        الموقع جيد والتسليم سريع. لا يوجد مشاكل كبيرة ولكن يمكن تحسين التصميم أكثر.
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Input Section -->
+            <div class="input-section">
+                <label class="input-label" for="textInput">
+                    <i class="fas fa-edit me-2"></i>
+                    أدخل النص المراد تحليله:
+                </label>
+                <textarea 
+                    id="textInput" 
+                    class="text-input" 
+                    placeholder="اكتب أو الصق النص هنا...
+
+يمكنك كتابة تعليق عميل، مراجعة منتج، أو أي نص تريد تحليل مشاعره ومواضيعه بالذكاء الاصطناعي.
+
+النظام يدعم النصوص العربية والإنجليزية ويحلل:
+• المشاعر (إيجابي، سلبي، محايد)
+• درجة الثقة في التحليل  
+• المواضيع الرئيسية
+• العواطف المكتشفة"></textarea>
+            </div>
+            
+            <!-- Analyze Button -->
+            <button class="analyze-btn" onclick="analyzeText()" id="analyzeBtn">
+                <i class="fas fa-brain"></i>
+                <span class="loading-spinner" id="loadingSpinner"></span>
+                <span id="btnText">تحليل النص بالذكاء الاصطناعي</span>
+            </button>
+            
+            <!-- Results Section -->
+            <div class="results-section" id="resultsSection">
+                <div class="result-card">
+                    <div class="result-title">
+                        <i class="fas fa-heart"></i>
+                        تحليل المشاعر
+                    </div>
+                    <div>
+                        <span class="sentiment-indicator" id="sentimentResult">محايد</span>
+                        <div class="confidence-bar">
+                            <div class="confidence-fill" id="confidenceBar" style="width: 0%"></div>
+                        </div>
+                        <small class="text-muted mt-2 d-block">درجة الثقة: <span id="confidenceText">0%</span></small>
+                    </div>
+                </div>
+                
+                <div class="result-card">
+                    <div class="result-title">
+                        <i class="fas fa-tags"></i>
+                        المواضيع المكتشفة
+                    </div>
+                    <div class="topics-grid" id="topicsGrid">
+                        <!-- Topics will be populated here -->
+                    </div>
+                </div>
+                
+                <div class="result-card">
+                    <div class="result-title">
+                        <i class="fas fa-chart-bar"></i>
+                        تفاصيل التحليل
+                    </div>
+                    <div id="detailedAnalysis">
+                        <!-- Detailed analysis will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    {% include 'components/scripts.html' %}
+    
+    <script>
+        // Use example text
+        function useExample(element) {
+            const text = element.querySelector('.example-text').textContent;
+            document.getElementById('textInput').value = text;
+            
+            // Visual feedback
+            element.style.background = '#dbeafe';
+            setTimeout(() => {
+                element.style.background = 'white';
+            }, 300);
+        }
+        
+        // Analyze text function
+        async function analyzeText() {
+            const textInput = document.getElementById('textInput');
+            const text = textInput.value.trim();
+            
+            if (!text) {
+                alert('يرجى إدخال نص للتحليل');
+                return;
+            }
+            
+            // Show loading state
+            const btn = document.getElementById('analyzeBtn');
+            const spinner = document.getElementById('loadingSpinner');
+            const btnText = document.getElementById('btnText');
+            
+            btn.disabled = true;
+            spinner.style.display = 'block';
+            btnText.textContent = 'جاري التحليل...';
+            
+            try {
+                // Simulate AI analysis (replace with actual API call)
+                await simulateAnalysis(text);
+            } catch (error) {
+                console.error('Error analyzing text:', error);
+                alert('حدث خطأ في التحليل. يرجى المحاولة مرة أخرى.');
+            } finally {
+                // Hide loading state
+                btn.disabled = false;
+                spinner.style.display = 'none';
+                btnText.textContent = 'تحليل النص بالذكاء الاصطناعي';
+            }
+        }
+        
+        // Simulate AI analysis
+        async function simulateAnalysis(text) {
+            // Simulate API delay
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            
+            // Simple sentiment analysis simulation
+            const sentiment = detectSentiment(text);
+            const confidence = Math.floor(Math.random() * 30) + 70; // 70-99%
+            const topics = extractTopics(text);
+            
+            // Show results
+            displayResults(sentiment, confidence, topics, text);
+        }
+        
+        // Simple sentiment detection
+        function detectSentiment(text) {
+            const positiveWords = ['رائع', 'ممتاز', 'جيد', 'أحببت', 'أنصح', 'سريع', 'مفيد', 'ممتع'];
+            const negativeWords = ['سيء', 'معقد', 'بطيء', 'إحباط', 'مشكلة', 'صعب', 'غير مفيد'];
+            
+            let positiveScore = 0;
+            let negativeScore = 0;
+            
+            positiveWords.forEach(word => {
+                if (text.includes(word)) positiveScore++;
+            });
+            
+            negativeWords.forEach(word => {
+                if (text.includes(word)) negativeScore++;
+            });
+            
+            if (positiveScore > negativeScore) return 'positive';
+            if (negativeScore > positiveScore) return 'negative';
+            return 'neutral';
+        }
+        
+        // Extract topics
+        function extractTopics(text) {
+            const topicMap = {
+                'منتج': ['منتج', 'سلعة', 'بضاعة'],
+                'خدمة العملاء': ['خدمة', 'دعم', 'موظف', 'رد'],
+                'السعر': ['سعر', 'تكلفة', 'ثمن', 'مال'],
+                'التسليم': ['تسليم', 'شحن', 'وصول'],
+                'الجودة': ['جودة', 'نوعية', 'مستوى'],
+                'سهولة الاستخدام': ['سهل', 'بسيط', 'معقد', 'صعب'],
+                'التصميم': ['تصميم', 'شكل', 'مظهر'],
+                'الأداء': ['أداء', 'سرعة', 'بطء']
+            };
+            
+            const foundTopics = [];
+            
+            Object.keys(topicMap).forEach(topic => {
+                const keywords = topicMap[topic];
+                const found = keywords.some(keyword => text.includes(keyword));
+                if (found) {
+                    foundTopics.push(topic);
+                }
+            });
+            
+            return foundTopics.length > 0 ? foundTopics : ['عام'];
+        }
+        
+        // Display results
+        function displayResults(sentiment, confidence, topics, originalText) {
+            // Show results section
+            const resultsSection = document.getElementById('resultsSection');
+            resultsSection.classList.add('show');
+            
+            // Update sentiment
+            const sentimentResult = document.getElementById('sentimentResult');
+            const sentimentTexts = {
+                'positive': 'إيجابي',
+                'negative': 'سلبي',
+                'neutral': 'محايد'
+            };
+            
+            sentimentResult.textContent = sentimentTexts[sentiment];
+            sentimentResult.className = `sentiment-indicator sentiment-${sentiment}`;
+            
+            // Update confidence
+            const confidenceBar = document.getElementById('confidenceBar');
+            const confidenceText = document.getElementById('confidenceText');
+            
+            setTimeout(() => {
+                confidenceBar.style.width = confidence + '%';
+                confidenceText.textContent = confidence + '%';
+            }, 300);
+            
+            // Update topics
+            const topicsGrid = document.getElementById('topicsGrid');
+            topicsGrid.innerHTML = topics.map(topic => 
+                `<span class="topic-tag">${topic}</span>`
+            ).join('');
+            
+            // Update detailed analysis
+            const detailedAnalysis = document.getElementById('detailedAnalysis');
+            detailedAnalysis.innerHTML = `
+                <div class="mb-3">
+                    <strong>عدد الكلمات:</strong> ${originalText.split(' ').length}
+                </div>
+                <div class="mb-3">
+                    <strong>عدد الأحرف:</strong> ${originalText.length}
+                </div>
+                <div class="mb-3">
+                    <strong>اللغة المكتشفة:</strong> ${/[\u0600-\u06FF]/.test(originalText) ? 'العربية' : 'الإنجليزية'}
+                </div>
+                <div>
+                    <strong>نوع التحليل:</strong> تحليل مشاعر متقدم مع استخراج المواضيع
+                </div>
+            `;
+            
+            // Scroll to results
+            resultsSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+        
+        // Allow Enter key to analyze
+        document.getElementById('textInput').addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.key === 'Enter') {
+                analyzeText();
+            }
+        });
+    </script>
+</body>
+</html>
