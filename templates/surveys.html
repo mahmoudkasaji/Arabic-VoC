@@ -393,31 +393,31 @@
         };
         
         // Generate the embeddable JavaScript code (simplified to prevent rendering issues)
-        const jsCode = `<!-- Voice of Customer Survey Widget -->
-<script>
-// Widget configuration
-var widgetConfig = {
-    surveyUrl: '${currentSurveyUrl}',
-    position: '${position}',
-    color: '${colorMap[color]}',
-    language: '${language}'
-};
-
-// Create widget button
-function createSurveyWidget() {
-    var btn = document.createElement('button');
-    btn.innerHTML = '${language === 'ar' ? 'رأيك' : 'Feedback'}';
-    btn.style.cssText = 'position:fixed;bottom:20px;${position.includes('left') ? 'left' : 'right'}:20px;background:${colorMap[color]};color:white;border:none;padding:12px 20px;border-radius:25px;cursor:pointer;z-index:9999;';
-    btn.onclick = function(){ window.open(widgetConfig.surveyUrl, '_blank', 'width=600,height=700'); };
-    document.body.appendChild(btn);
-}
-
-if(document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', createSurveyWidget);
-} else {
-    createSurveyWidget();
-}
-</script>`;
+        const jsCode = '<!-- Voice of Customer Survey Widget -->' +
+'<script>' +
+'// Widget configuration' +
+'var widgetConfig = {' +
+'    surveyUrl: \'' + currentSurveyUrl + '\',' +
+'    position: \'' + position + '\',' +
+'    color: \'' + colorMap[color] + '\',' +
+'    language: \'' + language + '\'' +
+'};' +
+'' +
+'// Create widget button' +
+'function createSurveyWidget() {' +
+'    var btn = document.createElement(\'button\');' +
+'    btn.innerHTML = \'' + (language === 'ar' ? 'رأيك' : 'Feedback') + '\';' +
+'    btn.style.cssText = \'position:fixed;bottom:20px;' + (position.includes('left') ? 'left' : 'right') + ':20px;background:' + colorMap[color] + ';color:white;border:none;padding:12px 20px;border-radius:25px;cursor:pointer;z-index:9999;\';' +
+'    btn.onclick = function(){ window.open(widgetConfig.surveyUrl, \'_blank\', \'width=600,height=700\'); };' +
+'    document.body.appendChild(btn);' +
+'}' +
+'' +
+'if(document.readyState === \'loading\') {' +
+'    document.addEventListener(\'DOMContentLoaded\', createSurveyWidget);' +
+'} else {' +
+'    createSurveyWidget();' +
+'}' +
+'</script>';
         
         // Display the code
         document.getElementById('generatedEmbedCode').value = jsCode;
