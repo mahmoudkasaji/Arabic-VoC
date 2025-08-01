@@ -1944,6 +1944,30 @@ def integrations_catalog():
     
     return render_template('integrations_technical_catalog.html')
 
+@app.route('/surveys/create')
+@require_login
+def create_new_survey():
+    """Create a new survey"""
+    try:
+        return render_template('survey_builder.html')
+    except Exception as e:
+        logger.error(f"Error loading survey creation page: {e}")
+        flash('حدث خطأ في تحميل صفحة إنشاء الاستطلاع', 'error')
+        return redirect(url_for('surveys_page'))
+
+@app.route('/surveys/<int:survey_id>/edit')
+@require_login
+def edit_survey_page(survey_id):
+    """Edit an existing survey"""
+    try:
+        from models.survey_flask import SurveyFlask
+        survey = SurveyFlask.query.get_or_404(survey_id)
+        return render_template('survey_builder.html', survey=survey)
+    except Exception as e:
+        logger.error(f"Error loading survey for edit: {e}")
+        flash('حدث خطأ في تحميل الاستطلاع للتحرير', 'error')
+        return redirect(url_for('surveys_page'))
+
 # Import additional contact routes
 import contact_routes  # noqa: F401
 import routes  # noqa: F401

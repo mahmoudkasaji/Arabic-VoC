@@ -37,7 +37,7 @@
         <div class="page-header">
             <h1 class="page-title">إدارة الاستطلاعات</h1>
             <div class="page-actions">
-                <a href="/surveys/builder" class="btn btn-primary">
+                <a href="/surveys/create" class="btn btn-primary">
                     <i class="fas fa-plus me-2"></i>إنشاء استطلاع جديد
                 </a>
             </div>
@@ -140,7 +140,7 @@
                                 </td>
                                 <td>
                                     <div class="btn-group">
-                                        <a href="/surveys/builder?id={{ survey.id }}" class="btn btn-sm btn-outline-primary" title="تحرير">
+                                        <a href="/surveys/{{ survey.id }}/edit" class="btn btn-sm btn-outline-primary" title="تحرير">
                                             <i class="fas fa-edit"></i>
                                         </a>
                                         <button class="btn btn-sm btn-outline-info" onclick="toggleResponsePreview({{ survey.id }})" title="النتائج السريعة">
@@ -207,7 +207,7 @@
                     </div>
                     <h3 class="text-muted">لا توجد استطلاعات بعد</h3>
                     <p class="text-muted mb-4">ابدأ بإنشاء أول استطلاع لك لجمع آراء العملاء</p>
-                    <a href="/surveys/builder" class="btn btn-primary">
+                    <a href="/surveys/create" class="btn btn-primary">
                         <i class="fas fa-plus me-2"></i>إنشاء استطلاع جديد
                     </a>
                 </div>
@@ -612,26 +612,14 @@
             previewRow.style.display = 'none';
         }
     }
-
-    function pauseSurvey(surveyId) {
-        if (confirm('هل تريد إيقاف هذا الاستطلاع مؤقتاً؟')) {
-            // Add actual pause functionality here
-            console.log('Pause survey:', surveyId);
-        }
-    }
-
-    function toggleResponsePreview(surveyId) {
-        const previewRow = document.getElementById(`responsePreview${surveyId}`);
-        if (previewRow.style.display === 'none') {
-            previewRow.style.display = 'table-row';
-        } else {
-            previewRow.style.display = 'none';
-        }
-    }
-
-    function exportResponses(surveyId) {
-        console.log('Export responses for survey:', surveyId);
-        // Add actual export functionality
+    
+    function openDistributionModal(surveyId, surveyTitle) {
+        currentSurveyId = surveyId;
+        currentSurveyTitle = surveyTitle;
+        document.getElementById('modalSurveyTitle').textContent = surveyTitle;
+        
+        const modal = new bootstrap.Modal(document.getElementById('distributionModal'));
+        modal.show();
     }
     </script>
 
