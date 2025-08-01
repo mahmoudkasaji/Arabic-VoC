@@ -71,6 +71,96 @@ def edit_contact(contact_id):
         flash('حدث خطأ غير متوقع', 'error')
         return redirect(url_for('contacts_page'))
 
+# Contact Delete Route (Flask-based)
+@app.route('/contacts/delete/<int:contact_id>', methods=['POST'])
+@require_login
+def delete_contact(contact_id):
+    """Handle contact deletion with hard delete"""
+    from models.contacts import Contact
+    import logging
+    
+    logger = logging.getLogger(__name__)
+    logger.info(f"=== DELETE CONTACT ROUTE START ===")
+    logger.info(f"Contact ID: {contact_id}")
+    
+    try:
+        contact = Contact.query.get_or_404(contact_id)
+        contact_name = contact.name
+        
+        # Hard delete from database
+        db.session.delete(contact)
+        db.session.commit()
+        
+        logger.info(f"SUCCESS: Contact {contact_id} ({contact_name}) deleted successfully")
+        flash(f'تم حذف جهة الاتصال "{contact_name}" بنجاح', 'success')
+        
+    except Exception as e:
+        db.session.rollback()
+        logger.error(f"ERROR: Failed to delete contact {contact_id}: {e}")
+        flash('حدث خطأ في حذف جهة الاتصال', 'error')
+    
+    return redirect(url_for('contacts_page'))
+
+# Contact Bulk Operations (Flask-based)
+@app.route('/contacts/bulk-import', methods=['POST'])
+@require_login
+def bulk_import_contacts():
+    """Handle bulk contact import from CSV"""
+    from models.contacts import Contact
+    import csv
+    import io
+    import logging
+    
+    logger = logging.getLogger(__name__)
+    
+    try:
+        if 'file' not in request.files:
+            flash('لم يتم اختيار ملف', 'error')
+            return redirect(url_for('contacts_page'))
+        
+        file = request.files['file']
+        if file.filename == '':
+            flash('لم يتم اختيار ملف', 'error')
+            return redirect(url_for('contacts_page'))
+        
+        if not file.filename.endswith('.csv'):
+            flash('يجب أن يكون الملف من نوع CSV', 'error')
+            return redirect(url_for('contacts_page'))
+        
+        # Read CSV file
+        stream = io.StringIO(file.stream.read().decode("UTF8"), newline=None)
+        csv_input = csv.DictReader(stream)
+        
+        imported_count = 0
+        for row in csv_input:
+            if row.get('name') and row.get('email'):
+                # Check if contact already exists
+                existing = Contact.query.filter_by(email=row['email']).first()
+                if not existing:
+                    contact = Contact(
+                        name=row['name'],
+                        email=row['email'],
+                        phone=row.get('phone'),
+                        company=row.get('company'),
+                        language_preference=row.get('language_preference', 'ar'),
+                        is_active=True,
+                        email_opt_in=True
+                    )
+                    db.session.add(contact)
+                    imported_count += 1
+        
+        db.session.commit()
+        flash(f'تم استيراد {imported_count} جهة اتصال بنجاح', 'success')
+        
+    except Exception as e:
+        db.session.rollback()
+        logger.error(f"Bulk import failed: {e}")
+        flash('حدث خطأ في استيراد الملف', 'error')
+    
+    return redirect(url_for('contacts_page'))
+
+
+
 # Contact Create Route
 @app.route('/contacts/create', methods=['GET', 'POST'])
 @require_login

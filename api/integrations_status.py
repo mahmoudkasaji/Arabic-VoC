@@ -10,6 +10,9 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+# Note: This API is being migrated to Flask routes in routes.py
+# Keeping this for backward compatibility during transition
+
 @app.route('/api/integrations/status')
 def get_integrations_status():
     """Get real-time status of all integrations"""

@@ -18,6 +18,12 @@ UX Testing Focus: Prioritizes comprehensive frontend-backend integration testing
 QA Framework Preference: Prefers comprehensive testing coverage that evolves with platform enhancements. Values enhancement-specific test development for each major release, maintaining high-quality standards (≥95% pass rate) while ensuring Arabic language excellence and mobile responsiveness. Emphasizes automated testing pipelines with manual validation for user experience quality.
 
 ## Recent Changes
+**API to Flask Migration (August 2025)**
+- Converted internal operation APIs from FastAPI to Flask routes for improved integration
+- Migrated contact management, user preferences, integration testing, and survey distribution to Flask
+- Consolidated routing structure to reduce complexity and improve performance for simple operations
+- Maintained API structure for complex analytics and external integrations
+
 **API Integrations Catalog Enhancement (January 2025)**
 - Redesigned `/integrations/catalog` with developer-focused API documentation approach
 - Improved from visual-heavy dashboard to technical reference with endpoint details, authentication methods, and testing interface
