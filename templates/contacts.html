@@ -714,9 +714,9 @@
                 deleteBtn.disabled = true;
                 deleteBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
                 
-                // Make API call to delete contact
-                fetch(`/api/contacts/${contactId}`, {
-                    method: 'DELETE',
+                // Make Flask route call to delete contact
+                fetch(`/contacts/delete/${contactId}`, {
+                    method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },

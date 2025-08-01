@@ -150,6 +150,33 @@ def create_contact():
     
     return redirect(url_for('contacts'))
 
+# Contact Delete Route
+@app.route('/contacts/delete/<int:contact_id>', methods=['POST'])
+@require_login
+def delete_contact(contact_id):
+    """Delete a contact"""
+    from flask import jsonify
+    from models.contacts import Contact
+    
+    try:
+        contact = Contact.query.get_or_404(contact_id)
+        
+        # Hard delete - remove from database
+        db.session.delete(contact)
+        db.session.commit()
+        
+        return jsonify({
+            'status': 'success',
+            'message': 'تم حذف جهة الاتصال بنجاح'
+        })
+        
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({
+            'status': 'error',
+            'message': 'حدث خطأ في حذف جهة الاتصال'
+        }), 500
+
 # Bulk Export Route
 @app.route('/contacts/export')
 @require_login
