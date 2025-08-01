@@ -45,10 +45,40 @@
       "design_system": "Unified Design System",
       "design_subtitle": "Component library and documentation"
     },
-    "back_to_home": "Back to Home"
+    "back_to_home": "Back to Home",
+    "contacts_dropdown": {
+      "title": "Contacts",
+      "management": "Contact Management",
+      "list": "Contact List",
+      "manage_organize": "Manage and organize contacts"
+    },
+    "analytics_basic": {
+      "title": "Basic Analytics",
+      "kpi_dashboard": "Key Performance Indicators Dashboard",
+      "kpi_subtitle": "Key performance metrics and operational insights",
+      "ai_text_analysis": "AI Text Analysis",
+      "ai_subtitle": "Sentiment and topic analysis using AI models"
+    },
+    "surveys_distribution": {
+      "title": "Survey Distribution",
+      "subtitle": "3-step wizard for multi-channel survey distribution"
+    },
+    "integrations_ai": {
+      "title": "Integrations & AI Management",
+      "subtitle": "Monitor and manage all technical integrations and AI models"
+    }
   },
   "contacts": {
-    "title": "Contact Management"
+    "title": "Contact Management",
+    "management": "Contact Management", 
+    "list": "Contact List",
+    "manage_organize": "Manage and organize contacts"
+  },
+  "language": {
+    "switch_to": "العربية",
+    "toggle_tooltip": "Switch to Arabic",
+    "current": "English",
+    "loading": "Switching language..."
   },
   "buttons": {
     "create": "Create",
