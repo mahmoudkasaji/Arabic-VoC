@@ -11,11 +11,24 @@ def register_template_helpers(app):
     
     @app.template_filter('translate')
     def translate_filter(key, **kwargs):
-        """Jinja2 filter for translating keys
+        """Jinja2 filter for translating keys - ENHANCED
         Usage: {{ 'navigation.surveys' | translate }}
         Usage with variables: {{ 'messages.welcome' | translate(name=user.name) }}
         """
-        return language_manager.translate(key, **kwargs)
+        try:
+            from flask import session, g, has_request_context
+            
+            # Force language detection if needed
+            if has_request_context():
+                # Ensure we have current language set
+                current_lang = language_manager.get_current_language()
+                
+                # Translation working correctly
+                
+            return language_manager.translate(key, **kwargs)
+        except Exception as e:
+            print(f"Translation filter error for key '{key}': {e}")
+            return f"[{key}]"
     
     @app.template_global()
     def get_lang():

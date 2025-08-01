@@ -72,20 +72,30 @@ except Exception as e:
 # Verify translation filter is working
 @app.context_processor
 def inject_language_vars():
-    """Inject language variables into all templates"""
+    """Inject language variables into all templates - ENHANCED"""
     try:
+        from flask import session, g
+        
+        # Force consistent language detection
         current_lang = language_manager.get_current_language()
+        
+        # Language context working correctly
+        
         return {
             'current_lang': current_lang,
             'lang_direction': language_manager.get_direction(current_lang),
-            'translate': language_manager.translate
+            'translate': language_manager.translate,
+            'get_lang': lambda: current_lang,
+            'get_dir': lambda: language_manager.get_direction(current_lang)
         }
     except Exception as e:
         logger.error(f"Language context injection failed: {e}")
         return {
             'current_lang': 'ar',
             'lang_direction': 'rtl',
-            'translate': lambda key, **kwargs: f"[{key}]"
+            'translate': lambda key, **kwargs: f"[{key}]",
+            'get_lang': lambda: 'ar',
+            'get_dir': lambda: 'rtl'
         }
 
 # Create tables

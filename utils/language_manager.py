@@ -37,9 +37,13 @@ class LanguageManager:
                 self.translations[lang] = {}
     
     def get_current_language(self) -> str:
-        """Get current user's language preference - FINAL FIX"""
+        """Get current user's language preference - ENHANCED FIX"""
         try:
-            from flask import session, g
+            from flask import session, g, has_request_context
+            
+            # Only proceed if we're in a request context
+            if not has_request_context():
+                return self.default_language
             
             # 1. Check URL parameter (highest priority) 
             if request and request.args.get('lang') in self.supported_languages:
@@ -48,15 +52,18 @@ class LanguageManager:
                     self.set_language(lang)
                     return lang
             
-            # 2. CRITICAL FIX: Use Flask's g object to cache language per request
-            if hasattr(g, '_current_language'):
+            # 2. Use Flask's g object to cache language per request
+            if hasattr(g, '_current_language') and g._current_language in self.supported_languages:
                 return g._current_language
             
             # 3. Check session with error handling
-            session_lang = session.get('language')
-            if session_lang in self.supported_languages:
-                g._current_language = session_lang
-                return session_lang
+            try:
+                session_lang = session.get('language')
+                if session_lang in self.supported_languages:
+                    g._current_language = session_lang
+                    return session_lang
+            except Exception:
+                pass
             
             # 4. Check browser Accept-Language header
             if request and request.headers.get('Accept-Language'):
