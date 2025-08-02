@@ -7,16 +7,16 @@
     <div class="container-unified">
         <div class="page-header">
             <h1 class="page-title">
-                <i class="fas fa-users me-3"></i>إدارة {{ 'navigation.contacts_dropdown.title' | translate }}
+                <i class="fas fa-users me-3"></i><span data-i18n="contacts.management">{{ 'contacts.management' | translate }}</span>
             </h1>
-            <p class="page-subtitle">إدارة قائمة {{ 'navigation.contacts_dropdown.title' | translate }} للاستطلاعات</p>
+            <p class="page-subtitle" data-i18n="contacts.manage_organize">{{ 'contacts.manage_organize' | translate }}</p>
         </div>
 
         <!-- Contacts Table -->
         <div class="card-unified">
             <div class="card-header">
                 <h5 class="card-title mb-0">
-                    <i class="fas fa-users me-2"></i>قائمة {{ 'navigation.contacts_dropdown.title' | translate }}
+                    <i class="fas fa-users me-2"></i><span data-i18n="contacts.list">{{ 'contacts.list' | translate }}</span>
                     <span class="badge bg-primary">{{ contacts|length }}</span>
                 </h5>
             </div>
@@ -26,13 +26,13 @@
                     <table class="table table-hover">
                         <thead>
                             <tr>
-                                <th>الاسم</th>
-                                <th>البريد الإلكتروني</th>
-                                <th>الهاتف</th>
-                                <th>الشركة</th>
-                                <th>اللغة</th>
-                                <th>الحالة</th>
-                                <th>الإجراءات</th>
+                                <th data-i18n="forms.name">{{ 'forms.name' | translate }}</th>
+                                <th data-i18n="forms.email">{{ 'forms.email' | translate }}</th>
+                                <th data-i18n="forms.phone">{{ 'forms.phone' | translate }}</th>
+                                <th data-i18n="forms.company">{{ 'forms.company' | translate }}</th>
+                                <th data-i18n="forms.language">{{ 'forms.language' | translate }}</th>
+                                <th data-i18n="forms.status">{{ 'forms.status' | translate }}</th>
+                                <th data-i18n="forms.actions">{{ 'forms.actions' | translate }}</th>
                             </tr>
                         </thead>
                         <tbody>

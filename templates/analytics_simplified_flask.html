@@ -219,13 +219,13 @@
         <div class="dashboard-header">
             <h1 class="dashboard-title">
                 <i class="fas fa-chart-line me-3"></i>
-                لوحة مؤشرات الأداء الرئيسية
+                <span data-i18n="dashboard.title">{{ 'dashboard.title' | translate }}</span>
             </h1>
-            <p class="dashboard-subtitle">
-                تحليل مؤشرات الأداء الأساسية لصوت العميل مع رسوم بيانية تفاعلية
+            <p class="dashboard-subtitle" data-i18n="dashboard.subtitle">
+                {{ 'dashboard.subtitle' | translate }}
             </p>
             <div class="mt-2">
-                <small class="text-muted">آخر تحديث: <span id="lastUpdate">الآن</span></small>
+                <small class="text-muted" data-i18n="dashboard.last_updated">{{ 'dashboard.last_updated' | translate }}: <span id="lastUpdate" data-i18n="dashboard.now">{{ 'dashboard.now' | translate }}</span></small>
             </div>
         </div>
         
@@ -237,7 +237,7 @@
                     <i class="fas fa-smile"></i>
                 </div>
                 <div class="kpi-value">{{ kpi_data.csat.value }}</div>
-                <div class="kpi-label">رضا العملاء (CSAT)</div>
+                <div class="kpi-label" data-i18n="dashboard.metrics.satisfaction">{{ 'dashboard.metrics.satisfaction' | translate }}</div>
                 <div class="kpi-change {{ kpi_data.csat.trend }}">
                     {% if kpi_data.csat.trend == 'positive' %}
                         <i class="fas fa-arrow-up"></i>
