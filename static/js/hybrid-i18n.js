@@ -3,6 +3,9 @@
  * Provides instant language switching without page reload
  */
 
+// Prevent duplicate class declaration with immediate function check
+if (!window.HybridI18N) {
+
 class HybridI18N {
     constructor() {
         this.currentLanguage = 'ar';
@@ -369,10 +372,15 @@ class HybridI18N {
     }
 }
 
+// Make class available globally
+window.HybridI18N = HybridI18N;
+
+} // End class declaration guard
+
 // Initialize when DOM is ready - prevent multiple instances
 document.addEventListener('DOMContentLoaded', () => {
     if (!window.hybridI18N) {
-        window.hybridI18N = new HybridI18N();
+        window.hybridI18N = new window.HybridI18N();
         console.log('🎯 HybridI18N initialized successfully');
     } else {
         console.log('🔄 HybridI18N already initialized, reusing existing instance');
