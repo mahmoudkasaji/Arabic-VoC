@@ -57,15 +57,15 @@
                                 </td>
                                 <td>
                                     {% if contact.is_active %}
-                                        <span class="badge bg-success">نشط</span>
+                                        <span class="badge bg-success" data-i18n="forms.active">{{ 'forms.active' | translate }}</span>
                                     {% else %}
-                                        <span class="badge bg-secondary">غير نشط</span>
+                                        <span class="badge bg-secondary" data-i18n="forms.inactive">{{ 'forms.inactive' | translate }}</span>
                                     {% endif %}
                                 </td>
                                 <td>
                                     <button class="btn btn-sm btn-outline-primary" 
                                             onclick="editContact({{ contact.id }}, '{{ contact.name }}', '{{ contact.email or '' }}', '{{ contact.phone or '' }}', '{{ contact.company or '' }}', '{{ contact.language_preference }}', {{ 'true' if contact.is_active else 'false' }}, {{ 'true' if contact.email_opt_in else 'false' }}, {{ 'true' if contact.sms_opt_in else 'false' }}, {{ 'true' if contact.whatsapp_opt_in else 'false' }}, '{{ contact.notes or '' }}')">
-                                        <i class="fas fa-edit"></i> تعديل
+                                        <i class="fas fa-edit"></i> <span data-i18n="forms.edit">{{ 'forms.edit' | translate }}</span>
                                     </button>
                                 </td>
                             </tr>
@@ -76,8 +76,8 @@
                 {% else %}
                 <div class="text-center py-4">
                     <i class="fas fa-users fa-3x text-muted mb-3"></i>
-                    <h5 class="text-muted">لا توجد جهات اتصال</h5>
-                    <p class="text-muted">لم يتم إضافة أي جهات اتصال بعد</p>
+                    <h5 class="text-muted" data-i18n="contacts.no_contacts">{{ 'contacts.no_contacts' | translate }}</h5>
+                    <p class="text-muted" data-i18n="contacts.no_contacts_added">{{ 'contacts.no_contacts_added' | translate }}</p>
                 </div>
                 {% endif %}
             </div>
