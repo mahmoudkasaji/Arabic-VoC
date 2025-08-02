@@ -245,16 +245,7 @@
       "processing_time": "Processing Time"
     }
   },
-  "surveys": {
-    "title": "Survey Management", 
-    "subtitle": "Create, manage, and distribute surveys",
-    "create_new": "Create New Survey",
-    "my_surveys": "My Surveys",
-    "templates": "Templates",
-    "responses": "Responses",
-    "builder_title": "Survey Builder",
-    "delivery_title": "Survey Delivery"
-  },
+
   "analytics": {
     "title": "Analytics & Insights",
     "subtitle": "Advanced AI-powered analysis",
