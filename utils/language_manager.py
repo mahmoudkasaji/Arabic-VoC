@@ -19,21 +19,30 @@ class LanguageManager:
         self._load_translations()
     
     def _load_translations(self):
-        """Load translation files into memory"""
-        translations_dir = os.path.join(os.path.dirname(__file__), '..', 'translations')
+        """Load translation files into memory - FIXED VERSION"""
+        # Use absolute path to translations directory
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        translations_dir = os.path.join(current_dir, '..', 'translations')
+        translations_dir = os.path.abspath(translations_dir)
+        
+        print(f"DEBUG: Loading translations from: {translations_dir}")
         
         for lang in self.supported_languages:
             translation_file = os.path.join(translations_dir, f'{lang}.json')
             try:
                 if os.path.exists(translation_file):
                     with open(translation_file, 'r', encoding='utf-8') as f:
-                        self.translations[lang] = json.load(f)
+                        data = json.load(f)
+                        self.translations[lang] = data
+                        print(f"DEBUG: Loaded {lang} translations, sample key: {data.get('surveys', {}).get('stats', {}).get('total', 'NOT_FOUND')}")
                 else:
                     # Create empty translation structure if file doesn't exist
                     self.translations[lang] = {}
                     print(f"Warning: Translation file {translation_file} not found")
             except Exception as e:
                 print(f"Error loading translation file {translation_file}: {e}")
+                import traceback
+                traceback.print_exc()
                 self.translations[lang] = {}
     
     def get_current_language(self) -> str:

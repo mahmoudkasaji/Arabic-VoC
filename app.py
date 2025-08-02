@@ -92,7 +92,7 @@ def inject_language_vars():
             'lang_direction': 'rtl',
             'LANGUAGE_DIRECTION': 'rtl',
             'LANGUAGES': {'ar': 'العربية', 'en': 'English'},
-            'translate': lambda key, **kwargs: f"[{key}]",
+            'translate': language_manager.translate,
             'get_lang': lambda: 'ar',
             'get_dir': lambda: 'rtl'
         }
@@ -1982,14 +1982,6 @@ def public_enterprise_architecture():
 @app.route('/integrations/technical')
 def integrations_catalog():
     """Technical integration catalog with real-time status monitoring"""
-    from flask_login import current_user
-    try:
-        from replit_auth import require_login
-        if not current_user.is_authenticated:
-            return redirect(url_for('replit_auth.login'))
-    except ImportError:
-        pass
-    
     return render_template('integrations_technical_catalog.html')
 
 @app.route('/surveys/create')
