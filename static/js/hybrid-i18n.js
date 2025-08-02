@@ -3,11 +3,6 @@
  * Provides instant language switching without page reload
  */
 
-// Prevent duplicate class declaration
-if (typeof window.HybridI18N !== 'undefined') {
-    console.log('🔄 HybridI18N already exists, skipping redeclaration');
-} else {
-
 class HybridI18N {
     constructor() {
         this.currentLanguage = 'ar';
@@ -374,15 +369,15 @@ class HybridI18N {
     }
 }
 
-} // End of HybridI18N class declaration guard
-
 // Initialize when DOM is ready - prevent multiple instances
 document.addEventListener('DOMContentLoaded', () => {
     if (!window.hybridI18N) {
         window.hybridI18N = new HybridI18N();
         console.log('🎯 HybridI18N initialized successfully');
     } else {
-        console.log('🔄 HybridI18N already initialized, skipping');
+        console.log('🔄 HybridI18N already initialized, reusing existing instance');
+        // Reinitialize event listeners on existing instance
+        window.hybridI18N.setupLanguageSwitcher();
     }
 });
 
