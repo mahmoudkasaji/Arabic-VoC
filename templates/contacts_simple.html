@@ -90,20 +90,20 @@
             <div class="modal-content">
                 <form method="POST" id="editContactForm">
                     <div class="modal-header">
-                        <h5 class="modal-title">تعديل جهة الاتصال</h5>
+                        <h5 class="modal-title" data-i18n="contacts.edit_contact">{{ 'contacts.edit_contact' | translate }}</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label class="form-label">الاسم *</label>
+                                    <label class="form-label" data-i18n="forms.name_required">{{ 'forms.name_required' | translate }}</label>
                                     <input type="text" class="form-control" name="name" id="editName" required>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label class="form-label">الشركة</label>
+                                    <label class="form-label" data-i18n="forms.company">{{ 'forms.company' | translate }}</label>
                                     <input type="text" class="form-control" name="company" id="editCompany">
                                 </div>
                             </div>
@@ -111,13 +111,13 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label class="form-label">البريد الإلكتروني</label>
+                                    <label class="form-label" data-i18n="forms.email">{{ 'forms.email' | translate }}</label>
                                     <input type="email" class="form-control" name="email" id="editEmail">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label class="form-label">رقم الهاتف</label>
+                                    <label class="form-label" data-i18n="forms.phone">{{ 'forms.phone' | translate }}</label>
                                     <input type="tel" class="form-control" name="phone" id="editPhone">
                                 </div>
                             </div>
@@ -125,32 +125,32 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label class="form-label">اللغة المفضلة</label>
+                                    <label class="form-label" data-i18n="forms.preferred_language">{{ 'forms.preferred_language' | translate }}</label>
                                     <select class="form-select" name="language_preference" id="editLanguage">
-                                        <option value="ar">العربية</option>
-                                        <option value="en">English</option>
+                                        <option value="ar" data-i18n="language.arabic">{{ 'language.arabic' | translate }}</option>
+                                        <option value="en" data-i18n="language.english">{{ 'language.english' | translate }}</option>
                                     </select>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label class="form-label">الحالة</label>
+                                    <label class="form-label" data-i18n="forms.status">{{ 'forms.status' | translate }}</label>
                                     <select class="form-select" name="is_active" id="editStatus">
-                                        <option value="true">نشط</option>
-                                        <option value="false">غير نشط</option>
+                                        <option value="true" data-i18n="forms.active">{{ 'forms.active' | translate }}</option>
+                                        <option value="false" data-i18n="forms.inactive">{{ 'forms.inactive' | translate }}</option>
                                     </select>
                                 </div>
                             </div>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">تفضيلات التواصل</label>
+                            <label class="form-label" data-i18n="contacts.communication_preferences">{{ 'contacts.communication_preferences' | translate }}</label>
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" name="email_opt_in" id="editEmailOpt">
-                                <label class="form-check-label" for="editEmailOpt">البريد الإلكتروني</label>
+                                <label class="form-check-label" for="editEmailOpt" data-i18n="forms.email">{{ 'forms.email' | translate }}</label>
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" name="sms_opt_in" id="editSmsOpt">
-                                <label class="form-check-label" for="editSmsOpt">الرسائل النصية</label>
+                                <label class="form-check-label" for="editSmsOpt" data-i18n="contacts.sms">{{ 'contacts.sms' | translate }}</label>
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" name="whatsapp_opt_in" id="editWhatsappOpt">

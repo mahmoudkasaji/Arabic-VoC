@@ -516,30 +516,30 @@
             <!-- Filter Controls -->
             <div style="background: white; border: 1px solid #e1e8ed; border-radius: 8px; padding: 1rem; margin-bottom: 2rem;">
                 <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
-                    <label for="statusFilter"><strong>Status:</strong></label>
+                    <label for="statusFilter"><strong data-i18n="integrations.status">{{ 'integrations.status' | translate }}:</strong></label>
                     <select id="statusFilter" style="padding: 0.5rem; border: 1px solid #e1e8ed; border-radius: 4px; background: white; min-width: 150px;">
-                        <option value="all">All Integrations</option>
-                        <option value="active">Active Only</option>
-                        <option value="inactive">Inactive Only</option>
-                        <option value="testing">Testing Phase</option>
+                        <option value="all" data-i18n="integrations.all_integrations">{{ 'integrations.all_integrations' | translate }}</option>
+                        <option value="active" data-i18n="integrations.active_only">{{ 'integrations.active_only' | translate }}</option>
+                        <option value="inactive" data-i18n="integrations.inactive_only">{{ 'integrations.inactive_only' | translate }}</option>
+                        <option value="testing" data-i18n="integrations.testing_phase">{{ 'integrations.testing_phase' | translate }}</option>
                     </select>
                     
-                    <label for="categoryFilter"><strong>Category:</strong></label>
+                    <label for="categoryFilter"><strong data-i18n="integrations.category">{{ 'integrations.category' | translate }}:</strong></label>
                     <select id="categoryFilter" style="padding: 0.5rem; border: 1px solid #e1e8ed; border-radius: 4px; background: white; min-width: 150px;">
-                        <option value="all">All Categories</option>
-                        <option value="ai-analytics">AI Analytics</option>
-                        <option value="feedback-channels">Feedback Channels</option>
-                        <option value="auth-security">Authentication & Security</option>
+                        <option value="all" data-i18n="integrations.all_categories">{{ 'integrations.all_categories' | translate }}</option>
+                        <option value="ai-analytics" data-i18n="integrations.ai_analytics">{{ 'integrations.ai_analytics' | translate }}</option>
+                        <option value="feedback-channels" data-i18n="integrations.feedback_channels">{{ 'integrations.feedback_channels' | translate }}</option>
+                        <option value="auth-security" data-i18n="integrations.auth_security">{{ 'integrations.auth_security' | translate }}</option>
                     </select>
                     
                     <button class="btn btn-sm" onclick="filterCategory('ai-analytics')" style="margin-left: 1rem; background: #1B5E20; color: white; border: 1px solid #1B5E20;">
-                        <i class="fas fa-brain me-1"></i>AI Analytics
+                        <i class="fas fa-brain me-1"></i><span data-i18n="integrations.ai_analytics">{{ 'integrations.ai_analytics' | translate }}</span>
                     </button>
                     <button class="btn btn-sm" onclick="filterCategory('feedback-channels')" style="background: #F4A460; color: white; border: 1px solid #F4A460;">
-                        <i class="fas fa-comments me-1"></i>Feedback Channels
+                        <i class="fas fa-comments me-1"></i><span data-i18n="integrations.feedback_channels">{{ 'integrations.feedback_channels' | translate }}</span>
                     </button>
                     <button class="btn btn-sm" onclick="filterCategory('auth-security')" style="background: #4169E1; color: white; border: 1px solid #4169E1;">
-                        <i class="fas fa-shield-alt me-1"></i>Auth & Security
+                        <i class="fas fa-shield-alt me-1"></i><span data-i18n="integrations.auth_security">{{ 'integrations.auth_security' | translate }}</span>
                     </button>
                 </div>
             </div>
@@ -551,11 +551,11 @@
                         <i class="fas fa-brain"></i>
                     </div>
                     <div>
-                        <h2 class="mb-0">🤖 AI Analytics</h2>
-                        <p class="text-muted mb-0">Advanced sentiment analysis and text processing engines</p>
+                        <h2 class="mb-0">🤖 <span data-i18n="integrations.ai_analytics">{{ 'integrations.ai_analytics' | translate }}</span></h2>
+                        <p class="text-muted mb-0" data-i18n="integrations.ai_description">{{ 'integrations.ai_description' | translate }}</p>
                     </div>
                     <div class="text-end">
-                        <span class="badge bg-primary">3 Integrations</span>
+                        <span class="badge bg-primary">3 <span data-i18n="integrations.integrations_count">{{ 'integrations.integrations_count' | translate }}</span></span>
                     </div>
                 </div>
 
@@ -570,7 +570,7 @@
                                     </div>
                                     <div>
                                         <h5 class="mb-1">OpenAI GPT-4o</h5>
-                                        <small class="text-muted">Primary sentiment analysis engine</small>
+                                        <small class="text-muted" data-i18n="integrations.openai_description">{{ 'integrations.openai_description' | translate }}</small>
                                         <span class="model-status status-active" title="Active"></span>
                                     </div>
                                 </div>
