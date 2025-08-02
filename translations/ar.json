@@ -47,43 +47,8 @@
     },
     "back_to_home": "العودة للرئيسية"
   },
-  "language": {
-    "toggle_tooltip": "تبديل إلى الإنجليزية",
-    "switch_to": "English",
-    "current": "اللغة الحالية",
-    "available": "اللغات المتاحة",
-    "arabic": "العربية",
-    "english": "English"
-  },
-  "surveys": {
-    "title": "إدارة الاستطلاعات",
-    "subtitle": "إنشاء وإدارة وتوزيع الاستطلاعات",
-    "create_new": "إنشاء استطلاع جديد",
-    "my_surveys": "استطلاعاتي",
-    "templates": "القوالب",
-    "responses": "الردود",
-    "builder_title": "منشئ الاستطلاعات",
-    "delivery_title": "توزيع الاستطلاعات",
-    "stats": {
-      "total": "إجمالي الاستطلاعات",
-      "active": "الاستطلاعات النشطة",
-      "total_responses": "إجمالي الاستجابات",
-      "completion_rate": "معدل الإكمال"
-    },
-    "questions": "الأسئلة",
-    "questions_count": "أسئلة",
-    "responses_count": "استجابة",
-    "unique_id": "المعرف الفريد",
-    "draft": "مسودة"
-  },
   "contacts": {
-    "title": "إدارة جهات الاتصال",
-    "management": "إدارة جهات الاتصال",
-    "list": "قائمة جهات الاتصال",
-    "manage_organize": "إدارة وتنظيم جهات الاتصال",
-    "edit_contact": "تعديل جهة الاتصال",
-    "communication_preferences": "تفضيلات التواصل",
-    "sms": "الرسائل النصية"
+    "title": "Contact Management"
   },
   "buttons": {
     "create": "إنشاء",
@@ -118,21 +83,6 @@
     "back_home": "العودة للرئيسية",
     "dashboard": "لوحة التحكم"
   },
-  "integrations": {
-    "status": "الحالة",
-    "category": "الفئة",
-    "all_integrations": "جميع التكاملات",
-    "active_only": "النشطة فقط",
-    "inactive_only": "غير النشطة فقط",
-    "testing_phase": "مرحلة الاختبار",
-    "all_categories": "جميع الفئات",
-    "ai_analytics": "تحليل الذكاء الاصطناعي",
-    "feedback_channels": "قنوات التعليقات",
-    "auth_security": "المصادقة والأمان",
-    "ai_description": "محركات تحليل المشاعر ومعالجة النصوص المتقدمة",
-    "integrations_count": "تكاملات",
-    "openai_description": "محرك تحليل المشاعر الأساسي"
-  },
   "forms": {
     "required": "مطلوب",
     "optional": "اختياري",
@@ -141,8 +91,6 @@
     "username": "اسم المستخدم",
     "phone": "رقم الهاتف",
     "name": "الاسم",
-    "name_required": "الاسم *",
-    "company": "الشركة",
     "title": "العنوان",
     "description": "الوصف",
     "content": "المحتوى",
@@ -152,13 +100,7 @@
     "rating": "التقييم",
     "language": "اللغة",
     "date": "التاريخ",
-    "time": "الوقت",
-    "status": "الحالة",
-    "actions": "الإجراءات",
-    "created_date": "تاريخ الإنشاء",
-    "active": "نشط",
-    "inactive": "غير نشط",
-    "preferred_language": "اللغة المفضلة"
+    "time": "الوقت"
   },
   "messages": {
     "success": {
@@ -225,7 +167,16 @@
       "processing_time": "وقت المعالجة"
     }
   },
-
+  "surveys": {
+    "title": "إدارة الاستطلاعات",
+    "subtitle": "إنشاء وإدارة وتوزيع الاستطلاعات",
+    "create_new": "إنشاء استطلاع جديد",
+    "my_surveys": "استطلاعاتي",
+    "templates": "القوالب",
+    "responses": "الردود",
+    "builder_title": "منشئ الاستطلاعات",
+    "delivery_title": "توزيع الاستطلاعات"
+  },
   "analytics": {
     "title": "التحليلات والرؤى",
     "subtitle": "تحليل متقدم بالذكاء الاصطناعي",

@@ -11,31 +11,11 @@ def register_template_helpers(app):
     
     @app.template_filter('translate')
     def translate_filter(key, **kwargs):
-        """Jinja2 filter for translating keys - FIXED VERSION
+        """Jinja2 filter for translating keys
         Usage: {{ 'navigation.surveys' | translate }}
         Usage with variables: {{ 'messages.welcome' | translate(name=user.name) }}
         """
-        try:
-            # Debug: Force reload translations
-            language_manager._load_translations()
-            
-            # Get current language directly
-            current_lang = language_manager.get_current_language()
-            
-            # Direct translation without hybrid wrapper
-            result = language_manager.translate(key, **kwargs)
-            
-            # Fallback if translation failed
-            if result == f"[{key}]" or result is None:
-                # Try with explicit language
-                result = language_manager.translate(key, force_lang=current_lang, **kwargs)
-            
-            return result
-        except Exception as e:
-            print(f"Translation filter error for key '{key}': {e}")
-            import traceback
-            traceback.print_exc()
-            return f"[{key}]"
+        return language_manager.translate(key, **kwargs)
     
     @app.template_global()
     def get_lang():

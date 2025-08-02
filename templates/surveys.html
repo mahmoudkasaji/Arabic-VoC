@@ -35,10 +35,10 @@
     
     <div class="container-unified">
         <div class="page-header">
-            <h1 class="page-title" data-i18n="surveys.title">{{ 'surveys.title' | translate }}</h1>
+            <h1 class="page-title">إدارة الاستطلاعات</h1>
             <div class="page-actions">
                 <a href="/surveys/create" class="btn btn-primary">
-                    <i class="fas fa-plus me-2"></i><span data-i18n="surveys.create_new">{{ 'surveys.create_new' | translate }}</span>
+                    <i class="fas fa-plus me-2"></i>إنشاء استطلاع جديد
                 </a>
             </div>
         </div>
@@ -49,7 +49,7 @@
                 <div class="card-unified">
                     <div class="card-body text-center">
                         <h3 class="text-primary">{{ stats.total_surveys }}</h3>
-                        <p class="mb-0" data-i18n="surveys.stats.total">{{ 'surveys.stats.total' | translate }}</p>
+                        <p class="mb-0">إجمالي الاستطلاعات</p>
                     </div>
                 </div>
             </div>
@@ -57,7 +57,7 @@
                 <div class="card-unified">
                     <div class="card-body text-center">
                         <h3 class="text-success">{{ stats.active_surveys }}</h3>
-                        <p class="mb-0" data-i18n="surveys.stats.active">{{ 'surveys.stats.active' | translate }}</p>
+                        <p class="mb-0">النشطة</p>
                     </div>
                 </div>
             </div>
@@ -65,7 +65,7 @@
                 <div class="card-unified">
                     <div class="card-body text-center">
                         <h3 class="text-info">{{ stats.total_responses }}</h3>
-                        <p class="mb-0" data-i18n="surveys.stats.total_responses">{{ 'surveys.stats.total_responses' | translate }}</p>
+                        <p class="mb-0">إجمالي الاستجابات</p>
                     </div>
                 </div>
             </div>
@@ -73,7 +73,7 @@
                 <div class="card-unified">
                     <div class="card-body text-center">
                         <h3 class="text-warning">{{ stats.avg_completion_rate }}%</h3>
-                        <p class="mb-0" data-i18n="surveys.stats.completion_rate">{{ 'surveys.stats.completion_rate' | translate }}</p>
+                        <p class="mb-0">معدل الإكمال</p>
                     </div>
                 </div>
             </div>
@@ -87,13 +87,13 @@
                     <table class="table table-hover">
                         <thead>
                             <tr>
-                                <th data-i18n="forms.title">{{ 'forms.title' | translate }}</th>
-                                <th data-i18n="forms.status">{{ 'forms.status' | translate }}</th>
-                                <th data-i18n="surveys.questions">{{ 'surveys.questions' | translate }}</th>
-                                <th data-i18n="surveys.responses">{{ 'surveys.responses' | translate }}</th>
-                                <th data-i18n="forms.created_date">{{ 'forms.created_date' | translate }}</th>
-                                <th data-i18n="surveys.unique_id">{{ 'surveys.unique_id' | translate }}</th>
-                                <th data-i18n="forms.actions">{{ 'forms.actions' | translate }}</th>
+                                <th>العنوان</th>
+                                <th>الحالة</th>
+                                <th>الأسئلة</th>
+                                <th>الاستجابات</th>
+                                <th>تاريخ الإنشاء</th>
+                                <th>المعرف الفريد</th>
+                                <th>الإجراءات</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -105,18 +105,18 @@
                                 </td>
                                 <td>
                                     {% if survey.status == 'published' %}
-                                        <span class="badge bg-success" data-i18n="forms.active">{{ 'forms.active' | translate }}</span>
+                                        <span class="badge bg-success">نشط</span>
                                     {% elif survey.status == 'draft' %}
-                                        <span class="badge bg-secondary" data-i18n="surveys.draft">{{ 'surveys.draft' | translate }}</span>
+                                        <span class="badge bg-secondary">مسودة</span>
                                     {% else %}
                                         <span class="badge bg-light text-dark">{{ survey.status }}</span>
                                     {% endif %}
                                 </td>
                                 <td>
-                                    <span class="fw-bold">{{ survey.question_count }}</span> <span data-i18n="surveys.questions_count">{{ 'surveys.questions_count' | translate }}</span>
+                                    <span class="fw-bold">{{ survey.question_count }}</span> أسئلة
                                 </td>
                                 <td>
-                                    <span class="fw-bold">{{ survey.response_count }}</span> <span data-i18n="surveys.responses_count">{{ 'surveys.responses_count' | translate }}</span>
+                                    <span class="fw-bold">{{ survey.response_count }}</span> استجابة
                                 </td>
                                 <td>
                                     {% if survey.created_at %}

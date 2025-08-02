@@ -68,43 +68,18 @@
       "subtitle": "Monitor and manage all technical integrations and AI models"
     }
   },
-  "language": {
-    "toggle_tooltip": "Switch to Arabic",
-    "switch_to": "العربية",
-    "current": "Current Language",
-    "available": "Available Languages"
-  },
-  "surveys": {
-    "title": "Survey Management",
-    "subtitle": "Create, manage and distribute surveys",
-    "create_new": "Create New Survey",
-    "my_surveys": "My Surveys",
-    "templates": "Templates", 
-    "responses": "Responses",
-    "builder_title": "Survey Builder",
-    "delivery_title": "Survey Distribution",
-    "stats": {
-      "total": "Total Surveys",
-      "active": "Active Surveys", 
-      "total_responses": "Total Responses",
-      "completion_rate": "Completion Rate"
-    },
-    "questions": "Questions",
-    "questions_count": "questions",
-    "responses_count": "responses",
-    "unique_id": "Unique ID",
-    "draft": "Draft"
-  },
   "contacts": {
     "title": "Contact Management",
     "management": "Contact Management", 
     "list": "Contact List",
-    "manage_organize": "Manage and organize contacts",
-    "edit_contact": "Edit Contact",
-    "communication_preferences": "Communication Preferences", 
-    "sms": "SMS"
+    "manage_organize": "Manage and organize contacts"
   },
-
+  "language": {
+    "switch_to": "العربية",
+    "toggle_tooltip": "Switch to Arabic",
+    "current": "English",
+    "loading": "Switching language..."
+  },
   "buttons": {
     "create": "Create",
     "save": "Save",
@@ -138,21 +113,6 @@
     "back_home": "Back to Home",
     "dashboard": "Dashboard"
   },
-  "integrations": {
-    "status": "Status",
-    "category": "Category",
-    "all_integrations": "All Integrations",
-    "active_only": "Active Only",
-    "inactive_only": "Inactive Only", 
-    "testing_phase": "Testing Phase",
-    "all_categories": "All Categories",
-    "ai_analytics": "AI Analytics",
-    "feedback_channels": "Feedback Channels",
-    "auth_security": "Authentication & Security",
-    "ai_description": "Advanced sentiment analysis and text processing engines",
-    "integrations_count": "Integrations",
-    "openai_description": "Primary sentiment analysis engine"
-  },
   "forms": {
     "required": "Required",
     "optional": "Optional",
@@ -161,9 +121,7 @@
     "username": "Username",
     "phone": "Phone",
     "name": "Name",
-    "name_required": "Name *",
-    "company": "Company",
-    "title": "Title", 
+    "title": "Title",
     "description": "Description",
     "content": "Content",
     "message": "Message",
@@ -172,13 +130,7 @@
     "rating": "Rating",
     "language": "Language",
     "date": "Date",
-    "time": "Time",
-    "status": "Status",
-    "actions": "Actions",
-    "created_date": "Created Date",
-    "active": "Active",
-    "inactive": "Inactive",
-    "preferred_language": "Preferred Language"
+    "time": "Time"
   },
   "messages": {
     "success": {
@@ -245,7 +197,16 @@
       "processing_time": "Processing Time"
     }
   },
-
+  "surveys": {
+    "title": "Survey Management", 
+    "subtitle": "Create, manage, and distribute surveys",
+    "create_new": "Create New Survey",
+    "my_surveys": "My Surveys",
+    "templates": "Templates",
+    "responses": "Responses",
+    "builder_title": "Survey Builder",
+    "delivery_title": "Survey Delivery"
+  },
   "analytics": {
     "title": "Analytics & Insights",
     "subtitle": "Advanced AI-powered analysis",

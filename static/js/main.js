@@ -931,13 +931,25 @@ const LanguageToggle = {
         }
         
         try {
-            // Use Flask route instead of API for cleaner implementation
-            const currentUrl = window.location.href;
-            const toggleUrl = '/language/toggle?return_url=' + encodeURIComponent(currentUrl);
+            const response = await fetch('/api/language/toggle', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({})
+            });
             
-            // Direct navigation to Flask route
-            window.location.href = toggleUrl;
-            
+            if (response.ok) {
+                // Reload page to apply language changes
+                window.location.reload();
+            } else {
+                console.error('Language toggle failed');
+                // Restore original button state
+                if (button) {
+                    button.disabled = false;
+                    button.innerHTML = originalContent;
+                }
+            }
         } catch (error) {
             console.error('Error toggling language:', error);
             // Restore original button state

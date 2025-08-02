@@ -1,11 +1,8 @@
 <!DOCTYPE html>
-<html lang="{{ current_lang }}" dir="{{ lang_direction }}">
+<html lang="{{ get_lang() }}" dir="{{ get_dir() }}">
 <head>
     {% include 'components/head.html' %}
-    <title data-i18n="app.name">{{ translate('app.name') }}</title>
-    
-    <!-- Hybrid I18N JavaScript -->
-    <script src="{{ url_for('static', filename='js/hybrid-i18n.js') }}" defer></script>
+    <title>Voice of Customer Platform</title>
     
     <style>
         body {
@@ -229,16 +226,16 @@
         <!-- Hero Section -->
         <section class="hero-section">
             <div class="hero-content">
-                <h1 class="hero-title" data-i18n="homepage.hero.title">
+                <h1 class="hero-title">
                     {{ 'homepage.hero.title' | translate }}
                 </h1>
                 <!-- Demo Notice Badge -->
                 <div style="background: rgba(255,255,255,0.2); padding: 0.4rem 1.2rem; border-radius: 20px; display: inline-block; margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.3);">
                     <i class="fas fa-flask me-2"></i>
-                    <strong data-i18n="homepage.demo.title">{{ 'homepage.demo.title' | translate }}</strong> - <span data-i18n="homepage.demo.subtitle">{{ 'homepage.demo.subtitle' | translate }}</span>
+                    <strong>{{ 'homepage.demo.title' | translate }}</strong> - {{ 'homepage.demo.subtitle' | translate }}
                 </div>
                 
-                <p class="hero-description" data-i18n="homepage.hero.description">
+                <p class="hero-description">
                     {{ 'homepage.hero.description' | translate }}
                 </p>
                 
@@ -248,11 +245,11 @@
                         <!-- Authenticated user actions -->
                         <a href="/surveys/create" class="cta-button" style="background: #28a745; color: white; box-shadow: 0 8px 25px rgba(40, 167, 69, 0.3);">
                             <i class="fas fa-plus me-2"></i>
-                            <span data-i18n="buttons.create_survey">{{ 'buttons.create_survey' | translate }}</span>
+                            {{ 'buttons.create_survey' | translate }}
                         </a>
                         <a href="/analytics/dashboard" class="cta-button" style="background: #007bff; color: white; box-shadow: 0 8px 25px rgba(0, 123, 255, 0.3);">
                             <i class="fas fa-chart-line me-2"></i>
-                            <span data-i18n="buttons.view_analytics">{{ 'buttons.view_analytics' | translate }}</span>
+                            {{ 'buttons.view_analytics' | translate }}
                         </a>
                         <br>
                         <a href="/surveys" class="cta-button">

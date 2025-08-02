@@ -19,40 +19,27 @@ class LanguageManager:
         self._load_translations()
     
     def _load_translations(self):
-        """Load translation files into memory - FIXED VERSION"""
-        # Use absolute path to translations directory
-        current_dir = os.path.dirname(os.path.abspath(__file__))
-        translations_dir = os.path.join(current_dir, '..', 'translations')
-        translations_dir = os.path.abspath(translations_dir)
-        
-        print(f"DEBUG: Loading translations from: {translations_dir}")
+        """Load translation files into memory"""
+        translations_dir = os.path.join(os.path.dirname(__file__), '..', 'translations')
         
         for lang in self.supported_languages:
             translation_file = os.path.join(translations_dir, f'{lang}.json')
             try:
                 if os.path.exists(translation_file):
                     with open(translation_file, 'r', encoding='utf-8') as f:
-                        data = json.load(f)
-                        self.translations[lang] = data
-                        print(f"DEBUG: Loaded {lang} translations, sample key: {data.get('surveys', {}).get('stats', {}).get('total', 'NOT_FOUND')}")
+                        self.translations[lang] = json.load(f)
                 else:
                     # Create empty translation structure if file doesn't exist
                     self.translations[lang] = {}
                     print(f"Warning: Translation file {translation_file} not found")
             except Exception as e:
                 print(f"Error loading translation file {translation_file}: {e}")
-                import traceback
-                traceback.print_exc()
                 self.translations[lang] = {}
     
     def get_current_language(self) -> str:
-        """Get current user's language preference - ENHANCED FIX"""
+        """Get current user's language preference - FINAL FIX"""
         try:
-            from flask import session, g, has_request_context
-            
-            # Only proceed if we're in a request context
-            if not has_request_context():
-                return self.default_language
+            from flask import session, g
             
             # 1. Check URL parameter (highest priority) 
             if request and request.args.get('lang') in self.supported_languages:
@@ -61,18 +48,15 @@ class LanguageManager:
                     self.set_language(lang)
                     return lang
             
-            # 2. Use Flask's g object to cache language per request
-            if hasattr(g, '_current_language') and g._current_language in self.supported_languages:
+            # 2. CRITICAL FIX: Use Flask's g object to cache language per request
+            if hasattr(g, '_current_language'):
                 return g._current_language
             
             # 3. Check session with error handling
-            try:
-                session_lang = session.get('language')
-                if session_lang in self.supported_languages:
-                    g._current_language = session_lang
-                    return session_lang
-            except Exception:
-                pass
+            session_lang = session.get('language')
+            if session_lang in self.supported_languages:
+                g._current_language = session_lang
+                return session_lang
             
             # 4. Check browser Accept-Language header
             if request and request.headers.get('Accept-Language'):
@@ -123,21 +107,21 @@ class LanguageManager:
         rtl_languages = ['ar', 'he', 'fa', 'ur']
         return 'rtl' if language in rtl_languages else 'ltr'
     
-    def translate(self, key: str, language: Optional[str] = None, force_lang: Optional[str] = None, **kwargs) -> str:
+    def translate(self, key: str, language: Optional[str] = None, **kwargs) -> str:
         """Translate a key to specified language with variable substitution"""
-        # Use force_lang if provided, otherwise use language parameter or current language
-        target_lang = force_lang or language or self.get_current_language()
+        if not language:
+            language = self.get_current_language()
         
         # Get translation from nested key (e.g., "navigation.surveys.create")
         keys = key.split('.')
-        translation = self.translations.get(target_lang, {})
+        translation = self.translations.get(language, {})
         
         for k in keys:
             if isinstance(translation, dict) and k in translation:
                 translation = translation[k]
             else:
                 # Fallback to other language if key not found
-                fallback_lang = self.fallback_language if target_lang != self.fallback_language else self.default_language
+                fallback_lang = self.fallback_language if language != self.fallback_language else self.default_language
                 fallback_translation = self.translations.get(fallback_lang, {})
                 
                 for k in keys:

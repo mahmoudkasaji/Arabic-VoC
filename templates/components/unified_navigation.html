@@ -2,18 +2,17 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
     <div class="container">
         <!-- Brand - Centered Layout -->
-        <a class="navbar-brand fw-bold text-primary mx-auto mx-lg-0" href="/" style="font-size: 1.25rem;" data-i18n="app.name">
+        <a class="navbar-brand fw-bold text-primary mx-auto mx-lg-0" href="/" style="font-size: 1.25rem;">
             <i class="fas fa-home me-2"></i>
-            {{ translate('app.name') }}
+            {{ 'app.name' | translate }}
         </a>
         
-        <!-- Language Toggle Button - Hybrid version -->
+        <!-- Language Toggle Button -->
         <div class="navbar-nav ms-auto me-3">
-            <a href="/language/toggle" class="btn btn-outline-primary btn-sm hybrid-lang-toggle" 
-               title="{{ 'language.toggle_tooltip' | translate }}" data-i18n-title="language.toggle_tooltip">
+            <button class="btn btn-outline-primary btn-sm" onclick="toggleLanguage()" title="{{ 'language.toggle_tooltip' | translate }}">
                 <i class="fas fa-globe me-1"></i>
-                <span data-i18n="language.switch_to">{{ 'language.switch_to' | translate }}</span>
-            </a>
+                {{ 'language.switch_to' | translate }}
+            </button>
         </div>
         
         <!-- Mobile Toggle -->
@@ -28,8 +27,8 @@
                 <!-- 1. Surveys -->
                 <li class="nav-item dropdown mx-2">
                     <a class="nav-link dropdown-toggle" href="#" id="surveysDropdown" role="button" 
-                       data-bs-toggle="dropdown" aria-expanded="false" data-nav="surveys" data-i18n="navigation.surveys_dropdown.title">
-                        <i class="fas fa-poll me-1"></i><span data-i18n="navigation.surveys_dropdown.title">{{ 'navigation.surveys_dropdown.title' | translate }}</span>
+                       data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-poll me-1"></i>{{ 'navigation.surveys_dropdown.title' | translate }}
                     </a>
                     <ul class="dropdown-menu">
                         <li><h6 class="dropdown-header">{{ 'navigation.surveys_dropdown.integrated_workflow' | translate }}</h6></li>
@@ -72,7 +71,7 @@
                 <li class="nav-item dropdown mx-2">
                     <a class="nav-link dropdown-toggle" href="#" id="analyticsDropdown" role="button" 
                        data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="fas fa-chart-line me-1"></i><span data-i18n="navigation.analytics_dropdown.title">{{ 'navigation.analytics_dropdown.title' | translate }}</span>
+                        <i class="fas fa-chart-line me-1"></i>{{ 'navigation.analytics_dropdown.title' | translate }}
                     </a>
                     <ul class="dropdown-menu">
                         <li><h6 class="dropdown-header">{{ 'navigation.analytics_basic.title' | translate }}</h6></li>
@@ -91,7 +90,7 @@
                 <li class="nav-item dropdown mx-2">
                     <a class="nav-link dropdown-toggle" href="#" id="integrationsDropdown" role="button" 
                        data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="fas fa-plug me-1"></i><span data-i18n="navigation.integrations_dropdown.title">{{ 'navigation.integrations_dropdown.title' | translate }}</span>
+                        <i class="fas fa-plug me-1"></i>{{ 'navigation.integrations_dropdown.title' | translate }}
                     </a>
                     <ul class="dropdown-menu">
                         <li><h6 class="dropdown-header">{{ 'navigation.integrations_dropdown.data_flow' | translate }}</h6></li>
@@ -106,7 +105,7 @@
                 <li class="nav-item dropdown mx-2">
                     <a class="nav-link dropdown-toggle" href="#" id="settingsDropdown" role="button" 
                        data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="fas fa-cog me-1"></i><span data-i18n="navigation.settings_dropdown.title">{{ 'navigation.settings_dropdown.title' | translate }}</span>
+                        <i class="fas fa-cog me-1"></i>{{ 'navigation.settings_dropdown.title' | translate }}
                     </a>
                     <ul class="dropdown-menu">
                         <li><h6 class="dropdown-header">{{ 'navigation.settings_dropdown.system_management' | translate }}</h6></li>

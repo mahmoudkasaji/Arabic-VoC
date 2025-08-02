@@ -51,51 +51,12 @@ app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 # Initialize database
 db.init_app(app)
 
-# Initialize Hybrid I18N System
-from utils.hybrid_i18n import hybrid_i18n
-hybrid_i18n.init_app(app)
-logger.info("Hybrid I18N system initialized successfully")
-
-# Maintain compatibility with existing language manager
+# Initialize language system
 from utils.language_manager import language_manager
-
-# Register template helpers for backward compatibility
-try:
-    from utils.template_helpers import register_template_helpers
-    register_template_helpers(app)
-    logger.info("Template helpers registered successfully")
-except Exception as e:
-    logger.error(f"Failed to register template helpers: {e}")
-
-# Enhanced context processor with hybrid integration
-@app.context_processor
-def inject_language_vars():
-    """Inject comprehensive language variables into all templates"""
-    try:
-        current_lang = hybrid_i18n.get_locale()
-        
-        return {
-            'current_lang': current_lang,
-            'CURRENT_LANGUAGE': current_lang,
-            'lang_direction': 'rtl' if current_lang == 'ar' else 'ltr',
-            'LANGUAGE_DIRECTION': 'rtl' if current_lang == 'ar' else 'ltr',
-            'LANGUAGES': app.config['LANGUAGES'],
-            'translate': language_manager.translate,
-            'get_lang': lambda: current_lang,
-            'get_dir': lambda: 'rtl' if current_lang == 'ar' else 'ltr'
-        }
-    except Exception as e:
-        logger.error(f"Language context injection failed: {e}")
-        return {
-            'current_lang': 'ar',
-            'CURRENT_LANGUAGE': 'ar',
-            'lang_direction': 'rtl',
-            'LANGUAGE_DIRECTION': 'rtl',
-            'LANGUAGES': {'ar': 'العربية', 'en': 'English'},
-            'translate': language_manager.translate,
-            'get_lang': lambda: 'ar',
-            'get_dir': lambda: 'rtl'
-        }
+from utils.template_helpers import register_template_helpers
+from utils.template_filters import register_filters
+register_template_helpers(app)
+register_filters(app)
 
 # Create tables
 with app.app_context():
@@ -1480,18 +1441,14 @@ def test_ai_analysis():
         logger.error(f"Analysis failed: {str(e)}")
         return jsonify({'error': f'Analysis failed: {str(e)}'}), 500
 
-# Language switching converted to Flask routes (as per user preference)
-@app.route('/language/toggle', methods=['GET', 'POST'])
+@app.route('/api/language/toggle', methods=['POST'])  
 def toggle_language():
-    """Toggle user's language preference - Flask route version"""
+    """Toggle user's language preference - FINAL FIX"""
     try:
-        from flask import g, redirect, url_for
+        from flask import g
         
-        # Get target language from form data, query params, or auto-toggle
-        if request.method == 'POST':
-            target_lang = request.form.get('language')
-        else:
-            target_lang = request.args.get('lang')
+        data = request.get_json() or {}
+        target_lang = data.get('language')
         
         if not target_lang:
             # Auto-toggle to opposite language
@@ -1499,43 +1456,45 @@ def toggle_language():
             target_lang = language_manager.get_opposite_language(current_lang)
             logger.info(f"Auto-toggling from {current_lang} to {target_lang}")
         
-        # Set language with immediate effect
+        # CRITICAL FIX: Set language with immediate effect
         if language_manager.set_language(target_lang):
             # Force immediate session save
             session.modified = True
             
-            # Clear any cached language in g object and reset
+            # CRITICAL: Clear any cached language in g object and reset
             if hasattr(g, '_current_language'):
                 delattr(g, '_current_language')
             g._current_language = target_lang
             
-            logger.info(f"Language switched to {target_lang} via Flask route")
+            logger.info(f"Language switched to {target_lang}, session: {session.get('language')}, g: {getattr(g, '_current_language', 'None')}")
             
-            # Get the referring page or default to home
-            return_url = request.args.get('return_url') or request.referrer or url_for('index')
-            return redirect(return_url)
+            from utils.template_helpers import get_success_message
+            response = jsonify({
+                'success': True,
+                'message': get_success_message('saved', target_lang),
+                'language': target_lang,
+                'direction': language_manager.get_direction(target_lang),
+                'language_info': language_manager.get_language_info(target_lang),
+                'session_language': session.get('language'),
+                'g_language': getattr(g, '_current_language', 'None')
+            })
+            
+            # Prevent caching
+            response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+            response.headers['Pragma'] = 'no-cache'
+            response.headers['Expires'] = '0'
+            
+            return response
         else:
-            logger.error(f"Failed to set language to {target_lang}")
-            from flask import flash
-            flash(f'Language {target_lang} not supported', 'error')
-            return redirect(url_for('index'))
+            from utils.template_helpers import get_error_message
+            return jsonify({
+                'error': get_error_message('general_error')
+            }), 400
             
     except Exception as e:
-        logger.error(f"Language toggle error: {str(e)}")
-        from flask import flash
-        flash('Language switching failed', 'error')
-        return redirect(url_for('index'))
-
-@app.route('/language/set/<lang>')
-def set_language(lang):
-    """Direct language setting route"""
-    if lang in language_manager.supported_languages:
-        language_manager.set_language(lang)
-        return redirect(request.referrer or url_for('index'))
-    else:
-        from flask import flash
-        flash(f'Language {lang} not supported', 'error')
-        return redirect(url_for('index'))
+        logger.error(f"Error toggling language: {e}")
+        from utils.template_helpers import get_error_message
+        return jsonify({'error': get_error_message('general_error')}), 500
 
 @app.route('/api/language/status')
 def language_status():
@@ -1982,6 +1941,14 @@ def public_enterprise_architecture():
 @app.route('/integrations/technical')
 def integrations_catalog():
     """Technical integration catalog with real-time status monitoring"""
+    from flask_login import current_user
+    try:
+        from replit_auth import require_login
+        if not current_user.is_authenticated:
+            return redirect(url_for('replit_auth.login'))
+    except ImportError:
+        pass
+    
     return render_template('integrations_technical_catalog.html')
 
 @app.route('/surveys/create')
