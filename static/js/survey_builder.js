@@ -277,7 +277,9 @@ class SurveyBuilder {
                 mobileAddBtn.disabled = !selectedType;
                 
                 if (selectedType) {
-                    mobileAddBtn.innerHTML = `<i class="fas fa-plus"></i> إضافة: ${this.getQuestionTypeLabel(selectedType)}`;
+                    mobileAddBtn.innerHTML = `<i class="fas fa-plus"></i> إضافة: `;
+                    const textNode = document.createTextNode(this.getQuestionTypeLabel(selectedType));
+                    mobileAddBtn.appendChild(textNode);
                 } else {
                     mobileAddBtn.innerHTML = '<i class="fas fa-plus"></i> إضافة السؤال';
                 }
