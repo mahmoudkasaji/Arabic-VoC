@@ -759,31 +759,74 @@ class SurveyBuilder {
 
         const propertiesContainer = document.getElementById('questionProperties');
         
-        propertiesContainer.innerHTML = `
-            <div class="property-group">
-                <h6>النص والمحتوى</h6>
-                
-                <div class="mb-3">
-                    <label class="form-label">نص السؤال (عربي)</label>
-                    <textarea class="form-control form-control-modern" rows="2" 
-                              id="questionTextAr" placeholder="أدخل نص السؤال بالعربية">${question.text_ar}</textarea>
-                </div>
-                
-                <div class="mb-3">
-                    <label class="form-label">نص السؤال (إنجليزي)</label>
-                    <textarea class="form-control form-control-modern" rows="2" 
-                              id="questionText" placeholder="Enter question text in English">${question.text}</textarea>
-                </div>
-                
-                <div class="form-check mb-3">
-                    <input class="form-check-input" type="checkbox" id="isRequired" 
-                           ${question.is_required ? 'checked' : ''}>
-                    <label class="form-check-label" for="isRequired">
-                        سؤال إجباري
-                    </label>
-                </div>
-            </div>
-        `;
+        // Clear container first
+        propertiesContainer.innerHTML = '';
+        
+        // Create safe DOM structure
+        const propertyGroup = document.createElement('div');
+        propertyGroup.className = 'property-group';
+        
+        const title = document.createElement('h6');
+        title.textContent = 'النص والمحتوى';
+        propertyGroup.appendChild(title);
+        
+        // Arabic question text
+        const arDiv = document.createElement('div');
+        arDiv.className = 'mb-3';
+        
+        const arLabel = document.createElement('label');
+        arLabel.className = 'form-label';
+        arLabel.textContent = 'نص السؤال (عربي)';
+        arDiv.appendChild(arLabel);
+        
+        const arTextarea = document.createElement('textarea');
+        arTextarea.className = 'form-control form-control-modern';
+        arTextarea.rows = 2;
+        arTextarea.id = 'questionTextAr';
+        arTextarea.placeholder = 'أدخل نص السؤال بالعربية';
+        arTextarea.value = question.text_ar || '';
+        arDiv.appendChild(arTextarea);
+        
+        propertyGroup.appendChild(arDiv);
+        
+        // English question text
+        const enDiv = document.createElement('div');
+        enDiv.className = 'mb-3';
+        
+        const enLabel = document.createElement('label');
+        enLabel.className = 'form-label';
+        enLabel.textContent = 'نص السؤال (إنجليزي)';
+        enDiv.appendChild(enLabel);
+        
+        const enTextarea = document.createElement('textarea');
+        enTextarea.className = 'form-control form-control-modern';
+        enTextarea.rows = 2;
+        enTextarea.id = 'questionText';
+        enTextarea.placeholder = 'Enter question text in English';
+        enTextarea.value = question.text || '';
+        enDiv.appendChild(enTextarea);
+        
+        propertyGroup.appendChild(enDiv);
+        
+        // Required checkbox
+        const checkDiv = document.createElement('div');
+        checkDiv.className = 'form-check mb-3';
+        
+        const checkbox = document.createElement('input');
+        checkbox.className = 'form-check-input';
+        checkbox.type = 'checkbox';
+        checkbox.id = 'isRequired';
+        checkbox.checked = question.is_required || false;
+        checkDiv.appendChild(checkbox);
+        
+        const checkLabel = document.createElement('label');
+        checkLabel.className = 'form-check-label';
+        checkLabel.setAttribute('for', 'isRequired');
+        checkLabel.textContent = 'سؤال إجباري';
+        checkDiv.appendChild(checkLabel);
+        
+        propertyGroup.appendChild(checkDiv);
+        propertiesContainer.appendChild(propertyGroup);
 
         this.setupPropertyEventListeners(questionId);
     }
