@@ -76,15 +76,15 @@ def get_historical_analysis():
         survey_id = request.args.get('survey_id')
         limit = int(request.args.get('limit', 10))
         
-        # Build query for historical responses
-        query = """
+        # Build query for historical responses with parameterized conditions
+        base_query = """
             SELECT r.id, r.survey_id, r.answers, r.created_at, s.title,
                    r.sentiment_score, r.keywords
             FROM responses_flask r 
             JOIN surveys_flask s ON r.survey_id = s.id 
         """
         
-        conditions = []
+        where_conditions = []
         params = {}
         
         # Add time filter
@@ -98,23 +98,25 @@ def get_historical_analysis():
             else:
                 start_date = datetime.now() - timedelta(days=7)  # Default
             
-            conditions.append("r.created_at >= :start_date")
+            where_conditions.append("r.created_at >= :start_date")
             params['start_date'] = start_date
         
         # Add survey filter
         if survey_id:
-            conditions.append("r.survey_id = :survey_id")
+            where_conditions.append("r.survey_id = :survey_id")
             params['survey_id'] = survey_id
         
-        # Add conditions to query
-        if conditions:
-            query += " WHERE " + " AND ".join(conditions)
+        # Construct final query using predefined template
+        if where_conditions:
+            where_clause = " WHERE " + " AND ".join(where_conditions)
+        else:
+            where_clause = ""
         
-        query += " ORDER BY r.created_at DESC LIMIT :limit"
+        final_query = base_query + where_clause + " ORDER BY r.created_at DESC LIMIT :limit"
         params['limit'] = limit
         
         # Execute query
-        result = db.session.execute(text(query), params)
+        result = db.session.execute(text(final_query), params)
         
         responses = []
         for row in result:
