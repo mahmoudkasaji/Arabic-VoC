@@ -8,9 +8,32 @@ from flask_login import current_user, login_required
 from datetime import datetime
 import json
 import uuid
+from urllib.parse import urlparse
 from app import app, db
 from models_unified import Feedback
 from utils.simple_arabic_analyzer import SimpleArabicAnalyzer
+
+def safe_redirect_url():
+    """
+    Safely get referrer URL, validating it's from the same domain.
+    Returns url_for('index') if referrer is invalid or external.
+    """
+    referrer = request.referrer
+    if not referrer:
+        return url_for('index')
+    
+    try:
+        parsed_referrer = urlparse(referrer)
+        parsed_host = urlparse(request.host_url)
+        
+        # Only allow redirects to the same netloc (domain + port)
+        if parsed_referrer.netloc == parsed_host.netloc:
+            return referrer
+        else:
+            return url_for('index')
+    except Exception:
+        # If parsing fails, default to safe redirect
+        return url_for('index')
 
 @app.route('/feedback-widget', methods=['POST'])
 @login_required
@@ -33,7 +56,7 @@ def submit_feedback_widget():
                 }), 400
             else:
                 flash('يرجى تحديد التقييم والفئة', 'error')
-                return redirect(request.referrer or url_for('index'))
+                return redirect(safe_redirect_url())
         
         # Validate rating range
         if not 1 <= rating <= 5:
@@ -44,7 +67,7 @@ def submit_feedback_widget():
                 }), 400
             else:
                 flash('التقييم يجب أن يكون بين 1 و 5', 'error')
-                return redirect(request.referrer or url_for('index'))
+                return redirect(safe_redirect_url())
         
         # Process comment with AI if provided
         ai_analysis = None
@@ -99,7 +122,7 @@ def submit_feedback_widget():
         else:
             # Regular form submission - redirect back
             flash('تم إرسال ملاحظتك بنجاح. شكراً لك!', 'success')
-            return redirect(request.referrer or url_for('index'))
+            return redirect(safe_redirect_url())
         
     except ValueError as e:
         error_msg = 'بيانات غير صحيحة'
@@ -110,7 +133,7 @@ def submit_feedback_widget():
             }), 400
         else:
             flash(error_msg, 'error')
-            return redirect(request.referrer or url_for('index'))
+            return redirect(safe_redirect_url())
         
     except Exception as e:
         print(f"Error submitting widget feedback: {e}")
@@ -124,7 +147,7 @@ def submit_feedback_widget():
             }), 500
         else:
             flash(error_msg, 'error')
-            return redirect(request.referrer or url_for('index'))
+            return redirect(safe_redirect_url())
 
 @app.route('/feedback-widget/config')
 def get_feedback_widget_config():
