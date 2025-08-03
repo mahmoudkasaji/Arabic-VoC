@@ -259,7 +259,8 @@ const UI = {
      */
     hideLoading(element, originalText = '') {
         if (element) {
-            element.innerHTML = originalText;
+            // SECURITY FIX: Use textContent instead of innerHTML for text-only content
+            element.textContent = originalText;
             element.disabled = false;
         }
     },
