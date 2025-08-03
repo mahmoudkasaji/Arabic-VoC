@@ -572,8 +572,11 @@ function showAlert(type, message) {
     const alertDiv = document.createElement('div');
     alertDiv.className = `alert alert-${type === 'error' ? 'danger' : type} alert-dismissible fade show position-fixed`;
     alertDiv.style.cssText = 'top: 20px; right: 20px; z-index: 9999; max-width: 400px;';
+    
+    // Escape HTML to prevent XSS
+    const escapedMessage = escapeHtml(message);
     alertDiv.innerHTML = `
-        ${message}
+        ${escapedMessage}
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     `;
     
