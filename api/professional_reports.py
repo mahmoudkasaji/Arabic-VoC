@@ -4,7 +4,7 @@ API endpoints for PDF report generation and enhanced data export
 """
 
 from flask import Blueprint, jsonify, request, send_file, make_response
-from typing import Dict, Any, List
+from typing import Dict, Any, List, Optional
 import logging
 import json
 import io
@@ -187,7 +187,7 @@ def get_report_templates():
             'error': 'Failed to get report templates'
         }), 500
 
-def _generate_simple_executive_report(time_range: str, survey_id: str = None) -> bytes:
+def _generate_simple_executive_report(time_range: str, survey_id: Optional[str] = None) -> bytes:
     """Generate a simple text-based executive report"""
     
     # Get analytics data
@@ -237,8 +237,13 @@ def _generate_simple_executive_report(time_range: str, survey_id: str = None) ->
     report_content = "\n".join(report_lines)
     return report_content.encode('utf-8')
 
-def _get_export_data(time_range: str, survey_id: str = None, include_analytics: bool = True) -> Dict[str, Any]:
+def _get_export_data(time_range: str, survey_id: Optional[str] = None, include_analytics: bool = True) -> Dict[str, Any]:
     """Get survey data formatted for export"""
+    
+    # Validate time_range parameter to prevent unexpected behavior
+    valid_time_ranges = {'1d', '7d', '30d', 'all'}
+    if time_range not in valid_time_ranges:
+        time_range = '7d'  # Safe default
     
     # Build query for survey responses
     query = """
@@ -260,16 +265,21 @@ def _get_export_data(time_range: str, survey_id: str = None, include_analytics: 
             start_date = datetime.now() - timedelta(days=7)
         elif time_range == '30d':
             start_date = datetime.now() - timedelta(days=30)
-        else:
-            start_date = datetime.now() - timedelta(days=7)
         
         conditions.append("r.created_at >= :start_date")
         params['start_date'] = start_date
     
-    # Add survey filter
+    # Add survey filter (validate survey_id is numeric to prevent injection)
     if survey_id:
-        conditions.append("r.survey_id = :survey_id")
-        params['survey_id'] = survey_id
+        try:
+            # Ensure survey_id is a valid integer
+            survey_id_int = int(survey_id)
+            conditions.append("r.survey_id = :survey_id")
+            params['survey_id'] = survey_id_int
+        except (ValueError, TypeError):
+            # Invalid survey_id, skip filter
+            logger.warning(f"Invalid survey_id provided: {survey_id}")
+            pass
     
     if conditions:
         query += " WHERE " + " AND ".join(conditions)
@@ -315,9 +325,8 @@ def _get_export_data(time_range: str, survey_id: str = None, include_analytics: 
         
         responses.append(response_data)
     
-    return {
+    result = {
         'responses': responses,
-        'summary': _generate_analytics_summary(time_range, survey_id),
         'export_metadata': {
             'time_range': time_range,
             'survey_id': survey_id,
@@ -325,6 +334,12 @@ def _get_export_data(time_range: str, survey_id: str = None, include_analytics: 
             'total_responses': len(responses)
         }
     }
+    
+    # Only include analytics summary if requested and not already in recursion
+    if include_analytics:
+        result['summary'] = _generate_analytics_summary(time_range, survey_id)
+    
+    return result
 
 def _convert_to_csv(export_data: Dict[str, Any]) -> str:
     """Convert export data to CSV format with Arabic support"""
@@ -362,7 +377,7 @@ def _convert_to_csv(export_data: Dict[str, Any]) -> str:
     csv_content = '\ufeff' + '\n'.join(csv_lines)
     return csv_content
 
-def _generate_analytics_summary(time_range: str, survey_id: str = None) -> Dict[str, Any]:
+def _generate_analytics_summary(time_range: str, survey_id: Optional[str] = None) -> Dict[str, Any]:
     """Generate comprehensive analytics summary"""
     
     # Get export data
