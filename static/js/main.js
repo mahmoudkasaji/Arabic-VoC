@@ -645,16 +645,33 @@ const Dashboard = {
 
         const maxCount = Math.max(...channelData.map(ch => ch.feedback_count));
 
-        const chartHTML = channelData.map(channel => `
-            <div class="chart-item">
-                <div class="chart-bar primary" style="width: ${(channel.feedback_count / maxCount) * 100}%"></div>
-                <span class="chart-label">
-                    ${UI.getChannelName(channel.channel)} (${ArabicUtils.formatNumber(channel.feedback_count)})
-                </span>
-            </div>
-        `).join('');
+        // Clear container and create wrapper
+        chartContainer.innerHTML = '';
+        const chartWrapper = document.createElement('div');
+        chartWrapper.className = 'channel-chart';
 
-        chartContainer.innerHTML = `<div class="channel-chart">${chartHTML}</div>`;
+        // Create chart items using safe DOM methods
+        channelData.forEach(channel => {
+            const chartItem = document.createElement('div');
+            chartItem.className = 'chart-item';
+
+            // Create chart bar
+            const chartBar = document.createElement('div');
+            chartBar.className = 'chart-bar primary';
+            chartBar.style.width = `${(channel.feedback_count / maxCount) * 100}%`;
+
+            // Create chart label with safe text content
+            const chartLabel = document.createElement('span');
+            chartLabel.className = 'chart-label';
+            chartLabel.textContent = `${UI.getChannelName(channel.channel)} (${ArabicUtils.formatNumber(channel.feedback_count)})`;
+
+            // Assemble the chart item
+            chartItem.appendChild(chartBar);
+            chartItem.appendChild(chartLabel);
+            chartWrapper.appendChild(chartItem);
+        });
+
+        chartContainer.appendChild(chartWrapper);
     },
 
     /**
