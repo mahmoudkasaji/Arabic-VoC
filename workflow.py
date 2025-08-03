@@ -6,6 +6,7 @@ Provides one-command access to all DevOps operations
 
 import sys
 import subprocess
+import shlex
 from pathlib import Path
 
 class WorkflowManager:
@@ -35,7 +36,9 @@ class WorkflowManager:
         print("=" * 50)
         
         try:
-            result = subprocess.run(cmd, shell=True, cwd=self.project_root)
+            # Parse command safely without shell=True
+            cmd_args = shlex.split(cmd)
+            result = subprocess.run(cmd_args, shell=False, cwd=self.project_root)
             return result.returncode == 0
         except Exception as e:
             print(f"Workflow failed: {e}")
@@ -55,7 +58,7 @@ class WorkflowManager:
         print("  python workflow.py health   - Health check")
         print()
         print("Current Status:")
-        subprocess.run("bash workflows/environment-status.sh", shell=True, cwd=self.project_root)
+        subprocess.run(["bash", "workflows/environment-status.sh"], shell=False, cwd=self.project_root)
 
 def main():
     manager = WorkflowManager()
