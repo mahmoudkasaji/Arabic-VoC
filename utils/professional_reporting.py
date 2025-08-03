@@ -21,7 +21,9 @@ from reportlab.pdfbase.ttfonts import TTFont
 from arabic_reshaper import reshape
 from bidi.algorithm import get_display
 from sqlalchemy import text
+from sqlalchemy.orm import aliased
 from app import db
+from models.survey_flask import SurveyFlask, ResponseFlask
 
 logger = logging.getLogger(__name__)
 
@@ -441,20 +443,23 @@ class ProfessionalReporting:
         if time_range not in valid_time_ranges:
             time_range = '7d'  # Safe default
         
-        # Build base query with proper parameterization
-        base_query = """
-            SELECT r.id, r.survey_id, r.answers, r.created_at, r.completion_percentage,
-                   r.language_used, r.device_type, r.sentiment_score, r.keywords,
-                   s.title as survey_title
-            FROM responses_flask r 
-            JOIN surveys_flask s ON r.survey_id = s.id 
-        """
-        
-        conditions = []
-        params = {}
+        # Build query using SQLAlchemy ORM for better security
+        query = db.session.query(
+            ResponseFlask.id,
+            ResponseFlask.survey_id,
+            ResponseFlask.answers,
+            ResponseFlask.created_at,
+            ResponseFlask.completion_percentage,
+            ResponseFlask.language_used,
+            ResponseFlask.device_type,
+            ResponseFlask.sentiment_score,
+            ResponseFlask.keywords,
+            SurveyFlask.title.label('survey_title')
+        ).join(SurveyFlask, ResponseFlask.survey_id == SurveyFlask.id)
         
         # Add time filter with validated parameter
         if time_range != 'all':
+            start_date = None
             if time_range == '1d':
                 start_date = datetime.now() - timedelta(days=1)
             elif time_range == '7d':
@@ -462,55 +467,46 @@ class ProfessionalReporting:
             elif time_range == '30d':
                 start_date = datetime.now() - timedelta(days=30)
             
-            conditions.append("r.created_at >= :start_date")
-            params['start_date'] = start_date
+            if start_date:
+                query = query.filter(ResponseFlask.created_at >= start_date)
         
         # Add survey filter with integer validation
         if survey_id:
             try:
                 # Ensure survey_id is a valid integer to prevent injection
                 survey_id_int = int(survey_id)
-                conditions.append("r.survey_id = :survey_id")
-                params['survey_id'] = survey_id_int
+                query = query.filter(ResponseFlask.survey_id == survey_id_int)
             except (ValueError, TypeError):
                 # Invalid survey_id, skip filter but log warning
                 logger.warning(f"Invalid survey_id provided: {survey_id}")
         
-        # Construct final query safely
-        if conditions:
-            final_query = base_query + " WHERE " + " AND ".join(conditions)
-        else:
-            final_query = base_query
-        
-        final_query += " ORDER BY r.created_at DESC"
-        
-        # Execute query with named parameters
-        result = db.session.execute(text(final_query), params)
+        # Execute query with proper ordering
+        result = query.order_by(ResponseFlask.created_at.desc()).all()
         
         responses = []
         for row in result:
-            # Extract text from answers
+            # Extract text from answers - now using named attributes from ORM query
             response_text = ""
             try:
-                if row[2]:  # answers column
-                    answers_data = json.loads(row[2]) if isinstance(row[2], str) else row[2]
+                if row.answers:  # answers column
+                    answers_data = json.loads(row.answers) if isinstance(row.answers, str) else row.answers
                     text_responses = []
                     for question_id, answer in answers_data.items():
                         if isinstance(answer, str) and len(answer.strip()) > 0 and not answer.isdigit():
                             text_responses.append(answer.strip())
                     response_text = " | ".join(text_responses)
             except Exception as e:
-                logger.warning(f"Could not parse answers for response {row[0]}: {e}")
+                logger.warning(f"Could not parse answers for response {row.id}: {e}")
             
             responses.append({
-                'id': row[0],
-                'survey_id': row[1],
-                'created_at': row[3].strftime('%Y-%m-%d %H:%M') if row[3] else '',
-                'completion_percentage': row[4] or 0,
-                'language_used': row[5] or 'unknown',
-                'device_type': row[6] or 'unknown',
-                'sentiment_score': row[7] or 0,
-                'survey_title': row[9] or 'Unknown Survey',
+                'id': row.id,
+                'survey_id': row.survey_id,
+                'created_at': row.created_at.strftime('%Y-%m-%d %H:%M') if row.created_at else '',
+                'completion_percentage': row.completion_percentage or 0,
+                'language_used': row.language_used or 'unknown',
+                'device_type': row.device_type or 'unknown',
+                'sentiment_score': row.sentiment_score or 0,
+                'survey_title': row.survey_title or 'Unknown Survey',
                 'response_text': response_text,
                 'enhanced_analysis': {}  # Could be populated with stored enhanced analysis
             })
