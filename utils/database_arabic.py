@@ -149,41 +149,38 @@ class ArabicDatabaseManager:
         """Search Arabic content using full-text search"""
         async with self.session_factory() as session:
             try:
-                # Normalize search query
-                normalized_query = f"arabic_to_tsvector('{query}')"
-                
-                # Build search SQL based on table and fields
+                # Build search SQL based on table and fields using parameterized queries
                 if table == "users":
-                    sql = f"""
+                    sql = """
                         SELECT id, username, email, first_name, last_name, first_name_ar, last_name_ar,
-                               ts_rank(arabic_to_tsvector(coalesce(first_name_ar, '') || ' ' || coalesce(last_name_ar, '')), {normalized_query}) as rank
+                               ts_rank(arabic_to_tsvector(coalesce(first_name_ar, '') || ' ' || coalesce(last_name_ar, '')), arabic_to_tsvector(:query)) as rank
                         FROM users 
-                        WHERE arabic_to_tsvector(coalesce(first_name_ar, '') || ' ' || coalesce(last_name_ar, '')) @@ {normalized_query}
+                        WHERE arabic_to_tsvector(coalesce(first_name_ar, '') || ' ' || coalesce(last_name_ar, '')) @@ arabic_to_tsvector(:query)
                         ORDER BY rank DESC
-                        LIMIT {limit}
+                        LIMIT :limit
                     """
                 elif table == "surveys":
-                    sql = f"""
+                    sql = """
                         SELECT id, title, title_ar, description, description_ar,
-                               ts_rank(arabic_to_tsvector(coalesce(title_ar, '') || ' ' || coalesce(description_ar, '')), {normalized_query}) as rank
+                               ts_rank(arabic_to_tsvector(coalesce(title_ar, '') || ' ' || coalesce(description_ar, '')), arabic_to_tsvector(:query)) as rank
                         FROM surveys 
-                        WHERE arabic_to_tsvector(coalesce(title_ar, '') || ' ' || coalesce(description_ar, '')) @@ {normalized_query}
+                        WHERE arabic_to_tsvector(coalesce(title_ar, '') || ' ' || coalesce(description_ar, '')) @@ arabic_to_tsvector(:query)
                         ORDER BY rank DESC
-                        LIMIT {limit}
+                        LIMIT :limit
                     """
                 elif table == "feedback":
-                    sql = f"""
+                    sql = """
                         SELECT id, content, channel, sentiment_score, created_at,
-                               ts_rank(arabic_to_tsvector(content), {normalized_query}) as rank
+                               ts_rank(arabic_to_tsvector(content), arabic_to_tsvector(:query)) as rank
                         FROM feedback 
-                        WHERE arabic_to_tsvector(content) @@ {normalized_query}
+                        WHERE arabic_to_tsvector(content) @@ arabic_to_tsvector(:query)
                         ORDER BY rank DESC
-                        LIMIT {limit}
+                        LIMIT :limit
                     """
                 else:
                     raise ValueError(f"Unsupported table: {table}")
                 
-                result = await session.execute(text(sql))
+                result = await session.execute(text(sql), {"query": query, "limit": limit})
                 return [dict(row._mapping) for row in result.fetchall()]
                 
             except Exception as e:
