@@ -186,10 +186,20 @@ class SurveyManager {
         notification.style.top = '20px';
         notification.style.right = '20px';
         notification.style.zIndex = '9999';
-        notification.innerHTML = `
-            ${message}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        `;
+        
+        // Create message text safely using textContent
+        const messageSpan = document.createElement('span');
+        messageSpan.textContent = message;
+        
+        // Create close button safely
+        const closeButton = document.createElement('button');
+        closeButton.type = 'button';
+        closeButton.className = 'btn-close';
+        closeButton.setAttribute('data-bs-dismiss', 'alert');
+        
+        // Assemble notification safely
+        notification.appendChild(messageSpan);
+        notification.appendChild(closeButton);
 
         document.body.appendChild(notification);
 
