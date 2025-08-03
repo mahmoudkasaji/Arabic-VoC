@@ -423,30 +423,80 @@ class SurveyBuilder {
         questionElement.className = 'question-item';
         questionElement.dataset.questionId = question.id;
         
-        questionElement.innerHTML = `
-            <div class="question-header">
-                <div class="d-flex align-items-center">
-                    <i class="fas fa-grip-vertical drag-handle me-3" title="اسحب لإعادة الترتيب"></i>
-                    <span class="badge bg-primary me-2">${this.getQuestionTypeLabel(question.type)}</span>
-                    <span class="question-number">السؤال ${question.order_index + 1}</span>
-                </div>
-                <div class="question-actions">
-                    <button class="btn btn-sm btn-outline-primary" onclick="surveyBuilder.duplicateQuestion(${question.id})" title="نسخ السؤال">
-                        <i class="fas fa-copy"></i>
-                    </button>
-                    <button class="btn btn-sm btn-outline-danger" onclick="surveyBuilder.deleteQuestion(${question.id})" title="حذف السؤال">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </div>
-            </div>
-            <div class="question-content">
-                <h6 class="question-text">${question.text_ar || question.text}</h6>
-                ${question.description_ar || question.description ? `<p class="text-muted">${question.description_ar || question.description}</p>` : ''}
-                <div class="question-preview">
-                    ${this.renderQuestionPreview(question)}
-                </div>
-            </div>
-        `;
+        // Create header section safely
+        const questionHeader = document.createElement('div');
+        questionHeader.className = 'question-header';
+        
+        const headerAlign = document.createElement('div');
+        headerAlign.className = 'd-flex align-items-center';
+        
+        const dragHandle = document.createElement('i');
+        dragHandle.className = 'fas fa-grip-vertical drag-handle me-3';
+        dragHandle.title = 'اسحب لإعادة الترتيب';
+        headerAlign.appendChild(dragHandle);
+        
+        const typeBadge = document.createElement('span');
+        typeBadge.className = 'badge bg-primary me-2';
+        typeBadge.textContent = this.getQuestionTypeLabel(question.type);
+        headerAlign.appendChild(typeBadge);
+        
+        const questionNumber = document.createElement('span');
+        questionNumber.className = 'question-number';
+        questionNumber.textContent = `السؤال ${question.order_index + 1}`;
+        headerAlign.appendChild(questionNumber);
+        
+        questionHeader.appendChild(headerAlign);
+        
+        // Create action buttons safely
+        const actionDiv = document.createElement('div');
+        actionDiv.className = 'question-actions';
+        
+        const duplicateBtn = document.createElement('button');
+        duplicateBtn.className = 'btn btn-sm btn-outline-primary';
+        duplicateBtn.title = 'نسخ السؤال';
+        duplicateBtn.onclick = () => this.duplicateQuestion(question.id);
+        const duplicateIcon = document.createElement('i');
+        duplicateIcon.className = 'fas fa-copy';
+        duplicateBtn.appendChild(duplicateIcon);
+        actionDiv.appendChild(duplicateBtn);
+        
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'btn btn-sm btn-outline-danger';
+        deleteBtn.title = 'حذف السؤال';
+        deleteBtn.onclick = () => this.deleteQuestion(question.id);
+        const deleteIcon = document.createElement('i');
+        deleteIcon.className = 'fas fa-trash';
+        deleteBtn.appendChild(deleteIcon);
+        actionDiv.appendChild(deleteBtn);
+        
+        questionHeader.appendChild(actionDiv);
+        questionElement.appendChild(questionHeader);
+        
+        // Create content section safely
+        const questionContent = document.createElement('div');
+        questionContent.className = 'question-content';
+        
+        const questionTextEl = document.createElement('h6');
+        questionTextEl.className = 'question-text';
+        questionTextEl.textContent = question.text_ar || question.text || '';
+        questionContent.appendChild(questionTextEl);
+        
+        // Add description if present
+        if (question.description_ar || question.description) {
+            const descriptionEl = document.createElement('p');
+            descriptionEl.className = 'text-muted';
+            descriptionEl.textContent = question.description_ar || question.description;
+            questionContent.appendChild(descriptionEl);
+        }
+        
+        // Create preview container
+        const previewDiv = document.createElement('div');
+        previewDiv.className = 'question-preview';
+        const previewContent = this.renderQuestionPreviewSafe(question);
+        previewDiv.appendChild(previewContent);
+        questionContent.appendChild(previewDiv);
+        
+        questionElement.appendChild(questionContent);
 
         questionElement.addEventListener('click', () => {
             this.selectQuestion(question.id);
@@ -464,6 +514,197 @@ class SurveyBuilder {
         });
 
         questionsContainer.appendChild(questionElement);
+    }
+
+    renderQuestionPreviewSafe(question) {
+        const container = document.createElement('div');
+        
+        switch (question.type) {
+            case 'text':
+                const textInput = document.createElement('input');
+                textInput.type = 'text';
+                textInput.className = 'form-control';
+                textInput.placeholder = 'إجابة نصية قصيرة';
+                textInput.disabled = true;
+                container.appendChild(textInput);
+                break;
+            
+            case 'textarea':
+                const textarea = document.createElement('textarea');
+                textarea.className = 'form-control';
+                textarea.rows = 3;
+                textarea.placeholder = 'إجابة نصية طويلة';
+                textarea.disabled = true;
+                container.appendChild(textarea);
+                break;
+            
+            case 'multiple_choice':
+                question.options.choices.forEach(choice => {
+                    const checkDiv = document.createElement('div');
+                    checkDiv.className = 'form-check';
+                    
+                    const radio = document.createElement('input');
+                    radio.className = 'form-check-input';
+                    radio.type = 'radio';
+                    radio.disabled = true;
+                    checkDiv.appendChild(radio);
+                    
+                    const label = document.createElement('label');
+                    label.className = 'form-check-label';
+                    label.textContent = choice.text || '';
+                    checkDiv.appendChild(label);
+                    
+                    container.appendChild(checkDiv);
+                });
+                break;
+            
+            case 'checkbox':
+                question.options.choices.forEach(choice => {
+                    const checkDiv = document.createElement('div');
+                    checkDiv.className = 'form-check';
+                    
+                    const checkbox = document.createElement('input');
+                    checkbox.className = 'form-check-input';
+                    checkbox.type = 'checkbox';
+                    checkbox.disabled = true;
+                    checkDiv.appendChild(checkbox);
+                    
+                    const label = document.createElement('label');
+                    label.className = 'form-check-label';
+                    label.textContent = choice.text || '';
+                    checkDiv.appendChild(label);
+                    
+                    container.appendChild(checkDiv);
+                });
+                break;
+            
+            case 'dropdown':
+                const select = document.createElement('select');
+                select.className = 'form-select';
+                select.disabled = true;
+                
+                const defaultOption = document.createElement('option');
+                defaultOption.textContent = 'اختر إجابة...';
+                select.appendChild(defaultOption);
+                
+                question.options.choices.forEach(choice => {
+                    const option = document.createElement('option');
+                    option.textContent = choice.text || '';
+                    select.appendChild(option);
+                });
+                
+                container.appendChild(select);
+                break;
+            
+            case 'rating':
+                const ratingDiv = document.createElement('div');
+                ratingDiv.className = 'rating-preview';
+                
+                const maxRating = question.options.max_rating || 5;
+                for (let i = 0; i < maxRating; i++) {
+                    const star = document.createElement('i');
+                    star.className = 'fas fa-star text-warning me-1';
+                    star.style.fontSize = '1.5rem';
+                    ratingDiv.appendChild(star);
+                }
+                
+                container.appendChild(ratingDiv);
+                break;
+            
+            case 'slider':
+                const sliderDiv = document.createElement('div');
+                sliderDiv.className = 'slider-preview';
+                
+                const slider = document.createElement('input');
+                slider.type = 'range';
+                slider.className = 'form-range';
+                slider.min = question.options.min_value || 0;
+                slider.max = question.options.max_value || 10;
+                slider.disabled = true;
+                sliderDiv.appendChild(slider);
+                
+                const labelDiv = document.createElement('div');
+                labelDiv.className = 'd-flex justify-content-between';
+                
+                const minLabel = document.createElement('small');
+                minLabel.textContent = question.options.labels?.ar?.min || 'الأدنى';
+                labelDiv.appendChild(minLabel);
+                
+                const maxLabel = document.createElement('small');
+                maxLabel.textContent = question.options.labels?.ar?.max || 'الأعلى';
+                labelDiv.appendChild(maxLabel);
+                
+                sliderDiv.appendChild(labelDiv);
+                container.appendChild(sliderDiv);
+                break;
+            
+            case 'nps':
+                const npsDiv = document.createElement('div');
+                npsDiv.className = 'nps-preview';
+                
+                const buttonDiv = document.createElement('div');
+                buttonDiv.className = 'mb-2';
+                
+                for (let i = 0; i <= 10; i++) {
+                    const btn = document.createElement('button');
+                    btn.className = 'btn btn-outline-primary btn-sm me-1';
+                    btn.textContent = i.toString();
+                    btn.disabled = true;
+                    buttonDiv.appendChild(btn);
+                }
+                
+                npsDiv.appendChild(buttonDiv);
+                
+                const npsLabelDiv = document.createElement('div');
+                npsLabelDiv.className = 'd-flex justify-content-between';
+                
+                const npsMinLabel = document.createElement('small');
+                npsMinLabel.textContent = question.options.labels?.ar?.min || 'لن أوصي أبداً';
+                npsLabelDiv.appendChild(npsMinLabel);
+                
+                const npsMaxLabel = document.createElement('small');
+                npsMaxLabel.textContent = question.options.labels?.ar?.max || 'سأوصي بقوة';
+                npsLabelDiv.appendChild(npsMaxLabel);
+                
+                npsDiv.appendChild(npsLabelDiv);
+                container.appendChild(npsDiv);
+                break;
+            
+            case 'date':
+                const dateInput = document.createElement('input');
+                dateInput.type = 'date';
+                dateInput.className = 'form-control';
+                dateInput.disabled = true;
+                container.appendChild(dateInput);
+                break;
+            
+            case 'email':
+                const emailInput = document.createElement('input');
+                emailInput.type = 'email';
+                emailInput.className = 'form-control';
+                emailInput.placeholder = 'example@domain.com';
+                emailInput.disabled = true;
+                container.appendChild(emailInput);
+                break;
+            
+            case 'phone':
+                const phoneInput = document.createElement('input');
+                phoneInput.type = 'tel';
+                phoneInput.className = 'form-control';
+                phoneInput.placeholder = '+966501234567';
+                phoneInput.disabled = true;
+                container.appendChild(phoneInput);
+                break;
+            
+            default:
+                const defaultText = document.createElement('div');
+                defaultText.className = 'text-muted';
+                defaultText.textContent = 'معاينة السؤال';
+                container.appendChild(defaultText);
+                break;
+        }
+        
+        return container;
     }
 
     renderQuestionPreview(question) {
