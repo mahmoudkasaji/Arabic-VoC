@@ -228,7 +228,28 @@ def get_topic_insights():
     """
     try:
         time_range = request.args.get('time_range', '7d')
-        min_relevance = float(request.args.get('min_relevance', 0.3))
+        min_relevance_str = request.args.get('min_relevance', '0.3')
+        
+        # Validate min_relevance input to prevent NaN injection
+        if min_relevance_str.lower() in ('nan', '+nan', '-nan'):
+            return jsonify({
+                'success': False,
+                'error': 'Invalid min_relevance value'
+            }), 400
+        
+        try:
+            min_relevance = float(min_relevance_str)
+            # Additional validation: ensure it's a valid number and within reasonable bounds
+            if not (0.0 <= min_relevance <= 1.0):
+                return jsonify({
+                    'success': False,
+                    'error': 'min_relevance must be between 0.0 and 1.0'
+                }), 400
+        except ValueError:
+            return jsonify({
+                'success': False,
+                'error': 'min_relevance must be a valid number'
+            }), 400
         
         # Get historical analysis
         analysis_response = get_historical_analysis()
