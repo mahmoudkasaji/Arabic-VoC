@@ -25,13 +25,17 @@ window.toggleLanguage = function() {
     
     // Show loading state if button exists
     const button = document.querySelector('[onclick="toggleLanguage()"]');
-    const originalContent = button ? button.innerHTML : '';
+    const originalContent = button ? button.textContent : '';
     
     console.log('Button found:', button);
     
     if (button) {
         button.disabled = true;
-        button.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>جاري التحميل...';
+        // Safe DOM manipulation: Clear content and add loading text
+        button.textContent = 'جاري التحميل...';
+        const spinner = document.createElement('i');
+        spinner.className = 'fas fa-spinner fa-spin me-1';
+        button.insertBefore(spinner, button.firstChild);
     }
     
     console.log('Sending toggle request to /api/language/toggle');
@@ -69,7 +73,7 @@ window.toggleLanguage = function() {
         console.error('❌ Error toggling language:', error);
         if (button) {
             button.disabled = false;
-            button.innerHTML = originalContent;
+            button.textContent = originalContent;
         }
     });
 };
