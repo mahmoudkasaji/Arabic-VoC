@@ -544,6 +544,184 @@ class SurveyBuilder {
         }
     }
 
+    renderQuestionPreviewSafe(question) {
+        const container = document.createElement('div');
+        
+        switch (question.type) {
+            case 'text':
+                const textInput = document.createElement('input');
+                textInput.type = 'text';
+                textInput.className = 'form-control';
+                textInput.placeholder = 'إجابة نصية قصيرة';
+                textInput.disabled = true;
+                return textInput;
+            
+            case 'textarea':
+                const textarea = document.createElement('textarea');
+                textarea.className = 'form-control';
+                textarea.rows = 3;
+                textarea.placeholder = 'إجابة نصية طويلة';
+                textarea.disabled = true;
+                return textarea;
+            
+            case 'multiple_choice':
+                question.options.choices.forEach(choice => {
+                    const checkDiv = document.createElement('div');
+                    checkDiv.className = 'form-check';
+                    
+                    const input = document.createElement('input');
+                    input.className = 'form-check-input';
+                    input.type = 'radio';
+                    input.disabled = true;
+                    
+                    const label = document.createElement('label');
+                    label.className = 'form-check-label';
+                    label.textContent = choice.text;
+                    
+                    checkDiv.appendChild(input);
+                    checkDiv.appendChild(label);
+                    container.appendChild(checkDiv);
+                });
+                return container;
+            
+            case 'checkbox':
+                question.options.choices.forEach(choice => {
+                    const checkDiv = document.createElement('div');
+                    checkDiv.className = 'form-check';
+                    
+                    const input = document.createElement('input');
+                    input.className = 'form-check-input';
+                    input.type = 'checkbox';
+                    input.disabled = true;
+                    
+                    const label = document.createElement('label');
+                    label.className = 'form-check-label';
+                    label.textContent = choice.text;
+                    
+                    checkDiv.appendChild(input);
+                    checkDiv.appendChild(label);
+                    container.appendChild(checkDiv);
+                });
+                return container;
+            
+            case 'dropdown':
+                const select = document.createElement('select');
+                select.className = 'form-select';
+                select.disabled = true;
+                
+                const defaultOption = document.createElement('option');
+                defaultOption.textContent = 'اختر إجابة...';
+                select.appendChild(defaultOption);
+                
+                question.options.choices.forEach(choice => {
+                    const option = document.createElement('option');
+                    option.textContent = choice.text;
+                    select.appendChild(option);
+                });
+                return select;
+            
+            case 'rating':
+                const ratingDiv = document.createElement('div');
+                ratingDiv.className = 'rating-preview';
+                
+                const numStars = question.options.max_rating || 5;
+                for (let i = 0; i < numStars; i++) {
+                    const star = document.createElement('i');
+                    star.className = 'fas fa-star text-warning me-1';
+                    star.style.fontSize = '1.5rem';
+                    ratingDiv.appendChild(star);
+                }
+                return ratingDiv;
+            
+            case 'slider':
+                const sliderDiv = document.createElement('div');
+                sliderDiv.className = 'slider-preview';
+                
+                const range = document.createElement('input');
+                range.type = 'range';
+                range.className = 'form-range';
+                range.min = question.options.min_value || 0;
+                range.max = question.options.max_value || 10;
+                range.disabled = true;
+                
+                const labelsDiv = document.createElement('div');
+                labelsDiv.className = 'd-flex justify-content-between';
+                
+                const minLabel = document.createElement('small');
+                minLabel.textContent = question.options.labels?.ar?.min || 'الأدنى';
+                
+                const maxLabel = document.createElement('small');
+                maxLabel.textContent = question.options.labels?.ar?.max || 'الأعلى';
+                
+                labelsDiv.appendChild(minLabel);
+                labelsDiv.appendChild(maxLabel);
+                
+                sliderDiv.appendChild(range);
+                sliderDiv.appendChild(labelsDiv);
+                return sliderDiv;
+            
+            case 'nps':
+                const npsDiv = document.createElement('div');
+                npsDiv.className = 'nps-preview';
+                
+                const buttonsDiv = document.createElement('div');
+                buttonsDiv.className = 'mb-2';
+                
+                for (let i = 0; i <= 10; i++) {
+                    const button = document.createElement('button');
+                    button.className = 'btn btn-outline-primary btn-sm me-1';
+                    button.textContent = i.toString();
+                    button.disabled = true;
+                    buttonsDiv.appendChild(button);
+                }
+                
+                const npsLabelsDiv = document.createElement('div');
+                npsLabelsDiv.className = 'd-flex justify-content-between';
+                
+                const npsMinLabel = document.createElement('small');
+                npsMinLabel.textContent = question.options.labels?.ar?.min || 'لن أوصي أبداً';
+                
+                const npsMaxLabel = document.createElement('small');
+                npsMaxLabel.textContent = question.options.labels?.ar?.max || 'سأوصي بقوة';
+                
+                npsLabelsDiv.appendChild(npsMinLabel);
+                npsLabelsDiv.appendChild(npsMaxLabel);
+                
+                npsDiv.appendChild(buttonsDiv);
+                npsDiv.appendChild(npsLabelsDiv);
+                return npsDiv;
+            
+            case 'date':
+                const dateInput = document.createElement('input');
+                dateInput.type = 'date';
+                dateInput.className = 'form-control';
+                dateInput.disabled = true;
+                return dateInput;
+            
+            case 'email':
+                const emailInput = document.createElement('input');
+                emailInput.type = 'email';
+                emailInput.className = 'form-control';
+                emailInput.placeholder = 'example@domain.com';
+                emailInput.disabled = true;
+                return emailInput;
+            
+            case 'phone':
+                const phoneInput = document.createElement('input');
+                phoneInput.type = 'tel';
+                phoneInput.className = 'form-control';
+                phoneInput.placeholder = '+966501234567';
+                phoneInput.disabled = true;
+                return phoneInput;
+            
+            default:
+                const defaultDiv = document.createElement('div');
+                defaultDiv.className = 'text-muted';
+                defaultDiv.textContent = 'معاينة السؤال';
+                return defaultDiv;
+        }
+    }
+
     getQuestionTypeLabel(type) {
         const labels = {
             text: 'نص قصير',
@@ -792,30 +970,56 @@ function previewSurvey() {
     const surveyData = surveyBuilder.getSurveyData();
     const previewContent = document.getElementById('previewContent');
     
-    let previewHtml = `
-        <div class="survey-preview-content">
-            <h3 class="text-center mb-4">${surveyData.title_ar || surveyData.title}</h3>
-            ${surveyData.description_ar || surveyData.description ? 
-                `<p class="text-center text-muted mb-4">${surveyData.description_ar || surveyData.description}</p>` : 
-                ''}
-    `;
+    // Clear existing content safely
+    previewContent.textContent = '';
     
+    // Create main container
+    const surveyContainer = document.createElement('div');
+    surveyContainer.className = 'survey-preview-content';
+    
+    // Create and append title
+    const title = document.createElement('h3');
+    title.className = 'text-center mb-4';
+    title.textContent = surveyData.title_ar || surveyData.title;
+    surveyContainer.appendChild(title);
+    
+    // Create and append description if exists
+    if (surveyData.description_ar || surveyData.description) {
+        const description = document.createElement('p');
+        description.className = 'text-center text-muted mb-4';
+        description.textContent = surveyData.description_ar || surveyData.description;
+        surveyContainer.appendChild(description);
+    }
+    
+    // Add questions
     surveyData.questions.forEach((question, index) => {
-        previewHtml += `
-            <div class="preview-question">
-                <h6>
-                    ${index + 1}. ${question.text_ar || question.text}
-                    ${question.is_required ? '<span class="text-danger">*</span>' : ''}
-                </h6>
-                <div class="mt-2">
-                    ${surveyBuilder.renderQuestionPreview(question)}
-                </div>
-            </div>
-        `;
+        const questionDiv = document.createElement('div');
+        questionDiv.className = 'preview-question';
+        
+        const questionHeader = document.createElement('h6');
+        questionHeader.textContent = `${index + 1}. ${question.text_ar || question.text}`;
+        
+        if (question.is_required) {
+            const requiredSpan = document.createElement('span');
+            requiredSpan.className = 'text-danger';
+            requiredSpan.textContent = '*';
+            questionHeader.appendChild(requiredSpan);
+        }
+        
+        questionDiv.appendChild(questionHeader);
+        
+        const questionContent = document.createElement('div');
+        questionContent.className = 'mt-2';
+        
+        // Use safe rendering for question preview
+        const previewElement = surveyBuilder.renderQuestionPreviewSafe(question);
+        questionContent.appendChild(previewElement);
+        
+        questionDiv.appendChild(questionContent);
+        surveyContainer.appendChild(questionDiv);
     });
     
-    previewHtml += '</div>';
-    previewContent.innerHTML = previewHtml;
+    previewContent.appendChild(surveyContainer);
     
     const modal = new bootstrap.Modal(document.getElementById('previewModal'));
     modal.show();
