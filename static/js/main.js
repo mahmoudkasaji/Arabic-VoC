@@ -607,28 +607,49 @@ const Dashboard = {
         const total = Object.values(data).reduce((sum, val) => sum + val, 0);
 
         if (total === 0) {
-            chartContainer.innerHTML = '<p class="text-muted text-center">لا توجد بيانات للعرض</p>';
+            // Clear container and create safe empty state message
+            chartContainer.innerHTML = '';
+            const emptyMessage = document.createElement('p');
+            emptyMessage.className = 'text-muted text-center';
+            emptyMessage.textContent = 'لا توجد بيانات للعرض';
+            chartContainer.appendChild(emptyMessage);
             return;
         }
 
-        const chartHTML = `
-            <div class="sentiment-chart">
-                <div class="chart-item">
-                    <div class="chart-bar positive" style="width: ${(data.positive / total) * 100}%"></div>
-                    <span class="chart-label">إيجابي (${ArabicUtils.formatNumber(data.positive)})</span>
-                </div>
-                <div class="chart-item">
-                    <div class="chart-bar neutral" style="width: ${(data.neutral / total) * 100}%"></div>
-                    <span class="chart-label">محايد (${ArabicUtils.formatNumber(data.neutral)})</span>
-                </div>
-                <div class="chart-item">
-                    <div class="chart-bar negative" style="width: ${(data.negative / total) * 100}%"></div>
-                    <span class="chart-label">سلبي (${ArabicUtils.formatNumber(data.negative)})</span>
-                </div>
-            </div>
-        `;
+        // Clear container and create wrapper using safe DOM methods
+        chartContainer.innerHTML = '';
+        const chartWrapper = document.createElement('div');
+        chartWrapper.className = 'sentiment-chart';
 
-        chartContainer.innerHTML = chartHTML;
+        // Create sentiment items using safe DOM methods
+        const sentimentItems = [
+            { key: 'positive', label: 'إيجابي', class: 'positive' },
+            { key: 'neutral', label: 'محايد', class: 'neutral' },
+            { key: 'negative', label: 'سلبي', class: 'negative' }
+        ];
+
+        sentimentItems.forEach(item => {
+            const chartItem = document.createElement('div');
+            chartItem.className = 'chart-item';
+
+            // Create chart bar with safe width calculation
+            const chartBar = document.createElement('div');
+            chartBar.className = `chart-bar ${item.class}`;
+            const percentage = Math.max(0, Math.min(100, (data[item.key] / total) * 100));
+            chartBar.style.width = `${percentage}%`;
+
+            // Create chart label with safe text content
+            const chartLabel = document.createElement('span');
+            chartLabel.className = 'chart-label';
+            chartLabel.textContent = `${item.label} (${ArabicUtils.formatNumber(data[item.key])})`;
+
+            // Assemble the chart item
+            chartItem.appendChild(chartBar);
+            chartItem.appendChild(chartLabel);
+            chartWrapper.appendChild(chartItem);
+        });
+
+        chartContainer.appendChild(chartWrapper);
     },
 
     /**
@@ -638,7 +659,12 @@ const Dashboard = {
         const chartContainer = document.getElementById('channel-chart');
         if (!chartContainer || !channelData?.length) {
             if (chartContainer) {
-                chartContainer.innerHTML = '<p class="text-muted text-center">لا توجد بيانات للعرض</p>';
+                // Clear container and create safe empty state message
+                chartContainer.innerHTML = '';
+                const emptyMessage = document.createElement('p');
+                emptyMessage.className = 'text-muted text-center';
+                emptyMessage.textContent = 'لا توجد بيانات للعرض';
+                chartContainer.appendChild(emptyMessage);
             }
             return;
         }
