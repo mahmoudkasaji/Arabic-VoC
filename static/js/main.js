@@ -281,34 +281,67 @@ const UI = {
         const sentimentClass = ArabicUtils.getSentimentClass(feedback.sentiment_score);
         const sentimentText = ArabicUtils.getSentimentText(feedback.sentiment_score);
 
-        return `
-            <div class="feedback-item" data-id="${feedback.id}">
-                <div class="feedback-meta">
-                    <span class="sentiment-indicator ${sentimentClass}">
-                        ${sentimentText}
-                    </span>
-                    <span class="feedback-date">
-                        ${ArabicUtils.formatDate(feedback.created_at)}
-                    </span>
-                    <span class="feedback-channel">
-                        ${this.getChannelName(feedback.channel)}
-                    </span>
-                </div>
-                <div class="feedback-content">
-                    ${feedback.content}
-                </div>
-                ${feedback.ai_summary ? `
-                    <div class="feedback-summary">
-                        <strong>الملخص:</strong> ${feedback.ai_summary}
-                    </div>
-                ` : ''}
-                <div class="feedback-actions">
-                    <button class="btn btn-outline btn-sm" onclick="FeedbackManager.viewDetails(${feedback.id})">
-                        عرض التفاصيل
-                    </button>
-                </div>
-            </div>
-        `;
+        // SECURITY FIX: Use safe DOM methods instead of innerHTML
+        const feedbackItem = document.createElement('div');
+        feedbackItem.className = 'feedback-item';
+        feedbackItem.setAttribute('data-id', feedback.id);
+
+        // Create meta section
+        const feedbackMeta = document.createElement('div');
+        feedbackMeta.className = 'feedback-meta';
+
+        const sentimentSpan = document.createElement('span');
+        sentimentSpan.className = `sentiment-indicator ${sentimentClass}`;
+        sentimentSpan.textContent = sentimentText;
+        feedbackMeta.appendChild(sentimentSpan);
+
+        const dateSpan = document.createElement('span');
+        dateSpan.className = 'feedback-date';
+        dateSpan.textContent = ArabicUtils.formatDate(feedback.created_at);
+        feedbackMeta.appendChild(dateSpan);
+
+        const channelSpan = document.createElement('span');
+        channelSpan.className = 'feedback-channel';
+        channelSpan.textContent = this.getChannelName(feedback.channel);
+        feedbackMeta.appendChild(channelSpan);
+
+        feedbackItem.appendChild(feedbackMeta);
+
+        // Create content section
+        const contentDiv = document.createElement('div');
+        contentDiv.className = 'feedback-content';
+        contentDiv.textContent = feedback.content; // SAFE: using textContent
+        feedbackItem.appendChild(contentDiv);
+
+        // Create summary section if exists
+        if (feedback.ai_summary) {
+            const summaryDiv = document.createElement('div');
+            summaryDiv.className = 'feedback-summary';
+            
+            const summaryLabel = document.createElement('strong');
+            summaryLabel.textContent = 'الملخص: ';
+            summaryDiv.appendChild(summaryLabel);
+            
+            const summaryText = document.createElement('span');
+            summaryText.textContent = feedback.ai_summary; // SAFE: using textContent
+            summaryDiv.appendChild(summaryText);
+            
+            feedbackItem.appendChild(summaryDiv);
+        }
+
+        // Create actions section
+        const actionsDiv = document.createElement('div');
+        actionsDiv.className = 'feedback-actions';
+
+        const detailsBtn = document.createElement('button');
+        detailsBtn.className = 'btn btn-outline btn-sm';
+        detailsBtn.textContent = 'عرض التفاصيل';
+        detailsBtn.onclick = () => FeedbackManager.viewDetails(feedback.id);
+        actionsDiv.appendChild(detailsBtn);
+
+        feedbackItem.appendChild(actionsDiv);
+
+        return feedbackItem;
     },
 
     /**
@@ -437,9 +470,12 @@ const FeedbackManager = {
                 return;
             }
 
-            container.innerHTML = feedbackList
-                .map(feedback => UI.createFeedbackItem(feedback))
-                .join('');
+            // SECURITY FIX: Use safe DOM methods instead of innerHTML
+            container.innerHTML = ''; // Clear container safely
+            feedbackList.forEach(feedback => {
+                const feedbackElement = UI.createFeedbackItem(feedback);
+                container.appendChild(feedbackElement);
+            });
 
         } catch (error) {
             // SECURITY FIX: Use safe DOM methods instead of innerHTML
