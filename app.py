@@ -300,6 +300,39 @@ def list_feedback():
         from utils.common import standardize_error_response
         return jsonify(standardize_error_response(e, 'feedback_listing')), 500
 
+@app.route('/feedback/<int:feedback_id>')
+def get_feedback(feedback_id):
+    """Get individual feedback details - SECURE endpoint"""
+    try:
+        feedback = db.session.get(Feedback, feedback_id)
+        if not feedback:
+            return jsonify({'error': 'Feedback not found'}), 404
+        
+        # Return sanitized data - content will be safely handled on client side
+        feedback_data = {
+            'id': feedback.id,
+            'content': feedback.content,  # Will be safely inserted using textContent
+            'channel': feedback.channel.value,
+            'status': feedback.status.value,
+            'rating': feedback.rating,
+            'sentiment_score': feedback.sentiment_score,
+            'confidence_score': feedback.confidence_score,
+            'key_topics': feedback.key_topics,
+            'priority_level': feedback.priority_level,
+            'ai_summary': feedback.ai_summary,  # Will be safely inserted using textContent
+            'customer_email': feedback.customer_email,
+            'customer_phone': feedback.customer_phone,
+            'language_detected': feedback.language_detected,
+            'created_at': feedback.created_at.isoformat() if feedback.created_at else None,
+            'updated_at': feedback.updated_at.isoformat() if feedback.updated_at else None
+        }
+        
+        return jsonify(feedback_data)
+        
+    except Exception as e:
+        from utils.common import standardize_error_response
+        return jsonify(standardize_error_response(e, 'feedback_retrieval')), 500
+
 # Removed redundant realtime dashboard route
 
 @app.route('/surveys')

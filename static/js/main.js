@@ -463,48 +463,117 @@ const FeedbackManager = {
     },
 
     /**
-     * Show feedback details in modal
+     * Show feedback details in modal - XSS SAFE VERSION
      */
     showDetailsModal(feedback) {
         const modal = document.createElement('div');
         modal.className = 'modal-overlay';
-        modal.innerHTML = `
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h3>تفاصيل التعليق</h3>
-                    <button class="btn-close" onclick="this.closest('.modal-overlay').remove()">×</button>
-                </div>
-                <div class="modal-body">
-                    <div class="feedback-details">
-                        <div class="detail-row">
-                            <strong>المحتوى:</strong>
-                            <p>${feedback.content}</p>
-                        </div>
-                        <div class="detail-row">
-                            <strong>القناة:</strong>
-                            <span>${UI.getChannelName(feedback.channel)}</span>
-                        </div>
-                        <div class="detail-row">
-                            <strong>تاريخ الإرسال:</strong>
-                            <span>${ArabicUtils.formatDate(feedback.created_at)}</span>
-                        </div>
-                        <div class="detail-row">
-                            <strong>تحليل المشاعر:</strong>
-                            <span class="${ArabicUtils.getSentimentClass(feedback.sentiment_score)}">
-                                ${ArabicUtils.getSentimentText(feedback.sentiment_score)}
-                                (${feedback.sentiment_score ? feedback.sentiment_score.toFixed(2) : 'غير محدد'})
-                            </span>
-                        </div>
-                        ${feedback.ai_summary ? `
-                            <div class="detail-row">
-                                <strong>الملخص التلقائي:</strong>
-                                <p>${feedback.ai_summary}</p>
-                            </div>
-                        ` : ''}
-                    </div>
-                </div>
-            </div>
-        `;
+        
+        // SECURITY FIX: Use safe DOM creation instead of innerHTML
+        const modalContent = document.createElement('div');
+        modalContent.className = 'modal-content';
+        
+        // Header
+        const header = document.createElement('div');
+        header.className = 'modal-header';
+        
+        const title = document.createElement('h3');
+        title.textContent = 'تفاصيل التعليق';
+        header.appendChild(title);
+        
+        const closeBtn = document.createElement('button');
+        closeBtn.className = 'btn-close';
+        closeBtn.textContent = '×';
+        closeBtn.onclick = () => modal.remove();
+        header.appendChild(closeBtn);
+        
+        modalContent.appendChild(header);
+        
+        // Body
+        const body = document.createElement('div');
+        body.className = 'modal-body';
+        
+        const details = document.createElement('div');
+        details.className = 'feedback-details';
+        
+        // Content row
+        const contentRow = document.createElement('div');
+        contentRow.className = 'detail-row';
+        
+        const contentLabel = document.createElement('strong');
+        contentLabel.textContent = 'المحتوى:';
+        contentRow.appendChild(contentLabel);
+        
+        const contentText = document.createElement('p');
+        contentText.textContent = feedback.content; // SAFE: using textContent
+        contentRow.appendChild(contentText);
+        
+        details.appendChild(contentRow);
+        
+        // Channel row
+        const channelRow = document.createElement('div');
+        channelRow.className = 'detail-row';
+        
+        const channelLabel = document.createElement('strong');
+        channelLabel.textContent = 'القناة:';
+        channelRow.appendChild(channelLabel);
+        
+        const channelText = document.createElement('span');
+        channelText.textContent = UI.getChannelName(feedback.channel); // SAFE: using textContent
+        channelRow.appendChild(channelText);
+        
+        details.appendChild(channelRow);
+        
+        // Date row
+        const dateRow = document.createElement('div');
+        dateRow.className = 'detail-row';
+        
+        const dateLabel = document.createElement('strong');
+        dateLabel.textContent = 'تاريخ الإرسال:';
+        dateRow.appendChild(dateLabel);
+        
+        const dateText = document.createElement('span');
+        dateText.textContent = ArabicUtils.formatDate(feedback.created_at); // SAFE: using textContent
+        dateRow.appendChild(dateText);
+        
+        details.appendChild(dateRow);
+        
+        // Sentiment row
+        const sentimentRow = document.createElement('div');
+        sentimentRow.className = 'detail-row';
+        
+        const sentimentLabel = document.createElement('strong');
+        sentimentLabel.textContent = 'تحليل المشاعر:';
+        sentimentRow.appendChild(sentimentLabel);
+        
+        const sentimentSpan = document.createElement('span');
+        sentimentSpan.className = ArabicUtils.getSentimentClass(feedback.sentiment_score);
+        const sentimentText = ArabicUtils.getSentimentText(feedback.sentiment_score);
+        const scoreText = feedback.sentiment_score ? feedback.sentiment_score.toFixed(2) : 'غير محدد';
+        sentimentSpan.textContent = `${sentimentText} (${scoreText})`; // SAFE: using textContent
+        sentimentRow.appendChild(sentimentSpan);
+        
+        details.appendChild(sentimentRow);
+        
+        // AI Summary row (if exists)
+        if (feedback.ai_summary) {
+            const summaryRow = document.createElement('div');
+            summaryRow.className = 'detail-row';
+            
+            const summaryLabel = document.createElement('strong');
+            summaryLabel.textContent = 'الملخص التلقائي:';
+            summaryRow.appendChild(summaryLabel);
+            
+            const summaryText = document.createElement('p');
+            summaryText.textContent = feedback.ai_summary; // SAFE: using textContent
+            summaryRow.appendChild(summaryText);
+            
+            details.appendChild(summaryRow);
+        }
+        
+        body.appendChild(details);
+        modalContent.appendChild(body);
+        modal.appendChild(modalContent);
 
         // Add modal styles
         modal.style.cssText = `
