@@ -436,8 +436,13 @@ class ProfessionalReporting:
     def _get_survey_responses_for_export(self, time_range: str, survey_id: Optional[str]) -> List[Dict]:
         """Get survey responses data for export with enhanced analytics"""
         
-        # Build query
-        query = """
+        # Validate time_range to prevent injection
+        valid_time_ranges = {'1d', '7d', '30d', 'all'}
+        if time_range not in valid_time_ranges:
+            time_range = '7d'  # Safe default
+        
+        # Build base query with proper parameterization
+        base_query = """
             SELECT r.id, r.survey_id, r.answers, r.created_at, r.completion_percentage,
                    r.language_used, r.device_type, r.sentiment_score, r.keywords,
                    s.title as survey_title
@@ -448,7 +453,7 @@ class ProfessionalReporting:
         conditions = []
         params = {}
         
-        # Add time filter
+        # Add time filter with validated parameter
         if time_range != 'all':
             if time_range == '1d':
                 start_date = datetime.now() - timedelta(days=1)
@@ -456,24 +461,31 @@ class ProfessionalReporting:
                 start_date = datetime.now() - timedelta(days=7)
             elif time_range == '30d':
                 start_date = datetime.now() - timedelta(days=30)
-            else:
-                start_date = datetime.now() - timedelta(days=7)
             
             conditions.append("r.created_at >= :start_date")
             params['start_date'] = start_date
         
-        # Add survey filter
+        # Add survey filter with integer validation
         if survey_id:
-            conditions.append("r.survey_id = :survey_id")
-            params['survey_id'] = survey_id
+            try:
+                # Ensure survey_id is a valid integer to prevent injection
+                survey_id_int = int(survey_id)
+                conditions.append("r.survey_id = :survey_id")
+                params['survey_id'] = survey_id_int
+            except (ValueError, TypeError):
+                # Invalid survey_id, skip filter but log warning
+                logger.warning(f"Invalid survey_id provided: {survey_id}")
         
+        # Construct final query safely
         if conditions:
-            query += " WHERE " + " AND ".join(conditions)
+            final_query = base_query + " WHERE " + " AND ".join(conditions)
+        else:
+            final_query = base_query
         
-        query += " ORDER BY r.created_at DESC"
+        final_query += " ORDER BY r.created_at DESC"
         
-        # Execute query
-        result = db.session.execute(text(query), params)
+        # Execute query with named parameters
+        result = db.session.execute(text(final_query), params)
         
         responses = []
         for row in result:
