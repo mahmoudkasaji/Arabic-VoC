@@ -55,6 +55,16 @@ async function loadContactGroups() {
     }
 }
 
+// Escape HTML to prevent XSS
+function escapeHtml(unsafe) {
+    return unsafe
+         .replace(/&/g, "&amp;")
+         .replace(/</g, "&lt;")
+         .replace(/>/g, "&gt;")
+         .replace(/"/g, "&quot;")
+         .replace(/'/g, "&#039;");
+}
+
 // Render contacts table
 function renderContactsTable() {
     const tbody = document.getElementById('contactsTableBody');
@@ -63,90 +73,177 @@ function renderContactsTable() {
         return;
     }
     
+    // Clear existing content
+    tbody.innerHTML = '';
+    
     if (filteredContacts.length === 0) {
-        tbody.innerHTML = `
-            <tr>
-                <td colspan="8" class="text-center py-4">
-                    <i class="fas fa-users fa-2x text-muted mb-2"></i>
-                    <p class="text-muted">لا توجد جهات اتصال</p>
-                </td>
-            </tr>
-        `;
+        const emptyRow = document.createElement('tr');
+        const emptyCell = document.createElement('td');
+        emptyCell.colSpan = 8;
+        emptyCell.className = 'text-center py-4';
+        
+        const icon = document.createElement('i');
+        icon.className = 'fas fa-users fa-2x text-muted mb-2';
+        
+        const message = document.createElement('p');
+        message.className = 'text-muted';
+        message.textContent = 'لا توجد جهات اتصال';
+        
+        emptyCell.appendChild(icon);
+        emptyCell.appendChild(message);
+        emptyRow.appendChild(emptyCell);
+        tbody.appendChild(emptyRow);
         return;
     }
     
-    tbody.innerHTML = filteredContacts.map(contact => `
-        <tr>
-            <td>
-                <div class="d-flex align-items-center">
-                    <div class="me-2">
-                        <i class="fas fa-user-circle fa-lg text-primary"></i>
-                    </div>
-                    <div>
-                        <div class="fw-bold">${contact.name}</div>
-                        ${contact.tags && contact.tags.length > 0 ? 
-                            `<small class="text-muted">${contact.tags.join(', ')}</small>` : ''
-                        }
-                    </div>
-                </div>
-            </td>
-            <td>
-                ${contact.email ? 
-                    `<span class="text-truncate" style="max-width: 150px;">${contact.email}</span>` : 
-                    '<span class="text-muted">-</span>'
-                }
-            </td>
-            <td>
-                ${contact.phone ? 
-                    `<span class="text-truncate">${contact.phone}</span>` : 
-                    '<span class="text-muted">-</span>'
-                }
-            </td>
-            <td>
-                ${contact.company ? 
-                    `<span class="text-truncate" style="max-width: 120px;">${contact.company}</span>` : 
-                    '<span class="text-muted">-</span>'
-                }
-            </td>
-            <td>
-                <div class="d-flex gap-1">
-                    ${contact.available_channels.map(channel => {
-                        const icons = {
-                            'email': 'fas fa-envelope',
-                            'sms': 'fas fa-sms',
-                            'whatsapp': 'fab fa-whatsapp'
-                        };
-                        const colors = {
-                            'email': 'text-primary',
-                            'sms': 'text-success',
-                            'whatsapp': 'text-info'
-                        };
-                        return `<i class="${icons[channel]} ${colors[channel]}" title="${channel}"></i>`;
-                    }).join('')}
-                </div>
-            </td>
-            <td>
-                <span class="badge bg-light text-dark">
-                    ${contact.language_preference === 'ar' ? 'العربية' : 'English'}
-                </span>
-            </td>
-            <td>
-                <span class="badge ${contact.is_active ? 'bg-success' : 'bg-secondary'}">
-                    ${contact.is_active ? 'نشط' : 'غير نشط'}
-                </span>
-            </td>
-            <td>
-                <div class="btn-group btn-group-sm">
-                    <button class="btn btn-outline-primary" onclick="editContact(${contact.id})" title="تعديل">
-                        <i class="fas fa-edit"></i>
-                    </button>
-                    <button class="btn btn-outline-danger" onclick="deleteContact(${contact.id})" title="حذف">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </div>
-            </td>
-        </tr>
-    `).join('');
+    filteredContacts.forEach(contact => {
+        const row = document.createElement('tr');
+        
+        // Name column
+        const nameCell = document.createElement('td');
+        const nameContainer = document.createElement('div');
+        nameContainer.className = 'd-flex align-items-center';
+        
+        const iconDiv = document.createElement('div');
+        iconDiv.className = 'me-2';
+        iconDiv.innerHTML = '<i class="fas fa-user-circle fa-lg text-primary"></i>';
+        
+        const infoDiv = document.createElement('div');
+        const nameDiv = document.createElement('div');
+        nameDiv.className = 'fw-bold';
+        nameDiv.textContent = contact.name || '';
+        
+        infoDiv.appendChild(nameDiv);
+        
+        if (contact.tags && contact.tags.length > 0) {
+            const tagsSmall = document.createElement('small');
+            tagsSmall.className = 'text-muted';
+            tagsSmall.textContent = contact.tags.join(', ');
+            infoDiv.appendChild(tagsSmall);
+        }
+        
+        nameContainer.appendChild(iconDiv);
+        nameContainer.appendChild(infoDiv);
+        nameCell.appendChild(nameContainer);
+        
+        // Email column
+        const emailCell = document.createElement('td');
+        if (contact.email) {
+            const emailSpan = document.createElement('span');
+            emailSpan.className = 'text-truncate';
+            emailSpan.style.maxWidth = '150px';
+            emailSpan.textContent = contact.email;
+            emailCell.appendChild(emailSpan);
+        } else {
+            const emptySpan = document.createElement('span');
+            emptySpan.className = 'text-muted';
+            emptySpan.textContent = '-';
+            emailCell.appendChild(emptySpan);
+        }
+        
+        // Phone column
+        const phoneCell = document.createElement('td');
+        if (contact.phone) {
+            const phoneSpan = document.createElement('span');
+            phoneSpan.className = 'text-truncate';
+            phoneSpan.textContent = contact.phone;
+            phoneCell.appendChild(phoneSpan);
+        } else {
+            const emptySpan = document.createElement('span');
+            emptySpan.className = 'text-muted';
+            emptySpan.textContent = '-';
+            phoneCell.appendChild(emptySpan);
+        }
+        
+        // Company column
+        const companyCell = document.createElement('td');
+        if (contact.company) {
+            const companySpan = document.createElement('span');
+            companySpan.className = 'text-truncate';
+            companySpan.style.maxWidth = '120px';
+            companySpan.textContent = contact.company;
+            companyCell.appendChild(companySpan);
+        } else {
+            const emptySpan = document.createElement('span');
+            emptySpan.className = 'text-muted';
+            emptySpan.textContent = '-';
+            companyCell.appendChild(emptySpan);
+        }
+        
+        // Channels column
+        const channelsCell = document.createElement('td');
+        const channelsDiv = document.createElement('div');
+        channelsDiv.className = 'd-flex gap-1';
+        
+        const icons = {
+            'email': 'fas fa-envelope',
+            'sms': 'fas fa-sms',
+            'whatsapp': 'fab fa-whatsapp'
+        };
+        const colors = {
+            'email': 'text-primary',
+            'sms': 'text-success',
+            'whatsapp': 'text-info'
+        };
+        
+        (contact.available_channels || []).forEach(channel => {
+            if (icons[channel]) {
+                const channelIcon = document.createElement('i');
+                channelIcon.className = `${icons[channel]} ${colors[channel]}`;
+                channelIcon.title = channel;
+                channelsDiv.appendChild(channelIcon);
+            }
+        });
+        
+        channelsCell.appendChild(channelsDiv);
+        
+        // Language column
+        const langCell = document.createElement('td');
+        const langBadge = document.createElement('span');
+        langBadge.className = 'badge bg-light text-dark';
+        langBadge.textContent = contact.language_preference === 'ar' ? 'العربية' : 'English';
+        langCell.appendChild(langBadge);
+        
+        // Status column
+        const statusCell = document.createElement('td');
+        const statusBadge = document.createElement('span');
+        statusBadge.className = `badge ${contact.is_active ? 'bg-success' : 'bg-secondary'}`;
+        statusBadge.textContent = contact.is_active ? 'نشط' : 'غير نشط';
+        statusCell.appendChild(statusBadge);
+        
+        // Actions column
+        const actionsCell = document.createElement('td');
+        const btnGroup = document.createElement('div');
+        btnGroup.className = 'btn-group btn-group-sm';
+        
+        const editBtn = document.createElement('button');
+        editBtn.className = 'btn btn-outline-primary';
+        editBtn.title = 'تعديل';
+        editBtn.onclick = () => editContact(contact.id);
+        editBtn.innerHTML = '<i class="fas fa-edit"></i>';
+        
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'btn btn-outline-danger';
+        deleteBtn.title = 'حذف';
+        deleteBtn.onclick = () => deleteContact(contact.id);
+        deleteBtn.innerHTML = '<i class="fas fa-trash"></i>';
+        
+        btnGroup.appendChild(editBtn);
+        btnGroup.appendChild(deleteBtn);
+        actionsCell.appendChild(btnGroup);
+        
+        // Assemble row
+        row.appendChild(nameCell);
+        row.appendChild(emailCell);
+        row.appendChild(phoneCell);
+        row.appendChild(companyCell);
+        row.appendChild(channelsCell);
+        row.appendChild(langCell);
+        row.appendChild(statusCell);
+        row.appendChild(actionsCell);
+        
+        tbody.appendChild(row);
+    });
 }
 
 // Update contact count
@@ -165,10 +262,21 @@ function populateGroupFilter() {
         return;
     }
     
-    groupFilter.innerHTML = '<option value="">جميع المجموعات</option>';
+    // Clear existing options
+    groupFilter.innerHTML = '';
     
+    // Add default option
+    const defaultOption = document.createElement('option');
+    defaultOption.value = '';
+    defaultOption.textContent = 'جميع المجموعات';
+    groupFilter.appendChild(defaultOption);
+    
+    // Add group options
     contactGroups.forEach(group => {
-        groupFilter.innerHTML += `<option value="${group.id}">${group.name}</option>`;
+        const option = document.createElement('option');
+        option.value = group.id;
+        option.textContent = group.name || '';
+        groupFilter.appendChild(option);
     });
 }
 

@@ -65,46 +65,99 @@ class SurveyManager {
         const col = document.createElement('div');
         col.className = 'col-lg-6';
 
-        const statusBadge = survey.status === 'active' ? 
-            '<span class="badge badge-active">Active</span>' :
-            '<span class="badge badge-draft">Draft</span>';
+        // Create survey card container
+        const cardDiv = document.createElement('div');
+        cardDiv.className = 'survey-card-modern';
+        cardDiv.setAttribute('data-survey-id', survey.id);
 
-        col.innerHTML = `
-            <div class="survey-card-modern" data-survey-id="${survey.id}">
-                <div class="survey-card-header">
-                    <div class="d-flex justify-content-between align-items-start">
-                        <h5 class="survey-title">${survey.title}</h5>
-                        ${statusBadge}
-                    </div>
-                    <p class="survey-description">${survey.description}</p>
-                </div>
-                <div class="survey-card-body">
-                    <div class="survey-stats">
-                        <span class="stat-item">
-                            <strong>${survey.question_count} questions</strong>
-                        </span>
-                        <span class="stat-divider">|</span>
-                        <span class="stat-item">
-                            Updated ${survey.days_since_update} days ago
-                        </span>
-                    </div>
-                </div>
-                <div class="survey-card-actions">
-                    <button class="btn btn-outline-secondary btn-sm" data-action="view">
-                        <i class="fas fa-eye me-1"></i>
-                        View
-                    </button>
-                    <button class="btn btn-outline-primary btn-sm" data-action="edit">
-                        <i class="fas fa-edit me-1"></i>
-                        Edit
-                    </button>
-                    <button class="btn btn-outline-danger btn-sm" data-action="delete">
-                        <i class="fas fa-trash me-1"></i>
-                        Delete
-                    </button>
-                </div>
-            </div>
-        `;
+        // Create header section
+        const headerDiv = document.createElement('div');
+        headerDiv.className = 'survey-card-header';
+
+        const headerInner = document.createElement('div');
+        headerInner.className = 'd-flex justify-content-between align-items-start';
+
+        // Title (safely set with textContent)
+        const titleH5 = document.createElement('h5');
+        titleH5.className = 'survey-title';
+        titleH5.textContent = survey.title || 'Untitled Survey';
+
+        // Status badge
+        const statusBadge = document.createElement('span');
+        statusBadge.className = survey.status === 'active' ? 'badge badge-active' : 'badge badge-draft';
+        statusBadge.textContent = survey.status === 'active' ? 'Active' : 'Draft';
+
+        headerInner.appendChild(titleH5);
+        headerInner.appendChild(statusBadge);
+
+        // Description (safely set with textContent)
+        const descP = document.createElement('p');
+        descP.className = 'survey-description';
+        descP.textContent = survey.description || '';
+
+        headerDiv.appendChild(headerInner);
+        headerDiv.appendChild(descP);
+
+        // Create body section
+        const bodyDiv = document.createElement('div');
+        bodyDiv.className = 'survey-card-body';
+
+        const statsDiv = document.createElement('div');
+        statsDiv.className = 'survey-stats';
+
+        // Question count
+        const questionSpan = document.createElement('span');
+        questionSpan.className = 'stat-item';
+        const strongQuestion = document.createElement('strong');
+        strongQuestion.textContent = `${survey.question_count || 0} questions`;
+        questionSpan.appendChild(strongQuestion);
+
+        // Divider
+        const dividerSpan = document.createElement('span');
+        dividerSpan.className = 'stat-divider';
+        dividerSpan.textContent = '|';
+
+        // Update time
+        const updateSpan = document.createElement('span');
+        updateSpan.className = 'stat-item';
+        updateSpan.textContent = `Updated ${survey.days_since_update || 0} days ago`;
+
+        statsDiv.appendChild(questionSpan);
+        statsDiv.appendChild(dividerSpan);
+        statsDiv.appendChild(updateSpan);
+        bodyDiv.appendChild(statsDiv);
+
+        // Create actions section
+        const actionsDiv = document.createElement('div');
+        actionsDiv.className = 'survey-card-actions';
+
+        // View button
+        const viewBtn = document.createElement('button');
+        viewBtn.className = 'btn btn-outline-secondary btn-sm';
+        viewBtn.setAttribute('data-action', 'view');
+        viewBtn.innerHTML = '<i class="fas fa-eye me-1"></i>View';
+
+        // Edit button
+        const editBtn = document.createElement('button');
+        editBtn.className = 'btn btn-outline-primary btn-sm';
+        editBtn.setAttribute('data-action', 'edit');
+        editBtn.innerHTML = '<i class="fas fa-edit me-1"></i>Edit';
+
+        // Delete button
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'btn btn-outline-danger btn-sm';
+        deleteBtn.setAttribute('data-action', 'delete');
+        deleteBtn.innerHTML = '<i class="fas fa-trash me-1"></i>Delete';
+
+        actionsDiv.appendChild(viewBtn);
+        actionsDiv.appendChild(editBtn);
+        actionsDiv.appendChild(deleteBtn);
+
+        // Assemble the card
+        cardDiv.appendChild(headerDiv);
+        cardDiv.appendChild(bodyDiv);
+        cardDiv.appendChild(actionsDiv);
+        col.appendChild(cardDiv);
 
         return col;
     }
