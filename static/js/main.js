@@ -212,10 +212,19 @@ const UI = {
 
         const alert = document.createElement('div');
         alert.className = `alert alert-${type} fade-in`;
-        alert.innerHTML = `
-            <span>${message}</span>
-            <button type="button" class="btn-close" onclick="this.parentElement.remove()">×</button>
-        `;
+        
+        // SECURITY FIX: Use safe DOM methods instead of innerHTML
+        const messageSpan = document.createElement('span');
+        messageSpan.textContent = message; // textContent prevents XSS
+        
+        const closeButton = document.createElement('button');
+        closeButton.type = 'button';
+        closeButton.className = 'btn-close';
+        closeButton.textContent = '×';
+        closeButton.onclick = function() { this.parentElement.remove(); };
+        
+        alert.appendChild(messageSpan);
+        alert.appendChild(closeButton);
 
         alertContainer.appendChild(alert);
 
@@ -463,11 +472,18 @@ const FeedbackManager = {
             const feedbackList = await API.getFeedbackList(filters);
 
             if (feedbackList.length === 0) {
-                container.innerHTML = `
-                    <div class="text-center" style="padding: 2rem;">
-                        <p class="text-muted">لا توجد تعليقات لعرضها</p>
-                    </div>
-                `;
+                // SECURITY FIX: Use safe DOM methods instead of innerHTML
+                container.innerHTML = ''; // Clear container safely
+                const emptyDiv = document.createElement('div');
+                emptyDiv.className = 'text-center';
+                emptyDiv.style.padding = '2rem';
+                
+                const emptyText = document.createElement('p');
+                emptyText.className = 'text-muted';
+                emptyText.textContent = 'لا توجد تعليقات لعرضها';
+                
+                emptyDiv.appendChild(emptyText);
+                container.appendChild(emptyDiv);
                 return;
             }
 
