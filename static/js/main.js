@@ -442,11 +442,12 @@ const FeedbackManager = {
                 .join('');
 
         } catch (error) {
-            container.innerHTML = `
-                <div class="alert alert-danger">
-                    خطأ في تحميل التعليقات: ${error.message}
-                </div>
-            `;
+            // SECURITY FIX: Use safe DOM methods instead of innerHTML
+            container.innerHTML = '';
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'alert alert-danger';
+            errorDiv.textContent = `خطأ في تحميل التعليقات: ${error.message}`;
+            container.appendChild(errorDiv);
         }
     },
 
