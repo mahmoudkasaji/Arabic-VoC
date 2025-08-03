@@ -546,7 +546,7 @@ async function runEmailTest() {
             resultDiv.innerHTML = `
                 <div class="alert alert-danger">
                     <i class="fas fa-exclamation-circle me-2"></i>
-                    فشل في إرسال الاختبار: ${data.message}
+                    فشل في إرسال الاختبار: ${escapeHtml(data.message)}
                 </div>
             `;
         }
