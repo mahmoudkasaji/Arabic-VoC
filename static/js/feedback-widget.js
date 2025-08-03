@@ -75,10 +75,18 @@ class FeedbackWidget {
         const trigger = document.createElement('button');
         trigger.className = 'feedback-trigger';
         trigger.setAttribute('aria-label', this.getLabel('trigger'));
-        trigger.innerHTML = `
-            <i class="fas fa-comment feedback-icon" aria-hidden="true"></i>
-            <span class="feedback-text">${this.getLabel('trigger')}</span>
-        `;
+        
+        // Safe DOM construction instead of innerHTML
+        const icon = document.createElement('i');
+        icon.className = 'fas fa-comment feedback-icon';
+        icon.setAttribute('aria-hidden', 'true');
+        
+        const textSpan = document.createElement('span');
+        textSpan.className = 'feedback-text';
+        textSpan.textContent = this.getLabel('trigger');
+        
+        trigger.appendChild(icon);
+        trigger.appendChild(textSpan);
 
         // Create backdrop for slide mode
         this.backdrop = document.createElement('div');
@@ -91,7 +99,8 @@ class FeedbackWidget {
         modal.setAttribute('role', 'dialog');
         modal.setAttribute('aria-modal', 'true');
         modal.setAttribute('aria-labelledby', 'feedback-title');
-        modal.innerHTML = this.createModalContent();
+        // Safe DOM construction instead of innerHTML
+        modal.appendChild(this.createModalContentSafe());
 
         this.widget.appendChild(trigger);
         this.widget.appendChild(modal);
@@ -103,81 +112,200 @@ class FeedbackWidget {
         this.form = modal.querySelector('.feedback-form');
     }
 
-    createModalContent() {
+    createModalContentSafe() {
         const labels = this.options.labels[this.currentLang];
         const categories = this.options.categories;
 
-        return `
-            <div class="feedback-modal-content">
-                <div class="feedback-modal-header">
-                    <h2 id="feedback-title" class="feedback-modal-title">${labels.title}</h2>
-                    <button class="feedback-modal-close" aria-label="Close feedback modal">
-                        <i class="fas fa-times" aria-hidden="true"></i>
-                    </button>
-                </div>
-                <div class="feedback-modal-body">
-                    <form class="feedback-form" role="form" method="POST" action="/feedback-widget">
-                        <!-- Hidden fields for tracking -->
-                        <input type="hidden" name="page_url" id="page-url" value="">
-                        <input type="hidden" name="page_title" id="page-title" value="">
-                        <input type="hidden" name="rating" id="selected-rating" value="">
-                        <input type="hidden" name="category" id="selected-category" value="">
-                        
-                        <!-- Rating Section -->
-                        <div class="feedback-rating">
-                            <label class="feedback-rating-label">${labels.rating}</label>
-                            <div class="rating-stars" role="radiogroup" aria-label="${labels.rating}">
-                                ${[1,2,3,4,5].map(num => `
-                                    <span class="rating-star" 
-                                          data-rating="${num}" 
-                                          role="radio" 
-                                          aria-checked="false"
-                                          tabindex="0"
-                                          aria-label="${num} نجمة">⭐</span>
-                                `).join('')}
-                            </div>
-                        </div>
+        // Main container
+        const modalContent = document.createElement('div');
+        modalContent.className = 'feedback-modal-content';
 
-                        <!-- Category Section -->
-                        <div class="feedback-category">
-                            <label class="feedback-rating-label" for="category-select">${labels.category}</label>
-                            <select class="category-dropdown" id="category-select" required>
-                                <option value="">${labels.selectCategory || 'اختر نوع الملاحظة...'}</option>
-                                ${categories.map(cat => `
-                                    <option value="${cat}">${cat}</option>
-                                `).join('')}
-                            </select>
-                        </div>
+        // Header
+        const header = document.createElement('div');
+        header.className = 'feedback-modal-header';
+        
+        const title = document.createElement('h2');
+        title.id = 'feedback-title';
+        title.className = 'feedback-modal-title';
+        title.textContent = labels.title;
+        
+        const closeBtn = document.createElement('button');
+        closeBtn.className = 'feedback-modal-close';
+        closeBtn.setAttribute('aria-label', 'Close feedback modal');
+        
+        const closeIcon = document.createElement('i');
+        closeIcon.className = 'fas fa-times';
+        closeIcon.setAttribute('aria-hidden', 'true');
+        closeBtn.appendChild(closeIcon);
+        
+        header.appendChild(title);
+        header.appendChild(closeBtn);
 
-                        <!-- Comment Section -->
-                        <div class="feedback-comment">
-                            <label class="feedback-rating-label" for="feedback-text">${labels.whyLabel}</label>
-                            <textarea class="feedback-textarea" 
-                                      id="feedback-text"
-                                      name="comment"
-                                      placeholder="${labels.comment}"
-                                      maxlength="500"
-                                      required
-                                      aria-describedby="char-count"></textarea>
-                            <small id="char-count" class="text-muted">0/500 ${labels.characters}</small>
-                        </div>
+        // Body
+        const body = document.createElement('div');
+        body.className = 'feedback-modal-body';
 
-                        <!-- Submit Button -->
-                        <button type="submit" class="feedback-submit incomplete" disabled>
-                            <span class="submit-text">${labels.submit}</span>
-                            <div class="submit-spinner" style="display: none;"></div>
-                        </button>
-                    </form>
+        // Form
+        const form = document.createElement('form');
+        form.className = 'feedback-form';
+        form.setAttribute('role', 'form');
+        form.setAttribute('method', 'POST');
+        form.setAttribute('action', '/feedback-widget');
 
-                    <!-- Success Message (hidden initially) -->
-                    <div class="feedback-success" style="display: none;">
-                        <div class="feedback-success-icon">✅</div>
-                        <h3 class="feedback-success-title">${labels.success}</h3>
-                        <p class="feedback-success-message">${labels.successMessage}</p>
-                    </div>
-                </div>
-            </div>
-        `;
+        // Hidden fields
+        const hiddenFields = [
+            { name: 'page_url', id: 'page-url' },
+            { name: 'page_title', id: 'page-title' },
+            { name: 'rating', id: 'selected-rating' },
+            { name: 'category', id: 'selected-category' }
+        ];
+        
+        hiddenFields.forEach(field => {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = field.name;
+            input.id = field.id;
+            input.value = '';
+            form.appendChild(input);
+        });
+
+        // Rating section
+        const ratingDiv = document.createElement('div');
+        ratingDiv.className = 'feedback-rating';
+        
+        const ratingLabel = document.createElement('label');
+        ratingLabel.className = 'feedback-rating-label';
+        ratingLabel.textContent = labels.rating;
+        
+        const starsDiv = document.createElement('div');
+        starsDiv.className = 'rating-stars';
+        starsDiv.setAttribute('role', 'radiogroup');
+        starsDiv.setAttribute('aria-label', labels.rating);
+        
+        for (let i = 1; i <= 5; i++) {
+            const star = document.createElement('span');
+            star.className = 'rating-star';
+            star.setAttribute('data-rating', i.toString());
+            star.setAttribute('role', 'radio');
+            star.setAttribute('aria-checked', 'false');
+            star.setAttribute('tabindex', '0');
+            star.setAttribute('aria-label', `${i} نجمة`);
+            star.textContent = '⭐';
+            starsDiv.appendChild(star);
+        }
+        
+        ratingDiv.appendChild(ratingLabel);
+        ratingDiv.appendChild(starsDiv);
+
+        // Category section
+        const categoryDiv = document.createElement('div');
+        categoryDiv.className = 'feedback-category';
+        
+        const categoryLabel = document.createElement('label');
+        categoryLabel.className = 'feedback-rating-label';
+        categoryLabel.setAttribute('for', 'category-select');
+        categoryLabel.textContent = labels.category;
+        
+        const select = document.createElement('select');
+        select.className = 'category-dropdown';
+        select.id = 'category-select';
+        select.required = true;
+        
+        const defaultOption = document.createElement('option');
+        defaultOption.value = '';
+        defaultOption.textContent = labels.selectCategory || 'اختر نوع الملاحظة...';
+        select.appendChild(defaultOption);
+        
+        categories.forEach(cat => {
+            const option = document.createElement('option');
+            option.value = cat;
+            option.textContent = cat;
+            select.appendChild(option);
+        });
+        
+        categoryDiv.appendChild(categoryLabel);
+        categoryDiv.appendChild(select);
+
+        // Comment section
+        const commentDiv = document.createElement('div');
+        commentDiv.className = 'feedback-comment';
+        
+        const commentLabel = document.createElement('label');
+        commentLabel.className = 'feedback-rating-label';
+        commentLabel.setAttribute('for', 'feedback-text');
+        commentLabel.textContent = labels.whyLabel;
+        
+        const textarea = document.createElement('textarea');
+        textarea.className = 'feedback-textarea';
+        textarea.id = 'feedback-text';
+        textarea.name = 'comment';
+        textarea.placeholder = labels.comment;
+        textarea.maxLength = 500;
+        textarea.required = true;
+        textarea.setAttribute('aria-describedby', 'char-count');
+        
+        const charCount = document.createElement('small');
+        charCount.id = 'char-count';
+        charCount.className = 'text-muted';
+        charCount.textContent = `0/500 ${labels.characters}`;
+        
+        commentDiv.appendChild(commentLabel);
+        commentDiv.appendChild(textarea);
+        commentDiv.appendChild(charCount);
+
+        // Submit button
+        const submitBtn = document.createElement('button');
+        submitBtn.type = 'submit';
+        submitBtn.className = 'feedback-submit incomplete';
+        submitBtn.disabled = true;
+        
+        const submitText = document.createElement('span');
+        submitText.className = 'submit-text';
+        submitText.textContent = labels.submit;
+        
+        const spinner = document.createElement('div');
+        spinner.className = 'submit-spinner';
+        spinner.style.display = 'none';
+        
+        submitBtn.appendChild(submitText);
+        submitBtn.appendChild(spinner);
+
+        // Assemble form
+        form.appendChild(ratingDiv);
+        form.appendChild(categoryDiv);
+        form.appendChild(commentDiv);
+        form.appendChild(submitBtn);
+
+        // Success message
+        const successDiv = document.createElement('div');
+        successDiv.className = 'feedback-success';
+        successDiv.style.display = 'none';
+        
+        const successIcon = document.createElement('div');
+        successIcon.className = 'feedback-success-icon';
+        successIcon.textContent = '✅';
+        
+        const successTitle = document.createElement('h3');
+        successTitle.className = 'feedback-success-title';
+        successTitle.textContent = labels.success;
+        
+        const successMessage = document.createElement('p');
+        successMessage.className = 'feedback-success-message';
+        successMessage.textContent = labels.successMessage;
+        
+        successDiv.appendChild(successIcon);
+        successDiv.appendChild(successTitle);
+        successDiv.appendChild(successMessage);
+
+        // Assemble body
+        body.appendChild(form);
+        body.appendChild(successDiv);
+
+        // Assemble modal
+        modalContent.appendChild(header);
+        modalContent.appendChild(body);
+
+        return modalContent;
     }
 
     attachEventListeners() {
