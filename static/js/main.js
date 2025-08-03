@@ -923,11 +923,19 @@ const LanguageToggle = {
     async toggleLanguage() {
         // Show loading state on button
         const button = document.querySelector('[onclick="toggleLanguage()"]');
-        const originalContent = button ? button.innerHTML : '';
+        let originalContent = null;
         
         if (button) {
+            // Store original content safely by cloning elements
+            originalContent = Array.from(button.childNodes).map(node => node.cloneNode(true));
             button.disabled = true;
-            button.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Loading...';
+            
+            // Clear button and add loading content safely
+            button.textContent = '';
+            const spinner = document.createElement('i');
+            spinner.className = 'fas fa-spinner fa-spin me-1';
+            button.appendChild(spinner);
+            button.appendChild(document.createTextNode('Loading...'));
         }
         
         try {
@@ -944,18 +952,20 @@ const LanguageToggle = {
                 window.location.reload();
             } else {
                 console.error('Language toggle failed');
-                // Restore original button state
-                if (button) {
+                // Restore original button state safely
+                if (button && originalContent) {
                     button.disabled = false;
-                    button.innerHTML = originalContent;
+                    button.textContent = '';
+                    originalContent.forEach(node => button.appendChild(node));
                 }
             }
         } catch (error) {
             console.error('Error toggling language:', error);
-            // Restore original button state
-            if (button) {
+            // Restore original button state safely
+            if (button && originalContent) {
                 button.disabled = false;
-                button.innerHTML = originalContent;
+                button.textContent = '';
+                originalContent.forEach(node => button.appendChild(node));
             }
         }
     },
@@ -969,7 +979,17 @@ const LanguageToggle = {
                 if (button) {
                     const switchText = status.current_language === 'ar' ? 'English' : 'العربية';
                     const tooltip = status.current_language === 'ar' ? 'Switch to English' : 'تبديل اللغة إلى الإنجليزية';
-                    button.innerHTML = `<i class="fas fa-globe me-1"></i>${switchText}`;
+                    
+                    // Clear button content safely
+                    button.textContent = '';
+                    
+                    // Create and append icon element
+                    const icon = document.createElement('i');
+                    icon.className = 'fas fa-globe me-1';
+                    button.appendChild(icon);
+                    
+                    // Add text content safely
+                    button.appendChild(document.createTextNode(switchText));
                     button.setAttribute('title', tooltip);
                 }
             }
