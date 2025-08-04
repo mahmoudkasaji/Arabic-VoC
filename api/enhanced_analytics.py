@@ -80,16 +80,20 @@ def get_historical_analysis():
         survey_id = request.args.get('survey_id')
         limit = int(request.args.get('limit', 10))
         
-        # Build query for historical responses with parameterized conditions
-        base_query = """
-            SELECT r.id, r.survey_id, r.answers, r.created_at, s.title,
-                   r.sentiment_score, r.keywords
-            FROM responses_flask r 
-            JOIN surveys_flask s ON r.survey_id = s.id 
-        """
+        # Build query using SQLAlchemy query builder for better security
+        from app import db
+        from models.survey import Response, Survey
         
-        where_conditions = []
-        params = {}
+        # Start with base query using SQLAlchemy ORM
+        query = db.session.query(
+            Response.id,
+            Response.survey_id, 
+            Response.answers,
+            Response.created_at,
+            Survey.title,
+            Response.sentiment_score,
+            Response.keywords
+        ).join(Survey, Response.survey_id == Survey.id)
         
         # Add time filter
         if time_range != 'all':
@@ -102,36 +106,28 @@ def get_historical_analysis():
             else:
                 start_date = datetime.now() - timedelta(days=7)  # Default
             
-            where_conditions.append("r.created_at >= :start_date")
-            params['start_date'] = start_date
+            query = query.filter(Response.created_at >= start_date)
         
         # Add survey filter
         if survey_id:
-            where_conditions.append("r.survey_id = :survey_id")
-            params['survey_id'] = survey_id
+            query = query.filter(Response.survey_id == survey_id)
         
-        # Construct final query using predefined template
-        if where_conditions:
-            where_clause = " WHERE " + " AND ".join(where_conditions)
-        else:
-            where_clause = ""
-        
-        final_query = base_query + where_clause + " ORDER BY r.created_at DESC LIMIT :limit"
-        params['limit'] = limit
+        # Add ordering and limit
+        query = query.order_by(Response.created_at.desc()).limit(limit)
         
         # Execute query
-        result = db.session.execute(text(final_query), params)
+        result = query.all()
         
         responses = []
         for row in result:
             responses.append({
-                'id': row[0],
-                'survey_id': row[1],
-                'answers': row[2],
-                'created_at': row[3].isoformat() if row[3] else None,
-                'survey_title': row[4],
-                'existing_sentiment': row[5],
-                'existing_keywords': row[6]
+                'id': row.id,
+                'survey_id': row.survey_id,
+                'answers': row.answers,
+                'created_at': row.created_at.isoformat() if row.created_at else None,
+                'survey_title': row.title,
+                'existing_sentiment': row.sentiment_score,
+                'existing_keywords': row.keywords
             })
         
         if not responses:
