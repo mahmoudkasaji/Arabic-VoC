@@ -245,8 +245,8 @@ def _get_export_data(time_range: str, survey_id: Optional[str] = None, include_a
     if time_range not in valid_time_ranges:
         time_range = '7d'  # Safe default
     
-    # Build query for survey responses
-    query = """
+    # Build base query for survey responses
+    base_query = """
         SELECT r.id, r.survey_id, r.answers, r.created_at, r.completion_percentage,
                r.language_used, r.device_type, r.sentiment_score, r.keywords,
                s.title as survey_title, r.respondent_email, r.duration_minutes
@@ -254,7 +254,7 @@ def _get_export_data(time_range: str, survey_id: Optional[str] = None, include_a
         JOIN surveys_flask s ON r.survey_id = s.id 
     """
     
-    conditions = []
+    where_conditions = []
     params = {}
     
     # Add time filter
@@ -266,7 +266,7 @@ def _get_export_data(time_range: str, survey_id: Optional[str] = None, include_a
         elif time_range == '30d':
             start_date = datetime.now() - timedelta(days=30)
         
-        conditions.append("r.created_at >= :start_date")
+        where_conditions.append("r.created_at >= :start_date")
         params['start_date'] = start_date
     
     # Add survey filter (validate survey_id is numeric to prevent injection)
@@ -274,20 +274,21 @@ def _get_export_data(time_range: str, survey_id: Optional[str] = None, include_a
         try:
             # Ensure survey_id is a valid integer
             survey_id_int = int(survey_id)
-            conditions.append("r.survey_id = :survey_id")
+            where_conditions.append("r.survey_id = :survey_id")
             params['survey_id'] = survey_id_int
         except (ValueError, TypeError):
             # Invalid survey_id, skip filter
             logger.warning(f"Invalid survey_id provided: {survey_id}")
             pass
     
-    if conditions:
-        query += " WHERE " + " AND ".join(conditions)
+    # Construct final query using parameterized approach
+    if where_conditions:
+        query = text(base_query + " WHERE " + " AND ".join(where_conditions) + " ORDER BY r.created_at DESC")
+    else:
+        query = text(base_query + " ORDER BY r.created_at DESC")
     
-    query += " ORDER BY r.created_at DESC"
-    
-    # Execute query
-    result = db.session.execute(text(query), params)
+    # Execute query with parameters
+    result = db.session.execute(query, params)
     
     responses = []
     for row in result:
