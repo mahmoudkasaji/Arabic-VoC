@@ -18,6 +18,12 @@ UX Testing Focus: Prioritizes comprehensive frontend-backend integration testing
 QA Framework Preference: Prefers comprehensive testing coverage that evolves with platform enhancements. Values enhancement-specific test development for each major release, maintaining high-quality standards (≥95% pass rate) while ensuring Arabic language excellence and mobile responsiveness. Emphasizes automated testing pipelines with manual validation for user experience quality.
 
 ## Recent Changes
+**Command Injection Security Fix (August 2025)**
+- Fixed command injection vulnerability in deployment workflow scripts
+- Added shlex.quote() sanitization for all dynamic parameters in subprocess.run calls
+- Secured environment and version parameters against shell injection attacks
+- Enhanced security posture following static code analysis security scan
+
 **Security Vulnerability Fix (August 2025)**
 - Fixed critical NaN injection vulnerability in enhanced analytics API endpoint
 - Added input validation to prevent malicious NaN values in min_relevance parameter

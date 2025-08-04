@@ -9,6 +9,7 @@ import sys
 import subprocess
 import json
 import time
+import shlex
 from pathlib import Path
 
 class DeploymentWorkflow:
@@ -61,7 +62,7 @@ class DeploymentWorkflow:
         print(f"🔍 Checking {environment} environment health...")
         
         success, output = self.run_command(
-            f"python scripts/env_manager.py health {environment}"
+            f"python scripts/env_manager.py health {shlex.quote(environment)}"
         )
         
         return success, output
@@ -72,7 +73,7 @@ class DeploymentWorkflow:
         
         # Set up database if needed
         success, output = self.run_command(
-            f"python scripts/database_manager.py {environment} create"
+            f"python scripts/database_manager.py {shlex.quote(environment)} create"
         )
         
         if not success and "already exists" not in output.lower():
@@ -81,7 +82,7 @@ class DeploymentWorkflow:
         # For non-production, seed with test data
         if environment in ['development', 'staging']:
             self.run_command(
-                f"python scripts/database_manager.py {environment} seed"
+                f"python scripts/database_manager.py {shlex.quote(environment)} seed"
             )
             
         return True, f"Deployed to {environment} successfully"
@@ -90,11 +91,11 @@ class DeploymentWorkflow:
         """Create git tag for release"""
         print(f"🏷️  Creating git tag {version}...")
         
-        success, output = self.run_command(f"git tag -a {version} -m 'Release {version}'")
+        success, output = self.run_command(f"git tag -a {shlex.quote(version)} -m 'Release {shlex.quote(version)}'")
         if not success:
             return False, f"Failed to create tag: {output}"
             
-        success, output = self.run_command(f"git push origin {version}")
+        success, output = self.run_command(f"git push origin {shlex.quote(version)}")
         if not success:
             return False, f"Failed to push tag: {output}"
             
@@ -206,7 +207,7 @@ class DeploymentWorkflow:
             
             # Database stats
             success, output = self.run_command(
-                f"python scripts/database_manager.py {env} stats"
+                f"python scripts/database_manager.py {shlex.quote(env)} stats"
             )
             
             if success:
