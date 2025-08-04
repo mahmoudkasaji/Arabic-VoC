@@ -12,8 +12,12 @@ from sqlalchemy import text, and_
 from app import db
 import sys
 import os
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'utils'))
-from enhanced_text_analytics import EnhancedTextAnalytics
+# Add the parent directory to Python path
+parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if parent_dir not in sys.path:
+    sys.path.insert(0, parent_dir)
+
+from utils.enhanced_text_analytics import EnhancedTextAnalytics
 
 logger = logging.getLogger(__name__)
 
@@ -253,15 +257,28 @@ def get_topic_insights():
                 'error': 'min_relevance must be a valid number'
             }), 400
         
-        # Get historical analysis
-        analysis_response = get_historical_analysis()
-        if not analysis_response or not analysis_response[0].get_json().get('success'):
+        # Get historical analysis directly by calling the internal function
+        try:
+            analysis_response = get_historical_analysis()
+            # Check if it's a tuple (response, status_code) or just a response
+            if isinstance(analysis_response, tuple):
+                response_data = analysis_response[0].get_json()
+            else:
+                response_data = analysis_response.get_json()
+            
+            if not response_data.get('success'):
+                return jsonify({
+                    'success': False,
+                    'error': 'Failed to get historical data'
+                }), 500
+                
+            analyzed_data = response_data['data']
+        except Exception as e:
+            logger.error(f"Error getting historical analysis: {e}")
             return jsonify({
                 'success': False,
-                'error': 'Failed to get historical data'
+                'error': 'Failed to retrieve historical data'
             }), 500
-        
-        analyzed_data = analysis_response[0].get_json()['data']
         analyzed_responses = analyzed_data.get('analyzed_responses', [])
         
         # Extract topic insights

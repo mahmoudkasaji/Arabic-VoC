@@ -64,7 +64,10 @@ class EnhancedTextAnalytics(SimpleArabicAnalyzer):
                 timeout=5.0
             )
             
-            result = self._parse_enhanced_response(response.choices[0].message.content)
+            content = response.choices[0].message.content
+            if content is None:
+                raise ValueError("Empty response from OpenAI")
+            result = self._parse_enhanced_response(content)
             result["processing_time"] = round(time.time() - start_time, 2)
             result["analysis_method"] = "enhanced_openai"
             result["original_text"] = text
