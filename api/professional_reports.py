@@ -283,9 +283,11 @@ def _get_export_data(time_range: str, survey_id: Optional[str] = None, include_a
     
     # Construct final query using parameterized approach
     if where_conditions:
-        query = text(base_query + " WHERE " + " AND ".join(where_conditions) + " ORDER BY r.created_at DESC")
+        final_query = base_query + " WHERE " + " AND ".join(where_conditions) + " ORDER BY r.created_at DESC"
     else:
-        query = text(base_query + " ORDER BY r.created_at DESC")
+        final_query = base_query + " ORDER BY r.created_at DESC"
+    
+    query = text(final_query)
     
     # Execute query with parameters
     result = db.session.execute(query, params)
