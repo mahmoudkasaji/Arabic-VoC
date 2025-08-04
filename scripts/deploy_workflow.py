@@ -22,8 +22,14 @@ class DeploymentWorkflow:
     def run_command(self, cmd, cwd=None):
         """Run command and return result"""
         try:
+            # Convert string commands to list for shell=False safety
+            if isinstance(cmd, str):
+                cmd_list = shlex.split(cmd)
+            else:
+                cmd_list = cmd
+            
             result = subprocess.run(
-                cmd, shell=True, cwd=cwd or self.project_root,
+                cmd_list, shell=False, cwd=cwd or self.project_root,
                 capture_output=True, text=True, check=True
             )
             return True, result.stdout
@@ -62,7 +68,7 @@ class DeploymentWorkflow:
         print(f"🔍 Checking {environment} environment health...")
         
         success, output = self.run_command(
-            f"python scripts/env_manager.py health {shlex.quote(environment)}"
+            f"python scripts/env_manager.py health {environment}"
         )
         
         return success, output
@@ -73,7 +79,7 @@ class DeploymentWorkflow:
         
         # Set up database if needed
         success, output = self.run_command(
-            f"python scripts/database_manager.py {shlex.quote(environment)} create"
+            f"python scripts/database_manager.py {environment} create"
         )
         
         if not success and "already exists" not in output.lower():
@@ -82,7 +88,7 @@ class DeploymentWorkflow:
         # For non-production, seed with test data
         if environment in ['development', 'staging']:
             self.run_command(
-                f"python scripts/database_manager.py {shlex.quote(environment)} seed"
+                f"python scripts/database_manager.py {environment} seed"
             )
             
         return True, f"Deployed to {environment} successfully"
@@ -91,11 +97,11 @@ class DeploymentWorkflow:
         """Create git tag for release"""
         print(f"🏷️  Creating git tag {version}...")
         
-        success, output = self.run_command(f"git tag -a {shlex.quote(version)} -m 'Release {shlex.quote(version)}'")
+        success, output = self.run_command(f"git tag -a {version} -m 'Release {version}'")
         if not success:
             return False, f"Failed to create tag: {output}"
             
-        success, output = self.run_command(f"git push origin {shlex.quote(version)}")
+        success, output = self.run_command(f"git push origin {version}")
         if not success:
             return False, f"Failed to push tag: {output}"
             
@@ -207,7 +213,7 @@ class DeploymentWorkflow:
             
             # Database stats
             success, output = self.run_command(
-                f"python scripts/database_manager.py {shlex.quote(env)} stats"
+                f"python scripts/database_manager.py {env} stats"
             )
             
             if success:
