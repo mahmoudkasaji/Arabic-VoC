@@ -1334,24 +1334,33 @@ async function saveSurvey() {
             saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>جاري الحفظ...';
         }
         
-        const response = await fetch('/api/surveys/create', {
+        const response = await fetch('/api/surveys/save-builder', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(surveyData)
+            body: JSON.stringify({
+                surveyTitle: surveyData.title,
+                surveyTitleAr: surveyData.title_ar,
+                surveyDescription: surveyData.description,
+                surveyDescriptionAr: surveyData.description_ar,
+                questions: surveyData.questions
+            })
         });
         
         const result = await response.json();
         
-        if (response.ok && result.status === 'success') {
-            alert(`تم حفظ الاستطلاع بنجاح!\n\nرابط الاستطلاع: ${window.location.origin}${result.survey.public_url}\nالرقم المختصر: ${result.survey.short_id}`);
+        if (response.ok && result.success) {
+            alert(`تم حفظ الاستطلاع بنجاح!\n\nرابط الاستطلاع المباشر: ${window.location.origin}${result.survey.live_url}\nالرقم المختصر: ${result.survey.short_id}`);
             
             // Store survey info for potential use
             window.savedSurvey = result.survey;
             
-            if (confirm('هل تريد العودة إلى صفحة الاستطلاعات؟')) {
-                window.location.href = '/surveys';
+            // Show live link display
+            updateLiveLinkDisplay(result.survey);
+            
+            if (confirm('هل تريد فتح الاستطلاع المباشر في نافذة جديدة؟')) {
+                window.open(`${window.location.origin}${result.survey.live_url}`, '_blank');
             }
         } else {
             throw new Error(result.error || 'خطأ في حفظ الاستطلاع');
@@ -1380,4 +1389,56 @@ async function publishSurvey() {
             alert('خطأ في نشر الاستطلاع');
         }
     }
+}
+
+function updateLiveLinkDisplay(survey) {
+    // Create or update a live link display area
+    let linkDisplay = document.getElementById('liveLinkDisplay');
+    
+    if (!linkDisplay) {
+        linkDisplay = document.createElement('div');
+        linkDisplay.id = 'liveLinkDisplay';
+        linkDisplay.className = 'alert alert-success mt-3';
+        
+        // Find a good place to insert it (after survey title or at top of form)
+        const surveySettings = document.querySelector('.survey-settings') || document.querySelector('.container');
+        if (surveySettings) {
+            surveySettings.appendChild(linkDisplay);
+        }
+    }
+    
+    linkDisplay.innerHTML = `
+        <div class="d-flex align-items-center justify-content-between">
+            <div>
+                <h6 class="mb-1"><i class="fas fa-link me-2"></i>رابط الاستطلاع المباشر</h6>
+                <small class="text-muted">يمكن مشاركة هذا الرابط مع المشاركين</small>
+            </div>
+            <div class="text-end">
+                <div class="input-group" style="width: 300px;">
+                    <input type="text" class="form-control" value="${window.location.origin}${survey.live_url}" readonly>
+                    <button class="btn btn-outline-primary" onclick="copyToClipboard('${window.location.origin}${survey.live_url}')">
+                        <i class="fas fa-copy"></i>
+                    </button>
+                    <button class="btn btn-primary" onclick="window.open('${window.location.origin}${survey.live_url}', '_blank')">
+                        <i class="fas fa-external-link-alt"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+function copyToClipboard(text) {
+    navigator.clipboard.writeText(text).then(() => {
+        // Show temporary success message
+        const notification = document.createElement('div');
+        notification.className = 'alert alert-success position-fixed';
+        notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 200px;';
+        notification.innerHTML = '<i class="fas fa-check me-2"></i>تم نسخ الرابط';
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            notification.remove();
+        }, 2000);
+    });
 }

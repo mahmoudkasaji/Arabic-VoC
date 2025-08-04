@@ -96,8 +96,11 @@ def get_surveys():
 
 @surveys_bp.route('/create', methods=['POST'])
 def create_survey():
-    """Create new survey"""
+    """Create new survey from survey builder"""
     try:
+        from models.survey_flask import SurveyFlask, QuestionFlask, SurveyStatus, QuestionType
+        import json
+        
         data = request.get_json()
         
         if not data or 'title' not in data:
@@ -105,20 +108,66 @@ def create_survey():
                 'success': False,
                 'error': 'عنوان الاستطلاع مطلوب'
             }), 400
-            
-        # Create survey record (simplified for now)
+        
+        # Create survey with actual database persistence
+        survey = SurveyFlask(
+            title=data.get('title', 'استطلاع جديد'),
+            title_ar=data.get('title_ar', data.get('title', 'استطلاع جديد')),
+            description=data.get('description', ''),
+            description_ar=data.get('description_ar', data.get('description', '')),
+            status=SurveyStatus.DRAFT.value,
+            is_public=data.get('is_public', True),
+            allow_anonymous=data.get('allow_anonymous', True),
+            primary_language=data.get('primary_language', 'ar'),
+            created_by='system',  # TODO: Use actual user ID
+            welcome_message=data.get('welcome_message', ''),
+            welcome_message_ar=data.get('welcome_message_ar', ''),
+            thank_you_message=data.get('thank_you_message', ''),
+            thank_you_message_ar=data.get('thank_you_message_ar', '')
+        )
+        
+        # Generate short ID for easy sharing
+        survey.generate_short_id()
+        
+        db.session.add(survey)
+        db.session.flush()  # Get survey ID
+        
+        # Add questions from survey builder
+        questions_data = data.get('questions', [])
+        for q_data in questions_data:
+            question = QuestionFlask(
+                survey_id=survey.id,
+                text=q_data.get('text', ''),
+                text_ar=q_data.get('text_ar', q_data.get('text', '')),
+                description=q_data.get('description', ''),
+                description_ar=q_data.get('description_ar', q_data.get('description', '')),
+                type=q_data.get('type', 'text'),
+                is_required=q_data.get('is_required', False),
+                order_index=q_data.get('order_index', 0),
+                options=json.dumps(q_data.get('options', [])) if q_data.get('options') else None,
+                validation_rules=json.dumps(q_data.get('validation_rules', {})) if q_data.get('validation_rules') else None,
+                min_value=q_data.get('min_value'),
+                max_value=q_data.get('max_value'),
+                step_value=q_data.get('step_value'),
+                scale_labels=json.dumps(q_data.get('scale_labels', [])) if q_data.get('scale_labels') else None
+            )
+            db.session.add(question)
+        
+        db.session.commit()
+        
+        # Return survey data with live URLs
         survey_data = {
-            'id': 4,  # Mock ID
-            'title': data.get('title'),
-            'title_ar': data.get('title_ar'),
-            'description': data.get('description'),
-            'description_ar': data.get('description_ar'),
-            'status': 'draft',
-            'question_count': 0,
-            'response_count': 0,
-            'created_at': datetime.utcnow().isoformat(),
-            'updated_at': datetime.utcnow().isoformat(),
-            'days_since_update': 0
+            'id': survey.id,
+            'uuid': survey.uuid,
+            'short_id': survey.short_id,
+            'title': survey.display_title,
+            'description': survey.display_description,
+            'status': survey.status,
+            'public_url': survey.public_url,
+            'full_url': f'/survey/{survey.uuid}',
+            'short_url': f'/s/{survey.short_id}' if survey.short_id else None,
+            'questions_count': len(questions_data),
+            'created_at': survey.created_at.isoformat()
         }
         
         return jsonify({
@@ -129,9 +178,117 @@ def create_survey():
         
     except Exception as e:
         logger.error(f"Error creating survey: {e}")
+        db.session.rollback()
         return jsonify({
             'success': False,
             'error': 'حدث خطأ في إنشاء الاستطلاع'
+        }), 500
+
+@surveys_bp.route('/save-builder', methods=['POST'])
+def save_survey_builder():
+    """Save survey configuration from survey builder"""
+    try:
+        from models.survey_flask import SurveyFlask, QuestionFlask, SurveyStatus
+        import json
+        
+        data = request.get_json()
+        logger.info(f"Received survey builder data: {data}")
+        
+        if not data:
+            return jsonify({
+                'success': False,
+                'error': 'لا توجد بيانات للاستطلاع'
+            }), 400
+        
+        # Create survey
+        survey = SurveyFlask(
+            title=data.get('surveyTitle', 'استطلاع جديد'),
+            title_ar=data.get('surveyTitleAr', data.get('surveyTitle', 'استطلاع جديد')),
+            description=data.get('surveyDescription', ''),
+            description_ar=data.get('surveyDescriptionAr', data.get('surveyDescription', '')),
+            status=SurveyStatus.PUBLISHED.value,  # Make it immediately available
+            is_public=True,
+            allow_anonymous=True,
+            primary_language='ar',
+            created_by='system',  # TODO: Use actual user ID
+            welcome_message_ar='مرحباً بكم في الاستطلاع',
+            thank_you_message_ar='شكراً لك على وقتك ومشاركتك'
+        )
+        
+        # Generate short ID for easy sharing
+        survey.generate_short_id()
+        
+        db.session.add(survey)
+        db.session.flush()  # Get survey ID
+        
+        # Add questions from survey builder
+        questions_data = data.get('questions', [])
+        logger.info(f"Processing {len(questions_data)} questions")
+        
+        for idx, q_data in enumerate(questions_data):
+            question_type = q_data.get('type', 'text')
+            
+            # Map survey builder types to database types
+            type_mapping = {
+                'text': 'text',
+                'textarea': 'textarea', 
+                'multiple_choice': 'multiple_choice',
+                'checkbox': 'checkbox',
+                'dropdown': 'dropdown',
+                'rating': 'rating',
+                'scale': 'rating',
+                'nps': 'nps',
+                'email': 'email',
+                'phone': 'phone',
+                'date': 'date',
+                'file': 'file'
+            }
+            
+            db_type = type_mapping.get(question_type, 'text')
+            
+            question = QuestionFlask(
+                survey_id=survey.id,
+                text=q_data.get('text', f'سؤال {idx + 1}'),
+                text_ar=q_data.get('textAr', q_data.get('text', f'سؤال {idx + 1}')),
+                description=q_data.get('description', ''),
+                description_ar=q_data.get('descriptionAr', q_data.get('description', '')),
+                type=db_type,
+                is_required=q_data.get('required', False),
+                order_index=idx + 1,
+                options=json.dumps(q_data.get('options', [])) if q_data.get('options') else None,
+                validation_rules=json.dumps(q_data.get('validationRules', {})) if q_data.get('validationRules') else None,
+                min_value=q_data.get('minValue', 1) if db_type == 'rating' else None,
+                max_value=q_data.get('maxValue', 5) if db_type == 'rating' else None,
+                step_value=q_data.get('stepValue', 1) if db_type == 'rating' else None
+            )
+            db.session.add(question)
+            logger.info(f"Added question {idx + 1}: {question.text[:50]}...")
+        
+        db.session.commit()
+        logger.info(f"Survey saved successfully with ID: {survey.id}")
+        
+        # Return survey data with live URLs
+        return jsonify({
+            'success': True,
+            'message': 'تم حفظ الاستطلاع بنجاح',
+            'survey': {
+                'id': survey.id,
+                'uuid': survey.uuid,
+                'short_id': survey.short_id,
+                'title': survey.display_title,
+                'live_url': f'/survey/{survey.uuid}',
+                'short_url': f'/s/{survey.short_id}' if survey.short_id else None,
+                'questions_count': len(questions_data),
+                'status': 'published'
+            }
+        })
+        
+    except Exception as e:
+        logger.error(f"Error saving survey builder data: {e}")
+        db.session.rollback()
+        return jsonify({
+            'success': False,
+            'error': 'حدث خطأ في حفظ الاستطلاع'
         }), 500
 
 @surveys_bp.route('/<int:survey_id>', methods=['GET'])
