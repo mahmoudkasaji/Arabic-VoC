@@ -1,54 +1,37 @@
+# Simplified build system configuration to avoid uv build conflicts
 [build-system]
-requires = ["setuptools>=61.0", "wheel"]
+requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "arabic-voc-platform"
 version = "1.0.0"
 description = "Arabic Voice of Customer Platform with AI-powered sentiment analysis"
-authors = [
-    {name = "Arabic VoC Team", email = "dev@arabicvoc.com"}
-]
 readme = "README.md"
-license = {text = "MIT"}
-keywords = ["arabic", "sentiment-analysis", "customer-feedback", "ai", "nlp"]
-classifiers = [
-    "Development Status :: 5 - Production/Stable",
-    "Intended Audience :: Developers",
-    "Intended Audience :: End Users/Desktop",
-    "License :: OSI Approved :: MIT License",
-    "Operating System :: OS Independent",
-    "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.11",
-    "Topic :: Software Development :: Libraries :: Python Modules",
-    "Topic :: Text Processing :: Linguistic",
-    "Natural Language :: Arabic",
-]
 requires-python = ">=3.11"
 dependencies = [
-    "flask>=2.3.0",
-    "flask-sqlalchemy>=3.0.0",
-    "psycopg2-binary>=2.9.0",
-    "openai>=1.0.0",
-    "langchain>=0.1.0",
-    "langchain-openai>=0.1.0",
-    "langgraph>=0.1.0",
-    "arabic-reshaper>=3.0.0",
-    "python-bidi>=0.4.0",
-    "gunicorn>=20.1.0",
-    "werkzeug>=2.3.0",
-    "jinja2>=3.1.0",
-    "pydantic>=2.0.0",
-    "asyncio>=3.4.3",
-    "aiofiles>=23.0.0",
-    "sqlalchemy>=2.0.41",
-    "uvicorn>=0.34.3",
-    "anthropic>=0.54.0",
-    "twilio>=9.6.3",
-    "flask-dance>=7.0.0",
-    "flask-login>=0.6.0",
-    "oauthlib>=3.2.0",
-    "pyjwt>=2.8.0",
+    "flask",
+    "flask-sqlalchemy", 
+    "psycopg2-binary",
+    "openai",
+    "langchain",
+    "langchain-openai",
+    "langgraph", 
+    "arabic-reshaper",
+    "python-bidi",
+    "gunicorn",
+    "werkzeug",
+    "jinja2",
+    "pydantic",
+    "aiofiles",
+    "sqlalchemy",
+    "uvicorn",
+    "anthropic",
+    "twilio",
+    "flask-dance",
+    "flask-login",
+    "oauthlib",
+    "pyjwt",
 ]
 
 [project.optional-dependencies]
