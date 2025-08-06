@@ -1,12 +1,385 @@
 
 <!DOCTYPE html>
-<html lang="{{ get_language_info().code }}" dir="{{ get_language_info().direction }}">
+<html lang="ar" dir="rtl">
 <head>
-    {% include 'components/head.html' %}
-    {% include 'components/standard_buttons.html' %}
+    <!-- Unified Head Component for Voice of Customer Platform -->
+<!-- Created: June 23, 2025 -->
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="language" content="ar">
+<meta name="direction" content="rtl">
+
+<!-- Unified Bootstrap CSS (RTL Support) -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+
+<!-- Font Awesome Icons (Unified Version) -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<!-- Arabic Fonts (Consistent Loading) -->
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;500;600;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+
+<!-- Unified Design System CSS -->
+<link rel="stylesheet" href="/static/css/design-system.css">
+
+<!-- Survey Design System -->
+<link href="/static/css/survey-design-system.css" rel="stylesheet">
+
+<!-- Unified Layout System -->
+<link href="/static/css/unified-layout.css" rel="stylesheet">
+
+<!-- Persistent Feedback Widget -->
+<link href="/static/css/feedback-widget.css?v=2025072717" rel="stylesheet">
+
+<!-- Page-specific additional CSS can be added via blocks in individual templates -->
+    <!-- Standardized Button Styles for Arabic VoC Platform -->
+<!-- All survey pages must use these consistent button classes -->
+
+<style>
+/* Base Button Styling */
+.btn-standard {
+    font-family: 'Cairo', sans-serif;
+    font-weight: 600;
+    font-size: 0.875rem;
+    line-height: 1.25;
+    text-decoration: none;
+    white-space: nowrap;
+    
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    
+    padding: 0.625rem 1.25rem;
+    border: 1px solid transparent;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    /* Prevent text selection */
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+/* Primary Button - Enhanced Contrast Green background, white Arabic text */
+.btn-primary-standard {
+    background-color: var(--survey-primary);
+    color: white;
+    border-color: var(--survey-primary);
+    font-weight: 600;
+}
+
+.btn-primary-standard:hover:not(:disabled) {
+    background-color: var(--survey-primary-hover);
+    border-color: var(--survey-primary-hover);
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(27, 94, 32, 0.4);
+}
+
+.btn-primary-standard:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(46, 139, 87, 0.2);
+}
+
+.btn-primary-standard:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px var(--survey-primary-light);
+}
+
+/* Secondary Button - Enhanced Contrast White background, dark border, dark Arabic text */
+.btn-secondary-standard {
+    background-color: white;
+    color: var(--survey-primary);
+    border-color: var(--survey-primary);
+    font-weight: 600;
+}
+
+.btn-secondary-standard:hover:not(:disabled) {
+    background-color: var(--survey-primary-light);
+    border-color: var(--survey-primary-hover);
+    color: var(--survey-primary-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(27, 94, 32, 0.25);
+}
+
+.btn-secondary-standard:active:not(:disabled) {
+    transform: translateY(0);
+    background-color: var(--survey-primary-light);
+}
+
+.btn-secondary-standard:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px var(--survey-primary-light);
+}
+
+/* Destructive Button - Red background, white Arabic text */
+.btn-destructive-standard {
+    background-color: var(--survey-status-error);
+    color: white;
+    border-color: var(--survey-status-error);
+}
+
+.btn-destructive-standard:hover:not(:disabled) {
+    background-color: #c82333;
+    border-color: #c82333;
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+}
+
+.btn-destructive-standard:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(220, 53, 69, 0.2);
+}
+
+.btn-destructive-standard:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px var(--survey-status-error-bg);
+}
+
+/* Success Button - Green background for actions like import/create */
+.btn-success-standard {
+    background-color: var(--survey-primary);
+    color: white;
+    border-color: var(--survey-primary);
+    font-weight: 600;
+}
+
+.btn-success-standard:hover:not(:disabled) {
+    background-color: var(--survey-primary-hover);
+    border-color: var(--survey-primary-hover);
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(27, 94, 32, 0.4);
+}
+
+.btn-success-standard:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(27, 94, 32, 0.2);
+}
+
+.btn-success-standard:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px var(--survey-primary-light);
+}
+
+/* Warning Button - Orange/amber background for test actions */
+.btn-warning-standard {
+    background-color: #ff8f00;
+    color: white;
+    border-color: #ff8f00;
+    font-weight: 600;
+}
+
+.btn-warning-standard:hover:not(:disabled) {
+    background-color: #ef6c00;
+    border-color: #ef6c00;
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(255, 143, 0, 0.4);
+}
+
+.btn-warning-standard:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(255, 143, 0, 0.2);
+}
+
+.btn-warning-standard:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(255, 143, 0, 0.25);
+}
+
+/* Button Sizes */
+.btn-sm-standard {
+    padding: 0.375rem 1rem;
+    font-size: 0.75rem;
+    border-radius: 0.25rem;
+}
+
+.btn-md-standard {
+    padding: 0.625rem 1.25rem;
+    font-size: 0.875rem;
+    border-radius: 0.375rem;
+}
+
+.btn-lg-standard {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    border-radius: 0.5rem;
+}
+
+.btn-xl-standard {
+    padding: 1rem 2rem;
+    font-size: 1.125rem;
+    border-radius: 0.5rem;
+    font-weight: 700;
+}
+
+/* Button States */
+.btn-standard:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+.btn-standard.loading {
+    opacity: 0.8;
+    cursor: wait;
+}
+
+.btn-standard.loading i {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Icon Spacing in Buttons */
+.btn-standard i {
+    margin-left: 0.25rem; /* For RTL */
+}
+
+.btn-standard i:first-child {
+    margin-left: 0;
+    margin-right: 0.25rem;
+}
+
+.btn-standard i:last-child {
+    margin-right: 0;
+    margin-left: 0.25rem;
+}
+
+/* Button Groups */
+.btn-group-standard {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.btn-group-standard .btn-standard {
+    flex: 1;
+    min-width: 0;
+}
+
+/* Button Container - Ensures consistent spacing and alignment */
+.btn-container-standard {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.btn-container-standard .btn-standard {
+    height: 2.5rem; /* Fixed height for consistency */
+    min-width: auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Ensure all buttons in container have same typography */
+.btn-container-standard .btn-standard {
+    font-family: 'Cairo', sans-serif !important;
+    font-weight: 600 !important;
+    font-size: 0.875rem !important;
+    line-height: 1.25 !important;
+}
+
+/* Responsive Button Adjustments */
+@media (max-width: 768px) {
+    .btn-group-standard {
+        flex-direction: column;
+    }
+    
+    .btn-group-standard .btn-standard {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .btn-xl-standard {
+        padding: 0.875rem 1.5rem;
+        font-size: 1rem;
+    }
+    
+    .btn-lg-standard {
+        padding: 0.75rem 1.25rem;
+        font-size: 0.875rem;
+    }
+}
+
+/* Special Cases for Arabic Text */
+[dir="rtl"] .btn-standard {
+    direction: rtl;
+    text-align: center;
+}
+
+[dir="rtl"] .btn-standard i {
+    margin-right: 0.5rem;
+    margin-left: 0;
+}
+
+[dir="rtl"] .btn-standard i:last-child {
+    margin-right: 0;
+    margin-left: 0.5rem;
+}
+</style>
+
+<!-- Utility Classes for Common Button Combinations -->
+<style>
+/* Start Now Button (Homepage) */
+.btn-start-now {
+    background: linear-gradient(135deg, var(--survey-primary), var(--survey-accent));
+    color: white;
+    border: none;
+    padding: 1rem 2.5rem;
+    font-size: 1.125rem;
+    font-weight: 700;
+    border-radius: 2rem;
+    box-shadow: 0 4px 15px rgba(46, 139, 87, 0.3);
+    transform: translateY(0);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-start-now:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(46, 139, 87, 0.4);
+    color: white;
+}
+
+.btn-start-now:active {
+    transform: translateY(-1px);
+}
+
+/* Action Button Groups */
+.survey-action-buttons {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+@media (max-width: 576px) {
+    .survey-action-buttons {
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .survey-action-buttons .btn-standard {
+        width: 100%;
+        justify-content: center;
+    }
+}
+</style>
     <title>Survey Builder - Voice of Customer Platform</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/unified-layout.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/design-system.css') }}">
+    <link rel="stylesheet" href="/static/css/unified-layout.css">
+    <link rel="stylesheet" href="/static/css/design-system.css">
     
     <!-- Enhanced Drag Styles -->
     <link href="/static/css/drag_enhancements.css" rel="stylesheet">
@@ -1236,10 +1609,278 @@
     </style>
 </head>
 <body>
-    {% include 'components/unified_navigation.html' %}
+    <!-- Voice of Customer Platform - Unified Centered Navigation -->
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+    <div class="container">
+        <!-- Brand - Centered Layout -->
+        <a class="navbar-brand fw-bold text-primary mx-auto mx-lg-0" href="/" style="font-size: 1.25rem;">
+            <i class="fas fa-home me-2"></i>
+            منصة صوت العميل
+        </a>
+        
+        <!-- Language Toggle Button -->
+        <div class="navbar-nav ms-auto me-3">
+            <button class="btn btn-outline-primary btn-sm" onclick="toggleLanguage()" title="تبديل اللغة إلى الإنجليزية">
+                <i class="fas fa-globe me-1"></i>
+                English
+            </button>
+        </div>
+        
+        <!-- Mobile Toggle -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavigation" 
+                aria-controls="mainNavigation" aria-expanded="false" aria-label="تبديل القائمة">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        
+        <!-- Main Navigation - Centered -->
+        <div class="collapse navbar-collapse justify-content-center" id="mainNavigation">
+            <ul class="navbar-nav mb-2 mb-lg-0">
+                <!-- 1. Surveys -->
+                <li class="nav-item dropdown mx-2">
+                    <a class="nav-link dropdown-toggle" href="#" id="surveysDropdown" role="button" 
+                       data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-poll me-1"></i>الاستطلاعات
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><h6 class="dropdown-header">سير العمل المتكامل</h6></li>
+                        <li><a class="dropdown-item" href="/surveys/create">
+                            <i class="fas fa-plus me-2"></i>إنشاء استطلاع جديد
+                        </a></li>
+                        <li><a class="dropdown-item" href="/surveys">
+                            <i class="fas fa-tasks me-2 text-primary"></i>مركز إدارة الاستطلاعات
+                            <small class="d-block text-muted">إدارة وتوزيع في مكان واحد</small>
+                        </a></li>
+                        <li><a class="dropdown-item" href="/surveys/distribution">
+                            <i class="fas fa-share-alt me-2 text-success"></i>توزيع الاستطلاعات
+                            <small class="d-block text-muted">معالج من 3 خطوات لتوزيع الاستطلاعات متعدد القنوات</small>
+                        </a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><h6 class="dropdown-header">التحليلات والتقارير</h6></li>
+                        <li><a class="dropdown-item" href="/surveys/responses">
+                            <i class="fas fa-chart-bar me-2"></i>الردود والنتائج
+                        </a></li>
+                    </ul>
+                </li>
+                
+                <!-- 2. Contacts -->
+                <li class="nav-item dropdown mx-2">
+                    <a class="nav-link dropdown-toggle" href="#" id="contactsDropdown" role="button" 
+                       data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-address-book me-1"></i>جهات الاتصال
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><h6 class="dropdown-header">إدارة جهات الاتصال</h6></li>
+                        <li><a class="dropdown-item" href="/contacts">
+                            <i class="fas fa-users me-2 text-primary"></i>قائمة جهات الاتصال
+                            <small class="d-block text-muted">إدارة وتنظيم جهات الاتصال</small>
+                        </a></li>
 
-    <div class="container-unified" style="max-width: 1400px !important; padding: 0 2rem !important; background: rgba(255,0,0,0.1) !important;">
-        <div class="builder-container" id="builderContainer" style="display: grid !important; grid-template-columns: 300px 1fr 350px !important; gap: 2rem !important; background: rgba(0,255,0,0.1) !important;">
+                    </ul>
+                </li>
+                
+                <!-- 3. Analytics (Consolidated Dashboard + Analytics) -->
+                <li class="nav-item dropdown mx-2">
+                    <a class="nav-link dropdown-toggle" href="#" id="analyticsDropdown" role="button" 
+                       data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-chart-line me-1"></i>التحليلات
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><h6 class="dropdown-header">التحليلات الأساسية</h6></li>
+                        <li><a class="dropdown-item" href="/analytics/dashboard">
+                            <i class="fas fa-chart-bar me-2 text-primary"></i>لوحة مؤشرات الأداء الرئيسية
+                            <small class="d-block text-muted">مقاييس الأداء الرئيسية والرؤى التشغيلية</small>
+                        </a></li>
+                        <li><a class="dropdown-item" href="/analytics/advanced">
+                            <i class="fas fa-microscope me-2 text-warning"></i>تحليل النصوص بالذكاء الاصطناعي
+                            <small class="d-block text-muted">تحليل المشاعر والموضوعات باستخدام نماذج الذكاء الاصطناعي</small>
+                        </a></li>
+                    </ul>
+                </li>
+                
+                <!-- 4. Integrations -->
+                <li class="nav-item dropdown mx-2">
+                    <a class="nav-link dropdown-toggle" href="#" id="integrationsDropdown" role="button" 
+                       data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-plug me-1"></i>التكاملات
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><h6 class="dropdown-header">تدفق البيانات</h6></li>
+                        <li><a class="dropdown-item" href="/integrations/catalog">
+                            <i class="fas fa-brain me-2 text-primary"></i>التكاملات وإدارة الذكاء الاصطناعي
+                            <small class="d-block text-muted">مراقبة وإدارة جميع التكاملات التقنية ونماذج الذكاء الاصطناعي</small>
+                        </a></li>
+                    </ul>
+                </li>
+                
+                <!-- 5. Settings -->
+                <li class="nav-item dropdown mx-2">
+                    <a class="nav-link dropdown-toggle" href="#" id="settingsDropdown" role="button" 
+                       data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-cog me-1"></i>الإعدادات
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><h6 class="dropdown-header">إدارة النظام</h6></li>
+                        <li><a class="dropdown-item" href="/settings">
+                            <i class="fas fa-sliders-h me-2"></i>إدارة النظام
+                        </a></li>
+                        <li><a class="dropdown-item" href="/settings/users">
+                            <i class="fas fa-users me-2"></i>إدارة المستخدمين
+                        </a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><h6 class="dropdown-header">نظام التصميم الموحد</h6></li>
+                        <li><a class="dropdown-item" href="/settings/design-system">
+                            <i class="fas fa-palette me-2"></i>نظام التصميم الموحد
+                            <small class="d-block text-muted">مكتبة المكونات والتوثيق</small>
+                        </a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        
+        <!-- User Actions - Right Side -->
+        <div class="d-none d-lg-flex">
+            <ul class="navbar-nav">
+                <li class="nav-item dropdown">
+                    
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" 
+                           data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-user-circle me-1"></i>تسجيل الدخول
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="/auth/replit_auth">
+                                <i class="fas fa-sign-in-alt me-2"></i>تسجيل الدخول
+                            </a></li>
+                        </ul>
+                    
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<style>
+/* Unified Navigation Styling */
+.navbar {
+    padding: 1rem 0;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.navbar-brand {
+    font-weight: 700;
+    color: var(--primary-500, #2E8B57) !important;
+    transition: opacity 0.3s ease;
+}
+
+.navbar-brand:hover {
+    opacity: 0.8;
+}
+
+.navbar-nav .nav-link {
+    font-weight: 500;
+    padding: 0.75rem 1rem;
+    color: var(--text-primary, #2c3e50) !important;
+    transition: all 0.3s ease;
+    border-radius: 0.375rem;
+    margin: 0 0.25rem;
+}
+
+.navbar-nav .nav-link:hover {
+    background-color: var(--primary-50, #f0f9f4);
+    color: var(--primary-600, #25754a) !important;
+}
+
+.dropdown-menu {
+    border: none;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    border-radius: 0.5rem;
+    padding: 0.5rem 0;
+    margin-top: 0.5rem;
+    min-width: 250px;
+}
+
+.dropdown-header {
+    padding: 0.5rem 1rem;
+    font-weight: 600;
+    color: var(--primary-600, #25754a);
+    border-bottom: 1px solid #f1f3f4;
+    margin-bottom: 0.25rem;
+}
+
+.dropdown-item {
+    padding: 0.5rem 1rem;
+    color: var(--text-primary, #2c3e50);
+    border-radius: 0.25rem;
+    margin: 0.125rem 0.5rem;
+    transition: all 0.2s ease;
+}
+
+.dropdown-item:hover {
+    background-color: var(--primary-50, #f0f9f4);
+    color: var(--primary-600, #25754a);
+}
+
+.dropdown-item i {
+    width: 20px;
+    text-align: center;
+}
+
+.dropdown-divider {
+    margin: 0.5rem 0;
+}
+
+/* Arabic RTL Support */
+[dir="rtl"] .navbar-nav {
+    flex-direction: row-reverse;
+}
+
+[dir="rtl"] .dropdown-menu {
+    right: 0;
+    left: auto;
+}
+
+/* Mobile Responsive */
+@media (max-width: 991.98px) {
+    .navbar-nav .nav-link {
+        margin: 0;
+        border-radius: 0;
+    }
+    
+    .dropdown-menu {
+        position: static !important;
+        transform: none !important;
+        box-shadow: none;
+        border: 1px solid var(--border-light, #e9ecef);
+        margin-top: 0;
+    }
+    
+    .navbar-brand {
+        order: 1;
+    }
+    
+    .navbar-toggler {
+        order: 2;
+    }
+    
+    .navbar-collapse {
+        order: 3;
+        width: 100%;
+    }
+}
+
+/* Centered Layout for Large Screens */
+@media (min-width: 992px) {
+    .navbar-nav {
+        justify-content: center;
+    }
+    
+    .justify-content-center {
+        justify-content: center !important;
+    }
+}
+</style>
+
+    <div class="container-unified">
+        <div class="builder-container" id="builderContainer">
         <!-- Progressive Question Types Sidebar -->
         <div class="sidebar question-types-sidebar" id="questionTypesSidebar">
             <h5 class="mb-4">أنواع الأسئلة</h5>
@@ -2236,7 +2877,128 @@
         }
     </script>
     
-    {% include 'components/scripts.html' %}
+    <!-- Unified Scripts Component for Arabic VoC Platform -->
+<!-- Created: June 23, 2025 -->
+
+<!-- Bootstrap JavaScript (Unified Version) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Chart.js for Data Visualization (if needed) -->
+
+
+<!-- Initialize language context for JavaScript -->
+<script>
+window.LANGUAGE_CONTEXT = {
+    current: 'ar',
+    direction: 'rtl',
+    opposite: 'en'
+};
+</script>
+
+<!-- JavaScript Translation System -->
+<script src="/static/js/translations.js"></script>
+
+<!-- Main Application JavaScript -->
+<script src="/static/js/main.js"></script>
+
+<!-- Persistent Feedback Widget JavaScript -->
+<script src="/static/js/feedback-widget.js"></script>
+
+<!-- Fix dropdown initialization -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('🔧 Initializing Bootstrap components...');
+    
+    // Initialize Bootstrap components with error handling
+    try {
+        if (typeof bootstrap !== 'undefined') {
+            console.log('✅ Bootstrap found, initializing dropdowns...');
+            
+            // Initialize dropdowns with explicit options
+            var dropdownElementList = [].slice.call(document.querySelectorAll('.dropdown-toggle'));
+            console.log(`Found ${dropdownElementList.length} dropdown toggles`);
+            
+            var dropdownList = dropdownElementList.map(function (dropdownToggleEl) {
+                try {
+                    return new bootstrap.Dropdown(dropdownToggleEl, {
+                        boundary: 'viewport',
+                        display: 'dynamic'
+                    });
+                } catch (e) {
+                    console.error('Error initializing dropdown:', e);
+                    return null;
+                }
+            }).filter(dropdown => dropdown !== null);
+            
+            console.log(`✅ Initialized ${dropdownList.length} dropdowns successfully`);
+            
+            // Initialize tooltips if they exist
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                try {
+                    return new bootstrap.Tooltip(tooltipTriggerEl);
+                } catch (e) {
+                    console.error('Error initializing tooltip:', e);
+                    return null;
+                }
+            }).filter(tooltip => tooltip !== null);
+            
+            console.log(`✅ Initialized ${tooltipList.length} tooltips successfully`);
+        } else {
+            console.error('❌ Bootstrap not found!');
+            // Fallback: Initialize manual dropdown functionality
+            initManualDropdowns();
+        }
+    } catch (error) {
+        console.error('❌ Error initializing Bootstrap components:', error);
+        // Fallback: Initialize manual dropdown functionality
+        initManualDropdowns();
+    }
+});
+
+// Manual dropdown functionality as fallback
+function initManualDropdowns() {
+    console.log('🔄 Initializing manual dropdown fallback...');
+    
+    const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
+    
+    dropdownToggles.forEach(toggle => {
+        toggle.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            // Close all other dropdowns first
+            document.querySelectorAll('.dropdown-menu').forEach(menu => {
+                if (menu !== this.nextElementSibling) {
+                    menu.classList.remove('show');
+                }
+            });
+            
+            // Toggle current dropdown
+            const dropdownMenu = this.nextElementSibling;
+            if (dropdownMenu && dropdownMenu.classList.contains('dropdown-menu')) {
+                dropdownMenu.classList.toggle('show');
+            }
+        });
+    });
+    
+    // Close dropdowns when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.dropdown')) {
+            document.querySelectorAll('.dropdown-menu.show').forEach(menu => {
+                menu.classList.remove('show');
+            });
+        }
+    });
+    
+    console.log(`✅ Manual dropdown fallback initialized for ${dropdownToggles.length} toggles`);
+}
+</script>
+
+<!-- Feedback Widget Initialization (for authenticated users) -->
+
+
+<!-- Page-specific JavaScript can be added via blocks in individual templates -->
     
     <!-- Force layout after all scripts load -->
     <style>
