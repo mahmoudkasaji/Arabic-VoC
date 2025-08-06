@@ -27,41 +27,24 @@ issuer_url = os.environ.get('ISSUER_URL', "https://replit.com/oidc")
 
 login_manager = LoginManager()
 
-# Create models dynamically to avoid circular imports
-def create_auth_models():
-    """Create auth models with proper db reference"""
+# Models cache to prevent redefinition during OAuth callbacks
+_models_cache = {}
+
+def get_auth_models():
+    """Get auth models with proper caching to prevent redefinition issues"""
+    if 'models' in _models_cache:
+        return _models_cache['models']
+    
     app, db = get_app_db()
     
-    # Create a separate Replit user table to avoid conflicts with existing users table
-    class ReplitUser(UserMixin, db.Model):
-        """Replit authenticated user model"""
-        __tablename__ = 'replit_users'
-        id = db.Column(db.String, primary_key=True)  # Replit user ID
-        email = db.Column(db.String, unique=True, nullable=True)
-        first_name = db.Column(db.String, nullable=True)
-        last_name = db.Column(db.String, nullable=True)
-        profile_image_url = db.Column(db.String, nullable=True)
-        created_at = db.Column(db.DateTime, default=datetime.now)
-        updated_at = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
+    # Import the model creation function
+    from models.auth_models import create_replit_auth_models
     
-    from flask_dance.consumer.storage.sqla import OAuthConsumerMixin
-    from sqlalchemy import UniqueConstraint
+    # Create models once and cache them
+    models = create_replit_auth_models(db)
+    _models_cache['models'] = models
     
-    class ReplitOAuth(OAuthConsumerMixin, db.Model):
-        """OAuth storage for Replit Auth"""
-        __tablename__ = 'replit_oauth'
-        user_id = db.Column(db.String, db.ForeignKey('replit_users.id'))
-        browser_session_key = db.Column(db.String, nullable=False)
-        user = db.relationship('ReplitUser')
-
-        __table_args__ = (UniqueConstraint(
-            'user_id',
-            'browser_session_key',
-            'provider',
-            name='uq_replit_user_browser_session_key_provider',
-        ),)
-    
-    return ReplitUser, ReplitOAuth
+    return models
 
 def init_login_manager(app):
     """Initialize login manager with app"""
@@ -70,7 +53,7 @@ def init_login_manager(app):
     # Set up user loader
     @login_manager.user_loader
     def load_user(user_id):
-        ReplitUser, _ = create_auth_models()
+        ReplitUser, _ = get_auth_models()
         return ReplitUser.query.get(user_id)
 
 
@@ -78,7 +61,7 @@ class UserSessionStorage(BaseStorage):
 
     def get(self, blueprint):
         try:
-            _, ReplitOAuth = create_auth_models()
+            _, ReplitOAuth = get_auth_models()
             app, db = get_app_db()
             token = db.session.query(ReplitOAuth).filter_by(
                 user_id=current_user.get_id(),
@@ -90,7 +73,7 @@ class UserSessionStorage(BaseStorage):
         return token
 
     def set(self, blueprint, token):
-        _, ReplitOAuth = create_auth_models()
+        _, ReplitOAuth = get_auth_models()
         app, db = get_app_db()
         db.session.query(ReplitOAuth).filter_by(
             user_id=current_user.get_id(),
@@ -106,7 +89,7 @@ class UserSessionStorage(BaseStorage):
         db.session.commit()
 
     def delete(self, blueprint):
-        _, ReplitOAuth = create_auth_models()
+        _, ReplitOAuth = get_auth_models()
         app, db = get_app_db()
         db.session.query(ReplitOAuth).filter_by(
             user_id=current_user.get_id(),
@@ -178,7 +161,7 @@ def make_replit_blueprint():
 
 
 def save_user(user_claims):
-    ReplitUser, _ = create_auth_models()
+    ReplitUser, _ = get_auth_models()
     app, db = get_app_db()
     
     user = ReplitUser.query.get(user_claims["sub"])
