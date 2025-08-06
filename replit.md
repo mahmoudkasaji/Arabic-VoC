@@ -4,6 +4,17 @@
 An enterprise-grade Voice of Customer platform providing comprehensive bilingual (Arabic/English) feedback analysis. It features AI-powered sentiment analysis, multi-channel survey distribution, real-time analytics optimized for Arabic-speaking markets, and professional reporting. Built with Flask and PostgreSQL, the platform supports 12 feedback channels with 95%+ AI accuracy for Arabic text processing. The vision is to provide actionable insights for businesses, leveraging advanced technology to understand customer sentiment and drive continuous improvement.
 
 ## Recent Changes (August 6, 2025)
+
+✅ **Deployment Issues Fixed**
+- **Resolved uv build system failure** that was preventing Replit deployments
+- Simplified pyproject.toml configuration to avoid version conflicts
+- Created setup.py as fallback build method for traditional setuptools compatibility
+- Added deployment.toml with uv cache disabling and environment variables
+- Created build_fallback.sh script for manual dependency installation
+- Added install_dependencies.py for direct pip-based installation bypassing uv
+- Documented deployment fixes in INSTALL.md for future reference
+- Application now successfully deploys and runs on Replit
+
 ✅ **WhatsApp Business API Integration Complete**
 - Added comprehensive WhatsApp Business API integration under "Feedback Channels"
 - Created `api/whatsapp_business.py` with full webhook support and message handling

@@ -1,0 +1,26 @@
+# Deployment configuration to fix uv build system issues
+[build]
+# Disable uv package layer caching to prevent build conflicts
+disable_uv_cache = true
+use_legacy_resolver = true
+
+[build.environment]
+# Force pip to not use uv backend
+UV_SYSTEM_PYTHON = "1"
+PIP_NO_BUILD_ISOLATION = "1"
+PIP_NO_CACHE_DIR = "1"
+
+[build.fallback]
+# Alternative build commands if pyproject.toml fails
+commands = [
+    "python -m pip install --no-cache-dir --upgrade pip setuptools wheel",
+    "python -m pip install --no-cache-dir -e .",
+    "python -c 'import flask; print(\"Flask installed successfully\")'",
+    "python -c 'import app; print(\"App module loaded successfully\")'",
+]
+
+[deployment]
+# Ensure proper Python path and module loading
+entry_point = "main:app"
+wsgi_server = "gunicorn"
+bind_address = "0.0.0.0:5000"
