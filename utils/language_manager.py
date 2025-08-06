@@ -56,7 +56,7 @@ class LanguageManager:
             session_lang = session.get('language')
             if session_lang in self.supported_languages:
                 g._current_language = session_lang
-                return session_lang
+                return str(session_lang)
             
             # 4. Check browser Accept-Language header
             if request and request.headers.get('Accept-Language'):

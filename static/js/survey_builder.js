@@ -339,9 +339,18 @@ class SurveyBuilder {
     }
 
     getDefaultQuestionText(type) {
+        // Use the new translation system
+        if (typeof window.t === 'function') {
+            const key = `survey_builder.default_questions.${type}`;
+            return window.t(key, this.getDefaultQuestionTextFallback(type));
+        }
+        return this.getDefaultQuestionTextFallback(type);
+    }
+
+    getDefaultQuestionTextFallback(type) {
         const defaults = {
             text: 'Short text question',
-            textarea: 'Long text question',
+            textarea: 'Long text question', 
             multiple_choice: 'Multiple choice question',
             checkbox: 'Checkbox question',
             dropdown: 'Dropdown question',
@@ -355,36 +364,38 @@ class SurveyBuilder {
         return defaults[type] || 'New question';
     }
 
+    // Deprecated - use getDefaultQuestionText instead
     getDefaultQuestionTextAr(type) {
-        const defaults = {
-            text: 'سؤال نص قصير',
-            textarea: 'سؤال نص طويل',
-            multiple_choice: 'سؤال اختيار متعدد',
-            checkbox: 'سؤال مربعات اختيار',
-            dropdown: 'سؤال قائمة منسدلة',
-            rating: 'سؤال تقييم',
-            slider: 'سؤال مؤشر تمرير',
-            nps: 'ما مدى احتمالية أن توصي بنا؟',
-            date: 'سؤال تاريخ',
-            email: 'سؤال بريد إلكتروني',
-            phone: 'سؤال رقم هاتف'
-        };
-        return defaults[type] || 'سؤال جديد';
+        return this.getDefaultQuestionText(type);
     }
 
     getDefaultOptions(type) {
         if (['multiple_choice', 'checkbox', 'dropdown'].includes(type)) {
             return {
                 choices: [
-                    { text: 'الخيار الأول', text_en: 'Option 1', value: 'option1' },
-                    { text: 'الخيار الثاني', text_en: 'Option 2', value: 'option2' }
+                    { 
+                        text: window.t ? window.t('survey_builder.options.option_1', 'Option 1') : 'Option 1',
+                        text_en: 'Option 1', 
+                        value: 'option1' 
+                    },
+                    { 
+                        text: window.t ? window.t('survey_builder.options.option_2', 'Option 2') : 'Option 2',
+                        text_en: 'Option 2', 
+                        value: 'option2' 
+                    }
                 ]
             };
         } else if (type === 'rating') {
             return {
                 max_rating: 5,
                 rating_labels: {
-                    ar: ['ضعيف جداً', 'ضعيف', 'متوسط', 'جيد', 'ممتاز'],
+                    ar: [
+                        window.t ? window.t('survey_builder.rating_labels.very_poor', 'ضعيف جداً') : 'ضعيف جداً',
+                        window.t ? window.t('survey_builder.rating_labels.poor', 'ضعيف') : 'ضعيف',
+                        window.t ? window.t('survey_builder.rating_labels.average', 'متوسط') : 'متوسط',
+                        window.t ? window.t('survey_builder.rating_labels.good', 'جيد') : 'جيد',
+                        window.t ? window.t('survey_builder.rating_labels.excellent', 'ممتاز') : 'ممتاز'
+                    ],
                     en: ['Very Poor', 'Poor', 'Average', 'Good', 'Excellent']
                 }
             };
@@ -394,7 +405,10 @@ class SurveyBuilder {
                 max_value: 10,
                 step: 1,
                 labels: {
-                    ar: { min: 'الأدنى', max: 'الأعلى' },
+                    ar: { 
+                        min: window.t ? window.t('survey_builder.slider_labels.min', 'الأدنى') : 'الأدنى',
+                        max: window.t ? window.t('survey_builder.slider_labels.max', 'الأعلى') : 'الأعلى'
+                    },
                     en: { min: 'Minimum', max: 'Maximum' }
                 }
             };
@@ -403,7 +417,10 @@ class SurveyBuilder {
                 min_value: 0,
                 max_value: 10,
                 labels: {
-                    ar: { min: 'لن أوصي أبداً', max: 'سأوصي بقوة' },
+                    ar: { 
+                        min: window.t ? window.t('survey_builder.nps_labels.not_recommend', 'لن أوصي أبداً') : 'لن أوصي أبداً',
+                        max: window.t ? window.t('survey_builder.nps_labels.will_recommend', 'سأوصي بقوة') : 'سأوصي بقوة'
+                    },
                     en: { min: 'Not at all likely', max: 'Extremely likely' }
                 }
             };

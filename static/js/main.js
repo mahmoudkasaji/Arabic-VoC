@@ -63,6 +63,14 @@ window.toggleLanguage = function() {
         console.log('New language:', data.language);
         console.log('Session language:', data.session_language);
         
+        // Update JavaScript translation system if available
+        if (window.TranslationManager && window.TranslationManager.setLanguage) {
+            window.TranslationManager.setLanguage(data.language);
+        }
+        
+        // Update HTML lang attribute
+        document.documentElement.lang = data.language;
+        
         // CRITICAL FIX: Add small delay before reload to ensure session is saved
         setTimeout(() => {
             console.log('🔄 Reloading page with new language...');
