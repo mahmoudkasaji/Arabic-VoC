@@ -103,14 +103,18 @@ app.register_blueprint(surveys_bp)
 # Note: User preferences migrated to Flask routes in routes.py
 
 # Import and register Replit Auth blueprint using centralized utility
-if make_replit_blueprint_func:
-    try:
-        app.register_blueprint(make_replit_blueprint_func(), url_prefix="/auth")
-        logger.info("Replit Auth blueprint registered successfully")
-    except Exception as e:
-        logger.warning(f"Could not register Replit Auth blueprint: {e}")
+try:
+    if make_replit_blueprint_func:
+        blueprint = make_replit_blueprint_func()
+        if blueprint:
+            app.register_blueprint(blueprint, url_prefix="/auth")
+            logger.info("Replit Auth blueprint registered successfully")
+        else:
+            logger.info("Running without Replit Auth - development mode")
+    else:
         logger.info("Running without Replit Auth - development mode")
-else:
+except Exception as e:
+    logger.warning(f"Could not register Replit Auth blueprint: {e}")
     logger.info("Running without Replit Auth - development mode")
 
 # Register remaining API blueprints (complex operations only)
