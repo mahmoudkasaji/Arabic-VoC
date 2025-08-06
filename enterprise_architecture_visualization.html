@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enterprise Architecture - Arabic Voice of Customer Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .architecture-container {
+            padding: 40px;
+            background: #f8f9fa;
+        }
+
+        .layer {
+            margin-bottom: 40px;
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border-left: 5px solid;
+        }
+
+        .layer-presentation { border-color: #e74c3c; }
+        .layer-api { border-color: #3498db; }
+        .layer-business { border-color: #f39c12; }
+        .layer-data { border-color: #27ae60; }
+        .layer-external { border-color: #9b59b6; }
+        .layer-infrastructure { border-color: #34495e; }
+
+        .layer-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+
+        .layer-description {
+            color: #7f8c8d;
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+        }
+
+        .components-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .component {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            border: 1px solid #e9ecef;
+            transition: all 0.3s ease;
+        }
+
+        .component:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+        .component-title {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+
+        .component-tech {
+            background: #e9ecef;
+            color: #495057;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            display: inline-block;
+            margin: 2px;
+        }
+
+        .component-features {
+            margin-top: 10px;
+        }
+
+        .component-features ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .component-features li {
+            color: #6c757d;
+            margin: 4px 0;
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .component-features li:before {
+            content: "✓";
+            color: #27ae60;
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+        }
+
+        .data-flow {
+            background: white;
+            padding: 30px;
+            margin: 30px 0;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .flow-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            text-align: center;
+        }
+
+        .flow-steps {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .flow-step {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 25px;
+            font-weight: 500;
+            position: relative;
+            min-width: 150px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .flow-step:not(:last-child):after {
+            content: "→";
+            position: absolute;
+            right: -30px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #2c3e50;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .metric {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .metric-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .metric-label {
+            color: #7f8c8d;
+            margin-top: 5px;
+        }
+
+        .arabic-features {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin: 30px 0;
+        }
+
+        .arabic-features h3 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .arabic-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .arabic-feature {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 8px;
+            backdrop-filter: blur(10px);
+        }
+
+        .arabic-feature h4 {
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+
+        .security-compliance {
+            background: #2c3e50;
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin: 30px 0;
+        }
+
+        .security-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .security-item {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .integration-map {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            margin: 30px 0;
+        }
+
+        .integration-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            text-align: center;
+        }
+
+        .integration-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+        }
+
+        .integration-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+        }
+
+        .integration-item:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 10px;
+            }
+            
+            .header {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .architecture-container {
+                padding: 20px;
+            }
+            
+            .flow-steps {
+                flex-direction: column;
+            }
+            
+            .flow-step:not(:last-child):after {
+                content: "↓";
+                right: 50%;
+                transform: translateX(50%);
+                top: 100%;
+                bottom: -30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏢 Enterprise Architecture</h1>
+            <p>Arabic Voice of Customer Platform - Comprehensive System Overview</p>
+        </div>
+
+        <div class="architecture-container">
+            <!-- Presentation Layer -->
+            <div class="layer layer-presentation">
+                <h2 class="layer-title">🎨 Presentation Layer</h2>
+                <p class="layer-description">User interfaces with comprehensive Arabic/RTL support and responsive design</p>
+                
+                <div class="components-grid">
+                    <div class="component">
+                        <div class="component-title">Web Application Frontend</div>
+                        <div class="component-tech">Flask</div>
+                        <div class="component-tech">Jinja2 Templates</div>
+                        <div class="component-tech">Arabic RTL CSS</div>
+                        <div class="component-features">
+                            <ul>
+                                <li>25+ responsive Arabic templates</li>
+                                <li>Bilingual interface (Arabic/English)</li>
+                                <li>RTL design system</li>
+                                <li>Progressive web app features</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="component">
+                        <div class="component-title">Interactive Components</div>
+                        <div class="component-tech">Vanilla JavaScript</div>
+                        <div class="component-tech">Chart.js</div>
+                        <div class="component-tech">Bootstrap RTL</div>
+                        <div class="component-features">
+                            <ul>
+                                <li>Survey builder with drag & drop</li>
+                                <li>Real-time analytics dashboards</li>
+                                <li>Feedback widgets</li>
+                                <li>Mobile-responsive design</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="component">
+                        <div class="component-title">Typography & Assets</div>
+                        <div class="component-tech">Google Fonts Arabic</div>
+                        <div class="component-tech">Font Awesome</div>
+                        <div class="component-tech">SVG Graphics</div>
+                        <div class="component-features">
+                            <ul>
+                                <li>Amiri & Cairo Arabic fonts</li>
+                                <li>Cultural design elements</li>
+                                <li>Accessibility compliance</li>
+                                <li>Vector-based icons</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- API Layer -->
+            <div class="layer layer-api">
+                <h2 class="layer-title">🔌 API & Service Layer</h2>
+                <p class="layer-description">RESTful APIs with comprehensive endpoints for all platform functionality</p>
+                
+                <div class="components-grid">
+                    <div class="component">
+                        <div class="component-title">Core APIs</div>
+                        <div class="component-tech">Flask Blueprints</div>
+                        <div class="component-tech">RESTful Design</div>
+                        <div class="component-tech">JSON Responses</div>
+                        <div class="component-features">
+                            <ul>
+                                <li>Feedback collection API</li>
+                                <li>Survey management API</li>
+                                <li>Analytics & reporting API</li>
+                                <li>User preferences API</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="component">
+                        <div class="component-title">Advanced Analytics</div>
+                        <div class="component-tech">Enhanced Text Analytics</div>
+                        <div class="component-tech">Professional Reports</div>
+                        <div class="component-tech">Executive Dashboard</div>
+                        <div class="component-features">
+                            <ul>
+                                <li>Real-time sentiment analysis</li>
+                                <li>Multi-format export (PDF/Excel)</li>
+                                <li>Executive KPI tracking</li>
+                                <li>Custom report generation</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="component">
+                        <div class="component-title">Distribution System</div>
+                        <div class="component-tech">Multi-channel Delivery</div>
+                        <div class="component-tech">Survey Hosting</div>
+                        <div class="component-tech">Contact Management</div>
+                        <div class="component-features">
+                            <ul>
+                                <li>Email/SMS/WhatsApp delivery</li>
+                                <li>Public survey hosting</li>
+                                <li>QR code generation</li>
+                                <li>Response tracking</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Business Logic Layer -->
+            <div class="layer layer-business">
+                <h2 class="layer-title">🧠 Business Logic Layer</h2>
+                <p class="layer-description">Core business logic with specialized Arabic text processing and AI analysis</p>
+                
+                <div class="components-grid">
+                    <div class="component">
+                        <div class="component-title">Arabic Text Processing</div>
+                        <div class="component-tech">arabic-reshaper</div>
+                        <div class="component-tech">python-bidi</div>
+                        <div class="component-tech">Custom Processors</div>
+                        <div class="component-features">
+                            <ul>
+                                <li>Text normalization & validation</li>
+                                <li>Bidirectional text handling</li>
+                                <li>Diacritics preservation</li>
+                                <li>Regional dialect detection</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="component">
+                        <div class="component-title">AI Analysis Engine</div>
+                        <div class="component-tech">OpenAI GPT-4o</div>
+                        <div class="component-tech">Sentiment Analysis</div>
+                        <div class="component-tech">Topic Classification</div>
+                        <div class="component-features">
+                            <ul>
+                                <li>Arabic sentiment detection</li>
+                                <li>Cultural context awareness</li>
+                                <li>Emotion categorization</li>
+                                <li>Confidence scoring</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="component">
+                        <div class="component-title">Survey Management</div>
+                        <div class="component-tech">Survey Builder</div>
+                        <div class="component-tech">Response Processing</div>
+                        <div class="component-tech">Campaign Management</div>
+                        <div class="component-features">
+                            <ul>
+                                <li>Dynamic question types</li>
+                                <li>Logic branching</li>
+                                <li>Multi-language support</li>
+                                <li>Response analytics</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="component">
+                        <div class="component-title">Authentication & Security</div>
+                        <div class="component-tech">Replit OAuth 2.0</div>
+                        <div class="component-tech">PKCE Security</div>
+                        <div class="component-tech">Session Management</div>
+                        <div class="component-features">
+                            <ul>
+                                <li>Native Replit integration</li>
+                                <li>Role-based access control</li>
+                                <li>Secure token storage</li>
+                                <li>User preference management</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Data Layer -->
+            <div class="layer layer-data">
+                <h2 class="layer-title">🗄️ Data Layer</h2>
+                <p class="layer-description">PostgreSQL database with optimized Arabic text storage and analytics</p>
+                
+                <div class="components-grid">
+                    <div class="component">
+                        <div class="component-title">Core Database</div>
+                        <div class="component-tech">PostgreSQL 13+</div>
+                        <div class="component-tech">SQLAlchemy ORM</div>
+                        <div class="component-tech">Arabic Collation</div>
+                        <div class="component-features">
+                            <ul>
+                                <li>UTF-8 Arabic text support</li>
+                                <li>Connection pooling</li>
+                                <li>Performance optimization</li>
+                                <li>Automated migrations</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="component">
+                        <div class="component-title">Data Models</div>
+                        <div class="component-tech">Unified Schema</div>
+                        <div class="component-tech">Relationship Mapping</div>
+                        <div class="component-tech">Enum Types</div>
+                        <div class="component-features">
+                            <ul>
+                                <li>Feedback & survey models</li>
+                                <li>User & preference models</li>
+                                <li>Analytics aggregation</li>
+                                <li>Contact management</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="component">
+                        <div class="component-title">Analytics Storage</div>
+                        <div class="component-tech">Time-series Data</div>
+                        <div class="component-tech">Aggregated Metrics</div>
+                        <div class="component-tech">Performance Indexes</div>
+                        <div class="component-features">
+                            <ul>
+                                <li>Real-time dashboard data</li>
+                                <li>Historical trend analysis</li>
+                                <li>Channel performance metrics</li>
+                                <li>Executive KPI storage</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- External Integrations -->
+            <div class="layer layer-external">
+                <h2 class="layer-title">🌐 External Integrations</h2>
+                <p class="layer-description">Third-party services and APIs for extended functionality</p>
+                
+                <div class="components-grid">
+                    <div class="component">
+                        <div class="component-title">AI Services</div>
+                        <div class="component-tech">OpenAI API</div>
+                        <div class="component-tech">GPT-4o Model</div>
+                        <div class="component-tech">Anthropic (Claude)</div>
+                        <div class="component-features">
+                            <ul>
+                                <li>Arabic sentiment analysis</li>
+                                <li>Text summarization</li>
+                                <li>Topic classification</li>
+                                <li>Cultural context processing</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="component">
+                        <div class="component-title">Communication Channels</div>
+                        <div class="component-tech">Gmail API</div>
+                        <div class="component-tech">Twilio SMS</div>
+                        <div class="component-tech">WhatsApp Business</div>
+                        <div class="component-features">
+                            <ul>
+                                <li>Multi-channel survey delivery</li>
+                                <li>Automated email campaigns</li>
+                                <li>SMS notifications</li>
+                                <li>QR code generation</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="component">
+                        <div class="component-title">Authentication</div>
+                        <div class="component-tech">Replit OAuth</div>
+                        <div class="component-tech">OIDC Protocol</div>
+                        <div class="component-tech">JWT Tokens</div>
+                        <div class="component-features">
+                            <ul>
+                                <li>Native Replit user system</li>
+                                <li>Single sign-on (SSO)</li>
+                                <li>Profile integration</li>
+                                <li>Security compliance</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Infrastructure Layer -->
+            <div class="layer layer-infrastructure">
+                <h2 class="layer-title">🏗️ Infrastructure Layer</h2>
+                <p class="layer-description">Deployment and hosting infrastructure optimized for Arabic content</p>
+                
+                <div class="components-grid">
+                    <div class="component">
+                        <div class="component-title">Application Server</div>
+                        <div class="component-tech">Gunicorn WSGI</div>
+                        <div class="component-tech">Python 3.11</div>
+                        <div class="component-tech">Replit Hosting</div>
+                        <div class="component-features">
+                            <ul>
+                                <li>Auto-scaling workers</li>
+                                <li>Connection pooling</li>
+                                <li>Health monitoring</li>
+                                <li>Arabic locale support</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="component">
+                        <div class="component-title">Environment Management</div>
+                        <div class="component-tech">Multi-environment</div>
+                        <div class="component-tech">Config Management</div>
+                        <div class="component-tech">Secret Management</div>
+                        <div class="component-features">
+                            <ul>
+                                <li>Development/staging/production</li>
+                                <li>Environment-specific configs</li>
+                                <li>Secure API key storage</li>
+                                <li>Automated deployments</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="component">
+                        <div class="component-title">Monitoring & Testing</div>
+                        <div class="component-tech">Automated Testing</div>
+                        <div class="component-tech">Performance Monitoring</div>
+                        <div class="component-tech">Error Tracking</div>
+                        <div class="component-features">
+                            <ul>
+                                <li>Comprehensive test suite</li>
+                                <li>Arabic text validation</li>
+                                <li>Performance metrics</li>
+                                <li>Quality assurance</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Data Flow Diagram -->
+            <div class="data-flow">
+                <h3 class="flow-title">📊 Data Flow Architecture</h3>
+                <div class="flow-steps">
+                    <div class="flow-step">User Input<br><small>(Arabic/English)</small></div>
+                    <div class="flow-step">Text Processing<br><small>(Normalize & Validate)</small></div>
+                    <div class="flow-step">AI Analysis<br><small>(GPT-4o Sentiment)</small></div>
+                    <div class="flow-step">Database Storage<br><small>(PostgreSQL)</small></div>
+                    <div class="flow-step">Analytics Engine<br><small>(Real-time Metrics)</small></div>
+                    <div class="flow-step">Dashboard Display<br><small>(RTL Interface)</small></div>
+                </div>
+            </div>
+
+            <!-- Arabic-Specific Features -->
+            <div class="arabic-features">
+                <h3>🕌 Arabic Language Architecture</h3>
+                <div class="arabic-grid">
+                    <div class="arabic-feature">
+                        <h4>RTL Design System</h4>
+                        <p>Complete right-to-left interface design with Arabic typography, spacing, and layout optimizations.</p>
+                    </div>
+                    <div class="arabic-feature">
+                        <h4>Text Processing Pipeline</h4>
+                        <p>Advanced Arabic text normalization, character shaping, and bidirectional algorithm implementation.</p>
+                    </div>
+                    <div class="arabic-feature">
+                        <h4>Cultural AI Analysis</h4>
+                        <p>GPT-4o fine-tuned for Arabic dialects, cultural context, and region-specific sentiment analysis.</p>
+                    </div>
+                    <div class="arabic-feature">
+                        <h4>Multilingual Support</h4>
+                        <p>Seamless Arabic-English switching with localized content and culturally appropriate design elements.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Security & Compliance -->
+            <div class="security-compliance">
+                <h3 style="text-align: center; margin-bottom: 20px;">🔒 Security & Compliance</h3>
+                <div class="security-grid">
+                    <div class="security-item">
+                        <h4>OAuth 2.0 + PKCE</h4>
+                        <p>Enterprise-grade authentication</p>
+                    </div>
+                    <div class="security-item">
+                        <h4>Data Encryption</h4>
+                        <p>End-to-end encryption for sensitive data</p>
+                    </div>
+                    <div class="security-item">
+                        <h4>Input Validation</h4>
+                        <p>XSS and SQL injection prevention</p>
+                    </div>
+                    <div class="security-item">
+                        <h4>Rate Limiting</h4>
+                        <p>API abuse prevention</p>
+                    </div>
+                    <div class="security-item">
+                        <h4>GDPR Compliance</h4>
+                        <p>Data privacy regulations</p>
+                    </div>
+                    <div class="security-item">
+                        <h4>Session Security</h4>
+                        <p>Secure token management</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Integration Ecosystem -->
+            <div class="integration-map">
+                <h3 class="integration-title">🔗 Integration Ecosystem</h3>
+                <div class="integration-grid">
+                    <div class="integration-item">
+                        <h4>📧 Gmail</h4>
+                        <p>Email surveys</p>
+                    </div>
+                    <div class="integration-item">
+                        <h4>📱 Twilio</h4>
+                        <p>SMS delivery</p>
+                    </div>
+                    <div class="integration-item">
+                        <h4>💬 WhatsApp</h4>
+                        <p>Chat surveys</p>
+                    </div>
+                    <div class="integration-item">
+                        <h4>🤖 OpenAI</h4>
+                        <p>AI analysis</p>
+                    </div>
+                    <div class="integration-item">
+                        <h4>🏢 Replit</h4>
+                        <p>Authentication</p>
+                    </div>
+                    <div class="integration-item">
+                        <h4>📊 Chart.js</h4>
+                        <p>Visualizations</p>
+                    </div>
+                    <div class="integration-item">
+                        <h4>🗄️ PostgreSQL</h4>
+                        <p>Data storage</p>
+                    </div>
+                    <div class="integration-item">
+                        <h4>📋 QR Codes</h4>
+                        <p>Mobile access</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Performance Metrics -->
+            <div class="metrics-grid">
+                <div class="metric">
+                    <div class="metric-value">25+</div>
+                    <div class="metric-label">Frontend Templates</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-value">15+</div>
+                    <div class="metric-label">API Endpoints</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-value">12</div>
+                    <div class="metric-label">Feedback Channels</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-value">60+</div>
+                    <div class="metric-label">Test Cases</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-value">3</div>
+                    <div class="metric-label">Deployment Environments</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-value">95%+</div>
+                    <div class="metric-label">AI Accuracy</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

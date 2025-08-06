@@ -30,7 +30,7 @@ class Base(DeclarativeBase):
 db = SQLAlchemy(model_class=Base)
 
 # Import configuration
-from .config import get_config
+from config import get_config
 
 # Create Flask app
 app = Flask(__name__)
@@ -62,7 +62,7 @@ register_filters(app)
 with app.app_context():
     # Import models after app context is set
     import models  # noqa: F401
-    from .models_unified import Feedback, FeedbackChannel, FeedbackStatus
+    from models_unified import Feedback, FeedbackChannel, FeedbackStatus
     
     # Import Flask-compatible survey models
     from models.survey_flask import SurveyFlask, QuestionFlask, ResponseFlask, QuestionResponseFlask, SurveyStatus, QuestionType
@@ -103,18 +103,14 @@ app.register_blueprint(surveys_bp)
 # Note: User preferences migrated to Flask routes in routes.py
 
 # Import and register Replit Auth blueprint using centralized utility
-try:
-    if make_replit_blueprint_func:
-        blueprint = make_replit_blueprint_func()
-        if blueprint:
-            app.register_blueprint(blueprint, url_prefix="/auth")
-            logger.info("Replit Auth blueprint registered successfully")
-        else:
-            logger.info("Running without Replit Auth - development mode")
-    else:
+if make_replit_blueprint_func:
+    try:
+        app.register_blueprint(make_replit_blueprint_func(), url_prefix="/auth")
+        logger.info("Replit Auth blueprint registered successfully")
+    except Exception as e:
+        logger.warning(f"Could not register Replit Auth blueprint: {e}")
         logger.info("Running without Replit Auth - development mode")
-except Exception as e:
-    logger.warning(f"Could not register Replit Auth blueprint: {e}")
+else:
     logger.info("Running without Replit Auth - development mode")
 
 # Register remaining API blueprints (complex operations only)
@@ -153,14 +149,14 @@ except Exception as e:
 
 # Import simplified feedback widget routes
 try:
-    import routes.routes_feedback_widget
+    import routes_feedback_widget
     logger.info("Feedback Widget routes imported successfully")
 except Exception as e:
     logger.error(f"Could not import Feedback Widget routes: {e}")
 
 # Import AI analysis routes
 try:
-    import analytics.routes_ai_analysis
+    import routes_ai_analysis
     logger.info("AI Analysis routes imported successfully")
 except Exception as e:
     logger.error(f"Could not import Feedback Widget routes: {e}")
@@ -775,7 +771,7 @@ def response_detail(uuid):
 def survey_responses_page():
     """Survey responses page with live feedback data from all sources"""
     try:
-        from .models_unified import Feedback, FeedbackChannel, FeedbackStatus
+        from models_unified import Feedback, FeedbackChannel, FeedbackStatus
         from models.survey_flask import SurveyFlask, QuestionResponseFlask
         from sqlalchemy import func, desc
         from datetime import datetime, timedelta
@@ -1957,7 +1953,21 @@ def distribute_survey():
         logger.error(f"Survey distribution failed: {e}")
         return jsonify({'error': 'Distribution failed'}), 500
 
-
+# Enterprise Architecture Visualization Route
+@app.route('/public/architecture')
+def public_enterprise_architecture():
+    """Public enterprise architecture visualization"""
+    import os
+    from flask import Response
+    
+    # Read the HTML file directly
+    file_path = 'enterprise_architecture_visualization.html'
+    if os.path.exists(file_path):
+        with open(file_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+        return Response(content, mimetype='text/html')
+    else:
+        return "Architecture visualization file not found", 404
 
 # Technical Integration Catalog Route
 @app.route('/integrations/catalog')
@@ -2033,7 +2043,7 @@ def delete_contact_route(contact_id):
         }), 500
 
 # Import additional contact routes
-import routes.contact_routes  # noqa: F401
+import contact_routes  # noqa: F401
 import routes  # noqa: F401
 
 # Initialize database tables
