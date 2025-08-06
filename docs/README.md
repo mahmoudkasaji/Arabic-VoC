@@ -1,5 +1,8 @@
 # Documentation Index
 
+## Start Here
+- [`DOCUMENTATION_HUB.md`](DOCUMENTATION_HUB.md) - Complete platform overview and user guides
+
 ## Current Implementation Guides
 
 ### **Gmail Integration**
@@ -23,6 +26,9 @@
 
 ## Testing & Quality
 
+### **QA Framework**
+- [`qa_framework_overview.md`](qa_framework_overview.md) - Testing strategy and quality standards
+
 ### **User Testing**
 - [`user-acceptance-testing.md`](user-acceptance-testing.md) - Comprehensive testing procedures
 
@@ -41,6 +47,14 @@
 
 ### **Executive Dashboard**
 - [`executive_dashboard_roadmap.md`](executive_dashboard_roadmap.md) - Dashboard feature roadmap
+
+## Arabic Documentation
+
+### **Technical Architecture (Arabic)**
+- [`architecture_overview_arabic.md`](architecture_overview_arabic.md) - نظرة عامة على البنية التقنية
+
+### **User Guides (Arabic)**
+- [`getting_started_arabic.md`](getting_started_arabic.md) - دليل البدء للمستخدمين
 
 ## Screenshots & Visual Documentation
 
