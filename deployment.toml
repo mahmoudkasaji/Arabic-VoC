@@ -3,18 +3,25 @@
 # Disable uv package layer caching to prevent build conflicts
 disable_uv_cache = true
 use_legacy_resolver = true
+use_fallback_build = true
 
 [build.environment]
-# Force pip to not use uv backend
+# Force pip to not use uv backend and disable caching
 UV_SYSTEM_PYTHON = "1"
+UV_NO_CACHE = "1"
 PIP_NO_BUILD_ISOLATION = "1"
 PIP_NO_CACHE_DIR = "1"
+PIP_DISABLE_PIP_VERSION_CHECK = "1"
+SETUPTOOLS_USE_DISTUTILS = "local"
 
 [build.fallback]
 # Alternative build commands if pyproject.toml fails
 commands = [
     "python -m pip install --no-cache-dir --upgrade pip setuptools wheel",
-    "python -m pip install --no-cache-dir -e .",
+    "python -m pip install --no-deps --no-cache-dir flask flask-sqlalchemy psycopg2-binary gunicorn werkzeug jinja2",
+    "python -m pip install --no-deps --no-cache-dir openai langchain langchain-openai langgraph anthropic",
+    "python -m pip install --no-deps --no-cache-dir arabic-reshaper python-bidi pydantic aiofiles sqlalchemy",
+    "python -m pip install --no-deps --no-cache-dir flask-login flask-dance oauthlib pyjwt twilio uvicorn",
     "python -c 'import flask; print(\"Flask installed successfully\")'",
     "python -c 'import app; print(\"App module loaded successfully\")'",
 ]

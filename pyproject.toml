@@ -40,3 +40,19 @@ dependencies = [
 [tool.setuptools]
 packages = [".", "api", "auth", "core", "models", "routes", "utils"]
 include-package-data = true
+
+[tool.setuptools.package-data]
+"*" = ["templates/*", "static/*", "translations/*"]
+
+# Specify entry point for the application
+[project.scripts]
+arabic-voc-platform = "main:app"
+
+# Ensure compatibility with older build tools
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "pytest-flask",
+    "black",
+    "flake8",
+]
