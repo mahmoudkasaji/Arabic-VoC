@@ -4,8 +4,8 @@ Handles integration testing, status monitoring, and catalog display
 """
 
 from flask import render_template, jsonify, request
-from app import app
-from replit_auth import require_login
+from core.app import app
+from auth.replit_auth import require_login
 from utils.integration_registry import integration_registry
 import logging
 

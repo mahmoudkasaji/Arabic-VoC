@@ -5,8 +5,8 @@ Handles user preference management and settings
 
 from flask import jsonify, request
 from flask_login import current_user
-from app import app, db
-from replit_auth import require_login
+from core.app import app, db
+from auth.replit_auth import require_login
 from models.replit_user_preferences import ReplitUserPreferences
 import logging
 

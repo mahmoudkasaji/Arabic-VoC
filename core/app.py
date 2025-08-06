@@ -30,7 +30,7 @@ class Base(DeclarativeBase):
 db = SQLAlchemy(model_class=Base)
 
 # Import configuration
-from config import get_config
+from .config import get_config
 
 # Create Flask app
 app = Flask(__name__)
@@ -62,7 +62,7 @@ register_filters(app)
 with app.app_context():
     # Import models after app context is set
     import models  # noqa: F401
-    from models_unified import Feedback, FeedbackChannel, FeedbackStatus
+    from .models_unified import Feedback, FeedbackChannel, FeedbackStatus
     
     # Import Flask-compatible survey models
     from models.survey_flask import SurveyFlask, QuestionFlask, ResponseFlask, QuestionResponseFlask, SurveyStatus, QuestionType
@@ -153,14 +153,14 @@ except Exception as e:
 
 # Import simplified feedback widget routes
 try:
-    import routes_feedback_widget
+    import routes.routes_feedback_widget
     logger.info("Feedback Widget routes imported successfully")
 except Exception as e:
     logger.error(f"Could not import Feedback Widget routes: {e}")
 
 # Import AI analysis routes
 try:
-    import routes_ai_analysis
+    import analytics.routes_ai_analysis
     logger.info("AI Analysis routes imported successfully")
 except Exception as e:
     logger.error(f"Could not import Feedback Widget routes: {e}")
@@ -775,7 +775,7 @@ def response_detail(uuid):
 def survey_responses_page():
     """Survey responses page with live feedback data from all sources"""
     try:
-        from models_unified import Feedback, FeedbackChannel, FeedbackStatus
+        from .models_unified import Feedback, FeedbackChannel, FeedbackStatus
         from models.survey_flask import SurveyFlask, QuestionResponseFlask
         from sqlalchemy import func, desc
         from datetime import datetime, timedelta
@@ -2033,7 +2033,7 @@ def delete_contact_route(contact_id):
         }), 500
 
 # Import additional contact routes
-import contact_routes  # noqa: F401
+import routes.contact_routes  # noqa: F401
 import routes  # noqa: F401
 
 # Initialize database tables

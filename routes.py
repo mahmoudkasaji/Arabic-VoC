@@ -1,5 +1,5 @@
 from flask import session, jsonify
-from app import app, db
+from core.app import app, db
 from flask_login import current_user
 # Use simplified import utility
 from utils.imports import safe_import_replit_auth

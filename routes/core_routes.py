@@ -4,8 +4,8 @@ Handles general application routes that don't fit into specific business domains
 """
 
 from flask import render_template, jsonify, request
-from app import app
-from replit_auth import require_login
+from core.app import app
+from auth.replit_auth import require_login
 import logging
 
 logger = logging.getLogger(__name__)

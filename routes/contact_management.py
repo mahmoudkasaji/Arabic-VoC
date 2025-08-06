@@ -4,8 +4,8 @@ Handles all contact-related operations: CRUD, import/export, and list management
 """
 
 from flask import request, render_template, redirect, url_for, flash, jsonify, Response
-from app import app, db
-from replit_auth import require_login
+from core.app import app, db
+from auth.replit_auth import require_login
 from models.contacts import Contact
 import csv
 import io
