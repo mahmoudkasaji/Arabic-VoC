@@ -183,17 +183,29 @@ window.TranslationManager = {
         }
     },
 
-    // Initialize with current language from HTML
+    // Initialize with current language from server context
     init() {
-        const htmlLang = document.documentElement.lang || 'ar';
-        this.currentLanguage = htmlLang;
-        console.log(`🌐 Translation Manager initialized with language: ${this.currentLanguage} (from HTML lang attribute)`);
+        // First try to get language from server-provided context
+        let initLang = 'ar';
+        if (window.LANGUAGE_CONTEXT && window.LANGUAGE_CONTEXT.current) {
+            initLang = window.LANGUAGE_CONTEXT.current;
+        } else {
+            // Fallback to HTML lang attribute
+            initLang = document.documentElement.lang || 'ar';
+        }
+        
+        this.currentLanguage = initLang;
+        console.log(`🌐 Translation Manager initialized with language: ${this.currentLanguage} (from server context)`);
         
         // Validate language is supported
         if (!this.translations[this.currentLanguage]) {
             console.warn(`⚠️ Language ${this.currentLanguage} not supported, falling back to Arabic`);
             this.currentLanguage = 'ar';
         }
+        
+        // Update HTML attributes if needed
+        document.documentElement.lang = this.currentLanguage;
+        document.documentElement.dir = this.currentLanguage === 'ar' ? 'rtl' : 'ltr';
     },
 
     // Get translation for a key

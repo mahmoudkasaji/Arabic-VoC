@@ -96,12 +96,18 @@ document.addEventListener('DOMContentLoaded', function() {
     toggleButtons.forEach(button => {
         console.log('Found toggle button:', button);
         
-        // Add click event listener as backup
-        button.addEventListener('click', function(e) {
-            e.preventDefault();
-            console.log('🎯 Button clicked via addEventListener');
-            window.toggleLanguage();
-        });
+        // Check if already has event listener to prevent duplicates
+        if (!button.hasAttribute('data-toggle-listener')) {
+            // Add click event listener as backup
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                console.log('🎯 Button clicked via addEventListener');
+                window.toggleLanguage();
+            });
+            
+            // Mark as having listener to prevent duplicates
+            button.setAttribute('data-toggle-listener', 'true');
+        }
     });
     
     console.log(`✅ Set up ${toggleButtons.length} language toggle buttons`);

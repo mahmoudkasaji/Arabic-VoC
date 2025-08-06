@@ -320,5 +320,20 @@
     "current": "English",
     "switch_to": "العربية",
     "toggle_tooltip": "Switch to Arabic"
+  },
+  "footer_feedback": {
+    "question": "Did you find what you were looking for today?",
+    "yes": "Yes",
+    "no": "No",
+    "appreciate": "We appreciate your feedback",
+    "share_experience": "What would you like to share about your experience?",
+    "tell_more": "Tell us more about your experience:",
+    "placeholder": "Please do not include personal information in your message. Any personal information provided will be deleted.",
+    "submit": "Submit Feedback",
+    "privacy_notice": "Please do not include personal information in your message. Any personal information provided will be deleted.",
+    "contact_us": "If you have questions about platform services, please",
+    "contact_link": "contact us",
+    "thank_you": "Thank you for sharing your feedback with us",
+    "contribution": "Your contribution helps us improve the platform for everyone"
   }
 }

@@ -307,7 +307,7 @@
         <!-- Persistent Footer Feedback Form -->
         <div class="persistent-footer-feedback">
             <div class="feedback-header">
-                <h3>هل وجدت ما تبحث عنه اليوم؟</h3>
+                <h3>{{ 'footer_feedback.question' | translate }}</h3>
             </div>
             <div class="feedback-body">
                 <div class="container">
@@ -316,19 +316,19 @@
                             <div class="radio-group">
                                 <div class="radio-option">
                                     <input type="radio" id="helpful-yes" name="helpful" value="yes" onchange="handleHelpfulResponse('yes')">
-                                    <label for="helpful-yes">نعم</label>
+                                    <label for="helpful-yes">{{ 'footer_feedback.yes' | translate }}</label>
                                 </div>
                                 <div class="radio-option">
                                     <input type="radio" id="helpful-no" name="helpful" value="no" onchange="handleHelpfulResponse('no')">
-                                    <label for="helpful-no">لا</label>
+                                    <label for="helpful-no">{{ 'footer_feedback.no' | translate }}</label>
                                 </div>
                             </div>
                         </div>
 
                         <div id="feedbackSection" class="conditional-section">
                             <div class="feedback-question">
-                                <label>نحن نقدر ملاحظاتك</label>
-                                <p style="font-size: 14px; color: #94a3b8; margin-bottom: 16px;">ما الذي ترغب في مشاركته حول تجربتك؟</p>
+                                <label>{{ 'footer_feedback.appreciate' | translate }}</label>
+                                <p style="font-size: 14px; color: #94a3b8; margin-bottom: 16px;">{{ 'footer_feedback.share_experience' | translate }}</p>
                                 
                                 <div class="category-options" id="categoryOptions">
                                     <!-- Categories will be populated by JavaScript -->
@@ -336,20 +336,20 @@
                             </div>
 
                             <div class="feedback-question">
-                                <label for="feedbackText">أخبرنا المزيد عن تجربتك:</label>
+                                <label for="feedbackText">{{ 'footer_feedback.tell_more' | translate }}</label>
                                 <textarea 
                                     id="feedbackText" 
                                     name="feedbackText" 
                                     class="feedback-textarea" 
-                                    placeholder="يرجى عدم تضمين معلومات شخصية في رسالتك. سيتم حذف أي معلومات شخصية مقدمة."
+                                    placeholder="{{ 'footer_feedback.placeholder' | translate }}"
                                 ></textarea>
                             </div>
 
-                            <button type="submit" class="feedback-submit">إرسال الملاحظات</button>
+                            <button type="submit" class="feedback-submit">{{ 'footer_feedback.submit' | translate }}</button>
                             
                             <div class="privacy-notice">
-                                يرجى عدم تضمين معلومات شخصية في رسالتك. أي معلومات شخصية مقدمة سيتم حذفها. 
-                                إذا كان لديك أسئلة حول خدمات المنصة، يرجى <a href="/contact">التواصل معنا</a>.
+                                {{ 'footer_feedback.privacy_notice' | translate }} 
+                                {{ 'footer_feedback.contact_us' | translate }} <a href="/contact">{{ 'footer_feedback.contact_link' | translate }}</a>.
                             </div>
                         </div>
                     </form>
@@ -357,8 +357,8 @@
                     <div id="successMessage" class="success-message">
                         <div class="success-content">
                             <i class="fas fa-check-circle" style="font-size: 48px; color: #10b981; margin-bottom: 16px;"></i>
-                            <h3 style="margin: 0 0 12px 0; color: #e2e8f0; font-size: 20px; direction: rtl;">شكراً لمشاركة ملاحظاتك معنا</h3>
-                            <p style="margin: 0; color: #94a3b8; font-size: 14px; direction: rtl;">مساهمتك تساعدنا في تحسين المنصة للجميع</p>
+                            <h3 style="margin: 0 0 12px 0; color: #e2e8f0; font-size: 20px; direction: {{ get_dir() }};">{{ 'footer_feedback.thank_you' | translate }}</h3>
+                            <p style="margin: 0; color: #94a3b8; font-size: 14px; direction: {{ get_dir() }};">{{ 'footer_feedback.contribution' | translate }}</p>
                         </div>
                     </div>
                 </div>
