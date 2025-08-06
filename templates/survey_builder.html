@@ -5,6 +5,8 @@
     {% include 'components/head.html' %}
     {% include 'components/standard_buttons.html' %}
     <title>Survey Builder - Voice of Customer Platform</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/unified-layout.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/design-system.css') }}">
     
     <!-- Enhanced Drag Styles -->
     <link href="/static/css/drag_enhancements.css" rel="stylesheet">
@@ -26,9 +28,9 @@
         }
 
         body {
-            font-family: 'Cairo', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
+            font-family: var(--font-family-primary);
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
             direction: rtl;
             text-align: right;
         }
@@ -36,10 +38,10 @@
         .builder-container {
             display: grid;
             grid-template-columns: 240px 1fr 340px;
-            gap: 12px;
-            height: calc(100vh - 80px);
-            padding: 12px;
-            max-width: 1800px;
+            gap: 1.5rem;
+            min-height: calc(100vh - 80px);
+            padding: 2rem 1rem;
+            max-width: 1400px;
             margin: 0 auto;
         }
 
@@ -81,11 +83,12 @@
 
         .sidebar {
             background: white;
-            border-radius: 12px;
-            padding: 16px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            border-radius: var(--radius-2xl);
+            padding: var(--space-6);
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-light);
             overflow-y: auto;
-            transition: all 0.3s ease;
+            transition: var(--transition-base);
         }
 
         /* Progressive Disclosure Classes */
@@ -261,66 +264,68 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 30px;
-            padding: 20px;
-            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-            border-radius: 10px;
+            margin-bottom: var(--space-8);
+            padding: var(--space-6);
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-xl);
+            border: 1px solid var(--border-light);
         }
 
         .progress-step {
             display: flex;
             align-items: center;
-            gap: 10px;
-            color: #6c757d;
-            font-weight: 500;
+            gap: var(--space-3);
+            color: var(--text-muted);
+            font-weight: var(--font-weight-medium);
         }
 
         .progress-step.active {
-            color: var(--primary-color);
-            font-weight: 700;
+            color: var(--primary-500);
+            font-weight: var(--font-weight-bold);
         }
 
         .progress-step.completed {
-            color: #28a745;
+            color: var(--success);
         }
 
         .step-number {
             width: 32px;
             height: 32px;
-            border-radius: 50%;
-            background: #e9ecef;
+            border-radius: var(--radius-full);
+            background: var(--neutral-200);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: 700;
-            font-size: 0.9rem;
+            font-weight: var(--font-weight-bold);
+            font-size: var(--font-size-sm);
         }
 
         .progress-step.active .step-number {
-            background: var(--primary-color);
-            color: white;
+            background: var(--primary-500);
+            color: var(--text-white);
         }
 
         .progress-step.completed .step-number {
-            background: #28a745;
-            color: white;
+            background: var(--success);
+            color: var(--text-white);
         }
 
         .survey-setup-section {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 25px;
-            margin-bottom: 25px;
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-xl);
+            padding: var(--space-6);
+            margin-bottom: var(--space-6);
+            border: 1px solid var(--border-light);
         }
 
         .setup-title {
-            color: var(--primary-color);
-            font-weight: 700;
-            font-size: 1.2rem;
-            margin-bottom: 20px;
+            color: var(--primary-500);
+            font-weight: var(--font-weight-bold);
+            font-size: var(--font-size-xl);
+            margin-bottom: var(--space-5);
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: var(--space-3);
         }
 
         .template-grid {
@@ -589,9 +594,10 @@
 
         .main-canvas {
             background: white;
-            border-radius: 12px;
-            padding: 20px 25px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            border-radius: var(--radius-2xl);
+            padding: var(--space-8);
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-light);
             overflow-y: auto;
             position: relative;
             display: flex;
@@ -726,14 +732,14 @@
         .question-type {
             display: flex;
             align-items: center;
-            padding: 10px 12px;
-            margin-bottom: 4px;
-            background: #f8f9fa;
-            border-radius: 6px;
+            padding: var(--space-3) var(--space-4);
+            margin-bottom: var(--space-1);
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-lg);
             cursor: grab;
-            transition: all 0.2s ease;
-            border: 1px solid transparent;
-            font-size: 0.85rem;
+            transition: var(--transition-base);
+            border: 1px solid var(--border-light);
+            font-size: var(--font-size-sm);
             position: relative;
             overflow: hidden;
         }
