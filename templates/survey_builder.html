@@ -52,17 +52,17 @@
 
         @media (max-width: 1400px) {
             .builder-container {
-                grid-template-columns: 260px 1fr 300px;
-                gap: 1.5rem;
-                padding: 1rem;
+                grid-template-columns: 300px 1fr 350px;
+                gap: 2rem;
+                padding: 2rem 0;
             }
         }
 
         @media (max-width: 1200px) {
             .builder-container {
-                grid-template-columns: 240px 1fr 280px;
-                gap: 1.25rem;
-                padding: 1rem;
+                grid-template-columns: 280px 1fr 320px;
+                gap: 1.5rem;
+                padding: 1rem 0;
             }
         }
 
@@ -2253,6 +2253,22 @@
             grid-template-columns: 300px 1fr 350px !important;
             gap: 2rem !important;
             width: 100% !important;
+            padding: 2rem 0 !important;
+        }
+        
+        /* Override any responsive breakpoints */
+        @media (max-width: 1400px) {
+            .builder-container {
+                grid-template-columns: 300px 1fr 350px !important;
+                gap: 2rem !important;
+            }
+        }
+
+        @media (max-width: 1200px) {
+            .builder-container {
+                grid-template-columns: 280px 1fr 320px !important;
+                gap: 1.5rem !important;
+            }
         }
     </style>
     
