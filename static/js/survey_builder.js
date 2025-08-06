@@ -211,66 +211,12 @@ class SurveyBuilder {
         const mobileAddBtn = document.getElementById('mobileAddQuestionBtn');
 
         if (mobileSelect && mobileAddBtn) {
-            // Enable/disable add button based on selection
-            mobileSelect.addEventListener('change', () => {
-                const selectedType = mobileSelect.value;
-                mobileAddBtn.disabled = !selectedType;
-                
-                if (selectedType) {
-                    mobileAddBtn.textContent = `إضافة: ${this.getQuestionTypeLabel(selectedType)}`;
-                } else {
-                    mobileAddBtn.textContent = 'إضافة السؤال';
-                }
-            });
-
-            // Mobile add button click handler
-            mobileAddBtn.addEventListener('click', () => {
-                const selectedType = mobileSelect.value;
-                if (selectedType) {
-                    this.addQuestion(selectedType);
-                    mobileSelect.value = '';
-                    mobileAddBtn.disabled = true;
-                    mobileAddBtn.textContent = 'إضافة السؤال';
-                    
-                    // Transition to step 3 (editing mode)
-                    if (typeof transitionToStep === 'function') {
-                        transitionToStep(3);
-                    }
-                }
-            });
-        }
-    }
-
-    setupClickToAdd() {
-        // Add click functionality to all question type elements
-        document.addEventListener('click', (e) => {
-            const questionTypeElement = e.target.closest('.question-type');
-            if (questionTypeElement && questionTypeElement.dataset.type) {
-                const questionType = questionTypeElement.dataset.type;
-                console.log('Click to add question type:', questionType);
-                
-                // Add question
-                this.addQuestion(questionType);
-                
-                // Transition to step 3 (editing mode) if we have questions
-                if (this.questions.length >= 1 && typeof transitionToStep === 'function') {
-                    transitionToStep(3);
-                }
-                
-                // Visual feedback
-                questionTypeElement.style.transform = 'scale(0.95)';
-                setTimeout(() => {
-                    questionTypeElement.style.transform = '';
-                }, 150);
+            // Prevent duplicate event listeners
+            if (mobileSelect.dataset.listenersAttached === 'true') {
+                return;
             }
-        });
-    }
-
-    setupMobileQuestionSelector() {
-        const mobileSelect = document.getElementById('mobileQuestionTypeSelect');
-        const mobileAddBtn = document.getElementById('mobileAddQuestionBtn');
-
-        if (mobileSelect && mobileAddBtn) {
+            mobileSelect.dataset.listenersAttached = 'true';
+            
             // Enable/disable add button based on selection
             mobileSelect.addEventListener('change', () => {
                 const selectedType = mobileSelect.value;
@@ -306,6 +252,39 @@ class SurveyBuilder {
             });
         }
     }
+
+    setupClickToAdd() {
+        // Prevent duplicate event listeners
+        if (this.clickToAddInitialized) {
+            return;
+        }
+        this.clickToAddInitialized = true;
+        
+        // Add click functionality to all question type elements
+        document.addEventListener('click', (e) => {
+            const questionTypeElement = e.target.closest('.question-type');
+            if (questionTypeElement && questionTypeElement.dataset.type) {
+                const questionType = questionTypeElement.dataset.type;
+                console.log('Click to add question type:', questionType);
+                
+                // Add question
+                this.addQuestion(questionType);
+                
+                // Transition to step 3 (editing mode) if we have questions
+                if (this.questions.length >= 1 && typeof transitionToStep === 'function') {
+                    transitionToStep(3);
+                }
+                
+                // Visual feedback
+                questionTypeElement.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    questionTypeElement.style.transform = '';
+                }, 150);
+            }
+        });
+    }
+
+
 
     addQuestion(type) {
         const question = {
