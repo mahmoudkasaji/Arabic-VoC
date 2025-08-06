@@ -13,16 +13,6 @@
 ### **QA Framework**
 - [`qa_framework_overview.md`](qa_framework_overview.md) - Testing strategy and quality standards
 
-## Customer Experience
-
-### **Implementation Summary**
-- [`cx_implementation_summary.md`](cx_implementation_summary.md) - Customer experience implementation
-
-## Planning & Roadmap
-
-### **Executive Dashboard**
-- [`executive_dashboard_roadmap.md`](executive_dashboard_roadmap.md) - Dashboard feature roadmap
-
 ## Arabic Documentation
 
 ### **Technical Architecture (Arabic)**
