@@ -500,7 +500,7 @@
                     <div class="metric-label">AI Analytics</div>
                 </div>
                 <div class="metric-card" style="background: linear-gradient(135deg, #F4A460 0%, #e89344 100%);">
-                    <div class="metric-value" id="feedback-channels-count">2</div>
+                    <div class="metric-value" id="feedback-channels-count">3</div>
                     <div class="metric-label">Feedback Channels</div>
                 </div>
                 <div class="metric-card" style="background: linear-gradient(135deg, #4169E1 0%, #1548E8 100%);">
@@ -508,7 +508,7 @@
                     <div class="metric-label">Authentication & Security</div>
                 </div>
                 <div class="metric-card" style="background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);">
-                    <div class="metric-value" id="total-integrations">7</div>
+                    <div class="metric-value" id="total-integrations">8</div>
                     <div class="metric-label">Total Active</div>
                 </div>
             </div>
@@ -710,13 +710,13 @@
                         <p class="text-muted mb-0">Communication channels for collecting customer feedback</p>
                     </div>
                     <div class="text-end">
-                        <span class="badge bg-danger">2 Integrations</span>
+                        <span class="badge bg-danger">3 Integrations</span>
                     </div>
                 </div>
 
                 <div class="row mb-4">
                     <!-- Gmail SMTP -->
-                    <div class="col-md-6" data-status="active" data-category="feedback-channels">
+                    <div class="col-md-4" data-status="active" data-category="feedback-channels">
                         <div class="integration-card">
                             <div class="integration-header">
                                 <div class="integration-info">
@@ -762,7 +762,7 @@
                     </div>
 
                     <!-- Twilio SMS -->
-                    <div class="col-md-6" data-status="configured" data-category="feedback-channels">
+                    <div class="col-md-4" data-status="configured" data-category="feedback-channels">
                         <div class="integration-card">
                             <div class="integration-header">
                                 <div class="integration-info">
@@ -801,6 +801,52 @@
                                     <i class="fas fa-paper-plane me-1"></i>Test SMS
                                 </button>
                                 <button class="btn btn-sm btn-outline-primary" onclick="configureIntegration('twilio')">
+                                    <i class="fas fa-cog me-1"></i>Configure
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- WhatsApp Business API -->
+                    <div class="col-md-4" data-status="configured" data-category="feedback-channels">
+                        <div class="integration-card">
+                            <div class="integration-header">
+                                <div class="integration-info">
+                                    <div class="integration-icon" style="background: #25d366;">
+                                        <i class="fab fa-whatsapp"></i>
+                                    </div>
+                                    <div>
+                                        <h5 class="mb-1">WhatsApp Business API</h5>
+                                        <small class="text-muted">WhatsApp Business messaging for customer engagement and survey distribution</small>
+                                        <span class="model-status status-configured" title="Configured"></span>
+                                    </div>
+                                </div>
+                                <div class="status-badge badge bg-info">Configured</div>
+                            </div>
+                            
+                            <div style="background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 4px; padding: 1rem; margin: 1rem 0;">
+                                <div style="margin-bottom: 0.75rem;">
+                                    <strong style="color: #495057; font-size: 0.875rem; text-transform: uppercase;">API Endpoint</strong>
+                                </div>
+                                <div style="background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 4px; padding: 0.75rem; margin-bottom: 0.5rem; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 0.875rem;">
+                                    <span style="display: inline-block; padding: 0.2rem 0.5rem; border-radius: 3px; font-size: 0.75rem; font-weight: 600; margin-right: 0.5rem; min-width: 45px; text-align: center; background: #e8f5e8; color: #2e7d32;">POST</span>
+                                    <code>https://graph.facebook.com/v18.0/{phone-number-id}/messages</code>
+                                </div>
+                                <div style="background: #fff3cd; border-left: 4px solid #ffc107; padding: 0.75rem; margin-bottom: 0.75rem; border-radius: 0 4px 4px 0;">
+                                    <div style="font-weight: 600; color: #856404; margin-bottom: 0.25rem;">Bearer Token Authentication</div>
+                                    <small>Requires WHATSAPP_API_TOKEN, WHATSAPP_PHONE_NUMBER_ID, WHATSAPP_BUSINESS_ACCOUNT_ID</small>
+                                </div>
+                                <div style="font-size: 0.875rem;">
+                                    <strong>Implementation:</strong> <code>api/whatsapp_business.py</code><br>
+                                    <strong>Features:</strong> Rich Media, Template Messaging, Webhook Support, Two-way Communication
+                                </div>
+                            </div>
+                            
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-sm btn-outline-success" onclick="testIntegration('whatsapp_business')">
+                                    <i class="fas fa-paper-plane me-1"></i>Test WhatsApp
+                                </button>
+                                <button class="btn btn-sm btn-outline-primary" onclick="configureIntegration('whatsapp_business')">
                                     <i class="fas fa-cog me-1"></i>Configure
                                 </button>
                             </div>

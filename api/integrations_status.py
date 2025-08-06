@@ -115,6 +115,8 @@ def test_integration(integration_id):
             test_result = _test_gmail_integration()
         elif integration_id == 'jais':
             test_result = _test_jais_integration()
+        elif integration_id == 'whatsapp_business':
+            test_result = _test_whatsapp_business_integration()
         else:
             return jsonify({
                 'success': False,
@@ -326,6 +328,60 @@ def _test_jais_integration():
             'status_code': response.status_code,
             'message': 'JAIS API accessible' if response.status_code == 200 else f'JAIS API error: {response.status_code}'
         }
+        
+    except Exception as e:
+        return {
+            'success': False,
+            'error': str(e)
+        }
+
+def _test_whatsapp_business_integration():
+    """Test WhatsApp Business API integration"""
+    try:
+        import os
+        import requests
+        
+        api_token = os.getenv('WHATSAPP_API_TOKEN')
+        phone_number_id = os.getenv('WHATSAPP_PHONE_NUMBER_ID')
+        
+        if not api_token:
+            return {
+                'success': False,
+                'error': 'WhatsApp API token not configured'
+            }
+        
+        if not phone_number_id:
+            return {
+                'success': False,
+                'error': 'WhatsApp phone number ID not configured'
+            }
+        
+        # Test API endpoint by getting phone number info
+        headers = {
+            'Authorization': f'Bearer {api_token}',
+            'Content-Type': 'application/json'
+        }
+        
+        response = requests.get(
+            f"https://graph.facebook.com/v18.0/{phone_number_id}",
+            headers=headers,
+            timeout=10
+        )
+        
+        if response.status_code == 200:
+            phone_info = response.json()
+            return {
+                'success': True,
+                'message': 'WhatsApp Business API connection successful',
+                'phone_number': phone_info.get('display_phone_number', 'Unknown'),
+                'verified_name': phone_info.get('verified_name', 'Unknown'),
+                'status': phone_info.get('status', 'Unknown')
+            }
+        else:
+            return {
+                'success': False,
+                'error': f'WhatsApp API error: {response.status_code} - {response.text}'
+            }
         
     except Exception as e:
         return {
