@@ -10,7 +10,7 @@ from flask import request, jsonify
 from sqlalchemy import desc, func, and_
 
 from app import app, db
-from models.survey import Survey, Question, SurveyStatus, QuestionType
+from models.survey_flask import SurveyFlask as Survey, QuestionFlask as Question, SurveyStatus, QuestionType
 
 logger = logging.getLogger(__name__)
 

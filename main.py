@@ -6,11 +6,6 @@ Imports the main Flask app from app.py for WSGI compatibility
 
 from app import app
 
-# Import all routes and ensure database tables are created
-with app.app_context():
-    from app import db
-    db.create_all()
-
 # All routes are defined in app.py
 
 if __name__ == '__main__':
