@@ -175,12 +175,14 @@ def save_user(user_claims):
         merged_user.id = user_claims["sub"]
     
     # Extract user information from OAuth claims
-    # Replit may provide name information in different fields
+    # Replit provides name information in first_name/last_name fields directly
     merged_user.first_name = (
+        user_claims.get("first_name") or 
         user_claims.get("given_name") or 
         user_claims.get("name", "").split()[0] if user_claims.get("name") else None
     )
     merged_user.last_name = (
+        user_claims.get("last_name") or
         user_claims.get("family_name") or
         " ".join(user_claims.get("name", "").split()[1:]) if user_claims.get("name") and len(user_claims.get("name", "").split()) > 1 else None
     )
