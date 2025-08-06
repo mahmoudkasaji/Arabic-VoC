@@ -1,0 +1,21 @@
+[deployment]
+# Deployment configuration for Arabic VoC Platform
+python_version = "3.11"
+build_command = "python -m pip install -e ."
+run_command = "gunicorn --bind 0.0.0.0:$PORT main:app"
+
+[deployment.env]
+UV_SYSTEM_PYTHON = "1"
+PIP_NO_BUILD_ISOLATION = "1" 
+PIP_NO_CACHE_DIR = "1"
+PYTHONPATH = "."
+
+[deployment.build]
+# Disable UV package manager for deployment
+use_uv = false
+fallback_to_pip = true
+
+[deployment.requirements]
+# Fallback installation strategy
+install_strategy = "pip"
+cache_disabled = true

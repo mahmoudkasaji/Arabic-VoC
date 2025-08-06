@@ -1,0 +1,14 @@
+include *.md
+include *.txt
+include *.toml
+include *.py
+recursive-include templates *
+recursive-include static *
+recursive-include translations *
+recursive-include utils *
+recursive-include models *
+recursive-include api *
+recursive-include auth *
+recursive-include routes *
+global-exclude __pycache__
+global-exclude *.pyc

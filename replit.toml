@@ -3,3 +3,15 @@ language = "python3"
 
 [deployment]
 run = ["sh", "-c", "gunicorn --bind 0.0.0.0:$PORT main:app"]
+build = ["./build.sh"]
+
+[env]
+UV_SYSTEM_PYTHON = "1"
+PIP_NO_BUILD_ISOLATION = "1"
+PIP_NO_CACHE_DIR = "1"
+
+[deployment.env]
+UV_SYSTEM_PYTHON = "1"
+PIP_NO_BUILD_ISOLATION = "1" 
+PIP_NO_CACHE_DIR = "1"
+PYTHONPATH = "."
