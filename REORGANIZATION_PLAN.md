@@ -35,9 +35,9 @@
 - `product_plan_integrations_redesign.md` → `docs/product_plan_integrations.md`
 - Already has: comprehensive documentation structure
 
-### FILES TO MOVE TO EXISTING `deployment/` FOLDER:
-- `Dockerfile.prod` → `deployment/docker/Dockerfile.prod`
-- `docker-compose.prod.yml` → `deployment/docker/docker-compose.prod.yml`
+### FILES MOVED TO EXISTING `deployment/` FOLDER:
+- ✅ `Dockerfile.prod` → `deployment/docker/Dockerfile.prod` (COMPLETED)
+- ✅ `docker-compose.prod.yml` → `deployment/docker/docker-compose.prod.yml` (COMPLETED)
 - Already has: deployment scripts and configs
 
 ### TEMP/DEBUG FILES - CREATE `temp/` SUBFOLDER:
