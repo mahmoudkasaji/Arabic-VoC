@@ -106,6 +106,9 @@ app.register_blueprint(surveys_bp)
 if make_replit_blueprint_func:
     try:
         app.register_blueprint(make_replit_blueprint_func(), url_prefix="/auth")
+        # Initialize login manager after registering blueprint
+        from replit_auth import init_login_manager
+        init_login_manager(app)
         logger.info("Replit Auth blueprint registered successfully")
     except Exception as e:
         logger.warning(f"Could not register Replit Auth blueprint: {e}")

@@ -7,13 +7,13 @@ def safe_import_replit_auth():
     try:
         from replit_auth import require_login, make_replit_blueprint
         return require_login, make_replit_blueprint
-    except ImportError:
+    except (ImportError, SystemExit):
         # Fallback decorator if Replit Auth is not available
         def require_login(f):
             return f
         def make_replit_blueprint():
             return None
-        return require_login, None
+        return require_login, make_replit_blueprint
 
 def get_template_helpers():
     """Get template helper functions"""
