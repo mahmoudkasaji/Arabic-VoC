@@ -1,9 +1,6 @@
 # Documentation Index
 
-## Start Here
-- [`DOCUMENTATION_HUB.md`](DOCUMENTATION_HUB.md) - Complete platform overview and user guides
-
-## Current Implementation Guides
+## Implementation Guides
 
 ### **Gmail Integration**
 - [`GMAIL_SETUP_GUIDE.md`](GMAIL_SETUP_GUIDE.md) - Complete Gmail setup and troubleshooting
@@ -15,32 +12,14 @@
 ### **AI Analysis**
 - [`arabic_analysis_explanation.md`](arabic_analysis_explanation.md) - Arabic AI analysis system documentation
 
-## Operations & Deployment
-
-### **Production**
-- [`deployment-guide.md`](deployment-guide.md) - Production deployment procedures
-- [`go-live-checklist.md`](go-live-checklist.md) - Complete production checklist
-
-### **Development**
-- [`devops-workflow.md`](devops-workflow.md) - Development operations and workflows
-
-## Testing & Quality
+## Quality & Testing
 
 ### **QA Framework**
 - [`qa_framework_overview.md`](qa_framework_overview.md) - Testing strategy and quality standards
 
-### **User Testing**
-- [`user-acceptance-testing.md`](user-acceptance-testing.md) - Comprehensive testing procedures
+## Customer Experience
 
-### **UI/UX Implementation**
-- [`progressive_disclosure_implementation.md`](progressive_disclosure_implementation.md) - Progressive disclosure UI patterns
-
-## Integration & Architecture
-
-### **Technical Integrations**
-- [`technical_integrations_catalog.md`](technical_integrations_catalog.md) - Integration documentation and API catalog
-
-### **Customer Experience**
+### **Implementation Summary**
 - [`cx_implementation_summary.md`](cx_implementation_summary.md) - Customer experience implementation
 
 ## Planning & Roadmap
