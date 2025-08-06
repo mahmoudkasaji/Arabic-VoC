@@ -73,11 +73,14 @@ with app.app_context():
     # Import survey campaign models
     from models.survey_campaigns import SurveyCampaign, DistributionMethod
     
-    # Import preferences model to ensure table creation
+    # Import auth models first to ensure proper model registration
     try:
+        from utils.imports import get_auth_models
+        ReplitUser, ReplitOAuth = get_auth_models()
+        # Then import preferences model that depends on ReplitUser
         from models.replit_user_preferences import ReplitUserPreferences
-    except ImportError:
-        pass
+    except ImportError as e:
+        logger.warning(f"Could not import auth models: {e}")
     
     # Create all tables
     db.create_all()

@@ -30,8 +30,8 @@ class ReplitUserPreferences(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.now)
     updated_at = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
     
-    # Relationship back to user
-    user = db.relationship('ReplitUser', backref='preferences')
+    # Relationship back to user - using string reference for late binding
+    user = db.relationship('ReplitUser', backref='preferences', lazy='select')
     
     def __repr__(self):
         return f'<ReplitUserPreferences {self.user_id}>'
