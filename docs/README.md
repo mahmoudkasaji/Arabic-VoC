@@ -35,11 +35,6 @@
 ### **User Guides (Arabic)**
 - [`getting_started_arabic.md`](getting_started_arabic.md) - دليل البدء للمستخدمين
 
-## Screenshots & Visual Documentation
-
-### **Screenshot Archive**
-- [`screenshots/`](screenshots/) - Visual documentation and historical screenshots
-
 ---
 
 **Note**: For general setup and development instructions, see the main [README.md](../README.md) and [README_ARABIC.md](../README_ARABIC.md) in the project root.
