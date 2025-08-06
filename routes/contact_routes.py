@@ -3,7 +3,7 @@ Contact management routes for direct database operations
 """
 
 from flask import request, redirect, url_for, flash, Response
-from app import app, db
+from core.app import app, db
 # Use simplified import utility
 from utils.imports import safe_import_replit_auth
 require_login, _ = safe_import_replit_auth()

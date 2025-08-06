@@ -4,7 +4,7 @@ Handles campaign management and distribution tracking
 """
 
 from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
-from app import db
+from core.app import db
 from models.survey_campaigns import SurveyCampaign, DistributionMethod
 from models.survey_flask import SurveyFlask
 from models_unified import Contact, ContactGroup

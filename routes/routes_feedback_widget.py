@@ -9,7 +9,7 @@ from datetime import datetime
 import json
 import uuid
 from urllib.parse import urlparse
-from app import app, db
+from core.app import app, db
 from models_unified import Feedback
 from utils.simple_arabic_analyzer import SimpleArabicAnalyzer
 
