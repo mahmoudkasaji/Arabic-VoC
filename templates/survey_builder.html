@@ -37,25 +37,27 @@
 
         .builder-container {
             display: grid;
-            grid-template-columns: 280px 1fr 380px;
-            gap: 1.5rem;
+            grid-template-columns: 300px 1fr 400px;
+            gap: 2rem;
             min-height: calc(100vh - 80px);
-            padding: 2rem 1rem;
-            max-width: 1200px;
-            margin: 0 auto;
+            padding: 2rem;
+            width: 100%;
+            max-width: none;
         }
 
         @media (max-width: 1400px) {
             .builder-container {
-                grid-template-columns: 260px 1fr 360px;
+                grid-template-columns: 280px 1fr 380px;
                 gap: 1.5rem;
+                padding: 1.5rem;
             }
         }
 
         @media (max-width: 1200px) {
             .builder-container {
-                grid-template-columns: 240px 1fr 320px;
+                grid-template-columns: 260px 1fr 340px;
                 gap: 1.25rem;
+                padding: 1.5rem;
             }
         }
 
@@ -1240,7 +1242,7 @@
 <body>
     {% include 'components/unified_navigation.html' %}
 
-    <div class="page-container">
+    <div class="container-unified">
         <div class="builder-container" id="builderContainer">
         <!-- Progressive Question Types Sidebar -->
         <div class="sidebar question-types-sidebar" id="questionTypesSidebar">
@@ -2240,6 +2242,6 @@
     
     {% include 'components/scripts.html' %}
         </div> <!-- End builder-container -->
-    </div> <!-- End page-container -->
+    </div> <!-- End container-unified -->
 </body>
 </html>
