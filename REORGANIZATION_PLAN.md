@@ -44,7 +44,6 @@
 - `cookies.txt`, `debug.cookie`, `final.cookie`, `test*.cookie` → `temp/`
 - `demo_flow_visualization.html` → `temp/`
 - `demo_user_flow.md` → `temp/`
-- `enterprise_architecture_visualization.html` → `temp/`
 
 ## Files to Move:
 

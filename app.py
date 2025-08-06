@@ -1953,21 +1953,7 @@ def distribute_survey():
         logger.error(f"Survey distribution failed: {e}")
         return jsonify({'error': 'Distribution failed'}), 500
 
-# Enterprise Architecture Visualization Route
-@app.route('/public/architecture')
-def public_enterprise_architecture():
-    """Public enterprise architecture visualization"""
-    import os
-    from flask import Response
-    
-    # Read the HTML file directly
-    file_path = 'enterprise_architecture_visualization.html'
-    if os.path.exists(file_path):
-        with open(file_path, 'r', encoding='utf-8') as f:
-            content = f.read()
-        return Response(content, mimetype='text/html')
-    else:
-        return "Architecture visualization file not found", 404
+
 
 # Technical Integration Catalog Route
 @app.route('/integrations/catalog')

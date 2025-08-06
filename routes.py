@@ -33,29 +33,7 @@ def survey_builder():
     from flask import render_template
     return render_template('survey_builder.html')
 
-# Enterprise Architecture Visualization
-@app.route('/architecture')
-@require_login
-def enterprise_architecture():
-    """Enterprise architecture visualization"""
-    from flask import send_from_directory
-    return send_from_directory('.', 'enterprise_architecture_visualization.html')
 
-# Public Architecture Visualization (no auth required)
-@app.route('/public/architecture')
-def public_enterprise_architecture():
-    """Public enterprise architecture visualization"""
-    import os
-    from flask import Response
-    
-    # Read the HTML file directly
-    file_path = 'enterprise_architecture_visualization.html'
-    if os.path.exists(file_path):
-        with open(file_path, 'r', encoding='utf-8') as f:
-            content = f.read()
-        return Response(content, mimetype='text/html')
-    else:
-        return "Architecture visualization file not found", 404
 
 # Contacts Management Route
 @app.route('/contacts')
