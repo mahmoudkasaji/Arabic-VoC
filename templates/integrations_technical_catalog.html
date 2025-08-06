@@ -716,132 +716,135 @@
 
                 <div class="row mb-4">
                     <!-- Gmail SMTP -->
-                    <div class="col-lg-4 col-md-6 mb-4" data-status="active" data-category="feedback-channels">
-                        <div class="integration-card" style="height: 340px; position: relative;">
-                            <div class="d-flex justify-content-between align-items-start mb-3">
-                                <div class="d-flex align-items-center gap-3">
-                                    <div class="integration-icon" style="background: #d93025; width: 40px; height: 40px;">
+                    <div class="col-md-4" data-status="active" data-category="feedback-channels">
+                        <div class="integration-card">
+                            <div class="integration-header">
+                                <div class="integration-info">
+                                    <div class="integration-icon" style="background: #d93025;">
                                         <i class="fas fa-envelope"></i>
                                     </div>
                                     <div>
-                                        <h5 class="mb-0">Gmail SMTP</h5>
+                                        <h5 class="mb-1">Gmail SMTP</h5>
                                         <small class="text-muted">Survey distribution via email</small>
+                                        <span class="model-status status-active" title="Active"></span>
                                     </div>
                                 </div>
-                                <div class="status-badge badge" style="background: #28a745; color: white; font-size: 0.7rem; padding: 4px 8px;">ACTIVE</div>
+                                <div class="status-badge badge bg-success">Active</div>
                             </div>
                             
-                            <div class="text-center mb-3">
-                                <div style="color: #495057; font-size: 0.8rem; font-weight: 600; margin-bottom: 8px;">SMTP ENDPOINT</div>
-                                <div style="background: #f8f9fa; border-radius: 4px; padding: 8px; font-size: 0.75rem; font-family: monospace; word-break: break-all;">
-                                    <span style="color: #e91e63; font-weight: 600;">smtp.gmail.com:587</span> 
-                                    <span style="background: #28a745; color: white; padding: 2px 6px; border-radius: 3px; margin-left: 8px; font-weight: 600;">SMTP</span>
+                            <div style="background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 4px; padding: 1rem; margin: 1rem 0;">
+                                <div style="margin-bottom: 0.75rem;">
+                                    <strong style="color: #495057; font-size: 0.875rem; text-transform: uppercase;">SMTP Endpoint</strong>
+                                </div>
+                                <div style="background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 4px; padding: 0.75rem; margin-bottom: 0.5rem; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 0.875rem;">
+                                    <span style="display: inline-block; padding: 0.2rem 0.5rem; border-radius: 3px; font-size: 0.75rem; font-weight: 600; margin-right: 0.5rem; min-width: 45px; text-align: center; background: #e8f5e8; color: #2e7d32;">SMTP</span>
+                                    <code>smtp.gmail.com:587</code>
+                                </div>
+                                <div style="background: #fff3cd; border-left: 4px solid #ffc107; padding: 0.75rem; margin-bottom: 0.75rem; border-radius: 0 4px 4px 0;">
+                                    <div style="font-weight: 600; color: #856404; margin-bottom: 0.25rem;">App Password Authentication</div>
+                                    <small>Requires GMAIL_EMAIL, GMAIL_APP_PASSWORD</small>
+                                </div>
+                                <div style="font-size: 0.875rem;">
+                                    <strong>Model:</strong> Gmail SMTP | <strong>Speciality:</strong> HTML Templates, Bulk Email | <strong>Cost:</strong> Free
                                 </div>
                             </div>
                             
-                            <div style="background: #fff9e6; border-left: 4px solid #ffc107; padding: 12px; border-radius: 0 4px 4px 0; margin-bottom: 12px;">
-                                <div style="font-weight: 600; color: #856404; margin-bottom: 4px; font-size: 0.8rem;">App Password Authentication</div>
-                                <div style="font-size: 0.75rem; color: #856404;">Requires GMAIL_EMAIL, GMAIL_APP_PASSWORD configuration</div>
-                            </div>
-                            
-                            <div style="font-size: 0.75rem; margin-bottom: 16px;">
-                                <div><strong>Model:</strong> Gmail SMTP | <strong>Speciality:</strong> HTML Templates, Bulk Email | <strong>Cost:</strong> Free</div>
-                            </div>
-                            
-                            <div class="d-flex gap-2" style="position: absolute; bottom: 20px; left: 24px; right: 24px;">
-                                <button class="btn btn-outline-primary btn-sm" onclick="configureIntegration('gmail')" style="border-radius: 20px; font-size: 0.75rem;">
-                                    Settings
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-sm btn-outline-success" onclick="testIntegration('gmail')">
+                                    <i class="fas fa-paper-plane me-1"></i>Test Email
                                 </button>
-                                <button class="btn btn-outline-success btn-sm" onclick="testIntegration('gmail')" style="border-radius: 20px; font-size: 0.75rem;">
-                                    Test API ▶
+                                <button class="btn btn-sm btn-outline-secondary" onclick="configureIntegration('gmail')">
+                                    <i class="fas fa-cog me-1"></i>Settings
                                 </button>
                             </div>
                         </div>
                     </div>
 
                     <!-- Twilio SMS -->
-                    <div class="col-lg-4 col-md-6 mb-4" data-status="configured" data-category="feedback-channels">
-                        <div class="integration-card" style="height: 340px; position: relative;">
-                            <div class="d-flex justify-content-between align-items-start mb-3">
-                                <div class="d-flex align-items-center gap-3">
-                                    <div class="integration-icon" style="background: #e89344; width: 40px; height: 40px;">
+                    <div class="col-md-4" data-status="configured" data-category="feedback-channels">
+                        <div class="integration-card">
+                            <div class="integration-header">
+                                <div class="integration-info">
+                                    <div class="integration-icon" style="background: #e89344;">
                                         <i class="fas fa-sms"></i>
                                     </div>
                                     <div>
-                                        <h5 class="mb-0">Twilio SMS</h5>
-                                        <small class="text-muted">SMS delivery for survey distribution</small>
+                                        <h5 class="mb-1">Twilio SMS</h5>
+                                        <small class="text-muted">SMS delivery for survey distribution and alerts</small>
+                                        <span class="model-status status-configured" title="Configured"></span>
                                     </div>
                                 </div>
-                                <div class="status-badge badge" style="background: #17a2b8; color: white; font-size: 0.7rem; padding: 4px 8px;">CONFIGURED</div>
+                                <div class="status-badge badge bg-info">Configured</div>
                             </div>
                             
-                            <div class="text-center mb-3">
-                                <div style="color: #495057; font-size: 0.8rem; font-weight: 600; margin-bottom: 8px;">API ENDPOINT</div>
-                                <div style="background: #f8f9fa; border-radius: 4px; padding: 8px; font-size: 0.75rem; font-family: monospace; word-break: break-all;">
-                                    <span style="color: #e91e63; font-weight: 600;">https://api.twilio.com/2010-04-01/Messages.json</span> 
-                                    <span style="background: #28a745; color: white; padding: 2px 6px; border-radius: 3px; margin-left: 8px; font-weight: 600;">POST</span>
+                            <div style="background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 4px; padding: 1rem; margin: 1rem 0;">
+                                <div style="margin-bottom: 0.75rem;">
+                                    <strong style="color: #495057; font-size: 0.875rem; text-transform: uppercase;">API Endpoint</strong>
+                                </div>
+                                <div style="background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 4px; padding: 0.75rem; margin-bottom: 0.5rem; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 0.875rem;">
+                                    <span style="display: inline-block; padding: 0.2rem 0.5rem; border-radius: 3px; font-size: 0.75rem; font-weight: 600; margin-right: 0.5rem; min-width: 45px; text-align: center; background: #e8f5e8; color: #2e7d32;">POST</span>
+                                    <code>https://api.twilio.com/2010-04-01/Messages.json</code>
+                                </div>
+                                <div style="background: #e3f2fd; border-left: 4px solid #2196f3; padding: 0.75rem; margin-bottom: 0.75rem; border-radius: 0 4px 4px 0;">
+                                    <div style="font-weight: 600; color: #1565c0; margin-bottom: 0.25rem;">Basic Authentication</div>
+                                    <small>Requires TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_PHONE_NUMBER</small>
+                                </div>
+                                <div style="font-size: 0.875rem;">
+                                    <strong>Model:</strong> Twilio SMS API | <strong>Speciality:</strong> Bulk SMS, Unicode Support | <strong>Cost:</strong> $0.0075/SMS
                                 </div>
                             </div>
                             
-                            <div style="background: #fff9e6; border-left: 4px solid #ffc107; padding: 12px; border-radius: 0 4px 4px 0; margin-bottom: 12px;">
-                                <div style="font-weight: 600; color: #856404; margin-bottom: 4px; font-size: 0.8rem;">Basic Authentication</div>
-                                <div style="font-size: 0.75rem; color: #856404;">Requires TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN configuration</div>
-                            </div>
-                            
-                            <div style="font-size: 0.75rem; margin-bottom: 16px;">
-                                <div><strong>Model:</strong> Twilio SMS API | <strong>Speciality:</strong> Bulk SMS, Unicode Support | <strong>Cost:</strong> $0.0075/SMS</div>
-                            </div>
-                            
-                            <div class="d-flex gap-2" style="position: absolute; bottom: 20px; left: 24px; right: 24px;">
-                                <button class="btn btn-outline-primary btn-sm" onclick="configureIntegration('twilio')" style="border-radius: 20px; font-size: 0.75rem;">
-                                    Configure
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-sm btn-outline-success" onclick="testIntegration('twilio')">
+                                    <i class="fas fa-paper-plane me-1"></i>Test SMS
                                 </button>
-                                <button class="btn btn-outline-success btn-sm" onclick="testIntegration('twilio')" style="border-radius: 20px; font-size: 0.75rem;">
-                                    Test API ▶
+                                <button class="btn btn-sm btn-outline-secondary" onclick="configureIntegration('twilio')">
+                                    <i class="fas fa-cog me-1"></i>Configure
                                 </button>
                             </div>
                         </div>
                     </div>
 
                     <!-- WhatsApp Business API -->
-                    <div class="col-lg-4 col-md-6 mb-4" data-status="configured" data-category="feedback-channels">
-                        <div class="integration-card" style="height: 340px; position: relative;">
-                            <div class="d-flex justify-content-between align-items-start mb-3">
-                                <div class="d-flex align-items-center gap-3">
-                                    <div class="integration-icon" style="background: #25d366; width: 40px; height: 40px;">
+                    <div class="col-md-4" data-status="configured" data-category="feedback-channels">
+                        <div class="integration-card">
+                            <div class="integration-header">
+                                <div class="integration-info">
+                                    <div class="integration-icon" style="background: #25d366;">
                                         <i class="fab fa-whatsapp"></i>
                                     </div>
                                     <div>
-                                        <h5 class="mb-0">WhatsApp Business API</h5>
-                                        <small class="text-muted">Rich messaging for customer engagement</small>
+                                        <h5 class="mb-1">WhatsApp Business API</h5>
+                                        <small class="text-muted">WhatsApp Business messaging for customer engagement and survey distribution</small>
+                                        <span class="model-status status-configured" title="Configured"></span>
                                     </div>
                                 </div>
-                                <div class="status-badge badge" style="background: #17a2b8; color: white; font-size: 0.7rem; padding: 4px 8px;">CONFIGURED</div>
+                                <div class="status-badge badge bg-info">Configured</div>
                             </div>
                             
-                            <div class="text-center mb-3">
-                                <div style="color: #495057; font-size: 0.8rem; font-weight: 600; margin-bottom: 8px;">API ENDPOINT</div>
-                                <div style="background: #f8f9fa; border-radius: 4px; padding: 8px; font-size: 0.75rem; font-family: monospace; word-break: break-all;">
-                                    <span style="color: #e91e63; font-weight: 600;">https://graph.facebook.com/v18.0/messages</span> 
-                                    <span style="background: #28a745; color: white; padding: 2px 6px; border-radius: 3px; margin-left: 8px; font-weight: 600;">POST</span>
+                            <div style="background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 4px; padding: 1rem; margin: 1rem 0;">
+                                <div style="margin-bottom: 0.75rem;">
+                                    <strong style="color: #495057; font-size: 0.875rem; text-transform: uppercase;">API Endpoint</strong>
+                                </div>
+                                <div style="background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 4px; padding: 0.75rem; margin-bottom: 0.5rem; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 0.875rem;">
+                                    <span style="display: inline-block; padding: 0.2rem 0.5rem; border-radius: 3px; font-size: 0.75rem; font-weight: 600; margin-right: 0.5rem; min-width: 45px; text-align: center; background: #e8f5e8; color: #2e7d32;">POST</span>
+                                    <code>https://graph.facebook.com/v18.0/{phone-number-id}/messages</code>
+                                </div>
+                                <div style="background: #e3f2fd; border-left: 4px solid #2196f3; padding: 0.75rem; margin-bottom: 0.75rem; border-radius: 0 4px 4px 0;">
+                                    <div style="font-weight: 600; color: #1565c0; margin-bottom: 0.25rem;">Bearer Token Authentication</div>
+                                    <small>Requires WHATSAPP_API_TOKEN, WHATSAPP_PHONE_NUMBER_ID, WHATSAPP_BUSINESS_ACCOUNT_ID</small>
+                                </div>
+                                <div style="font-size: 0.875rem;">
+                                    <strong>Model:</strong> WhatsApp Cloud API | <strong>Speciality:</strong> Rich Media, Template Messaging | <strong>Cost:</strong> $0.005/message
                                 </div>
                             </div>
                             
-                            <div style="background: #e8f4f8; border-left: 4px solid #17a2b8; padding: 12px; border-radius: 0 4px 4px 0; margin-bottom: 12px;">
-                                <div style="font-weight: 600; color: #0c5460; margin-bottom: 4px; font-size: 0.8rem;">Bearer Token Authentication</div>
-                                <div style="font-size: 0.75rem; color: #0c5460;">Requires WHATSAPP_API_TOKEN, WHATSAPP_PHONE_NUMBER_ID configuration</div>
-                            </div>
-                            
-                            <div style="font-size: 0.75rem; margin-bottom: 16px;">
-                                <div><strong>Model:</strong> WhatsApp Cloud API | <strong>Speciality:</strong> Rich Media Support | <strong>Cost:</strong> $0.005/message</div>
-                            </div>
-                            
-                            <div class="d-flex gap-2" style="position: absolute; bottom: 20px; left: 24px; right: 24px;">
-                                <button class="btn btn-outline-primary btn-sm" onclick="configureIntegration('whatsapp_business')" style="border-radius: 20px; font-size: 0.75rem;">
-                                    Configure
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-sm btn-outline-success" onclick="testIntegration('whatsapp_business')">
+                                    <i class="fas fa-paper-plane me-1"></i>Test WhatsApp
                                 </button>
-                                <button class="btn btn-outline-success btn-sm" onclick="testIntegration('whatsapp_business')" style="border-radius: 20px; font-size: 0.75rem;">
-                                    Test API ▶
+                                <button class="btn btn-sm btn-outline-secondary" onclick="configureIntegration('whatsapp_business')">
+                                    <i class="fas fa-cog me-1"></i>Configure
                                 </button>
                             </div>
                         </div>
