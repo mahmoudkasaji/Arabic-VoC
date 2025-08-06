@@ -113,6 +113,14 @@ if make_replit_blueprint_func:
 else:
     logger.info("Running without Replit Auth - development mode")
 
+# Add fallback logout route for development mode
+@app.route('/auth/logout')
+def fallback_logout():
+    """Fallback logout route when Replit Auth is not available"""
+    session.clear()
+    flash('تم تسجيل الخروج بنجاح', 'success')
+    return redirect(url_for('index'))
+
 # Register remaining API blueprints (complex operations only)
 try:
     from api.analytics_live import analytics_live_bp
