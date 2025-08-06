@@ -6,7 +6,7 @@ Simplified survey models using Flask-SQLAlchemy
 import uuid
 from datetime import datetime
 from enum import Enum
-from core.app import db
+from app import db
 
 
 class SurveyStatus(Enum):

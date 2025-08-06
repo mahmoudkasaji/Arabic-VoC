@@ -15,7 +15,7 @@ from models.survey_delivery import (
     SurveyCampaign, SurveyDelivery, SurveyTemplate, SurveyResponse,
     SurveyStatus, DeliveryStatus, ResponseStatus
 )
-from core.models_unified import FeedbackChannel
+from models_unified import FeedbackChannel
 from utils.survey_distribution import SurveyDistributionManager, SurveyResponseCollector
 from utils.web_delivery import WebSurveyRenderer, QRCodeGenerator
 from utils.whatsapp_delivery import WhatsAppWebhookHandler

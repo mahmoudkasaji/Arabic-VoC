@@ -10,7 +10,7 @@ import json
 import io
 from datetime import datetime, timedelta
 from sqlalchemy import text
-from core.app import db
+from app import db
 
 logger = logging.getLogger(__name__)
 

@@ -8,8 +8,8 @@ from flask_login import current_user, login_required
 from datetime import datetime
 import json
 import uuid
-from core.app import db
-from core.models_unified import Feedback
+from app import db
+from models_unified import Feedback
 from utils.simple_arabic_analyzer import SimpleArabicAnalyzer
 
 feedback_widget_api = Blueprint('feedback_widget_api', __name__)

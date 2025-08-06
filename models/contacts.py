@@ -6,7 +6,7 @@ Simple contact storage for survey distribution
 from datetime import datetime
 from sqlalchemy import Column, Integer, String, DateTime, Boolean, Text, JSON, ForeignKey
 from sqlalchemy.orm import relationship
-from core.app import db
+from app import db
 
 class Contact(db.Model):
     """Contact model for survey distribution"""
