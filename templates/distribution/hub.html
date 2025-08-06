@@ -3,63 +3,54 @@
 <head>
     {% include 'components/head.html' %}
     <title>{{ title }} - Voice of Customer Platform</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/unified-layout.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/design-system.css') }}">
 </head>
 <body>
     {% include 'components/unified_navigation.html' %}
     
-    <div class="page-container">
+    <div class="container-unified">
         <div class="page-header">
-            <h1>{{ title }}</h1>
-            <p class="text-muted">إدارة وتوزيع الاستطلاعات عبر القنوات المختلفة</p>
+            <h1 class="page-title">{{ title }}</h1>
+            <div class="page-actions">
+                <a href="/surveys/distribution/create-campaign" class="btn btn-primary">
+                    <i class="fas fa-plus me-2"></i>إنشاء حملة جديدة
+                </a>
+            </div>
         </div>
         
-        <!-- Dashboard Stats -->
+        <!-- Statistics Cards -->
         {% if dashboard_stats %}
         <div class="row g-4 mb-4">
             <div class="col-md-3">
                 <div class="card-unified">
                     <div class="card-body text-center">
-                        <div class="d-flex align-items-center justify-content-center mb-2">
-                            <i class="fas fa-chart-line text-primary me-2 fs-3"></i>
-                        </div>
-                        <h3 class="mb-1">{{ dashboard_stats.active_campaigns }}</h3>
-                        <p class="text-muted mb-0">الحملات النشطة</p>
+                        <h3 class="text-primary">{{ dashboard_stats.active_campaigns }}</h3>
+                        <p class="mb-0">الحملات النشطة</p>
                     </div>
                 </div>
             </div>
-            
             <div class="col-md-3">
                 <div class="card-unified">
                     <div class="card-body text-center">
-                        <div class="d-flex align-items-center justify-content-center mb-2">
-                            <i class="fas fa-paper-plane text-success me-2 fs-3"></i>
-                        </div>
-                        <h3 class="mb-1">{{ dashboard_stats.total_sent|int }}</h3>
-                        <p class="text-muted mb-0">إجمالي المرسل</p>
+                        <h3 class="text-success">{{ dashboard_stats.total_sent|int }}</h3>
+                        <p class="mb-0">إجمالي المرسل</p>
                     </div>
                 </div>
             </div>
-            
             <div class="col-md-3">
                 <div class="card-unified">
                     <div class="card-body text-center">
-                        <div class="d-flex align-items-center justify-content-center mb-2">
-                            <i class="fas fa-reply text-info me-2 fs-3"></i>
-                        </div>
-                        <h3 class="mb-1">{{ dashboard_stats.total_responses|int }}</h3>
-                        <p class="text-muted mb-0">إجمالي الردود</p>
+                        <h3 class="text-info">{{ dashboard_stats.total_responses|int }}</h3>
+                        <p class="mb-0">إجمالي الردود</p>
                     </div>
                 </div>
             </div>
-            
             <div class="col-md-3">
                 <div class="card-unified">
                     <div class="card-body text-center">
-                        <div class="d-flex align-items-center justify-content-center mb-2">
-                            <i class="fas fa-percentage text-warning me-2 fs-3"></i>
-                        </div>
-                        <h3 class="mb-1">{{ dashboard_stats.overall_response_rate }}%</h3>
-                        <p class="text-muted mb-0">معدل الاستجابة</p>
+                        <h3 class="text-warning">{{ dashboard_stats.overall_response_rate }}%</h3>
+                        <p class="mb-0">معدل الاستجابة</p>
                     </div>
                 </div>
             </div>
@@ -68,15 +59,13 @@
         
         <!-- Quick Actions -->
         <div class="card-unified mb-4">
-            <div class="card-header">
-                <h5 class="mb-0">
-                    <i class="fas fa-bolt me-2"></i>الإجراءات السريعة
-                </h5>
-            </div>
             <div class="card-body">
+                <h5 class="mb-3">
+                    <i class="fas fa-bolt me-2 text-primary"></i>الإجراءات السريعة
+                </h5>
                 <div class="row g-3">
                     <div class="col-md-4">
-                        <a href="{{ url_for('create_campaign_form') }}" class="btn btn-primary w-100 py-3">
+                        <a href="/surveys/distribution/create-campaign" class="btn btn-primary w-100 py-3">
                             <i class="fas fa-plus-circle mb-2 d-block fs-4"></i>
                             <span>إنشاء حملة جديدة</span>
                         </a>
@@ -99,50 +88,75 @@
         
         <!-- Recent Campaigns -->
         <div class="card-unified">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">
-                    <i class="fas fa-history me-2"></i>الحملات الأخيرة
-                </h5>
-                <a href="{{ url_for('survey_distribution_page') }}" class="btn btn-sm btn-outline-primary">
-                    عرض الكل
-                </a>
-            </div>
             <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="mb-0">
+                        <i class="fas fa-history me-2 text-primary"></i>الحملات الأخيرة
+                    </h5>
+                    <a href="/surveys" class="btn btn-sm btn-outline-primary">
+                        عرض الكل
+                    </a>
+                </div>
+                
                 {% if recent_campaigns %}
-                <div class="list-group list-group-flush">
-                    {% for campaign in recent_campaigns %}
-                    <div class="list-group-item d-flex justify-content-between align-items-center">
-                        <div>
-                            <h6 class="mb-1">{{ campaign.name }}</h6>
-                            <small class="text-muted">
-                                {{ campaign.survey.display_title if campaign.survey else 'استطلاع محذوف' }}
-                                • {{ campaign.total_contacts }} جهة اتصال
-                                • معدل الاستجابة: {{ campaign.response_rate }}%
-                            </small>
-                        </div>
-                        <div class="d-flex align-items-center gap-2">
-                            <span class="badge {{ campaign.status_badge_class }}">
-                                {% if campaign.status == 'draft' %}مسودة
-                                {% elif campaign.status == 'active' %}نشطة
-                                {% elif campaign.status == 'paused' %}متوقفة
-                                {% elif campaign.status == 'completed' %}مكتملة
-                                {% endif %}
-                            </span>
-                            <a href="{{ url_for('survey_distribution_page') }}" 
-                               class="btn btn-sm btn-outline-primary">
-                                عرض
-                            </a>
-                        </div>
-                    </div>
-                    {% endfor %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>اسم الحملة</th>
+                                <th>الاستطلاع</th>
+                                <th>الحالة</th>
+                                <th>جهات الاتصال</th>
+                                <th>معدل الاستجابة</th>
+                                <th>الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for campaign in recent_campaigns %}
+                            <tr>
+                                <td>
+                                    <div class="fw-bold">{{ campaign.name }}</div>
+                                    <small class="text-muted">{{ campaign.created_at.strftime('%Y-%m-%d') if campaign.created_at else 'غير محدد' }}</small>
+                                </td>
+                                <td>
+                                    {{ campaign.survey.title if campaign.survey else 'استطلاع محذوف' }}
+                                </td>
+                                <td>
+                                    {% if campaign.status == 'draft' %}
+                                        <span class="badge bg-secondary">مسودة</span>
+                                    {% elif campaign.status == 'active' %}
+                                        <span class="badge bg-success">نشطة</span>
+                                    {% elif campaign.status == 'paused' %}
+                                        <span class="badge bg-warning">متوقفة</span>
+                                    {% elif campaign.status == 'completed' %}
+                                        <span class="badge bg-info">مكتملة</span>
+                                    {% else %}
+                                        <span class="badge bg-light text-dark">{{ campaign.status }}</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <span class="fw-bold">{{ campaign.total_contacts or 0 }}</span>
+                                </td>
+                                <td>
+                                    <span class="fw-bold">{{ campaign.response_rate or 0 }}%</span>
+                                </td>
+                                <td>
+                                    <a href="/surveys/distribution" class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-eye me-1"></i>عرض
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
                 {% else %}
-                <div class="text-center py-4">
-                    <i class="fas fa-inbox text-muted fs-1 mb-3"></i>
-                    <h5 class="text-muted">لا توجد حملات حتى الآن</h5>
+                <div class="text-center py-5">
+                    <i class="fas fa-inbox text-muted" style="font-size: 4rem;"></i>
+                    <h5 class="text-muted mt-3">لا توجد حملات حتى الآن</h5>
                     <p class="text-muted">ابدأ بإنشاء حملة توزيع جديدة لاستطلاعاتك</p>
-                    <a href="{{ url_for('create_campaign_form') }}" class="btn btn-primary">
-                        إنشاء حملة جديدة
+                    <a href="/surveys/distribution/create-campaign" class="btn btn-primary">
+                        <i class="fas fa-plus me-2"></i>إنشاء حملة جديدة
                     </a>
                 </div>
                 {% endif %}
@@ -150,7 +164,7 @@
         </div>
         
         {% if error %}
-        <div class="alert alert-danger mt-4">
+        <div class="alert alert-danger">
             <i class="fas fa-exclamation-triangle me-2"></i>{{ error }}
         </div>
         {% endif %}

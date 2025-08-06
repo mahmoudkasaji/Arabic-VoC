@@ -3,18 +3,17 @@
 <head>
     {% include 'components/head.html' %}
     <title>{{ title }} - Voice of Customer Platform</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/unified-layout.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/design-system.css') }}">
 </head>
 <body>
     {% include 'components/unified_navigation.html' %}
     
-    <div class="page-container">
+    <div class="container-unified">
         <div class="page-header">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <h1>{{ title }}</h1>
-                    <p class="text-muted">إنشاء حملة توزيع جديدة للاستطلاع</p>
-                </div>
-                <a href="{{ url_for('survey_distribution_page') }}" class="btn btn-outline-secondary">
+            <h1 class="page-title">{{ title }}</h1>
+            <div class="page-actions">
+                <a href="/surveys/distribution" class="btn btn-outline-secondary">
                     <i class="fas fa-arrow-right me-2"></i>العودة
                 </a>
             </div>
@@ -22,19 +21,17 @@
         
         <!-- Campaign Creation Form -->
         <div class="card-unified">
-            <div class="card-header">
-                <h5 class="mb-0">
-                    <i class="fas fa-plus-circle me-2"></i>تفاصيل الحملة الجديدة
-                </h5>
-            </div>
             <div class="card-body">
+                <h5 class="mb-3">
+                    <i class="fas fa-plus-circle me-2 text-primary"></i>تفاصيل الحملة الجديدة
+                </h5>
                 {% if error %}
                 <div class="alert alert-danger">
                     <i class="fas fa-exclamation-triangle me-2"></i>{{ error }}
                 </div>
                 {% endif %}
                 
-                <form method="POST" action="{{ url_for('create_campaign') }}">
+                <form method="POST" action="/surveys/distribution/create-campaign">
                     <!-- Step 1: Basic Information -->
                     <div class="row">
                         <div class="col-md-6">
@@ -145,7 +142,7 @@
                     
                     <!-- Action Buttons -->
                     <div class="d-flex gap-2 justify-content-end">
-                        <a href="{{ url_for('survey_distribution_page') }}" class="btn btn-outline-secondary">
+                        <a href="/surveys/distribution" class="btn btn-outline-secondary">
                             إلغاء
                         </a>
                         <button type="submit" class="btn btn-primary">
