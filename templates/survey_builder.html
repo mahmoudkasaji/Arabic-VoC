@@ -1753,7 +1753,10 @@
             initializeProgressiveFlow();
             
             console.log('DOM loaded, initializing survey builder...');
-            surveyBuilder = new SurveyBuilder();
+            // Prevent multiple instances
+            if (typeof surveyBuilder === 'undefined') {
+                surveyBuilder = new SurveyBuilder();
+            }
         });
         
         // Progressive Disclosure Functionality
@@ -2109,11 +2112,7 @@
 
         // Initialize at step 1 on page load
         document.addEventListener('DOMContentLoaded', function() {
-            // Initialize survey builder first
-            console.log('Initializing SurveyBuilder...');
-            surveyBuilder = new SurveyBuilder();
-            
-            // Then setup workflow
+            // Setup workflow (SurveyBuilder already initialized above)
             transitionToStep(1);
         });
 
