@@ -164,16 +164,32 @@ def save_user(user_claims):
     ReplitUser, _ = get_auth_models()
     app, db = get_app_db()
     
+    import logging
+    logger = logging.getLogger(__name__)
+    
     user = ReplitUser.query.get(user_claims["sub"])
     if user:
         merged_user = db.session.merge(user)
     else:
         merged_user = ReplitUser()
         merged_user.id = user_claims["sub"]
-    merged_user.first_name = user_claims.get("given_name")
-    merged_user.last_name = user_claims.get("family_name")
+    
+    # Extract user information from OAuth claims
+    # Replit may provide name information in different fields
+    merged_user.first_name = (
+        user_claims.get("given_name") or 
+        user_claims.get("name", "").split()[0] if user_claims.get("name") else None
+    )
+    merged_user.last_name = (
+        user_claims.get("family_name") or
+        " ".join(user_claims.get("name", "").split()[1:]) if user_claims.get("name") and len(user_claims.get("name", "").split()) > 1 else None
+    )
     merged_user.email = user_claims.get("email")
     merged_user.profile_image_url = user_claims.get("picture")
+    
+    # Log the user information being saved
+    logger.info(f"Saving Replit user: {merged_user.first_name} {merged_user.last_name} ({merged_user.email})")
+    
     db.session.add(merged_user)
     db.session.commit()
     return merged_user
@@ -183,6 +199,12 @@ def save_user(user_claims):
 def logged_in(blueprint, token):
     user_claims = jwt.decode(token['id_token'],
                              options={"verify_signature": False})
+    
+    # Debug logging to see what user information we receive from Replit
+    import logging
+    logger = logging.getLogger(__name__)
+    logger.info(f"Replit OAuth user claims: {user_claims}")
+    
     user = save_user(user_claims)
     login_user(user)
     blueprint.token = token

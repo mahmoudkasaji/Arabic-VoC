@@ -124,6 +124,25 @@ def fallback_logout():
     flash('تم تسجيل الخروج بنجاح', 'success')
     return redirect(url_for('index'))
 
+# Add route to display current user information for debugging
+@app.route('/auth/profile')
+def auth_profile():
+    """Display current authenticated user information"""
+    from flask_login import current_user
+    if current_user.is_authenticated:
+        user_info = {
+            'id': current_user.id,
+            'email': current_user.email,
+            'first_name': current_user.first_name,
+            'last_name': current_user.last_name,
+            'profile_image_url': current_user.profile_image_url,
+            'created_at': current_user.created_at.isoformat() if current_user.created_at else None,
+            'updated_at': current_user.updated_at.isoformat() if current_user.updated_at else None
+        }
+        return jsonify({'authenticated': True, 'user': user_info})
+    else:
+        return jsonify({'authenticated': False, 'message': 'User not authenticated'})
+
 # Register remaining API blueprints (complex operations only)
 try:
     from api.analytics_live import analytics_live_bp
