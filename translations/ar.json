@@ -72,7 +72,12 @@
     "title": "إدارة جهات الاتصال",
     "management": "إدارة جهات الاتصال",
     "list": "قائمة جهات الاتصال",
-    "manage_organize": "إدارة وتنظيم جهات الاتصال"
+    "manage_organize": "إدارة وتنظيم جهات الاتصال",
+    "count_label": "جهة اتصال",
+    "search_placeholder": "البحث في جهات الاتصال...",
+    "add_contact": "إضافة جهة اتصال",
+    "import_export": "استيراد/تصدير",
+    "bulk_actions": "الإجراءات المجمعة"
   },
   "language": {
     "switch_to": "English",
@@ -315,6 +320,24 @@
   },
   "status": {
     "active": "نشط"
+  },
+  "surveys": {
+    "builder_title": "منشئ الاستطلاعات",
+    "management": "إدارة الاستطلاعات",
+    "create_new": "إنشاء استطلاع جديد",
+    "responses": "ردود الاستطلاع",
+    "analytics": "تحليلات الاستطلاع"
+  },
+  "analytics": {
+    "dashboard": "لوحة التحليلات",
+    "title": "التحليلات",
+    "subtitle": "رؤى واتجاهات آراء العملاء",
+    "kpi_csat": "درجة رضا العملاء",
+    "kpi_nps": "مؤشر التوصية",
+    "kpi_ces": "سهولة الخدمة",
+    "kpi_completion": "معدل الإكمال",
+    "chart_trends": "اتجاهات الرضا",
+    "refresh_data": "تحديث البيانات"
   },
   "language": {
     "current": "العربية",

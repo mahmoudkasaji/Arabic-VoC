@@ -4,7 +4,7 @@
 <head>
     {% include 'components/head.html' %}
     {% include 'components/standard_buttons.html' %}
-    <title>Survey Builder - Voice of Customer Platform</title>
+    <title>{{ 'surveys.builder_title' | translate }} - {{ 'app.name' | translate }}</title>
     
     <!-- Enhanced Drag Styles -->
     <link href="/static/css/drag_enhancements.css" rel="stylesheet">
@@ -29,8 +29,8 @@
             font-family: 'Cairo', sans-serif;
             background-color: var(--bg-color);
             color: var(--text-color);
-            direction: rtl;
-            text-align: right;
+            direction: inherit;
+            text-align: inherit;
         }
 
         .builder-container {
