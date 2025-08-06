@@ -12,7 +12,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, and_, or_, func
 from pydantic import BaseModel, Field, validator
 
-from models_unified import Feedback, FeedbackChannel, FeedbackStatus
+from core.models_unified import Feedback, FeedbackChannel, FeedbackStatus
 from models.survey import Response as SurveyResponse, Question, Survey
 from utils.database_arabic import get_arabic_db_session
 from utils.openai_client import analyze_arabic_feedback

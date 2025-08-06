@@ -9,7 +9,7 @@ import logging
 import json
 from datetime import datetime, timedelta
 from sqlalchemy import text, and_
-from app import db
+from core.app import db
 import sys
 import os
 # Add the parent directory to Python path
@@ -81,7 +81,7 @@ def get_historical_analysis():
         limit = int(request.args.get('limit', 10))
         
         # Build query using SQLAlchemy query builder for better security
-        from app import db
+        from core.app import db
         from models.survey import Response, Survey
         
         # Start with base query using SQLAlchemy ORM

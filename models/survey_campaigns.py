@@ -3,7 +3,7 @@ Survey Campaign Models for Distribution System
 Direct database integration with Flask routes
 """
 
-from app import db
+from core.app import db
 from datetime import datetime
 import json
 

@@ -4,7 +4,7 @@ Real-time status monitoring and testing for all platform integrations
 """
 
 from flask import jsonify, request
-from app import app
+from core.app import app
 from utils.integration_registry import integration_registry, IntegrationStatus, IntegrationCategory
 import logging
 

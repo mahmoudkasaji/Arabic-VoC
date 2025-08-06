@@ -3,7 +3,7 @@ Replit User Preferences Model
 Stores platform-specific preferences for Replit authenticated users
 """
 
-from app import db
+from core.app import db
 from datetime import datetime
 
 

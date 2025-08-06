@@ -9,7 +9,7 @@ from typing import List, Optional
 from flask import request, jsonify
 from sqlalchemy import desc, func, and_
 
-from app import app, db
+from core.app import app, db
 from models.survey import Survey, Question, SurveyStatus, QuestionType
 
 logger = logging.getLogger(__name__)

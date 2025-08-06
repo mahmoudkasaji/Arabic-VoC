@@ -1320,10 +1320,10 @@ def settings_page():
 def settings_users_page():
     """User management page - Replit Auth users only"""
     try:
-        from replit_auth import require_login
+        from auth.replit_auth import require_login
         from flask_login import current_user
         from models.replit_user_preferences import ReplitUserPreferences
-        from replit_auth import ReplitUser
+        from auth.replit_auth import ReplitUser
         
         # Check if user is authenticated and is admin
         if not current_user.is_authenticated:
@@ -1367,7 +1367,7 @@ def register_redirect():
 def profile_page():
     """User profile page - requires Replit Auth"""
     try:
-        from replit_auth import require_login
+        from auth.replit_auth import require_login
         from flask_login import current_user
         from models.replit_user_preferences import ReplitUserPreferences
         
@@ -1880,7 +1880,7 @@ def create_survey_from_builder():
             return jsonify({'error': 'يجب إضافة سؤال واحد على الأقل'}), 400
         
         from models.survey_flask import SurveyFlask, QuestionFlask
-        from replit_auth import current_user
+        from auth.replit_auth import current_user
         
         # Create survey
         survey = SurveyFlask(
@@ -1966,7 +1966,7 @@ def integrations_catalog():
     """Technical integration catalog with real-time status monitoring"""
     from flask_login import current_user
     try:
-        from replit_auth import require_login
+        from auth.replit_auth import require_login
         if not current_user.is_authenticated:
             return redirect(url_for('replit_auth.login'))
     except ImportError:

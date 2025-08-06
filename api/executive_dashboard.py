@@ -7,8 +7,8 @@ from flask import Blueprint, jsonify, render_template
 from datetime import datetime, timedelta
 from sqlalchemy import func, and_, or_, text
 from sqlalchemy.orm import sessionmaker
-from models_unified import Feedback, FeedbackChannel, FeedbackStatus, FeedbackAggregation
-from app import db
+from core.models_unified import Feedback, FeedbackChannel, FeedbackStatus, FeedbackAggregation
+from core.app import db
 import logging
 
 # Create blueprint

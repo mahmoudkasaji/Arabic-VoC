@@ -7,8 +7,8 @@ import logging
 from datetime import datetime
 from flask import Blueprint, request, jsonify
 from sqlalchemy import func
-from app import db
-from models_unified import Feedback, FeedbackChannel, FeedbackStatus
+from core.app import db
+from core.models_unified import Feedback, FeedbackChannel, FeedbackStatus
 
 logger = logging.getLogger(__name__)
 

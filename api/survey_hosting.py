@@ -6,7 +6,7 @@ Simple API for creating and managing web-hosted surveys
 import logging
 from datetime import datetime
 from flask import Blueprint, request, jsonify
-from app import db
+from core.app import db
 from models.survey_flask import SurveyFlask, QuestionFlask, SurveyStatus, QuestionType
 from utils.delivery_utils import send_email_invitation
 
