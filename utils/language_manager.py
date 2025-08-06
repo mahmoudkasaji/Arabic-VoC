@@ -58,19 +58,9 @@ class LanguageManager:
                 g._current_language = session_lang
                 return str(session_lang)
             
-            # 4. Check browser Accept-Language header
-            if request and request.headers.get('Accept-Language'):
-                accept_lang = request.headers.get('Accept-Language')
-                if accept_lang:
-                    browser_langs = accept_lang.split(',')
-                    for lang_header in browser_langs:
-                        lang_code = lang_header.split(';')[0].strip()[:2].lower()
-                        if lang_code in self.supported_languages:
-                            self.set_language(lang_code)
-                            g._current_language = lang_code
-                            return lang_code
-            
-            # 5. Default language
+            # 4. Default to Arabic for new users (skip browser language detection)
+            # Force Arabic as default language for new sessions
+            self.set_language(self.default_language)
             g._current_language = self.default_language
             return self.default_language
             
