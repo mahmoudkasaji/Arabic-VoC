@@ -1238,11 +1238,11 @@
     <div class="builder-container" id="builderContainer">
         <!-- Progressive Question Types Sidebar -->
         <div class="sidebar question-types-sidebar" id="questionTypesSidebar">
-            <h5 class="mb-4">أنواع الأسئلة</h5>
+            <h5 class="mb-4">{{ 'survey_builder.question_types' | translate }}</h5>
             
             <!-- Essential Questions (Always Visible) -->
             <div class="essential-questions">
-                <h6><i class="fas fa-star me-2"></i>أسئلة أساسية</h6>
+                <h6><i class="fas fa-star me-2"></i>{{ 'survey_builder.essential_questions' | translate }}</h6>
                 <div class="question-types" id="essentialQuestionTypes">
                     <div class="question-type question-type-tooltip" data-type="text" data-tooltip="مناسب لجمع نصوص قصيرة مثل الأسماء والآراء المختصرة">
                         <i class="fas fa-font question-type-icon"></i>
@@ -1270,7 +1270,7 @@
             <div class="advanced-questions">
                 <button class="expand-toggle" id="expandAdvanced">
                     <i class="fas fa-chevron-down"></i>
-                    <span>عرض المزيد من أنواع الأسئلة</span>
+                    <span>{{ 'survey_builder.show_more_questions' | translate }}</span>
                 </button>
                 
                 <div class="question-types hide-advanced" id="advancedQuestionTypes">
@@ -1770,7 +1770,7 @@
                         // Collapse
                         advancedQuestions.classList.add('hide-advanced');
                         expandToggle.classList.remove('expanded');
-                        expandToggle.querySelector('span').textContent = 'عرض المزيد من أنواع الأسئلة';
+                        expandToggle.querySelector('span').textContent = "{{ 'survey_builder.show_more_questions' | translate }}";
                     } else {
                         // Expand
                         advancedQuestions.classList.remove('hide-advanced');

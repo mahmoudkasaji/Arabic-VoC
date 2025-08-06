@@ -328,6 +328,11 @@
     "responses": "Survey Responses",
     "analytics": "Survey Analytics"
   },
+  "survey_builder": {
+    "question_types": "Question Types",
+    "show_more_questions": "Show More Question Types",
+    "essential_questions": "Essential Questions"
+  },
   "analytics": {
     "dashboard": "Analytics Dashboard",
     "title": "Analytics",

@@ -328,6 +328,11 @@
     "responses": "ردود الاستطلاع",
     "analytics": "تحليلات الاستطلاع"
   },
+  "survey_builder": {
+    "question_types": "أنواع الأسئلة", 
+    "show_more_questions": "عرض المزيد من أنواع الأسئلة",
+    "essential_questions": "أسئلة أساسية"
+  },
   "analytics": {
     "dashboard": "لوحة التحليلات",
     "title": "التحليلات",
