@@ -8,7 +8,7 @@ import logging
 from flask import request, jsonify
 from openai import OpenAI
 import os
-from app import app
+from core.app import app
 
 logger = logging.getLogger(__name__)
 
