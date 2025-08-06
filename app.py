@@ -103,6 +103,14 @@ app.register_blueprint(survey_hosting_bp)
 from api.surveys_flask import surveys_bp
 app.register_blueprint(surveys_bp)
 
+# Register WhatsApp Business API blueprint
+try:
+    from api.whatsapp_business import whatsapp_bp
+    app.register_blueprint(whatsapp_bp, url_prefix='/api/whatsapp')
+    logger.info("WhatsApp Business API blueprint registered successfully")
+except ImportError as e:
+    logger.warning(f"WhatsApp Business API not available: {e}")
+
 # Note: User preferences migrated to Flask routes in routes.py
 
 # Import and register Replit Auth blueprint using centralized utility

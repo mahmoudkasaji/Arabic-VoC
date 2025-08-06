@@ -254,12 +254,37 @@ class IntegrationRegistry:
                 priority='LOW'
             ),
             
-            'whatsapp': IntegrationSpec(
-                id='whatsapp',
-                name='WhatsApp Business',
+            'whatsapp_business': IntegrationSpec(
+                id='whatsapp_business',
+                name='WhatsApp Business API',
+                category=IntegrationCategory.COMMUNICATION,
+                status=IntegrationStatus.CONFIGURED,
+                description='WhatsApp Business messaging for customer engagement and survey distribution',
+                config_keys=['WHATSAPP_API_TOKEN', 'WHATSAPP_PHONE_NUMBER_ID', 'WHATSAPP_BUSINESS_ACCOUNT_ID', 'WHATSAPP_WEBHOOK_VERIFY_TOKEN'],
+                endpoints=[
+                    'https://graph.facebook.com/v18.0/{phone-number-id}/messages',
+                    '/api/whatsapp/webhook',
+                    '/api/whatsapp/send-survey',
+                    '/api/whatsapp/test'
+                ],
+                auth_method='Bearer Token (Facebook Graph API)',
+                implementation_files=['api/whatsapp_business.py'],
+                test_endpoint='/api/whatsapp/test',
+                documentation_url='https://developers.facebook.com/docs/whatsapp/cloud-api',
+                dependencies=['requests'],
+                cost_per_request=0.005,
+                rate_limits={'messages_per_second': 50, 'requests_per_minute': 1000},
+                strengths=['high_engagement', 'rich_media', 'global_reach', 'webhook_support', 'template_messaging', 'two_way_communication'],
+                priority='HIGH',
+                estimated_effort_weeks=2
+            ),
+            
+            'whatsapp_twilio': IntegrationSpec(
+                id='whatsapp_twilio',
+                name='WhatsApp via Twilio',
                 category=IntegrationCategory.COMMUNICATION,
                 status=IntegrationStatus.ROADMAP,
-                description='WhatsApp messaging for survey distribution via Twilio',
+                description='WhatsApp messaging for survey distribution via Twilio (alternative implementation)',
                 config_keys=['TWILIO_ACCOUNT_SID', 'TWILIO_AUTH_TOKEN', 'WHATSAPP_PHONE_NUMBER'],
                 endpoints=['https://api.twilio.com/2010-04-01/Accounts/{AccountSid}/Messages.json'],
                 auth_method='Twilio Integration',

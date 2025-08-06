@@ -30,7 +30,8 @@ class UnifiedDeliveryManager:
         self.email_configured = gmail_configured or sendgrid_configured
         
         self.sms_configured = bool(os.getenv("TWILIO_ACCOUNT_SID")) and bool(os.getenv("TWILIO_AUTH_TOKEN"))
-        self.whatsapp_configured = bool(os.getenv("WHATSAPP_API_KEY"))
+        # WhatsApp Business API configuration
+        self.whatsapp_configured = bool(os.getenv("WHATSAPP_API_TOKEN")) and bool(os.getenv("WHATSAPP_PHONE_NUMBER_ID"))
         
     def send_survey_invitation(self, 
                               channel: str, 
@@ -46,7 +47,8 @@ class UnifiedDeliveryManager:
             elif channel == "sms":
                 return self._send_sms(recipient, survey_link, survey_title, message_template)
             elif channel == "whatsapp":
-                return self._send_whatsapp(recipient, survey_link, survey_title, message_template)
+                # Prefer WhatsApp Business API, fallback to existing Twilio WhatsApp
+                return self._send_whatsapp_business(recipient, survey_link, survey_title, message_template)
             else:
                 return DeliveryResult(False, error_message=f"Unsupported channel: {channel}")
                 
@@ -161,6 +163,26 @@ class UnifiedDeliveryManager:
         except Exception as e:
             logger.error(f"SMS delivery failed: {e}")
             return DeliveryResult(False, error_message=f"SMS failed: {str(e)}")
+    
+    def _send_whatsapp_business(self, recipient: str, link: str, title: str, template: Optional[str] = None) -> DeliveryResult:
+        """Send WhatsApp invitation using WhatsApp Business API"""
+        if not self.whatsapp_configured:
+            return DeliveryResult(False, error_message="WhatsApp Business API not configured. Please set WHATSAPP_API_TOKEN and WHATSAPP_PHONE_NUMBER_ID.")
+        
+        try:
+            from api.whatsapp_business import whatsapp_client
+            result = whatsapp_client.send_survey_invitation(recipient, title, link, "ar")
+            
+            return DeliveryResult(
+                success=result.get("success", False),
+                message_id=result.get("message_id"),
+                error_message=result.get("error") if not result.get("success") else None,
+                delivery_time=datetime.utcnow(),
+                cost=0.005  # Approximate WhatsApp Business API cost
+            )
+        except Exception as e:
+            logger.error(f"WhatsApp delivery failed: {e}")
+            return DeliveryResult(False, error_message=str(e))
     
     def _send_whatsapp(self, recipient: str, link: str, title: str, template: Optional[str]) -> DeliveryResult:
         """Send WhatsApp invitation"""

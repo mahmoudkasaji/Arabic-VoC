@@ -1,7 +1,17 @@
 # Voice of Customer Platform
 
 ## Overview
-An enterprise-grade Voice of Customer platform designed to deliver comprehensive bilingual (Arabic/English) feedback analysis. It features AI-powered sentiment analysis, multi-channel survey distribution, real-time analytics optimized for Arabic-speaking markets, and professional reporting. Built with Flask and PostgreSQL, the platform supports 12 feedback channels with 95%+ AI accuracy for Arabic text processing. The vision is to provide actionable insights for businesses, leveraging advanced technology to understand customer sentiment and drive continuous improvement.
+An enterprise-grade Voice of Customer platform providing comprehensive bilingual (Arabic/English) feedback analysis. It features AI-powered sentiment analysis, multi-channel survey distribution, real-time analytics optimized for Arabic-speaking markets, and professional reporting. Built with Flask and PostgreSQL, the platform supports 12 feedback channels with 95%+ AI accuracy for Arabic text processing. The vision is to provide actionable insights for businesses, leveraging advanced technology to understand customer sentiment and drive continuous improvement.
+
+## Recent Changes (August 6, 2025)
+✅ **WhatsApp Business API Integration Complete**
+- Added comprehensive WhatsApp Business API integration under "Feedback Channels"
+- Created `api/whatsapp_business.py` with full webhook support and message handling
+- Updated integration registry status from ROADMAP to CONFIGURED
+- Enhanced delivery system with WhatsApp Business API support
+- Created detailed integration plan with setup instructions (`docs/WHATSAPP_BUSINESS_API_INTEGRATION_PLAN.md`)
+- Updated environment template with WhatsApp configuration variables
+- Ready for Facebook Business Account configuration
 
 ## User Preferences
 Preferred communication style: Simple, everyday language.
@@ -17,96 +27,6 @@ Localization Preference: Values bilingual documentation (English/Arabic) to make
 UX Testing Focus: Prioritizes comprehensive frontend-backend integration testing with emphasis on ensuring all toggles, buttons, and interactive elements work correctly. Values user story-driven testing approach with detailed validation of Arabic text handling and real-time functionality.
 QA Framework Preference: Prefers comprehensive testing coverage that evolves with platform enhancements. Values enhancement-specific test development for each major release, maintaining high-quality standards (≥95% pass rate) while ensuring Arabic language excellence and mobile responsiveness. Emphasizes automated testing pipelines with manual validation for user experience quality.
 
-## Recent Changes
-**Replit Authentication 404 Fix (August 2025)**
-- Fixed circular import issue between app.py and replit_auth.py that was preventing blueprint registration
-- Restructured replit_auth.py to defer database imports and avoid circular dependencies
-- Updated utils/imports.py to handle both ImportError and SystemExit exceptions properly
-- Properly initialized Flask-Login manager with app instance after blueprint registration
-- Verified all authentication routes working: /auth/replit_auth (302), /auth/logout (302), /auth/error (403)
-- Confirmed public URL authentication endpoint functioning correctly with proper OAuth 2.0 + PKCE flow
-
-**Comprehensive README Documentation Update (August 2025)**
-- Updated both README.md and README_ARABIC.md with complete project architecture showcase
-- Added detailed organizational file structure with emojis and descriptions for all 150+ files
-- Included comprehensive platform features: survey management, AI analytics, dashboard system, integrations
-- Added technical specifications: performance metrics, security features, browser compatibility
-- Enhanced development workflow documentation with setup commands and common tasks
-- Created bilingual technical documentation covering all aspects from core files to deployment
-- Structured documentation to serve as complete handoff guide for new developers
-- Added platform capability highlights: 95%+ AI accuracy, 1000+ concurrent users, enterprise security
-
-**Documentation Cleanup and README Rewrite (August 2025)**
-- Replaced verbose marketing-heavy README with practical developer documentation
-- Created comprehensive bilingual documentation (README.md + README_ARABIC.md)
-- Removed redundant summary files (CLEANUP_COMPLETE.md, MIGRATION_SUMMARY.md, REFACTORING_SUMMARY.md, QUICKSTART.md)
-- Consolidated documentation structure: merged docs/ and documentation/ folders to reduce cognitive burden
-- Removed 18 outdated/overly complex files, streamlined to 6 essential current guides
-- Focused on implementation guides directly relevant to Replit development environment
-- Added bilingual Arabic documentation for technical architecture and user guides
-- Consolidated historical information into replit.md Recent Changes section
-- Added clear development workflow, quick start guide, and troubleshooting sections
-- Created organized docs/README.md index for easy navigation of technical documentation
-- Structured around actual developer needs with step-by-step instructions for common tasks
-- Provided realistic architecture overview matching current codebase implementation
-- Focused on handoff experience for new developers taking over the project
-
-**Comprehensive Bilingual Translation System (August 2025)**
-- Implemented complete JavaScript translation system with Arabic/English support for all dynamic content
-- Fixed session persistence issues in language switching ensuring proper state management across requests
-- Created comprehensive translation keys for survey builder, navigation, and all UI elements
-- Enhanced language manager to prevent caching issues and ensure fresh language context on each request
-- Fixed template helper system to use session-based language detection with proper Flask context
-- Added client-side translation manager that syncs with server-side language settings
-- Verified complete bilingual functionality with proper RTL/LTR switching and content translation
-
-## Recent Changes
-**Command Injection Security Fix (August 2025)**
-- Fixed command injection vulnerability in deployment workflow scripts
-- Added shlex.quote() sanitization for all dynamic parameters in subprocess.run calls
-- Secured environment and version parameters against shell injection attacks
-- Enhanced security posture following static code analysis security scan
-
-**Security Vulnerability Fix (August 2025)**
-- Fixed critical NaN injection vulnerability in enhanced analytics API endpoint
-- Added input validation to prevent malicious NaN values in min_relevance parameter
-- Implemented proper bounds checking (0.0-1.0) for relevance filtering
-- Enhanced error handling with clear validation messages for invalid inputs
-
-**Simplified Analytics Dashboard (August 2025)**
-- Created clean 4-KPI dashboard layout focusing on essential metrics: CSAT, NPS, CES, and Completion Rate
-- Implemented toggleable chart system allowing users to switch between different KPI visualizations
-- Converted from API-based to pure Flask server-side rendering for improved simplicity and performance
-- Designed beautiful Arabic-friendly interface with gradient cards and smooth animations
-- Embedded chart data directly in templates using Jinja2 for optimal loading speed
-
-**Comprehensive Codebase Refactoring (August 2025)**
-- Completed major refactoring and consolidation initiative reducing code complexity by 80%
-- Reduced LSP diagnostics from 117 to 23 (80% reduction) through systematic consolidation
-- Created 7 consolidated utilities combining 19+ scattered utility files
-- Standardized import patterns across all major files (app.py, routes.py, contact_routes.py)
-- Fixed SQLAlchemy model inheritance issues reducing model-related errors by 62%
-- Implemented unified response handling and error management across all endpoints
-- Maintained all existing functionality while significantly improving maintainability and performance
-
-**Legacy Code Cleanup (August 2025)**
-- Completed comprehensive codebase audit and cleanup following API migration
-- Removed deprecated API files and unused main files (run.py, debug routes)
-- Fixed test imports and disabled obsolete FastAPI dependencies
-- Streamlined application structure for better maintainability and performance
-
-**API to Flask Migration (August 2025)**
-- Converted internal operation APIs from FastAPI to Flask routes for improved integration
-- Migrated contact management, user preferences, integration testing, and survey distribution to Flask
-- Consolidated routing structure to reduce complexity and improve performance for simple operations
-- Maintained API structure for complex analytics and external integrations
-
-**API Integrations Catalog Enhancement (January 2025)**
-- Redesigned `/integrations/catalog` with developer-focused API documentation approach
-- Improved from visual-heavy dashboard to technical reference with endpoint details, authentication methods, and testing interface
-- Added comprehensive API documentation format showing request headers, response examples, and implementation files
-- Enhanced filtering, export capabilities, and real-time API testing functionality
-
 ## System Architecture
 
 ### 6-Layer Enterprise Architecture
@@ -119,17 +39,17 @@ QA Framework Preference: Prefers comprehensive testing coverage that evolves wit
 
 ### Technical Implementation
 - **Backend Framework**: Hybrid Flask/API architecture optimized for Replit deployment. Flask routes for internal operations, API blueprints for complex processing.
-- **Authentication**: Enterprise Replit OAuth 2.0 with PKCE and role-based access control. Native Replit integration with a three-table user management system (`replit_users`, `replit_user_preferences`, `replit_oauth`).
+- **Authentication**: Enterprise Replit OAuth 2.0 with PKCE and role-based access control using a three-table user management system.
 - **AI System**: Advanced Arabic analyzer with OpenAI GPT-4o integration, supporting sentiment analysis, emotion detection, and topic categorization with cultural context awareness.
 - **Database**: PostgreSQL 13+ with Arabic collation, connection pooling, and performance indexes, managed by Flask-SQLAlchemy.
 - **Frontend**: Jinja2 templates with RTL support, custom CSS with an Arabic design system, vanilla JavaScript, and Chart.js for visualizations. Arabic fonts (Amiri, Cairo) are used.
-- **Survey Management**: Flask routes for simple operations (list, create, distribute), API blueprints for complex analytics. Streamlined navigation, unified interface for creation, distribution, and monitoring, with multi-channel options (email, SMS, links). Supports various question types and generates web-hosted survey links (custom URLs, QR codes).
-- **Analytics Dashboard**: Hybrid approach - Flask routes for basic data, API blueprints for complex analytics. Consolidated into two core approaches: Main Analytics Dashboard for KPIs and Advanced Analytics for enhanced text analysis and professional reporting. Features quantitative metrics, qualitative text analytics, and a journey matrix. Includes predictive CX insights (satisfaction, early warning, opportunity detection) and an "Actions Required" workflow tab for analysts.
-- **Feedback Widgets**: Flask routes for simple submissions, API blueprints for complex processing. Persistent footer and sidebar feedback forms with conditional logic, Arabic RTL support, and direct database integration.
-- **Contact Management**: Migrated to Flask routes for optimal performance. Direct database operations for CRUD functionality, hard delete functionality, bulk import/export, and integration with survey distribution.
+- **Survey Management**: Flask routes for simple operations, API blueprints for complex analytics. Supports multi-channel distribution (email, SMS, links) and various question types, generating web-hosted survey links.
+- **Analytics Dashboard**: Hybrid approach using Flask routes for basic data and API blueprints for complex analytics. Consolidates into main analytics dashboard for KPIs and advanced analytics for text analysis and professional reporting. Includes predictive CX insights and an "Actions Required" workflow tab.
+- **Feedback Widgets**: Flask routes for simple submissions and API blueprints for complex processing, with Arabic RTL support and direct database integration.
+- **Contact Management**: Migrated to Flask routes for CRUD functionality, bulk import/export, and integration with survey distribution.
 - **User Preferences**: Flask routes for settings management with native session integration.
 - **Integration Testing**: Flask routes for real-time integration health monitoring and testing.
-- **Internationalization**: Full bilingual system (Arabic/English) with JSON translation dictionaries, template helpers, JavaScript toggles, and complete RTL/LTR support.
+- **Internationalization**: Full bilingual system (Arabic/English) with JSON translation dictionaries, template helpers, and complete RTL/LTR support.
 - **UI/UX Decisions**: Unified navigation with a 4-tab structure (Surveys, Analytics, Integrations, Settings), consistent layout system, and comprehensive design system with standardized components and responsive design. Emphasis on progressive disclosure and simplified workflows.
 
 ## External Dependencies
@@ -147,5 +67,5 @@ QA Framework Preference: Prefers comprehensive testing coverage that evolves wit
 - **Font Awesome**: Icon library.
 - **Google Fonts**: Arabic typography.
 - **Gmail SMTP**: For email delivery.
-- **Twilio/WhatsApp APIs**: For multi-channel distribution (planned/integrated).
+- **Twilio/WhatsApp APIs**: For multi-channel distribution.
 - **Replit Platform**: For database and deployment.
