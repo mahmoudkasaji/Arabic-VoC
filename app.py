@@ -1476,58 +1476,32 @@ def test_ai_analysis():
 
 @app.route('/api/language/toggle', methods=['POST'])  
 def toggle_language():
-    """Toggle user's language preference - FINAL FIX"""
-    try:
-        from flask import g
+    """Toggle user's language preference - SIMPLIFIED FIX"""
+    try:        
+        # Get current language safely
+        current_lang = session.get('language', 'ar')
         
-        data = request.get_json() or {}
-        target_lang = data.get('language')
+        # Simple toggle - switch to opposite language
+        new_lang = 'en' if current_lang == 'ar' else 'ar'
         
-        if not target_lang:
-            # Auto-toggle to opposite language
-            current_lang = language_manager.get_current_language()
-            target_lang = language_manager.get_opposite_language(current_lang)
-            logger.info(f"Auto-toggling from {current_lang} to {target_lang}")
+        # Set in session
+        session['language'] = new_lang
+        session.permanent = True
         
-        # CRITICAL FIX: Set language with immediate effect
-        if language_manager.set_language(target_lang):
-            # Force immediate session save
-            session.modified = True
-            
-            # CRITICAL: Clear any cached language in g object and reset
-            if hasattr(g, '_current_language'):
-                delattr(g, '_current_language')
-            g._current_language = target_lang
-            
-            logger.info(f"Language switched to {target_lang}, session: {session.get('language')}, g: {getattr(g, '_current_language', 'None')}")
-            
-            from utils.template_helpers import get_success_message
-            response = jsonify({
-                'success': True,
-                'message': get_success_message('saved', target_lang),
-                'language': target_lang,
-                'direction': language_manager.get_direction(target_lang),
-                'language_info': language_manager.get_language_info(target_lang),
-                'session_language': session.get('language'),
-                'g_language': getattr(g, '_current_language', 'None')
-            })
-            
-            # Prevent caching
-            response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
-            response.headers['Pragma'] = 'no-cache'
-            response.headers['Expires'] = '0'
-            
-            return response
-        else:
-            from utils.template_helpers import get_error_message
-            return jsonify({
-                'error': get_error_message('general_error')
-            }), 400
-            
+        logger.info(f"Language toggled from {current_lang} to {new_lang}")
+        
+        return jsonify({
+            'success': True,
+            'language': new_lang,
+            'previous': current_lang
+        })
+        
     except Exception as e:
-        logger.error(f"Error toggling language: {e}")
-        from utils.template_helpers import get_error_message
-        return jsonify({'error': get_error_message('general_error')}), 500
+        logger.error(f"Language toggle failed: {e}")
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
 
 @app.route('/api/language/status')
 def language_status():
