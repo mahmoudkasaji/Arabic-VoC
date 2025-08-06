@@ -187,7 +187,13 @@ window.TranslationManager = {
     init() {
         const htmlLang = document.documentElement.lang || 'ar';
         this.currentLanguage = htmlLang;
-        console.log(`🌐 Translation Manager initialized with language: ${this.currentLanguage}`);
+        console.log(`🌐 Translation Manager initialized with language: ${this.currentLanguage} (from HTML lang attribute)`);
+        
+        // Validate language is supported
+        if (!this.translations[this.currentLanguage]) {
+            console.warn(`⚠️ Language ${this.currentLanguage} not supported, falling back to Arabic`);
+            this.currentLanguage = 'ar';
+        }
     },
 
     // Get translation for a key

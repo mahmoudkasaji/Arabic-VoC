@@ -15,7 +15,17 @@ def register_template_helpers(app):
         Usage: {{ 'navigation.surveys' | translate }}
         Usage with variables: {{ 'messages.welcome' | translate(name=user.name) }}
         """
-        return language_manager.translate(key, **kwargs)
+        # CRITICAL FIX: Always get fresh language context for each translation
+        from flask import g, session
+        
+        # Force refresh language context to prevent caching issues
+        current_lang = language_manager.get_current_language()
+        result = language_manager.translate(key, language=current_lang, **kwargs)
+        
+        # DEBUG: Uncomment for troubleshooting
+        # print(f"DEBUG: Template translate '{key}' -> '{result}' (lang: {current_lang})")
+        
+        return result
     
     @app.template_global()
     def get_lang():
@@ -82,11 +92,13 @@ def register_template_helpers(app):
     @app.context_processor
     def inject_language_context():
         """Inject language context into all templates"""
+        # CRITICAL FIX: Always get fresh language context
+        current_lang = language_manager.get_current_language()
         return {
-            'current_language': language_manager.get_current_language(),
-            'text_direction': language_manager.get_direction(),
-            'language_info': language_manager.get_language_info(),
-            'opposite_language': language_manager.get_opposite_language(),
+            'current_language': current_lang,
+            'text_direction': language_manager.get_direction(current_lang),
+            'language_info': language_manager.get_language_info(current_lang),
+            'opposite_language': language_manager.get_opposite_language(current_lang),
             'toggle_url': language_manager.get_toggle_url(),
             'supported_languages': language_manager.supported_languages
         }
