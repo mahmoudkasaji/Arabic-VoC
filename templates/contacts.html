@@ -3,7 +3,7 @@
 <head>
     {% include 'components/head.html' %}
     {% include 'components/standard_buttons.html' %}
-    <title>{{ 'contacts.management' | translate }} - {{ 'app.name' | translate }}</title>
+    <title>Contact Management - Voice of Customer Platform</title>
 </head>
 <body>
     {% include 'components/unified_navigation.html' %}
@@ -14,13 +14,13 @@
             <div class="row align-items-center">
                 <div class="col-md-8">
                     <h1 class="page-title mb-2">
-                        <i class="fas fa-address-book text-primary me-3"></i>{{ 'contacts.management' | translate }}
+                        <i class="fas fa-address-book text-primary me-3"></i>إدارة جهات الاتصال
                     </h1>
-                    <p class="page-description text-muted mb-0">{{ 'contacts.manage_organize' | translate }}</p>
+                    <p class="page-description text-muted mb-0">إدارة وتنظيم قائمة جهات الاتصال لتوزيع الاستطلاعات</p>
                 </div>
                 <div class="col-md-4 text-end">
                     <div class="badge bg-primary fs-6 px-3 py-2">
-                        <i class="fas fa-users me-2"></i>{{ contacts|length if contacts else 0 }} {{ 'contacts.count_label' | translate }}
+                        <i class="fas fa-users me-2"></i>{{ contacts|length if contacts else 0 }} جهة اتصال
                     </div>
                 </div>
             </div>
@@ -37,7 +37,7 @@
                                 <i class="fas fa-search text-muted"></i>
                             </span>
                             <input type="text" class="form-control" id="searchContacts" 
-                                   placeholder="{{ 'contacts.search_placeholder' | translate }}" onkeyup="searchContacts()">
+                                   placeholder="البحث في جهات الاتصال..." onkeyup="searchContacts()">
                         </div>
                     </div>
                     
@@ -46,7 +46,7 @@
                         <div class="btn-container-standard">
                             <!-- Primary Action - Add Contact -->
                             <button class="btn-standard btn-primary-standard btn-md-standard" data-bs-toggle="modal" data-bs-target="#addContactModal">
-                                <i class="fas fa-plus"></i>{{ 'contacts.add_contact' | translate }}
+                                <i class="fas fa-plus"></i>إضافة جهة اتصال
                             </button>
                             
                             <!-- Import/Export Actions Group -->

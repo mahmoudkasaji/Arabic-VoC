@@ -72,12 +72,7 @@
     "title": "Contact Management",
     "management": "Contact Management", 
     "list": "Contact List",
-    "manage_organize": "Manage and organize contacts",
-    "count_label": "contacts",
-    "search_placeholder": "Search contacts...",
-    "add_contact": "Add Contact",
-    "import_export": "Import/Export",
-    "bulk_actions": "Bulk Actions"
+    "manage_organize": "Manage and organize contacts"
   },
   "language": {
     "switch_to": "العربية",
@@ -320,29 +315,6 @@
   },
   "status": {
     "active": "Active"
-  },
-  "surveys": {
-    "builder_title": "Survey Builder",
-    "management": "Survey Management",
-    "create_new": "Create New Survey",
-    "responses": "Survey Responses",
-    "analytics": "Survey Analytics"
-  },
-  "survey_builder": {
-    "question_types": "Question Types",
-    "show_more_questions": "Show More Question Types",
-    "essential_questions": "Essential Questions"
-  },
-  "analytics": {
-    "dashboard": "Analytics Dashboard",
-    "title": "Analytics",
-    "subtitle": "Customer feedback insights and trends",
-    "kpi_csat": "CSAT Score",
-    "kpi_nps": "NPS Score", 
-    "kpi_ces": "CES Score",
-    "kpi_completion": "Completion Rate",
-    "chart_trends": "Satisfaction Trends",
-    "refresh_data": "Refresh Data"
   },
   "language": {
     "current": "English",
