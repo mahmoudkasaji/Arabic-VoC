@@ -2,12 +2,8 @@
 
 ## Implementation Guides
 
-### **Gmail Integration**
-- [`GMAIL_SETUP_GUIDE.md`](GMAIL_SETUP_GUIDE.md) - Complete Gmail setup and troubleshooting
-
 ### **Survey System**
-- [`SURVEY_DELIVERY_IMPLEMENTATION.md`](SURVEY_DELIVERY_IMPLEMENTATION.md) - Survey delivery system documentation
-- [`SURVEY_DELIVERY_MVP.md`](SURVEY_DELIVERY_MVP.md) - MVP implementation guide
+- [`SURVEY_DELIVERY_MVP.md`](SURVEY_DELIVERY_MVP.md) - Survey delivery user guide
 
 ### **AI Analysis**
 - [`arabic_analysis_explanation.md`](arabic_analysis_explanation.md) - Arabic AI analysis system documentation
